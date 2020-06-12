@@ -27,12 +27,14 @@
                 App Dashboard
             </h2>
             <div class="ui two column stackable grid">
-                {{ dashboard_option('Registered Users', 'admin.registered_users',
-                                    description='View and manage user accounts', icon='users icon') }}
+                {{ dashboard_option('View Apps', 'admin.registered_users',
+                                    description='View and manage running apps', icon='users icon') }}
+                {{ dashboard_option('Add New Apps', 'admin.invite_user',
+                                    description='Invites a new user to create their own account', icon='plus icon') }}
+                {{ dashboard_option('View Templates', 'admin.invite_user',
+                                    description='Invites a new user to create their own account', icon='list layout icon') }}
                 {{ dashboard_option('Add New Template', 'apps.new_template',
-                                    description='Add a new template manifest', icon='add user icon') }}
-                {{ dashboard_option('Invite New User', 'admin.invite_user',
-                                    description='Invites a new user to create their own account', icon='add user icon') }}
+                                    description='Add a new template manifest', icon='add icon') }}
             </div>
         </div>
     </div>
