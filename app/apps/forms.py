@@ -67,4 +67,6 @@ class InviteUserForm(FlaskForm):
 
 
 class TemplateForm(FlaskForm):
-    template_url = URLField( 'Template URL', validators=[InputRequired(), URL(require_tld=True, message='Please enter a valid URL')])
+    template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error')])
+    submit = SubmitField('Add Template')
+    

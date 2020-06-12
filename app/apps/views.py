@@ -37,4 +37,6 @@ def index():
 def new_template():
     """Add a new app."""
     form = TemplateForm()
+    if form.validate_on_submit():
+        return redirect(url_for('apps.index'))
     return render_template('apps/new_template.html', form=form)

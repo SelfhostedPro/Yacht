@@ -14,7 +14,20 @@
             </a>
             <h2 class="ui header">
                 Add New App
-                <div class="sub header">Create a new user account</div>
+                <div class="sub header">Add a new app template</div>
+                {% set flashes = {
+                    'error':   get_flashed_messages(category_filter=['form-error']),
+                    'warning': get_flashed_messages(category_filter=['form-check-email']),
+                    'info':    get_flashed_messages(category_filter=['form-info']),
+                    'success': get_flashed_messages(category_filter=['form-success'])
+                } %}
+    
+                {{ f.begin_form(form, flashes) }}
+    
+                    {{ f.render_form_field(form.template_url, extra_classes=novalidate) }}
+                    {{ f.render_form_field(form.submit)}}
+    
+                {{ f.end_form() }}
             </h2>
         </div>
     </div>
