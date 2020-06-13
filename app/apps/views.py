@@ -52,10 +52,8 @@ def new_template():
             flash('var = .json')
             template_filename = wget.download(template_location, out='app/storage/templates/json')
             flash(template_filename)
-        elif ext in ('yml', 'yaml'):
+        elif ext in ('.yml', '.yaml'):
             flash('var = .yaml')
-        else :
-            flash('Invalid File Type')
 
         return redirect(url_for('apps.index'))
     return render_template('apps/new_template.html', form=form)

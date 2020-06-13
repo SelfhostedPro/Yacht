@@ -20,7 +20,7 @@ from wtforms.validators import (
 from flask import flash
 from app import db
 from app.models import Role, User
-import os #used for getting file type
+import os, sys #used for getting file type
 from urllib.parse import urlparse
 
 
@@ -71,3 +71,11 @@ class InviteUserForm(FlaskForm):
 class TemplateForm(FlaskForm):
     template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error')])
     submit = SubmitField('Add Template')
+
+    def validate_filetype(self, field):
+        form = TemplateForm
+        template_path = form.template_url
+        ext = os.path.splitext(template_path)[1]
+        
+        if ext not in ('.json', '.yml', '.yaml'):
+            raise ValidationError('Invalid File Type')
