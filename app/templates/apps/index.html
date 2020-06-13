@@ -23,6 +23,18 @@
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
+            <!-- Flash messages if they exist -->
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li style="color: tomato;">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            <hr>
+            {% endif %}
+            {% endwith %}
+
             <h2 class="ui header">
                 App Dashboard
             </h2>

@@ -38,5 +38,8 @@ def new_template():
     """Add a new app."""
     form = TemplateForm()
     if form.validate_on_submit():
+        template_location = form.template_url.data
+        flash("added template: " + template_location)
+
         return redirect(url_for('apps.index'))
     return render_template('apps/new_template.html', form=form)

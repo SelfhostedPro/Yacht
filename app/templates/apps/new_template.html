@@ -13,7 +13,7 @@
                 Back to dashboard
             </a>
             <h2 class="ui header">
-                Add New App
+                New App Template
                 <div class="sub header">Add a new app template</div>
                 {% set flashes = {
                     'error':   get_flashed_messages(category_filter=['form-error']),
@@ -25,7 +25,7 @@
                 {{ f.begin_form(form, flashes) }}
     
                     {{ f.render_form_field(form.template_url, extra_classes=novalidate) }}
-                    {{ f.render_form_field(form.submit)}}
+                    {{ f.render_form_field(form.submit) }}
     
                 {{ f.end_form() }}
             </h2>
