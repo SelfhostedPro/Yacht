@@ -20,8 +20,10 @@ from app.apps.forms import (
 from app.decorators import admin_required
 from app.email import send_email
 from app.models import EditableHTML, Role, User
+
 import os #used for getting file type
 from urllib.parse import urlparse
+import wget
 
 apps = Blueprint('apps', __name__)
 
@@ -39,12 +41,21 @@ def index():
 def new_template():
     """Add a new app."""
     form = TemplateForm()
+    
     if form.validate_on_submit():
         template_location = form.template_url.data
         flash("added template: " + template_location)
         template_path = urlparse(template_location).path
         ext = os.path.splitext(template_path)[1]
-        flash("Extension = " + ext)
+        flash("Extension = " + ext )
+        if ext == '.json':
+            flash('var = .json')
+            template_filename = wget.download(template_location, out='app/storage/templates/json')
+            flash(template_filename)
+        elif ext in ('yml', 'yaml'):
+            flash('var = .yaml')
+        else :
+            flash('Invalid File Type')
 
         return redirect(url_for('apps.index'))
     return render_template('apps/new_template.html', form=form)

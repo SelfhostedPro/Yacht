@@ -17,9 +17,11 @@ from wtforms.validators import (
     Length,
     URL
 )
-
+from flask import flash
 from app import db
 from app.models import Role, User
+import os #used for getting file type
+from urllib.parse import urlparse
 
 
 class ChangeUserEmailForm(FlaskForm):
@@ -69,4 +71,3 @@ class InviteUserForm(FlaskForm):
 class TemplateForm(FlaskForm):
     template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error')])
     submit = SubmitField('Add Template')
-    
