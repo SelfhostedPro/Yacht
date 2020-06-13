@@ -20,6 +20,8 @@ from app.apps.forms import (
 from app.decorators import admin_required
 from app.email import send_email
 from app.models import EditableHTML, Role, User
+import os #used for getting file type
+from urllib.parse import urlparse
 
 apps = Blueprint('apps', __name__)
 
@@ -40,6 +42,9 @@ def new_template():
     if form.validate_on_submit():
         template_location = form.template_url.data
         flash("added template: " + template_location)
+        template_path = urlparse(template_location).path
+        ext = os.path.splitext(template_path)[1]
+        flash("Extension = " + ext)
 
         return redirect(url_for('apps.index'))
     return render_template('apps/new_template.html', form=form)
