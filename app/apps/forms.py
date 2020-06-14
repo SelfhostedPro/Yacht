@@ -67,15 +67,13 @@ class InviteUserForm(FlaskForm):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
 
+def validate_filetype(form, field):
+    template_path = field.data
+    ext = os.path.splitext(template_path)[1]
+    if ext not in ('.json', '.yml', '.yaml'):
+        raise ValidationError('Invalid File Type')
 
 class TemplateForm(FlaskForm):
-    template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error')])
+    template_name = StringField('Template Name', validators=[InputRequired()])
+    template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error'), validate_filetype])
     submit = SubmitField('Add Template')
-
-    def validate_filetype(self, field):
-        form = TemplateForm
-        template_path = form.template_url
-        ext = os.path.splitext(template_path)[1]
-        
-        if ext not in ('.json', '.yml', '.yaml'):
-            raise ValidationError('Invalid File Type')

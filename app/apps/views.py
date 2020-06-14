@@ -39,10 +39,11 @@ def index():
 @login_required
 @admin_required
 def new_template():
-    """Add a new app."""
-    form = TemplateForm()
+    """Add a new app template."""
+    form = TemplateForm(request.form)
     
     if form.validate_on_submit():
+        template_name = form.template_name.data
         template_location = form.template_url.data
         flash("added template: " + template_location)
         template_path = urlparse(template_location).path
@@ -54,6 +55,17 @@ def new_template():
             flash(template_filename)
         elif ext in ('.yml', '.yaml'):
             flash('var = .yaml')
+            template_filename = wget.download(template_location, out='app/storage/templates/compose')
+            flash(template_filename)
+        
+        template = Template(
+            name = template_name,
+            url = template_location,
+            path = template_filename,
+        )
+        db.session.add(template)
+        db.session.commit()
+        flash('Template {} successfully created'.format(template.name()), 'form-success')
 
         return redirect(url_for('apps.index'))
     return render_template('apps/new_template.html', form=form)

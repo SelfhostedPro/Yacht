@@ -23,8 +23,9 @@
                 } %}
     
                 {{ f.begin_form(form, flashes) }}
-    
-                    {{ f.render_form_field(form.template_url, extra_classes=novalidate) }}
+
+                    {{ f.render_form_field(form.template_name)}}
+                    {{ f.render_form_field(form.template_url) }}
                     {{ f.render_form_field(form.submit) }}
     
                 {{ f.end_form() }}
