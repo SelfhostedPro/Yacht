@@ -22,6 +22,9 @@ import os #used for getting file type and deleting files
 from urllib.parse import urlparse #used for getting filetype from url
 import wget #used to download file
 
+import json
+import pandas as pd
+
 apps = Blueprint('apps', __name__)
 
 
@@ -31,6 +34,41 @@ apps = Blueprint('apps', __name__)
 def index():
     """Apps dashboard page."""
     return render_template('apps/index.html')
+
+@apps.route('/add')
+@login_required
+@admin_required
+def view_apps():
+    """ View available apps """
+    template = Template.query.all()
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    print(dir_path)
+    json_content = combine_json_templates()
+    print(json_content.index)
+    return render_template('apps/add_app.html', apps=json_content)
+
+def combine_json_templates():
+
+    master_list = []
+
+    cwd = os.getcwd()
+    print(cwd)
+    json_storage = 'app/storage/templates/json/'
+    print(os.listdir(json_storage))
+
+
+    for file in os.listdir(json_storage):
+        with open(json_storage + file) as json_path:
+            json_content = json.load(json_path)
+            for item in json_content:
+                master_list.append(item)
+                print(item)
+            
+
+    return master_list
+
+
+
 
 @apps.route('/templates')
 @login_required
