@@ -17,55 +17,11 @@ from wtforms.validators import (
     Length,
     URL
 )
-from flask import flash
 from app import db
-from app.models import Role, User
+from app.models import Template
+
 import os, sys #used for getting file type
 from urllib.parse import urlparse
-
-
-class ChangeUserEmailForm(FlaskForm):
-    email = EmailField(
-        'New email', validators=[InputRequired(),
-                                 Length(1, 64),
-                                 Email()])
-    submit = SubmitField('Update email')
-
-    def validate_email(self, field):
-        if User.query.filter_by(email=field.data).first():
-            raise ValidationError('Email already registered.')
-
-
-class ChangeAccountTypeForm(FlaskForm):
-    role = QuerySelectField(
-        'New account type',
-        validators=[InputRequired()],
-        get_label='name',
-        query_factory=lambda: db.session.query(Role).order_by('permissions'))
-    submit = SubmitField('Update role')
-
-
-class InviteUserForm(FlaskForm):
-    role = QuerySelectField(
-        'Account type',
-        validators=[InputRequired()],
-        get_label='name',
-        query_factory=lambda: db.session.query(Role).order_by('permissions'))
-    first_name = StringField(
-        'First name', validators=[InputRequired(),
-                                  Length(1, 64)])
-    last_name = StringField(
-        'Last name', validators=[InputRequired(),
-                                 Length(1, 64)])
-    email = EmailField(
-        'Email', validators=[InputRequired(),
-                             Length(1, 64),
-                             Email()])
-    submit = SubmitField('Invite')
-
-    def validate_email(self, field):
-        if User.query.filter_by(email=field.data).first():
-            raise ValidationError('Email already registered.')
 
 def validate_filetype(form, field):
     template_path = field.data
@@ -73,7 +29,17 @@ def validate_filetype(form, field):
     if ext not in ('.json', '.yml', '.yaml'):
         raise ValidationError('Invalid File Type')
 
+def reject_duplicates(form, field):
+    print(field.data)
+    if Template.query.filter_by(name=field.data).first():
+        raise ValidationError('Template name already exists')
+    elif Template.query.filter_by(url=field.data).first():
+        raise ValidationError('Template url already exists')
+
 class TemplateForm(FlaskForm):
-    template_name = StringField('Template Name', validators=[InputRequired()])
-    template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error'), validate_filetype])
+    template_name = StringField('Template Name', validators=[InputRequired(), reject_duplicates])
+    template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error'), reject_duplicates, validate_filetype])
     submit = SubmitField('Add Template')
+
+
+        

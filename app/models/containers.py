@@ -1,3 +1,4 @@
+from flask import current_app
 from .. import db
 
 class Template(db.Model):
@@ -8,4 +9,4 @@ class Template(db.Model):
     path = db.Column(db.String(256), unique = True)
     
     def __repr__(self):
-        return f"User('{self.name}', '{self.url}', '{self.path}')"
+        return f"Template('{self.name}', '{self.url}', '{self.path}')"
