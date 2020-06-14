@@ -8,5 +8,5 @@ class Template(db.Model):
     url = db.Column(db.String(256), unique=True)
     path = db.Column(db.String(256), unique = True)
     
-    def __repr__(self):
-        return f"Template('{self.name}', '{self.url}', '{self.path}')"
+    #def __repr__(self):
+     #   return f"('{self.name}', '{self.url}', '{self.path}')"

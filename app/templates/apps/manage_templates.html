@@ -1,19 +1,15 @@
-% extends 'layouts/base.html' %}
+{% extends 'layouts/base.html' %}
 {% import 'macros/form_macros.html' as f %}
 
-{% set deletion_endpoint = 'admin.delete_user_request' %}
-
 {% set endpoints = [
-    ('admin.user_info', 'User information'),
-    ('admin.change_user_email', 'Change email address'),
-    ('admin.change_account_type', 'Change account type'),
-    (deletion_endpoint, 'Delete user')
+    ('apps.template_info', 'Template Information'),
+    ('apps.template_content', 'Template Content'),
 ] %}
 
 {% macro navigation(items) %}
     <div class="ui vertical fluid secondary menu">
         {% for route, name in items %}
-            {% set href = url_for(route, user_id=user.id) %}
+            {% set href = url_for(route, template_id=template.id) %}
             <a class="item {% if request.endpoint == route %}active{% endif %}" href="{{ href }}">
                 {{ name }}
             </a>
@@ -21,24 +17,24 @@
     </div>
 {% endmacro %}
 
-{% macro user_info(user) %}
+{% macro template_info(template) %}
     <table class="ui compact definition table">
-        <tr><td>Full name</td><td>{{ '%s %s' % (user.first_name, user.last_name) }}</td></tr>
-        <tr><td>Email address</td><td>{{ user.email }}</td></tr>
-        <tr><td>Account type</td><td>{{ user.role.name }}</td></tr>
+        <tr><td>Template Name</td><td>{{ template.name }}</td></tr>
+        <tr><td>Template URL</td><td>{{ template.url }}</td></tr>
+        <tr><td>Template Path</td><td>{{ template.path }}</td></tr>
     </table>
 {% endmacro %}
 
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
-            <a class="ui basic compact button" href="{{ url_for('admin.registered_users') }}">
+            <a class="ui basic compact button" href="{{ url_for('apps.view_templates') }}">
                 <i class="caret left icon"></i>
-                Back to all users
+                Back to all templates
             </a>
             <h2 class="ui header">
-                {{ user.full_name() }}
-                <div class="sub header">View and manage {{ user.first_name }}’s account.</div>
+                {{ template.name }}
+                <div class="sub header">View and manage {{ template.name }}.</div>
             </h2>
         </div>
         <div class="stretched divided very relaxed row">
@@ -72,8 +68,10 @@
                     </div>
                 {% elif form %}
                     {{ f.render_form(form) }}
+                {% elif content %}}
+                    <pre style="min-width: 1000px; overflow: auto; height: 600px; ">{{ content }}</pre>
                 {% else %}
-                    {{ user_info(user) }}
+                    {{ template_info(template) }}
                 {% endif %}
             </div>
         </div>
@@ -83,7 +81,7 @@
         $('.deletion.checkbox').checkbox({
             onChecked: function() {
                 $('.deletion.button').removeClass('disabled')
-                        .attr('href', '{{ url_for('admin.delete_user', user_id=user.id) }}');
+                        .attr('href', '{{ url_for('apps.template_info', template_id=template.id) }}');
             },
             onUnchecked: function() {
                 $('.deletion.button').addClass('disabled').removeAttr('href');
