@@ -1,0 +1,51 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('apps.index') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
+            <h2 class="ui header">
+                New App Template
+                <div class="sub header">Add a new app template</div>
+                {% set flashes = {
+                    'error':   get_flashed_messages(category_filter=['form-error']),
+                    'warning': get_flashed_messages(category_filter=['form-check-email']),
+                    'info':    get_flashed_messages(category_filter=['form-info']),
+                    'success': get_flashed_messages(category_filter=['form-success'])
+                } %}
+    
+                {{ f.begin_form(form, flashes) }}
+
+                    {{ f.render_form_field(form.name) }}
+                    {{ f.render_form_field(form.image) }}
+                    {% if form.ports %}
+                        {% for port in ports %}
+                            {{ f.render_form_field(form.ports) }}
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% if form.volumes %}
+                        {% for volume in volumes %}
+                            {{ f.render_form_field(form.volumes) }}
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% if form.env %}
+                        {% for env_var in env %}
+                            {{ f.render_form_field(form.env) }}
+                        {% endfor %}
+                    {% endif %}
+                    {{ f.render_form_field(form.restart_policy) }}
+    
+                {{ f.end_form() }}
+            </h2>
+        </div>
+    </div>
+{% endblock %}

@@ -13,7 +13,8 @@ from flask_rq import get_queue
 from app import db
 from app.apps.forms import (
     TemplateForm,
-    ComposeForm
+    ComposeForm,
+    DeployForm
 )
 from app.decorators import admin_required
 from app.email import send_email
@@ -66,11 +67,29 @@ def combine_json_templates():
     return master_list
 
 @apps.route('/add/<app_id>/')
-@apps.route('/add/<app_id>/info')
+@apps.route('/add/<app_id>/info', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def app_info(app_id):
-    print(app_id)
-    json_content = combine_json_templates()
-    print(json_content)
+    if request.method == 'POST':
+        print(app_id)
+        a = request.form['ident']
+        print(a)
+        """Deploy an App"""
+    form = DeployForm(request.form) #Set the form for this page
+    if form.validate_on_submit():
+        container_name = name
+        container_image = image
+        if ports:
+            container_ports = ports
+        if volumes:
+            container_volumes = volumes
+        if env:
+            container_env = env
+        restart_policy = restart_policy
+
+    
+    return render_template('apps/deploy_app.html', form=form)
 
 
 

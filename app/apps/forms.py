@@ -61,4 +61,10 @@ class ComposeForm(FlaskForm):
     description = TextAreaField( 'Template Description', validators=[InputRequired()])
     submit = SubmitField('Add Compose Template')
 
-        
+class DeployForm(FlaskForm):
+    name = StringField('App Name', validators=[InputRequired()])
+    image = StringField('Image', validators=[InputRequired()])
+    ports= StringField('Ports')
+    volumes = StringField('Volumes')
+    env = StringField('Environment Variables')
+    restart_policy = StringField('Restart Policy', validators=[InputRequired()])  
