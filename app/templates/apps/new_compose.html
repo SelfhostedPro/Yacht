@@ -1,0 +1,36 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+{% import 'macros/check_password.html' as check %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('apps.index') }}">
+                <i class="caret left icon"></i>
+                Back to dashboard
+            </a>
+            <h2 class="ui header">
+                New Compose Template
+                <div class="sub header">Add a new app template</div>
+                {% set flashes = {
+                    'error':   get_flashed_messages(category_filter=['form-error']),
+                    'warning': get_flashed_messages(category_filter=['form-check-email']),
+                    'info':    get_flashed_messages(category_filter=['form-info']),
+                    'success': get_flashed_messages(category_filter=['form-success'])
+                } %}
+    
+                {{ f.begin_form(form, flashes) }}
+
+                    {{ f.render_form_field(form.template_name)}}
+                    {{ f.render_form_field(form.template_url) }}
+                    {{ f.render_form_field(form.description)}}
+                    {{ f.render_form_field(form.submit) }}
+    
+                {{ f.end_form() }}
+            </h2>
+        </div>
+    </div>
+{% endblock %}
