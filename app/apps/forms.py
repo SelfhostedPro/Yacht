@@ -5,7 +5,8 @@ from wtforms.fields import (
     PasswordField,
     StringField,
     SubmitField,
-    TextAreaField
+    TextAreaField,
+    FieldList
 )
 from wtforms.fields.html5 import (
     EmailField,
@@ -73,7 +74,11 @@ class ComposeForm(FlaskForm):
 class DeployForm(FlaskForm):
     name = StringField('App Name', validators=[InputRequired()])
     image = StringField('Image', validators=[InputRequired()])
-    ports= StringField('Ports')
+    ports = FieldList(FormField(PortForm))
     volumes = StringField('Volumes')
-    env = StringField('Environment Variables')
-    restart_policy = StringField('Restart Policy', validators=[InputRequired()])  
+    env_label = StringField('ENV Label')
+    env_data = StringField('ENV Value')
+    restart_policy = StringField('Restart Policy', validators=[InputRequired()]) 
+
+class PortForm(FlaskForm):
+    portnumber = StringField()

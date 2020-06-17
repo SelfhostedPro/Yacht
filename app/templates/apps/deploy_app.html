@@ -1,5 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% import 'macros/form_macros.html' as f %}
+{% import 'macros/check_password.html' as check %}
 
 {% block scripts %}
 {% endblock %}
@@ -23,26 +24,14 @@
     
                 {{ f.begin_form(form, flashes) }}
 
-                    {{ f.render_form_field(form.name) }}
+                    {{ f.render_form_field(form.name)}}
                     {{ f.render_form_field(form.image) }}
-                    {% if form.ports %}
-                        {% for port in ports %}
-                            {{ f.render_form_field(form.ports) }}
-                        {% endfor %}
-                    {% endif %}
-                    
-                    {% if form.volumes %}
-                        {% for volume in volumes %}
-                            {{ f.render_form_field(form.volumes) }}
-                        {% endfor %}
-                    {% endif %}
-                    
-                    {% if form.env %}
-                        {% for env_var in env %}
-                            {{ f.render_form_field(form.env) }}
-                        {% endfor %}
-                    {% endif %}
                     {{ f.render_form_field(form.restart_policy) }}
+                    {% if form.env_label.data %}
+                        {% for env in form.env_label.data %}
+                            {{ f.render_form_field(form.env_label.name) }}
+                        {% endfor %}
+                    {% endif %}
     
                 {{ f.end_form() }}
             </h2>

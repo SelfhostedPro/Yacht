@@ -39,76 +39,38 @@ def index():
 @admin_required
 def view_apps():
     """ View available apps """
-    template = Template.query.all()
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    json_content = load_json()
-    print(len(json_content))
-    return render_template('apps/add_app.html', apps=json_content)
-
-def combine_json_templates():
-
-    master_list = []
-
-    cwd = os.getcwd()
-    print(cwd)
-    json_storage = 'app/storage/templates/json/'
-
-
-    for file in os.listdir(json_storage):
-        with open(json_storage + file) as json_path:
-            json_content = json.load(json_path)
-            for item in json_content:
-                master_list.append(item)
-            
-
-    return master_list
-
-def load_json():
-    data = []
-    json_storage = 'app/storage/templates/json/'
-    for fname in glob(os.path.join(json_storage, '*.json')):
-        with open(fname) as fp:
-            bname,_ = os.path.splitext(os.path.basename(fname))
-            dataset = json.load(fp)
-            for i,entry in enumerate(dataset):
-                entry['uuid']=f'{bname}-{i}'
-                data.append(entry)
-    return data
+    apps = Template_Content.query.all()
+    return render_template('apps/add_app.html', apps=apps)
 
 @apps.route('/add/<app_id>/')
 @apps.route('/add/<app_id>/info', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def app_info(app_id):
-    if request.method == 'POST':
-        print(app_id)
-        a = request.form['ident']
-        print(a)
-        """Deploy an App"""
-        form.container_name.data = a.name
-        form.container_image.data = a.image
-        form.restart_policy.data = a.restart_policy
-        if a.ports:
-            form.container_ports.data = a.ports
-        if a.volumes:
-            form.container_volumes.data = a.volumes
-        if a.env:
-            form.container_env = a.env
-    
+    app = Template_Content.query.filter_by(id=app_id).first()
     form = DeployForm(request.form) #Set the form for this page
-    if form.validate_on_submit():
-        container_name = form.name.data
-        container_image = form.image.data
-        if form.ports.data:
-            container_ports = form.ports.data
-        if form.volumes.data:
-            form.container_volumes.data = volumes
-        if form.env.data:
-            form.container_env.data = env
-        form.restart_policy.data = restart_policy
 
+    env_variable_names = []
+    env_variable_defaults = []
+    for l in app.env:
+        env_variable_names.append(l.get('label'))
+    for d in app.env:
+        env_variable_defaults.append(d.get('label'))
+    env = tuple(zip(env_variable_names,env_variable_defaults))
     
-    return render_template('apps/deploy_app.html', form=form)
+    form.name.data = app.name
+    form.image.data = app.image
+    form.restart_policy.data = app.restart_policy
+    form.ports.data = app.ports
+    form.volumes.data = app.volumes
+    if env:
+        for label, data in env:
+            form.env_label.data = label
+            form.env_data.data = data
+    
+    if form.validate_on_submit():
+        print('valid')
+    return render_template('apps/deploy_app.html', form=form, env=env)
 
 
 
@@ -133,15 +95,39 @@ def template_info(template_id):
 @apps.route('/templates/<int:template_id>/content', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def template_content(template_id,):
+def template_content(template_id):
     template = Template.query.filter_by(id=template_id).first()
     template_list = Template_Content.query.filter_by(template_id=template_id).all()
     app_names = []
+    app_logos = []
     for n in template_list:
-        app_names.append(n.name)
+        app_names.append(n.title)
+    for l in template_list:
+        app_logos.append(l.logo)
+    apps = tuple(zip(app_names,app_logos))
+    print(apps)
+    return render_template('apps/manage_templates.html', template=template, apps=apps)
 
-    print(app_names)
-    return render_template('apps/manage_templates.html', template=template, content=app_names)
+@apps.route('/apps/<int:template_id>/delete')
+@login_required
+@admin_required
+def delete_template_request(template_id):
+    """Request deletion of a template."""
+    template = Template.query.filter_by(id=template_id).first()
+    if template is None:
+        abort(404)
+    return render_template('apps/manage_templates.html', template=template)
+
+@apps.route('/apps/<int:template_id>/_delete')
+@login_required
+@admin_required
+def delete_template(template_id):
+    """Delete a template."""
+    template = Template.query.filter_by(id=template_id).first()
+    db.session.delete(template)
+    db.session.commit()
+    flash('Successfully deleted template.')
+    return redirect(url_for('apps.view_templates'))
 
 @apps.route('/new-template', methods=['GET', 'POST']) #Set URL
 @login_required

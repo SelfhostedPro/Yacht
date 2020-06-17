@@ -6,7 +6,7 @@ class Template(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
     url = db.Column(db.String(256), unique=True)
-    items = db.relationship('Template_Content', backref='template', lazy='dynamic')
+    items = db.relationship('Template_Content', backref='template', cascade="save-update, merge, delete", lazy='dynamic')
     
     #def __repr__(self):
      #   return f"('{self.name}', '{self.url}', '{self.path}')"
