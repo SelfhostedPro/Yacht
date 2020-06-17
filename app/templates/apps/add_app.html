@@ -49,7 +49,7 @@
                     </thead>
                     <tbody>
                     {% for a in apps | sort(attribute='title') %}
-                        <tr onclick="window.location.href = '{{ url_for('apps.app_info', app_id=a.name,) }}';">
+                        <tr onclick="window.location.href = '{{ url_for('apps.app_info', app_id=a.uuid,) }}';">
 
                             <td>{{ a.title }}</td>
                             <td>{{ a.description }}</td>

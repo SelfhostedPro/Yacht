@@ -21,7 +21,6 @@
     <table class="ui compact definition table">
         <tr><td>Template Name</td><td>{{ template.name }}</td></tr>
         <tr><td>Template URL</td><td>{{ template.url }}</td></tr>
-        <tr><td>Template Path</td><td>{{ template.path }}</td></tr>
     </table>
 {% endmacro %}
 
@@ -68,8 +67,17 @@
                     </div>
                 {% elif form %}
                     {{ f.render_form(form) }}
-                {% elif content %}}
-                    <pre style="min-width: 1000px; overflow: auto; height: 600px; ">{{ content }}</pre>
+                {% elif content %}
+                    <div class=" ui horizontal section divider "> Apps </div>    
+                        <div class="ui internally celled grid">    
+                            <div class="row">    
+                                {%- for c in content %}    
+                                    <div class="four wide column"> 
+                                        <div class="ui label center aligned" style="align-center"> {{ c }} </div>
+                                    </div>
+                                {%- endfor %}
+                            <div class="row">
+                        </div>                  
                 {% else %}
                     {{ template_info(template) }}
                 {% endif %}

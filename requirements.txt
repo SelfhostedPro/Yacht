@@ -27,6 +27,7 @@ jsonpickle==1.2
 Mako==1.1.0
 MarkupSafe==1.1.1
 packaging==19.1
+pandas
 pipupgrade==1.5.1
 psycopg2-binary==2.8.3
 pyparsing==2.4.2
@@ -43,3 +44,4 @@ urllib3==1.25.3
 webassets==0.12.1
 Werkzeug==0.15.5
 WTForms==2.2.1
+wget

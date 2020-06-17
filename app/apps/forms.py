@@ -23,12 +23,21 @@ from app.models import Template, Compose
 
 import os, sys #used for getting file type
 from urllib.parse import urlparse
+import urllib.request, json
 
 def validate_json(form, field):
     template_path = field.data
     ext = os.path.splitext(template_path)[1]
     if ext not in ('.json'):
         raise ValidationError('Invalid File Type')
+
+def validate_json_content(form, field):
+    with urllib.request.urlopen(field.data) as file:
+        try: 
+            print(file)
+            return json.load(file)
+        except:
+            raise ValidationError('Invalid JSON')
 
 def validate_yaml(form, field):
     template_path = field.data
@@ -52,7 +61,7 @@ def reject_compose_duplicates(form, field):
 
 class TemplateForm(FlaskForm):
     template_name = StringField('Template Name', validators=[InputRequired(), reject_template_duplicates])
-    template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error'), reject_template_duplicates, validate_json])
+    template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error'), reject_template_duplicates, validate_json, validate_json_content])
     submit = SubmitField('Add Template')
 
 class ComposeForm(FlaskForm):
