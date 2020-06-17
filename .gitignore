@@ -14,3 +14,5 @@ dist
 .idea
 dump.rdb
 .vscode/
+app/storage
+migrations/

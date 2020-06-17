@@ -1,0 +1,101 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% set deletion_endpoint = 'apps.delete_template_request' %}
+
+{% set endpoints = [
+    ('apps.template_info', 'Template Information'),
+    ('apps.template_content', 'Template Content'),
+    (deletion_endpoint, 'Delete Template')
+] %}
+
+{% macro navigation(items) %}
+    <div class="ui vertical fluid secondary menu">
+        {% for route, name in items %}
+            {% set href = url_for(route, template_id=template.id) %}
+            <a class="item {% if request.endpoint == route %}active{% endif %}" href="{{ href }}">
+                {{ name }}
+            </a>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro template_info(template) %}
+    <table class="ui compact definition table">
+        <tr><td>Template Name</td><td>{{ template.name }}</td></tr>
+        <tr><td>Template URL</td><td>{{ template.url }}</td></tr>
+    </table>
+{% endmacro %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('apps.view_templates') }}">
+                <i class="caret left icon"></i>
+                Back to all templates
+            </a>
+            <h2 class="ui header">
+                {{ template.name }}
+                <div class="sub header">View and manage {{ template.name }}.</div>
+            </h2>
+        </div>
+        <div class="stretched divided very relaxed row">
+            <div class="four wide column">
+                {{ navigation(endpoints) }}
+            </div>
+            <div class="ten wide column">
+                {% if request.endpoint == deletion_endpoint %}
+                    <h3 class="ui red block header">
+                        <i class="warning circle icon"></i>
+                        <div class="content">
+                            This action is permanent
+                            <div class="sub header">
+                                Deleting a template is not a reversible change. Any apps associated
+                                with this template will be removed, and cannot be recovered.
+                            </div>
+                        </div>
+                    </h3>
+
+                    <div class="ui form">
+                        <div class="inline field">
+                            <div class="ui deletion checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden">
+                                <label>I understand that this action cannot be undone.</label>
+                            </div>
+                        </div>
+                        <a class="ui disabled negative deletion button">
+                            Delete this template
+                        </a>
+                    </div>
+                    </div>
+                {% elif form %}
+                    {{ f.render_form(form) }}
+                {% elif apps %}
+                    <div class=" ui horizontal section divider "> Apps </div>    
+                    <div class="ui two column very relaxed centered grid">        
+                            {%- for n, l in apps %}    
+                            <a class="ui large label">
+                                <img class = "ui right spaced avatar image "src={{ l|tojson }}>
+                            {{ n }}
+                            </a>
+                            {%- endfor %}
+                    </div>                  
+                {% else %}
+                    {{ template_info(template) }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $('.deletion.checkbox').checkbox({
+            onChecked: function() {
+                $('.deletion.button').removeClass('disabled')
+                        .attr('href', '{{ url_for('apps.delete_template', template_id=template.id) }}');
+            },
+            onUnchecked: function() {
+                $('.deletion.button').addClass('disabled').removeAttr('href');
+            }
+        });
+    </script>
+{% endblock %}

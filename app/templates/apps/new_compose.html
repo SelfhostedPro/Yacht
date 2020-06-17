@@ -13,7 +13,7 @@
                 Back to dashboard
             </a>
             <h2 class="ui header">
-                New App Template
+                New Compose Template
                 <div class="sub header">Add a new app template</div>
                 {% set flashes = {
                     'error':   get_flashed_messages(category_filter=['form-error']),
@@ -26,6 +26,7 @@
 
                     {{ f.render_form_field(form.template_name)}}
                     {{ f.render_form_field(form.template_url) }}
+                    {{ f.render_form_field(form.description)}}
                     {{ f.render_form_field(form.submit) }}
     
                 {{ f.end_form() }}

@@ -41,12 +41,14 @@
             <div class="ui two column stackable grid">
                 {{ dashboard_option('View Apps', 'admin.registered_users',
                                     description='View and manage running apps', icon='users icon') }}
-                {{ dashboard_option('Add New Apps', 'admin.invite_user',
+                {{ dashboard_option('Add New Apps', 'apps.view_apps',
                                     description='Invites a new user to create their own account', icon='plus icon') }}
-                {{ dashboard_option('View Templates', 'admin.invite_user',
-                                    description='Invites a new user to create their own account', icon='list layout icon') }}
+                {{ dashboard_option('View Templates', 'apps.view_templates',
+                                    description='View and manage templates', icon='list layout icon') }}
                 {{ dashboard_option('Add New Template', 'apps.new_template',
                                     description='Add a new template manifest', icon='add icon') }}
+                {{ dashboard_option('Add New Compose', 'apps.new_compose',
+                                    description='Add a new docker-compose template manifest', icon='add icon') }}
             </div>
         </div>
     </div>

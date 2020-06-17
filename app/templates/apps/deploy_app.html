@@ -24,9 +24,14 @@
     
                 {{ f.begin_form(form, flashes) }}
 
-                    {{ f.render_form_field(form.template_name)}}
-                    {{ f.render_form_field(form.template_url) }}
-                    {{ f.render_form_field(form.submit) }}
+                    {{ f.render_form_field(form.name)}}
+                    {{ f.render_form_field(form.image) }}
+                    {{ f.render_form_field(form.restart_policy) }}
+                    {% if form.env_label.data %}
+                        {% for env in form.env_label.data %}
+                            {{ f.render_form_field(form.env_label.name) }}
+                        {% endfor %}
+                    {% endif %}
     
                 {{ f.end_form() }}
             </h2>
