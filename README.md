@@ -12,6 +12,7 @@
 * Container Monitoring
 * Docker-Compose Compatibility
 * Easy access to container interfaces
+* Centralized settings for volume managment and similar QOL functionality.
 
 ## Templating:
 Currently SelfhostinGUI is compatible with portainer templates. You'll add a template url in the "Add Template" settings. The the template will be read, seperated into apps, and imported into the database. The apps associated with the templates are linked via a db relationship so when the template is removed, so are the apps associated with it. We store the template url as well so we can enable updating templates with a button press (TODO).
