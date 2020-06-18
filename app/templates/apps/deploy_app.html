@@ -27,18 +27,68 @@
                     {{ f.render_form_field(form.name)}}
                     {{ f.render_form_field(form.image) }}
                     {{ f.render_form_field(form.restart_policy) }}
-                    {% if app.ports %}
-                        {% for port in app.ports %}
-                            {{ f.render_form_field(form.ports) }}
-                        {% endfor %}
+                    {% if ports %}
+                    <div class=" ui horizontal section divider "> Ports </div>
+                    <div class="ui two column very relaxed centered grid">
+                            {% for field in form.ports %}
+                            <div class=row>
+                                <div class="column">
+                                    {{ field.label(class="col-sm-2 col-form-label") }}
+                                    <div class="ui fluid icon input">
+                                        {{ field(class="form-control") }}
+                                        <i class="server icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     {% endif %}
                     {% if volumes %}
-                        {% for volume_pair in volumes %}
-                            {#{% set form.volumes.data = namespace(volume_pair) %}#}
-                            {{ f.render_form_field(form.volumes) }}
-                        {% endfor %}
+                    <div class=" ui horizontal section divider "> Volumes </div>
+                    <div class="ui two column very relaxed centered grid">
+                            {% for l in form.volumes %}
+                            <div class=row>
+                                <div class="column">
+                                    {{ l.form.container.label(class="col-sm-2 col-form-label") }}
+                                    <div class="ui fluid icon input">
+                                        {{ l.form.container(class="form-control") }}
+                                        <i class="server icon"></i>
+                                    </div>
+                                </div>
+                                    <div class="column">
+                                    {{ l.form.bind.label(class="col-sm-2 col-form-label") }}
+                                    <div class="ui fluid icon input">
+                                        {{ l.form.bind(class="form-control") }}
+                                        <i class="hdd icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     {% endif %}
-    
+                    {% if env %}
+                    <div class=" ui horizontal section divider "> Environment Variables </div>
+                    <div class="ui two column very relaxed centered grid">
+                            {% for e in form.env %}
+                            <div class=row>
+                                <div class="column">
+                                    {{ e.form.label.label(class="col-sm-2 col-form-label") }}
+                                    <div class="ui fluid icon input">
+                                        {{ e.form.label(class="form-control") }}
+                                        <i class="code icon"></i>
+                                    </div>
+                                </div>
+                                    <div class="column">
+                                    {{ e.form.default.label(class="col-sm-2 col-form-label") }}
+                                    <div class="ui fluid icon input">
+                                        {{ e.form.default(class="form-control") }}
+                                        <i class="save outline icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 {{ f.end_form() }}
             </h2>
         </div>

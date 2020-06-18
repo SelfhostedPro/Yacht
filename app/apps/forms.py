@@ -1,5 +1,5 @@
-from flask_wtf import FlaskForm, Form
-from wtforms import ValidationError
+from flask_wtf import FlaskForm
+from wtforms import ValidationError, Form
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.fields import (
     PasswordField,
@@ -73,22 +73,23 @@ class ComposeForm(FlaskForm):
     submit = SubmitField('Add Compose Template')
 
 ### Not in use yet
-class PortForm(Form):
-    port = StringField()
+#class _PortForm(Form):
+#    port = StringField()
 ### Not in use yet
-class VolumeForm(Form):
-    volume = StringField('Volume')
+class _VolumeForm(Form):
+    container = StringField('Container Path')
+    bind = StringField('Host Path')
 ### Not in use yet
-class EnvField(Form):
-    env_label = StringField('ENV VARIABLE')
-    env_data = StringField('ENV DATA')
+class _EnvForm(Form):
+    label = StringField('Environment Variable')
+    default = StringField('Data')
 ### Form for deploying an application. WIP
 class DeployForm(FlaskForm):
     name = StringField('App Name', validators=[InputRequired()])
     image = StringField('Image', validators=[InputRequired()])
-    ports = StringField('Port')
-    volumes = StringField('Volume')
-    env = FieldList(FormField(EnvField))
+    ports = FieldList(StringField('Port'))
+    volumes = FieldList(FormField(_VolumeForm))
+    env = FieldList(FormField(_EnvForm))
     restart_policy = StringField('Restart Policy', validators=[InputRequired()]) 
 
 
