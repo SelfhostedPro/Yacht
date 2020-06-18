@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, Form
 from wtforms import ValidationError
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.fields import (
@@ -6,7 +6,8 @@ from wtforms.fields import (
     StringField,
     SubmitField,
     TextAreaField,
-    FieldList
+    FieldList,
+    FormField
 )
 from wtforms.fields.html5 import (
     EmailField,
@@ -71,14 +72,22 @@ class ComposeForm(FlaskForm):
     description = TextAreaField( 'Template Description', validators=[InputRequired()])
     submit = SubmitField('Add Compose Template')
 
+class PortForm(Form):
+    port = StringField()
+
+class VolumeForm(Form):
+    volume = StringField('Volume')
+
+class EnvField(Form):
+    env_label = StringField('ENV VARIABLE')
+    env_data = StringField('ENV DATA')
+
 class DeployForm(FlaskForm):
     name = StringField('App Name', validators=[InputRequired()])
     image = StringField('Image', validators=[InputRequired()])
-    ports = FieldList(FormField(PortForm))
-    volumes = StringField('Volumes')
-    env_label = StringField('ENV Label')
-    env_data = StringField('ENV Value')
+    ports = StringField('Port')
+    volumes = StringField('Volume')
+    env = FieldList(FormField(EnvField))
     restart_policy = StringField('Restart Policy', validators=[InputRequired()]) 
 
-class PortForm(FlaskForm):
-    portnumber = StringField()
+

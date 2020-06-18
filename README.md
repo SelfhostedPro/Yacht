@@ -17,6 +17,10 @@
 Currently SelfhostinGUI is compatible with portainer templates. You'll add a template url in the "Add Template" settings. The the template will be read, seperated into apps, and imported into the database. The apps associated with the templates are linked via a db relationship so when the template is removed, so are the apps associated with it. We store the template url as well so we can enable updating templates with a button press (TODO).
 
 
+## Demo:
+![Tempaltes](readme_media/TemplateDemo.gif "templates")
+
+
 **Documentation for the boilerplate available at [http://hack4impact.github.io/flask-base](http://hack4impact.github.io/flask-base) and [https://github.com/hack4impact/flask-base](https://github.com/hack4impact/flask-base).**
 
 ## Setting up

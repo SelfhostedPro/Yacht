@@ -14,7 +14,9 @@ from app import db
 from app.apps.forms import (
     TemplateForm,
     ComposeForm,
-    DeployForm
+    DeployForm,
+    VolumeForm,
+    EnvField
 )
 from app.decorators import admin_required
 from app.email import send_email
@@ -48,29 +50,16 @@ def view_apps():
 @admin_required
 def app_info(app_id):
     app = Template_Content.query.filter_by(id=app_id).first()
-    form = DeployForm(request.form) #Set the form for this page
+    form = DeployForm(request.form, ports=app.ports,volumes=app.volumes) #Set the form for this page
 
-    env_variable_names = []
-    env_variable_defaults = []
-    for l in app.env:
-        env_variable_names.append(l.get('label'))
-    for d in app.env:
-        env_variable_defaults.append(d.get('label'))
-    env = tuple(zip(env_variable_names,env_variable_defaults))
-    
+    #form.ports.data = app.ports
     form.name.data = app.name
     form.image.data = app.image
     form.restart_policy.data = app.restart_policy
-    form.ports.data = app.ports
-    form.volumes.data = app.volumes
-    if env:
-        for label, data in env:
-            form.env_label.data = label
-            form.env_data.data = data
-    
+    #form.volumes.data = app.volumes    
     if form.validate_on_submit():
         print('valid')
-    return render_template('apps/deploy_app.html', form=form, env=env)
+    return render_template('apps/deploy_app.html', form=form, app=app)
 
 
 
