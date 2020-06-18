@@ -50,16 +50,33 @@ def view_apps():
 @admin_required
 def app_info(app_id):
     app = Template_Content.query.filter_by(id=app_id).first()
-    form = DeployForm(request.form, ports=app.ports,volumes=app.volumes) #Set the form for this page
+    bind_list = []
+    volume_list = []
+    env_label_list = []
+    env_data_list = []
 
-    #form.ports.data = app.ports
+
+        
+    for volume_dict in app.volumes:
+        bind_list.append(volume_dict.get('bind'))
+        volume_list.append(volume_dict.get('container'))
+    for env_dict in app.env:
+        env_label_list.append(env_dict.get('label'))
+        env_data_list.append(env_dict.get('default'))
+
+
+    volumes = tuple(zip(bind_list,volume_list))
+
+    form = DeployForm(request.form, ports=app.ports) #Set the form for this page
+
     form.name.data = app.name
     form.image.data = app.image
     form.restart_policy.data = app.restart_policy
-    #form.volumes.data = app.volumes    
+    
+
     if form.validate_on_submit():
         print('valid')
-    return render_template('apps/deploy_app.html', form=form, app=app)
+    return render_template('apps/deploy_app.html', form=form, app=app, volumes=volumes)
 
 
 

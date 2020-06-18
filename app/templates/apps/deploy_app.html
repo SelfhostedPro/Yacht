@@ -32,8 +32,9 @@
                             {{ f.render_form_field(form.ports) }}
                         {% endfor %}
                     {% endif %}
-                    {% if app.volumes %}
-                        {% for volume in app.volumes %}
+                    {% if volumes %}
+                        {% for volume_pair in volumes %}
+                            {#{% set form.volumes.data = namespace(volume_pair) %}#}
                             {{ f.render_form_field(form.volumes) }}
                         {% endfor %}
                     {% endif %}
