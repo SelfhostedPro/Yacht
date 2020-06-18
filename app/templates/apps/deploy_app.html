@@ -27,9 +27,15 @@
                     {{ f.render_form_field(form.name)}}
                     {{ f.render_form_field(form.image) }}
                     {{ f.render_form_field(form.restart_policy) }}
-                    {% if form.env_label.data %}
-                        {% for env in form.env_label.data %}
-                            {{ f.render_form_field(form.env_label.name) }}
+                    {% if app.ports %}
+                        {% for port in app.ports %}
+                            {{ f.render_form_field(form.ports) }}
+                        {% endfor %}
+                    {% endif %}
+                    {% if app.volumes %}
+                        {% for volume in app.volumes %}
+                            {% set form.volumes.data = volume.container + volume.bind %}
+                            {{ f.render_form_field(form.volumes) }}
                         {% endfor %}
                     {% endif %}
     
