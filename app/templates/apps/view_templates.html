@@ -47,7 +47,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for t in template | sort(attribute='name') %}
+                    {% for t in template | sort(attribute='name') %} {# Show table of templates #}
                         <tr onclick="window.location.href = '{{ url_for('apps.template_info', template_id=t.id) }}';">
                             <td>{{ t.name }}</td>
                             <td>{{ t.url }}</td>

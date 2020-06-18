@@ -48,7 +48,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for a in apps | sort(attribute='title') %}
+                    {% for a in apps | sort(attribute='title') %} {# Generates table with list of applications in add apps section#}
                         <tr onclick="window.location.href = '{{ url_for('apps.app_info', app_id=a.id,) }}';">
                             <td><a class = "ui large label"><img class ="ui right spaced image" src={{ a.logo|tojson }}>{{ a.title }}</td>
                             <td>{{ a.description }}</td>

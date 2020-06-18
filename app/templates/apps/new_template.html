@@ -21,7 +21,7 @@
                     'info':    get_flashed_messages(category_filter=['form-info']),
                     'success': get_flashed_messages(category_filter=['form-success'])
                 } %}
-    
+                    {# Form for adding a new template #}
                 {{ f.begin_form(form, flashes) }}
 
                     {{ f.render_form_field(form.template_name)}}
