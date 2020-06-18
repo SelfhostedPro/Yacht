@@ -24,7 +24,7 @@ from app.models import Template, Template_Content, Compose
 
 import os #used for getting file type and deleting files
 from urllib.parse import urlparse #used for getting filetype from url
-import urllib.request, json
+import urllib.request, json #Used for getting template data
 
 apps = Blueprint('apps', __name__)
 
@@ -49,6 +49,7 @@ def view_apps():
 @login_required
 @admin_required
 def app_info(app_id):
+    """ Form to deploy an app """
     app = Template_Content.query.filter_by(id=app_id).first()
     bind_list = []
     volume_list = []
@@ -102,6 +103,7 @@ def template_info(template_id):
 @login_required
 @admin_required
 def template_content(template_id):
+    """ Generate a list of apps associated with the template based on id """
     template = Template.query.filter_by(id=template_id).first()
     template_list = Template_Content.query.filter_by(template_id=template_id).all()
     app_names = []
@@ -110,7 +112,7 @@ def template_content(template_id):
         app_names.append(n.title)
     for l in template_list:
         app_logos.append(l.logo)
-    apps = tuple(zip(app_names,app_logos))
+    apps = tuple(zip(app_names,app_logos)) #Combine the names and urls into a turple in order to refrence them together in a list
     print(apps)
     return render_template('apps/manage_templates.html', template=template, apps=apps)
 
@@ -137,7 +139,7 @@ def delete_template(template_id):
 
 @apps.route('/new-template', methods=['GET', 'POST']) #Set URL
 @login_required
-@admin_required #Require admin permissions
+@admin_required
 def new_template():
     """Add a new app template."""
     form = TemplateForm(request.form) #Set the form for this page
@@ -151,7 +153,7 @@ def new_template():
             url = template_url,
         )
         try:
-            for f in fetch_json(template_url):
+            for f in fetch_json(template_url): #Break down template into individual apps and then put their data into the db for later use
                 template_content = Template_Content(
                     type = f.get('type'),
                     title = f.get('title'),
@@ -183,11 +185,11 @@ def new_template():
         return redirect(url_for('apps.index'))
     return render_template('apps/new_template.html', form=form)
 
-def fetch_json(template_url):
+def fetch_json(template_url): #Opens the JSON template for use in the above route
     with urllib.request.urlopen(template_url) as file:
         return json.load(file)
 
-
+###Below section is not in use yet
 @apps.route('/new-compose', methods=['GET', 'POST']) #Set URL
 @login_required
 @admin_required #Require admin permissions

@@ -6,7 +6,7 @@ class Template(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
     url = db.Column(db.String(256), unique=True)
-    items = db.relationship('Template_Content', backref='template', cascade="save-update, merge, delete", lazy='dynamic')
+    items = db.relationship('Template_Content', backref='template', cascade="save-update, merge, delete", lazy='dynamic') ### Makes sure template contents are deleted if a template is
     
     #def __repr__(self):
      #   return f"('{self.name}', '{self.url}', '{self.path}')"
@@ -27,9 +27,9 @@ class Template_Content(db.Model):
     ports = db.Column(db.JSON, nullable=True)
     volumes = db.Column(db.JSON, nullable=True)
     env = db.Column(db.JSON, nullable=True)
-    template_id = db.Column(db.Integer, db.ForeignKey('templates.id'))
+    template_id = db.Column(db.Integer, db.ForeignKey('templates.id')) #Links template content to template above
 
-
+### Not in use yet
 class Compose(db.Model):
     __tablename__ = 'compose'
     id = db.Column(db.Integer, primary_key=True)
