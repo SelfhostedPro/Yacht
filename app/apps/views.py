@@ -25,6 +25,7 @@ from app.models import Template, Template_Content, Compose
 import os #used for getting file type and deleting files
 from urllib.parse import urlparse #used for getting filetype from url
 import urllib.request, json #Used for getting template data
+import docker
 
 apps = Blueprint('apps', __name__)
 
@@ -48,23 +49,61 @@ def view_apps():
 @apps.route('/add/<app_id>/info', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def app_info(app_id):
+def deploy_app(app_id):
     """ Form to deploy an app """
     app = Template_Content.query.filter_by(id=app_id).first()
+    form = DeployForm(request.form, obj=app) #Set the form for this page
     volumes = app.volumes
     ports = app.ports
     env = app.env
 
-    form = DeployForm(request.form, obj=app) #Set the form for this page
-
-    
 
     if form.validate_on_submit():
         print('valid')
+        if form.env.data:
+            env = transform_env_data(form)
+        if form.ports.data:
+            ports = transform_port_data(form)
+        if form.volumes.data:
+            volumes = transform_volume_data(form)
+        print('stop')
+        launch_container(form, volumes, ports, env)
+        return redirect(url_for('apps.index'))
     return render_template('apps/deploy_app.html', **locals())
 
+def transform_volume_data(form):
+    devices_dict = {}
+    for volume_data in form.volumes.data:
+        devices_dict.update({ volume_data['bind']: { 'bind': volume_data['container'], 'mode': 'rw'}})
+    return devices_dict
 
+def transform_port_data(form):
+    port_list = []
+    for port_data in form.ports.data:
+        separator = ':'
+        port_list.append(port_data.split(separator))
+    port_dict = {i[0]:i[1] for i in port_list}
+    print(port_dict)
+    return port_dict
 
+def transform_env_data(form):
+    env_list = []
+    for env_data in form.env.data:
+        separator = '='
+        env_list.append(separator.join(env_data.values()))
+    print(env_list)
+    return env_list
+
+def launch_container(form, volumes, ports, env):
+    client = docker.from_env()
+    client.containers.run(
+        name = form.name.data,
+        image = form.image.data,
+        volumes = volumes,
+        environment = env,
+        ports = ports,
+        restart_policy = {"Name": 'unless-stopped'}
+    )
 
 @apps.route('/templates')
 @login_required

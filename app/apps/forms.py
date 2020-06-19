@@ -82,7 +82,7 @@ class _VolumeForm(Form):
 ### Not in use yet
 class _EnvForm(Form):
     label = StringField('Environment Variable')
-    default = StringField('Data')
+    default = StringField('Data', validators=[InputRequired()])
 ### Form for deploying an application. WIP
 class DeployForm(FlaskForm):
     name = StringField('App Name', validators=[InputRequired()])
@@ -91,5 +91,6 @@ class DeployForm(FlaskForm):
     volumes = FieldList(FormField(_VolumeForm))
     env = FieldList(FormField(_EnvForm))
     restart_policy = StringField('Restart Policy', validators=[InputRequired()]) 
+    submit = SubmitField('Deploy App')
 
 
