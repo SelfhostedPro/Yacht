@@ -36,6 +36,14 @@ apps = Blueprint('apps', __name__)
 def index():
     """Apps dashboard page."""
     return render_template('apps/index.html')
+@apps.route('/view')
+@login_required
+@admin_required
+def running_apps():
+    """ View all apps """
+    client = docker.from_env()
+    apps = client.containers.list()
+    return render_template('apps/view_apps.html', apps=apps)
 
 @apps.route('/add')
 @login_required
@@ -102,8 +110,11 @@ def launch_container(form, volumes, ports, env):
         volumes = volumes,
         environment = env,
         ports = ports,
-        restart_policy = {"Name": 'unless-stopped'}
+        restart_policy = {"Name": 'unless-stopped'},
+        detach = True
     )
+    print("something")
+    return
 
 @apps.route('/templates')
 @login_required
