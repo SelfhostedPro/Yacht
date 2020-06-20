@@ -1,11 +1,11 @@
 {% extends 'layouts/base.html' %}
 {% import 'macros/form_macros.html' as f %}
 
-{% set deletion_endpoint = 'apps.delete_template_request' %}
+{% set deletion_endpoint = 'templates.delete_template_request' %}
 
 {% set endpoints = [
-    ('apps.template_info', 'Template Information'),
-    ('apps.template_content', 'Template Content'),
+    ('templates.template_info', 'Template Information'),
+    ('templates.template_content', 'Template Content'),
     (deletion_endpoint, 'Delete Template')
 ] %}
 
@@ -30,7 +30,7 @@
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
-            <a class="ui basic compact button" href="{{ url_for('apps.view_templates') }}">
+            <a class="ui basic compact button" href="{{ url_for('templates.view_templates') }}">
                 <i class="caret left icon"></i>
                 Back to all templates
             </a>
@@ -91,7 +91,7 @@
         $('.deletion.checkbox').checkbox({
             onChecked: function() {
                 $('.deletion.button').removeClass('disabled') {# Template Deletion Function #}
-                        .attr('href', '{{ url_for('apps.delete_template', template_id=template.id) }}');
+                        .attr('href', '{{ url_for('templates.delete_template', template_id=template.id) }}');
             },
             onUnchecked: function() {
                 $('.deletion.button').addClass('disabled').removeAttr('href');

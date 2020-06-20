@@ -11,6 +11,7 @@ from flask_wtf import CSRFProtect
 
 from app.assets import app_css, app_js, vendor_css, vendor_js
 from config import config as Config
+import docker
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -18,6 +19,7 @@ mail = Mail()
 db = SQLAlchemy()
 csrf = CSRFProtect()
 compress = Compress()
+dclient = docker.from_env()
 
 # Set up Flask-Login
 login_manager = LoginManager()
@@ -79,5 +81,8 @@ def create_app(config):
 
     from .apps import apps as apps_blueprint
     app.register_blueprint(apps_blueprint, url_prefix='/apps')
+
+    from .app_templates import templates as templates_blueprint
+    app.register_blueprint(templates_blueprint, url_prefix='/templates')
 
     return app

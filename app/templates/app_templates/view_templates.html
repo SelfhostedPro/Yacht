@@ -3,7 +3,7 @@
 {% block content %}
     <div class="ui stackable grid container">
         <div class="sixteen wide tablet twelve wide computer centered column">
-            <a class="ui basic compact button" href="{{ url_for('apps.index') }}">
+            <a class="ui basic compact button" href="{{ url_for('templates.index') }}">
                 <i class="caret left icon"></i>
                 Back to dashboard
             </a>
@@ -48,7 +48,7 @@
                     </thead>
                     <tbody>
                     {% for t in template | sort(attribute='name') %} {# Show table of templates #}
-                        <tr onclick="window.location.href = '{{ url_for('apps.template_info', template_id=t.id) }}';">
+                        <tr onclick="window.location.href = '{{ url_for('templates.template_info', template_id=t.id) }}';">
                             <td>{{ t.name }}</td>
                             <td>{{ t.url }}</td>
                             <td>{{ t.path }}</td>
