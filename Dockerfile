@@ -21,7 +21,7 @@ RUN pip3 install -r requirements.txt
 ENV PYTHONIOENCODING=UTF-8
 RUN pip3 install sqlalchemy_utils flask_dance flask_caching python-gitlab
 COPY . /app
-RUN python3 manage.py recreate_db && python3 manage.py setup_dev && python3 manage.py add_fake_data
+RUN python3 manage.py recreate_db && python3 manage.py setup_dev
 
 CMD ["foreman", "start" ,"-f", "Local"]
 

@@ -8,22 +8,22 @@
                 Back to dashboard
             </a>
             <h2 class="ui header">
-                New Application
+                Saved Templates
                 <div class="sub header">
-                    Select the template you would like to use.
+                    View and manage currently saved templates.
                 </div>
             </h2>
 
             <div class="ui menu">
                 <div id="select-role" class="ui dropdown item">
                     <div class="text">
-                        All Categories
+                        All template types
                     </div>
                     <i class="dropdown icon"></i>
                     <div class="menu">
-                        <div class="item" data-value="">All Categories</div>
-                        {% for a in apps %}
-                            <div class="item" data-value="{{ a.categories }}">{{ a.categories }}</div>
+                        <div class="item" data-value="">All account types</div>
+                        {% for r in roles %}
+                            <div class="item" data-value="{{ r.name }}">{{ r.name }}s</div>
                         {% endfor %}
                     </div>
                 </div>
@@ -41,23 +41,23 @@
                 <table class="ui searchable sortable unstackable selectable celled table">
                     <thead>
                         <tr>
-                            <th class="sorted ascending">Title</th>
-                            <th>Desctiption</th>
-                            <th>Catagory</th>
-                            <th>Platform</th>
+                            <th class="sorted ascending">App Name</th>
+                            <th>App Ports</th>
+                            <th>App Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                    {% for a in apps | sort(attribute='title') %} {# Generates table with list of applications in add apps section#}
-                        <tr onclick="window.location.href = '{{ url_for('apps.deploy_app', app_id=a.id,) }}';">
-                            <td><a class = "ui large label"><img class ="ui right spaced image" src={{ a.logo|tojson }}>{{ a.title }}</td>
-                            <td>{{ a.description }}</td>
+                    {% for a in apps | sort(attribute='name') %} {# Show table of templates #}
+                        <tr {# onclick="window.location.href = '{{ url_for('apps.template_info', template_id=t.id) }}';" #}>
+                            <td>{{ a.name }}</td>
                             <td>
-                            {%- for categories in a.categories %}
-                                <a class = "ui label">{{ categories }}</a>
-                            {%- endfor%}
+                            {% for port in a.ports.values() %}
+                                {% for entry in port %}
+                                    {{ entry }}
+                                {% endfor %}
+                            {% endfor %}
                             </td>
-                            <td>{{ a.platform }}</td>
+                            <td>{{ a.status }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -83,8 +83,8 @@
 
             $('#select-role').dropdown({
                 onChange: function (value, text, $selectedItem) {
-                    $('app.categories:contains(' + value + ')').closest('tr').removeClass('hidden').show();
-                    $('app.categories').not(':contains(' + value + ')').closest('tr').addClass('hidden').hide();
+                    $('td.user.role:contains(' + value + ')').closest('tr').removeClass('hidden').show();
+                    $('td.user.role').not(':contains(' + value + ')').closest('tr').addClass('hidden').hide();
                 }
             });
         });

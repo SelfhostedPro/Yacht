@@ -39,10 +39,12 @@
                 App Dashboard
             </h2>
             <div class="ui two column stackable grid"> {# Code for deploying the main apps dashboard #}
-                {{ dashboard_option('View Apps', 'apps.running_apps',
-                                    description='View and manage running apps', icon='users icon') }}
-                {{ dashboard_option('Add New Apps', 'apps.view_apps',
-                                    description='Invites a new user to create their own account', icon='plus icon') }}
+                {{ dashboard_option('View Templates', 'templates.view_templates',
+                                    description='View and manage templates', icon='list layout icon') }}
+                {{ dashboard_option('Add New Template', 'templates.new_template',
+                                    description='Add a new template manifest', icon='add icon') }}
+                {{ dashboard_option('Add New Compose', 'templates.new_compose',
+                                    description='Add a new docker-compose template manifest', icon='add icon') }}
             </div>
         </div>
     </div>

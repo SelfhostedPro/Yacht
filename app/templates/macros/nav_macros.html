@@ -23,6 +23,7 @@
     {% set endpoints = [
       ('main.index', config.APP_NAME, 'home'),
       ('apps.index', 'Apps', 'add'),
+      ('templates.index', 'Templates', 'list')
     ]%}
     {% set user = [] %}
     {% if current_user.is_authenticated %}

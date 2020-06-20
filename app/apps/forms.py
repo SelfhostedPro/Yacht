@@ -1,5 +1,5 @@
-from flask_wtf import FlaskForm, Form
-from wtforms import ValidationError
+from flask_wtf import FlaskForm
+from wtforms import ValidationError, Form
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.fields import (
     PasswordField,
@@ -27,68 +27,25 @@ import os, sys #used for getting file type
 from urllib.parse import urlparse
 import urllib.request, json
 
-def validate_json(form, field): ### Make sure they're trying to download a json file
-    template_path = field.data
-    ext = os.path.splitext(template_path)[1]
-    if ext not in ('.json'):
-        raise ValidationError('Invalid File Type')
-
-def validate_json_content(form, field): ### Verify that the file is a valid json file
-    with urllib.request.urlopen(field.data) as file:
-        try: 
-            print(file)
-            return json.load(file)
-        except:
-            raise ValidationError('Invalid JSON')
-
-def validate_yaml(form, field): ### Validate that the file is a yaml file (Not in use yet)
-    template_path = field.data
-    ext = os.path.splitext(template_path)[1]
-    if ext not in ('.yml', '.yaml'):
-        raise ValidationError('Invalid File Type')
-
-def reject_template_duplicates(form, field): ### Don't allow duplicates for the name or URL fields (queries db for this info)
-    print(field.data)
-    if Template.query.filter_by(name=field.data).first():
-        raise ValidationError('Template name already exists')
-    elif Template.query.filter_by(url=field.data).first():
-        raise ValidationError('Template url already exists')
-
-def reject_compose_duplicates(form, field): ### Same as above but for compose (not in use yet)
-    print(field.data)
-    if Compose.query.filter_by(name=field.data).first():
-        raise ValidationError('Template name already exists')
-    elif Compose.query.filter_by(url=field.data).first():
-        raise ValidationError('Template url already exists')
-### Form for adding a new template
-class TemplateForm(FlaskForm):
-    template_name = StringField('Template Name', validators=[InputRequired(), reject_template_duplicates])
-    template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error'), reject_template_duplicates, validate_json, validate_json_content])
-    submit = SubmitField('Add Template')
-### Form for adding a compose temmplate (Not in use yet)
-class ComposeForm(FlaskForm):
-    template_name = StringField('Template Name', validators=[InputRequired(), reject_compose_duplicates])
-    template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error'), reject_compose_duplicates, validate_yaml])
-    description = TextAreaField( 'Template Description', validators=[InputRequired()])
-    submit = SubmitField('Add Compose Template')
-
 ### Not in use yet
-class PortForm(Form):
-    port = StringField()
+#class _PortForm(Form):
+#    port = StringField()
 ### Not in use yet
-class VolumeForm(Form):
-    volume = StringField('Volume')
+class _VolumeForm(Form):
+    container = StringField('Container Path')
+    bind = StringField('Host Path')
 ### Not in use yet
-class EnvField(Form):
-    env_label = StringField('ENV VARIABLE')
-    env_data = StringField('ENV DATA')
+class _EnvForm(Form):
+    label = StringField('Environment Variable')
+    default = StringField('Data', validators=[InputRequired()])
 ### Form for deploying an application. WIP
 class DeployForm(FlaskForm):
     name = StringField('App Name', validators=[InputRequired()])
     image = StringField('Image', validators=[InputRequired()])
-    ports = StringField('Port')
-    volumes = StringField('Volume')
-    env = FieldList(FormField(EnvField))
+    ports = FieldList(StringField('Port'))
+    volumes = FieldList(FormField(_VolumeForm))
+    env = FieldList(FormField(_EnvForm))
     restart_policy = StringField('Restart Policy', validators=[InputRequired()]) 
+    submit = SubmitField('Deploy App')
 
 
