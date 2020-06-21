@@ -52,9 +52,11 @@
                             <td>{{ a.name }}</td>
                             <td>
                             {% for port in a.ports.values() %}
-                                {% for entry in port %}
-                                    {{ entry }}
-                                {% endfor %}
+                                {% if port %}
+                                    {% for entry in port %}
+                                        {{ entry }}
+                                    {% endfor %}
+                                {% endif %}
                             {% endfor %}
                             </td>
                             <td>{{ a.status }}</td>
