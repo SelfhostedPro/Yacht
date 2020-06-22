@@ -34,14 +34,6 @@ apps = Blueprint('apps', __name__)
 def index():
     """Apps dashboard page."""
     return render_template('apps/index.html')
-@apps.route('/view')
-@login_required
-@admin_required
-def running_apps():
-    """ View all apps """
-    dclient = docker.from_env()
-    apps = dclient.containers.list(all=True)
-    return render_template('apps/view_apps.html', apps=apps)
 
 @apps.route('/add')
 @login_required
@@ -113,3 +105,29 @@ def launch_container(form, volumes, ports, env):
     )
     print("something")
     return
+
+@apps.route('/view')
+@login_required
+@admin_required
+def running_apps():
+    """ View all apps """
+    dclient = docker.from_env()
+    apps = dclient.containers.list(all=True)
+    return render_template('apps/view_apps.html', apps=apps)
+
+@apps.route('/view/<container_name>')
+@apps.route('/view/<container_name>/info')
+def container_info(container_name):
+    """ View container info """
+    dclient = docker.from_env()
+    container = dclient.containers.get(container_name)
+    return render_template('apps/manage_app.html', container=container)
+
+# @templates.route('/templates/<int:template_id>')
+# @templates.route('/templates/<int:template_id>/info')
+# def template_info(template_id):
+#     """ View template info. """
+#     template = Template.query.filter_by(id=template_id).first()
+#     if template is None:
+#         abort(404)
+#     return render_template('app_templates/manage_templates.html', template=template)

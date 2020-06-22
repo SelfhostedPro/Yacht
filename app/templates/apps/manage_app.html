@@ -1,0 +1,103 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{# set deletion_endpoint = 'containers.delete_container_request' #}
+
+{% set endpoints = [
+    ('apps.container_info', 'container Information'),
+] %}
+
+{% macro navigation(items) %}
+    <div class="ui vertical fluid secondary menu">
+        {% for route, name in items %} {# Shows data associated with container clicked on in view_containers.html #}
+            {% set href = url_for(route, container_name=container.name) %}
+            <a class="item {% if request.endpoint == route %}active{% endif %}" href="{{ href }}">
+                {{ name }}
+            </a>
+        {% endfor %}
+    </div>
+{% endmacro %}
+{# Show data for container #}
+{% macro container_info(container) %}
+    <table class="ui compact definition table">
+        <tr><td>Container Name</td><td>{{ container.name }}</td></tr>
+        <tr><td>Container ID</td><td>{{ container.short_id }}</td></tr>
+        <tr><td>Container Image</td><td>{{ container.image }}</td></tr>
+        <tr><td>Container Status</td><td>{{ container.status }}</td></tr>
+        </td></tr>  
+    
+    </table>
+{% endmacro %}
+
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('apps.running_apps') }}">
+                <i class="caret left icon"></i>
+                Back to all containers
+            </a>
+            <h2 class="ui header">
+                {{ container.name }}
+                <div class="sub header">View and manage {{ container.name }}.</div>
+            </h2>
+        </div>
+        <div class="stretched divided very relaxed row">
+            <div class="four wide column">
+                {{ navigation(endpoints) }}
+            </div>
+            <div class="ten wide column"> {# Show deletion tab if it's clicked on #}
+                {% if request.endpoint == deletion_endpoint %}
+                    <h3 class="ui red block header">
+                        <i class="warning circle icon"></i>
+                        <div class="content">
+                            This action is permanent
+                            <div class="sub header">
+                                Deleting a container is not a reversible change. Any apps associated
+                                with this container will be removed, and cannot be recovered.
+                            </div>
+                        </div>
+                    </h3>
+
+                    <div class="ui form">
+                        <div class="inline field">
+                            <div class="ui deletion checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden">
+                                <label>I understand that this action cannot be undone.</label>
+                            </div>
+                        </div>
+                        <a class="ui disabled negative deletion button">
+                            Delete this container
+                        </a>
+                    </div>
+                    </div>
+                {% elif form %} {# Not currently used #}
+                    {{ f.render_form(form) }}
+                {% elif apps %} {# Show application list #}
+                    <div class=" ui horizontal section divider "> Apps </div>    
+                    <div class="ui two column very relaxed centered grid">        
+                            {%- for n, l in apps %}    
+                            <a class="ui large label">
+                                <img class = "ui right spaced avatar image "src={{ l|tojson }}>
+                            {{ n }}
+                            </a>
+                            {%- endfor %}
+                    </div>                  
+                {% else %} {# Show container info listed above #}
+                    {{ container_info(container) }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- <script type="text/javascript">
+        $('.deletion.checkbox').checkbox({
+            onChecked: function() {
+                $('.deletion.button').removeClass('disabled') {# container Deletion Function #}
+                        .attr('href', '{# url_for('containers.delete_container', container_name=container.name) #}');
+            },
+            onUnchecked: function() {
+                $('.deletion.button').addClass('disabled').removeAttr('href');
+            }
+        });
+    </script> -->
+{% endblock %}
