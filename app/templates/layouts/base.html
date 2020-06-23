@@ -35,8 +35,12 @@
 
         {% include 'partials/_flashes.html' %}
         {# When extended, the content block contains all the html of the webpage #}
-        {% block content %}
-        {% endblock %}
+        <div class="pusher">
+          <div class="ui fluid container">
+            {% block content %}
+            {% endblock %}
+          </div>
+        </div>
 
         {# Implement CSRF protection for site #}
         {% if csrf_token()|safe %}
