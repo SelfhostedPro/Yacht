@@ -123,11 +123,24 @@ def container_info(container_name):
     container = dclient.containers.get(container_name)
     return render_template('apps/manage_app.html', container=container)
 
-# @templates.route('/templates/<int:template_id>')
-# @templates.route('/templates/<int:template_id>/info')
-# def template_info(template_id):
-#     """ View template info. """
-#     template = Template.query.filter_by(id=template_id).first()
-#     if template is None:
-#         abort(404)
-#     return render_template('app_templates/manage_templates.html', template=template)
+@apps.route('/view/<container_name>/<action>')
+def container_actions(container_name, action):
+    """ Do an action on a container """
+    dclient = docker.from_env()
+    container = dclient.containers.get(container_name)
+    print(action)
+    if action == 'start':
+        container.start()
+    elif action == 'stop':
+        container.stop()
+    elif action == 'restart':
+        container.restart()
+    elif action == 'kill':
+        container.kill()
+    elif action == 'remove':
+        container.remove(force=True)
+    else:
+        print('else')
+        
+    
+    return render_template('apps/manage_app.html', container=container, actions=True)

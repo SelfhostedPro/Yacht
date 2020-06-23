@@ -26,6 +26,14 @@
         <tr><td>Container Image</td><td>{{ container.image.tags[0] }}</td></tr>
         <tr><td>Container Status</td><td>{{ container.status }}</td></tr>
     </table>
+    <div class="ui horizontal section divider "> Actions </div>    
+    <div class="ui five item menu">
+        <a class="item" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='start') }}';">Start</a>
+        <a class="item" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='stop') }}';">Stop</a>
+        <a class="item" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='restart') }}';">Restart</a>
+        <a class="item" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='kill') }}';">Kill</a>
+        <a class="item" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='remove') }}';">Remove</a>
+    </div>
     <div class=" ui horizontal section divider "> Networking </div>
     <table class="ui compact definition table">
         <tr><td>Container Ports</td><td>
@@ -102,16 +110,6 @@
                     </div>
                 {% elif form %} {# Not currently used #}
                     {{ f.render_form(form) }}
-                {% elif apps %} {# Show application list #}
-                    <div class=" ui horizontal section divider "> Apps </div>    
-                    <div class="ui two column very relaxed centered grid">        
-                            {%- for n, l in apps %}    
-                            <a class="ui large label">
-                                <img class = "ui right spaced avatar image "src={{ l|tojson }}>
-                            {{ n }}
-                            </a>
-                            {%- endfor %}
-                    </div>                  
                 {% else %} {# Show container info listed above #}
                     {{ container_info(container) }}
                 {% endif %}
