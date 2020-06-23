@@ -8,25 +8,13 @@
                 Back to dashboard
             </a>
             <h2 class="ui header">
-                Saved Templates
+                Apps
                 <div class="sub header">
-                    View and manage currently saved templates.
+                    View and manage currently running Apps.
                 </div>
             </h2>
 
             <div class="ui menu">
-                <div id="select-role" class="ui dropdown item">
-                    <div class="text">
-                        All template types
-                    </div>
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <div class="item" data-value="">All account types</div>
-                        {% for r in roles %}
-                            <div class="item" data-value="{{ r.name }}">{{ r.name }}s</div>
-                        {% endfor %}
-                    </div>
-                </div>
                 <div class="ui right search item">
                     <div class="ui transparent icon input">
                         <input id="search-users" type="text" placeholder="Search apps…">
@@ -38,7 +26,7 @@
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
             <div style="overflow-x: auto;">
-                <table class="ui searchable sortable two column unstackable selectable very basic table">
+                <table class="ui collapsing searchable sortable two column unstackable selectable very basic table">
                     <thead>
                         <tr>
                             <th class="sorted ascending">App Name</th>
@@ -50,12 +38,12 @@
                     <tbody>
                     {% for a in apps | sort(attribute='name') %} {# Show table of templates #}
                         <tr onclick="window.location.href = '{{ url_for('apps.container_info', container_name=a.name) }}';">
-                            <td>{{ a.name }}</td>
-                            <td>
+                            <td class="two wide">{{ a.name }}</td>
+                            <td class="two wide">
                             {% for port in a.ports.values() %}
                                 {% if port %}
                                     {% for entry in port %}
-                                        {{ entry }}
+                                        {{entry.get('HostIp')}}:{{entry.get('HostPort')}}
                                     {% endfor %}
                                 {% endif %}
                             {% endfor %}

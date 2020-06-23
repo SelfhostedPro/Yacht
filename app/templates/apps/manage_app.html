@@ -4,7 +4,7 @@
 {# set deletion_endpoint = 'containers.delete_container_request' #}
 
 {% set endpoints = [
-    ('apps.container_info', 'container Information'),
+    ('apps.container_info', 'Container Information'),
 ] %}
 
 {% macro navigation(items) %}
@@ -19,14 +19,44 @@
 {% endmacro %}
 {# Show data for container #}
 {% macro container_info(container) %}
+    <div class=" ui horizontal section divider "> General </div>
     <table class="ui compact definition table">
         <tr><td>Container Name</td><td>{{ container.name }}</td></tr>
         <tr><td>Container ID</td><td>{{ container.short_id }}</td></tr>
-        <tr><td>Container Image</td><td>{{ container.image }}</td></tr>
+        <tr><td>Container Image</td><td>{{ container.image.tags[0] }}</td></tr>
         <tr><td>Container Status</td><td>{{ container.status }}</td></tr>
-        </td></tr>  
-    
     </table>
+    <div class=" ui horizontal section divider "> Networking </div>
+    <table class="ui compact definition table">
+        <tr><td>Container Ports</td><td>
+        {% for port in container.ports.values() %}
+            {% if port %}
+                {% for entry in port %}
+                    {{entry.get('HostIp')}}:{{entry.get('HostPort')}},
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        </td></tr>
+        <tr><td>Container IP</td><td>{{ container.attrs.NetworkSettings.get('IPAddress') }}</td></tr>
+    </table>
+    <div class=" ui horizontal section divider "> Volumes </div>
+    <table class="ui collapsing searchable sortable two column unstackable selectable very basic table">
+        <thead>
+            <tr>
+                <th>Container Path</th>
+                <th>Host Path</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mount in container.attrs.Mounts %}
+                {% if mount %}
+                <tr>
+                    <td>{{ mount.get('Destination') }}</td>
+                    <td>{{ mount.get('Source') }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
 {% endmacro %}
 
 {% block content %}
