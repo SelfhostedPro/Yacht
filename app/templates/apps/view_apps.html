@@ -2,34 +2,22 @@
 
 {% block content %}
     <div class="ui stackable grid container">
-        <div class="sixteen wide tablet twelve wide computer centered column">
+        <div class="sixteen wide tablet sixteen wide computer centered column">
             <a class="ui basic compact button" href="{{ url_for('apps.index') }}">
                 <i class="caret left icon"></i>
                 Back to dashboard
             </a>
             <h2 class="ui header">
-                Saved Templates
+                Apps
                 <div class="sub header">
-                    View and manage currently saved templates.
+                    View and manage currently running Apps.
                 </div>
             </h2>
 
             <div class="ui menu">
-                <div id="select-role" class="ui dropdown item">
-                    <div class="text">
-                        All template types
-                    </div>
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <div class="item" data-value="">All account types</div>
-                        {% for r in roles %}
-                            <div class="item" data-value="{{ r.name }}">{{ r.name }}s</div>
-                        {% endfor %}
-                    </div>
-                </div>
                 <div class="ui right search item">
                     <div class="ui transparent icon input">
-                        <input id="search-users" type="text" placeholder="Search users…">
+                        <input id="search-users" type="text" placeholder="Search apps…">
                         <i class="search icon"></i>
                     </div>
                 </div>
@@ -37,25 +25,33 @@
 
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
-            <div style="overflow-x: scroll;">
-                <table class="ui searchable sortable unstackable selectable celled table">
+            <div style="overflow-x: auto;">
+                <table class="ui collapsing searchable sortable two column unstackable selectable very basic table">
                     <thead>
                         <tr>
                             <th class="sorted ascending">App Name</th>
                             <th>App Ports</th>
+                            <th>Mount Points</th>
                             <th>App Status</th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for a in apps | sort(attribute='name') %} {# Show table of templates #}
-                        <tr {# onclick="window.location.href = '{{ url_for('apps.template_info', template_id=t.id) }}';" #}>
-                            <td>{{ a.name }}</td>
-                            <td>
+                        <tr onclick="window.location.href = '{{ url_for('apps.container_info', container_name=a.name) }}';">
+                            <td class="two wide">{{ a.name }}</td>
+                            <td class="two wide">
                             {% for port in a.ports.values() %}
                                 {% if port %}
                                     {% for entry in port %}
-                                        {{ entry }}
+                                        {{entry.get('HostIp')}}:{{entry.get('HostPort')}}
                                     {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                            </td>
+                            <td>
+                            {% for mount in a.attrs.Mounts %}
+                                {% if mount %}
+                                    {{ mount.get('Destination') }}:{{ mount.get('Source') }},<br>
                                 {% endif %}
                             {% endfor %}
                             </td>

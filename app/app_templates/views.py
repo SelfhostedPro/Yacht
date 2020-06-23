@@ -19,6 +19,7 @@ from app.decorators import admin_required
 from app.email import send_email
 from app.models import Template, Template_Content, Compose
 
+import wget
 import os #used for getting file type and deleting files
 from urllib.parse import urlparse #used for getting filetype from url
 import urllib.request, json #Used for getting template data

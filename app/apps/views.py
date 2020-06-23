@@ -34,14 +34,6 @@ apps = Blueprint('apps', __name__)
 def index():
     """Apps dashboard page."""
     return render_template('apps/index.html')
-@apps.route('/view')
-@login_required
-@admin_required
-def running_apps():
-    """ View all apps """
-    dclient = docker.from_env()
-    apps = dclient.containers.list(all=True)
-    return render_template('apps/view_apps.html', apps=apps)
 
 @apps.route('/add')
 @login_required
@@ -113,3 +105,42 @@ def launch_container(form, volumes, ports, env):
     )
     print("something")
     return
+
+@apps.route('/view')
+@login_required
+@admin_required
+def running_apps():
+    """ View all apps """
+    dclient = docker.from_env()
+    apps = dclient.containers.list(all=True)
+    return render_template('apps/view_apps.html', apps=apps)
+
+@apps.route('/view/<container_name>')
+@apps.route('/view/<container_name>/info')
+def container_info(container_name):
+    """ View container info """
+    dclient = docker.from_env()
+    container = dclient.containers.get(container_name)
+    return render_template('apps/manage_app.html', container=container)
+
+@apps.route('/view/<container_name>/<action>')
+def container_actions(container_name, action):
+    """ Do an action on a container """
+    dclient = docker.from_env()
+    container = dclient.containers.get(container_name)
+    print(action)
+    if action == 'start':
+        container.start()
+    elif action == 'stop':
+        container.stop()
+    elif action == 'restart':
+        container.restart()
+    elif action == 'kill':
+        container.kill()
+    elif action == 'remove':
+        container.remove(force=True)
+    else:
+        print('else')
+        
+    
+    return render_template('apps/manage_app.html', container=container, actions=True)

@@ -3,14 +3,14 @@
 #}
 
 {% macro render_menu_items(endpoints) %}
-    {% for endpoint, name, icon in endpoints %}
+    {%- for endpoint, name, icon in endpoints %}
         <a class="item {% if request.endpoint == endpoint %}active{% endif %}" href="{{ url_for(endpoint) }}">
-            {% if icon %}
+            {%- if icon %}
                 <i class="{{ icon }} icon"></i>
-            {% endif %}
+            {%- endif %}
             {{ name | safe }}
         </a>
-    {% endfor %}
+    {%- endfor %}
 {% endmacro %}
 
 {# This is called for all users (including anonymous users). It renders the basic left side of the 
@@ -20,15 +20,15 @@
 #}
 
 {% macro header_items(current_user) %}
-    {% set endpoints = [
-      ('main.index', config.APP_NAME, 'home'),
+    {%- set endpoints = [
+      ('main.index', "Home", 'home'),
       ('apps.index', 'Apps', 'add'),
       ('templates.index', 'Templates', 'list')
     ]%}
-    {% set user = [] %}
-    {% if current_user.is_authenticated %}
-      {% set user = ([(current_user.role.index + '.index', current_user.role.name + ' Dashboard', 'user')]) %}
-    {% endif %} 
+    {%- set user = [] %}
+    {%- if current_user.is_authenticated %}
+      {% set user = ([(current_user.role.index + '.index', 'Dashboard', 'user')]) %}
+    {%- endif %} 
     {{ render_menu_items( endpoints +  user ) }}
 {% endmacro %}
 
@@ -38,7 +38,7 @@
 {% macro account_items(current_user) %}
     {% if current_user.is_authenticated %}
       {% set endpoints = [
-        ('account.manage', 'Your Account', 'settings'),
+        ('account.manage', 'Account', 'settings'),
         ('account.logout', 'Log out', 'sign out')
       ] %}
       {{ render_menu_items(endpoints) }}
@@ -84,14 +84,10 @@
 
 {% macro desktop_nav(current_user, dropdown=None) %}
     <div class="computer tablet only row">
-        <div class="ui fixed inverted black main menu">
-            <div class="ui container">
+        <div class="ui left fixed compact vertical inverted icon menu">
                 {{ header_items(current_user) }}
                 {{ create_dropdown(dropdown) }}
-                <div class="right menu">
-                    {{ account_items(current_user) }}
-                </div>
-            </div>
+                {{ account_items(current_user) }}
         </div>
     </div>
 {% endmacro %}
