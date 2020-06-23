@@ -47,6 +47,7 @@ def login():
 
 
 @account.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
     """Register a new user, and send them a confirmation email."""
     form = RegistrationForm()

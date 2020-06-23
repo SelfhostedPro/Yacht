@@ -3,7 +3,11 @@
 {% macro dashboard_option(title, endpoint, description=None, icon=None) %}
     <a class="column" href="{{ url_for(endpoint) }}">
         <div class="ui padded segment">
+        {% if title == 'Add New Compose' %}
+            <h3 class="ui disabled header"
+        {% else %}
             <h3 class="ui header">
+        {% endif %}
                 {% if icon is not none %}
                     <i class="{{ icon }}"></i>
                 {% endif %}

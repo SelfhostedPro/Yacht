@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="ui stackable grid container">
-        <div class="sixteen wide tablet twelve wide computer centered column">
+        <div class="fourteen wide tablet twelve wide computer centered column">
             <a class="ui basic compact button" href="{{ url_for('templates.index') }}">
                 <i class="caret left icon"></i>
                 Back to dashboard
@@ -37,8 +37,8 @@
 
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
-            <div style="overflow-x: scroll;">
-                <table class="ui searchable sortable unstackable selectable celled table">
+            <div style="overflow-x: auto;">
+                <table class="ui searchable sortable unstackable selectable very basic table">
                     <thead>
                         <tr>
                             <th class="sorted ascending">Template Name</th>

@@ -143,4 +143,4 @@ def container_actions(container_name, action):
         print('else')
         
     
-    return render_template('apps/manage_app.html', container=container, actions=True)
+    return render_template('apps/manage_app.html', container=container)
