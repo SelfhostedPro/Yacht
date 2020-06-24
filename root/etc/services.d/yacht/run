@@ -5,6 +5,13 @@ cd /app
 
 export SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(16))")
 
+DB=/config/data-dev.sqlite
+if [ -f "$DB" ]; then
+    echo "$DB exists."
+else
+    python3 /app/manage.py recreate_db && python3 /app/manage.py setup_prod
+fi
+
 exec \
 	s6-setuidgid abc gunicorn \
     --bind 0.0.0.0:5000 \

@@ -25,10 +25,10 @@ RUN \
 	unzip
 WORKDIR /app
 RUN  pip3 install -r requirements.txt
-COPY /app /app
+COPY . /app
 COPY /root /
-COPY /storage /storage
-VOLUME /storage
+COPY /config /config
+VOLUME /config
 EXPOSE 5000
 
 #####
