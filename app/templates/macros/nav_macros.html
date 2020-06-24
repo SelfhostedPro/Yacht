@@ -84,7 +84,7 @@
 
 {% macro desktop_nav(current_user, dropdown=None) %}
     <div class="computer tablet only row">
-        <div class="ui left fixed compact vertical inverted icon menu">
+        <div class="ui left fixed compact small vertical inverted pointing borderless labeled icon menu">
                 {{ header_items(current_user) }}
                 {{ create_dropdown(dropdown) }}
                 {{ account_items(current_user) }}

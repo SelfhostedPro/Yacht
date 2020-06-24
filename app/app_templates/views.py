@@ -67,8 +67,9 @@ def template_content(template_id):
     for l in template_list:
         app_logos.append(l.logo)
     apps = tuple(zip(app_names,app_logos)) #Combine the names and urls into a turple in order to refrence them together in a list
+    sorted_apps = sorted(apps)
     print(apps)
-    return render_template('app_templates/manage_templates.html', template=template, apps=apps)
+    return render_template('app_templates/manage_templates.html', template=template, apps=sorted_apps)
 
 @templates.route('/apps/<int:template_id>/delete')
 @login_required

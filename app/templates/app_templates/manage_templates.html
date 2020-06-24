@@ -21,7 +21,7 @@
 {% endmacro %}
 {# Show data for template #}
 {% macro template_info(template) %}
-    <table class="ui compact definition table">
+    <table class="ui compact very basic table">
         <tr><td>Template Name</td><td>{{ template.name }}</td></tr>
         <tr><td>Template URL</td><td>{{ template.url }}</td></tr>
     </table>
@@ -72,14 +72,17 @@
                     {{ f.render_form(form) }}
                 {% elif apps %} {# Show application list #}
                     <div class=" ui horizontal section divider "> Apps </div>    
-                    <div class="ui two column very relaxed centered grid">        
-                            {%- for n, l in apps %}    
-                            <a class="ui large label">
-                                <img class = "ui right spaced avatar image "src={{ l|tojson }}>
-                            {{ n }}
-                            </a>
+                        <div class="ui three column middle aligned centered grid">
+                            {%- for n, l in apps %}
+                            <div class="column">
+                                <div class="ui circular mini center compact aligned  black segment">
+                                    <img class="ui mini centered avatar image" src={{ l|tojson }}" style="height:50px;width:50px;>
+                                    <h5 class="ui header"> {{ n }} </h5>
+                                </div>
+                            </div>
                             {%- endfor %}
-                    </div>                  
+                        </div>
+                    </div>
                 {% else %} {# Show template info listed above #}
                     {{ template_info(template) }}
                 {% endif %}
