@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv bash
+cd /app
+# UMASK_SET=${UMASK_SET:-022}
+# umask "$UMASK_SET"
+
+export SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(16))")
+
+exec \
+	s6-setuidgid abc gunicorn \
+    --bind 0.0.0.0:5000 \
+    manage:app
