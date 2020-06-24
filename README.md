@@ -5,9 +5,9 @@
 * User and Admin Roles
 * Container Templating Compatibility (Portainer Compatible)
 * Semantic UI Framework
+* Container Managment
 
 ## Planned Features:
-* Container Managment
 * Easy Template Updating
 * Container Monitoring
 * Docker-Compose Compatibility
@@ -22,6 +22,7 @@ Currently SelfhostinGUI is compatible with portainer templates. You'll add a tem
 ![Tempaltes](readme_media/TemplateDemo.gif "templates")
 
 
+## Dev Info:
 **Documentation for the boilerplate available at [http://hack4impact.github.io/flask-base](http://hack4impact.github.io/flask-base) and [https://github.com/hack4impact/flask-base](https://github.com/hack4impact/flask-base).**
 
 ## Setting up

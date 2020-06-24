@@ -33,7 +33,6 @@ MarkupSafe==1.1.1
 mccabe==0.6.1
 numpy==1.18.5
 packaging==19.1
-pandas==1.0.4
 pipupgrade==1.5.1
 psycopg2-binary==2.8.3
 pylint==2.5.3

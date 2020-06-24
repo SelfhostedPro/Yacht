@@ -20,9 +20,10 @@ from app.decorators import admin_required
 from app.email import send_email
 from app.models import Template, Template_Content, Compose
 
-import os #used for getting file type and deleting files
-from urllib.parse import urlparse #used for getting filetype from url
-import urllib.request, json #Used for getting template data
+import os  # used for getting file type and deleting files
+from urllib.parse import urlparse  # used for getting filetype from url
+import urllib.request
+import json  # Used for getting template data
 import docker
 
 apps = Blueprint('apps', __name__)
@@ -35,6 +36,7 @@ def index():
     """Apps dashboard page."""
     return render_template('apps/index.html')
 
+
 @apps.route('/add')
 @login_required
 @admin_required
@@ -43,6 +45,7 @@ def view_apps():
     apps = Template_Content.query.all()
     return render_template('apps/add_app.html', apps=apps)
 
+
 @apps.route('/add/<app_id>/')
 @apps.route('/add/<app_id>/info', methods=['GET', 'POST'])
 @login_required
@@ -50,11 +53,10 @@ def view_apps():
 def deploy_app(app_id):
     """ Form to deploy an app """
     app = Template_Content.query.filter_by(id=app_id).first()
-    form = DeployForm(request.form, obj=app) #Set the form for this page
+    form = DeployForm(request.form, obj=app)  # Set the form for this page
     volumes = app.volumes
     ports = app.ports
     env = app.env
-
 
     if form.validate_on_submit():
         print('valid')
@@ -69,20 +71,24 @@ def deploy_app(app_id):
         return redirect(url_for('apps.index'))
     return render_template('apps/deploy_app.html', **locals())
 
+
 def transform_volume_data(form):
     devices_dict = {}
     for volume_data in form.volumes.data:
-        devices_dict.update({ volume_data['bind']: { 'bind': volume_data['container'], 'mode': 'rw'}})
+        devices_dict.update(
+            {volume_data['bind']: {'bind': volume_data['container'], 'mode': 'rw'}})
     return devices_dict
+
 
 def transform_port_data(form):
     port_list = []
     for port_data in form.ports.data:
         separator = ':'
         port_list.append(port_data.split(separator))
-    port_dict = {i[0]:i[1] for i in port_list}
+    port_dict = {i[0]: i[1] for i in port_list}
     print(port_dict)
     return port_dict
+
 
 def transform_env_data(form):
     env_list = []
@@ -92,19 +98,21 @@ def transform_env_data(form):
     print(env_list)
     return env_list
 
+
 def launch_container(form, volumes, ports, env):
     dclient = docker.from_env()
     dclient.containers.run(
-        name = form.name.data,
-        image = form.image.data,
-        volumes = volumes,
-        environment = env,
-        ports = ports,
-        restart_policy = {"Name": 'unless-stopped'},
-        detach = True
+        name=form.name.data,
+        image=form.image.data,
+        volumes=volumes,
+        environment=env,
+        ports=ports,
+        restart_policy={"Name": 'unless-stopped'},
+        detach=True
     )
     print("something")
     return
+
 
 @apps.route('/view')
 @login_required
@@ -115,6 +123,7 @@ def running_apps():
     apps = dclient.containers.list(all=True)
     return render_template('apps/view_apps.html', apps=apps)
 
+
 @apps.route('/view/<container_name>')
 @apps.route('/view/<container_name>/info')
 def container_info(container_name):
@@ -122,6 +131,7 @@ def container_info(container_name):
     dclient = docker.from_env()
     container = dclient.containers.get(container_name)
     return render_template('apps/manage_app.html', container=container)
+
 
 @apps.route('/view/<container_name>/<action>')
 def container_actions(container_name, action):
@@ -141,6 +151,5 @@ def container_actions(container_name, action):
         container.remove(force=True)
     else:
         print('else')
-        
-    
+
     return render_template('apps/manage_app.html', container=container)

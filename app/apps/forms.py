@@ -23,29 +23,36 @@ from wtforms.validators import (
 from app import db
 from app.models import Template, Compose
 
-import os, sys #used for getting file type
+import os
+import sys  # used for getting file type
 from urllib.parse import urlparse
-import urllib.request, json
+import urllib.request
+import json
 
-### Not in use yet
-#class _PortForm(Form):
+# Not in use yet
+# class _PortForm(Form):
 #    port = StringField()
-### Not in use yet
+# Not in use yet
+
+
 class _VolumeForm(Form):
     container = StringField('Container Path')
     bind = StringField('Host Path')
-### Not in use yet
+# Not in use yet
+
+
 class _EnvForm(Form):
     label = StringField('Environment Variable')
     default = StringField('Data', validators=[InputRequired()])
-### Form for deploying an application. WIP
+# Form for deploying an application. WIP
+
+
 class DeployForm(FlaskForm):
     name = StringField('App Name', validators=[InputRequired()])
     image = StringField('Image', validators=[InputRequired()])
     ports = FieldList(StringField('Port'))
     volumes = FieldList(FormField(_VolumeForm))
     env = FieldList(FormField(_EnvForm))
-    restart_policy = StringField('Restart Policy', validators=[InputRequired()]) 
+    restart_policy = StringField(
+        'Restart Policy', validators=[InputRequired()])
     submit = SubmitField('Deploy App')
-
-
