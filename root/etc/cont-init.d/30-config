@@ -6,4 +6,5 @@ chown -R abc:abc \
 chown -R abc:abc \
 		/config
 # non-root docker
+chown abc:docker /var/run/docker.sock
 usermod -aG docker abc
