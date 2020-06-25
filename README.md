@@ -10,6 +10,10 @@ Once docker is installed you'll simply run the following commands to get started
 docker volume create yacht
 docker run -d -p 5000:5000 -v /var/run/docker.sock:/var/run/docker.sock -v yacht:/config yacht:latest
 ```
+It will be available on port 5000.
+The default username is `admin@yacht.local`.
+The default password is `password`.
+You can change these by setting the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables or in the account settings within the application.
 
 ## Features So Far:
 * User Managment
@@ -94,7 +98,6 @@ Other useful variables include:
 | `ADMIN_EMAIL`   | `flask-base-admin@example.com` | email for your first admin account |
 | `ADMIN_PASSWORD`| `password`                     | password for your first admin account |
 | `DATABASE_URL`  | `data-dev.sqlite`              | Database URL. Can be Postgres, sqlite, etc. |
-| `REDISTOGO_URL` | `http://localhost:6379`        | [Redis To Go](https://redistogo.com) URL or any redis server url |
 | `RAYGUN_APIKEY` | `None`                         | API key for [Raygun](https://raygun.com/raygun-providers/python), a crash and performance monitoring service |
 | `FLASK_CONFIG`  | `default`                      | can be `development`, `production`, `default`, `heroku`, `unix`, or `testing`. Most of the time you will use `development` or `production`. |
 
@@ -113,20 +116,6 @@ You need [Redis](http://redis.io/), [Sass](http://sass-lang.com/), and [Postgres
 
 ```
 $ gem install sass
-```
-
-**Redis:**
-
-_Mac (using [homebrew](http://brew.sh/)):_
-
-```
-$ brew install redis
-```
-
-_Linux:_
-
-```
-$ sudo apt-get install redis-server
 ```
 
 **PostgresQL**
@@ -171,14 +160,6 @@ For Windows users having issues with binding to a redis port locally, refer to [
 ## Gettin up and running with Docker
 
 Currently we have a `Dockerfile` intended for testing purposes and it automates the whole cycle of running the application, setting up the database and redis. 
-
-
-##### How to use the docker file 
-In only three simple steps :
-- change the variables `MAIL_USERNAME` , `MAIL_PASSWORD` and `SECRET_KEY`
-- `docker build -t <image_name> . 
-- `docker run -it -d -p 5000:5000 --name <container name> <image_name> /bin/bash`
-- To run in foreground mode `docker run -it -p 5000:5000 --name <container name> <image_name> /bin/bash`
 
 ##### Note
 
