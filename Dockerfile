@@ -23,7 +23,10 @@ RUN \
 	python3 \
 	unrar \
 	unzip \
-    docker
+    docker \
+	make \
+	ruby-dev &&\
+ gem install sass
 WORKDIR /app
 RUN  pip3 install -r requirements.txt
 COPY app /app
