@@ -31,7 +31,7 @@ Currently SelfhostinGUI is compatible with portainer templates. You'll add a tem
 
 
 ## Demo:
-![Tempaltes](readme_media/TemplateDemo.gif "templates")
+![Tempaltes](readme_media/Yacht-Demo.gif "templates")
 
 
 ## Dev Info:
