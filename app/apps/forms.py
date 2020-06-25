@@ -27,12 +27,15 @@ import os
 import sys  # used for getting file type
 from urllib.parse import urlparse
 import urllib.request
-import json
+import docker
 
-# Not in use yet
-# class _PortForm(Form):
-#    port = StringField()
-# Not in use yet
+
+def validate_name(self, field):
+        dclient = docker.from_env()
+        if any(app.name == field.data for app in dclient.containers.list(all=True)):
+            raise ValidationError('name already exists')
+        for app in dclient.containers.list(all=True):
+            print(app)
 
 
 class _VolumeForm(Form):
@@ -48,7 +51,7 @@ class _EnvForm(Form):
 
 
 class DeployForm(FlaskForm):
-    name = StringField('App Name', validators=[InputRequired()])
+    name = StringField('App Name', validators=[InputRequired(), validate_name])
     image = StringField('Image', validators=[InputRequired()])
     ports = FieldList(StringField('Port'))
     volumes = FieldList(FormField(_VolumeForm))
