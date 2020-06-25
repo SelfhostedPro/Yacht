@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+
+# permissions
+chown -R abc:abc \
+		/app
+chown -R abc:abc \
+		/config
+# non-root docker
+usermod -aG docker abc

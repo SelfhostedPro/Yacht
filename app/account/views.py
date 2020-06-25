@@ -12,8 +12,6 @@ from flask_login import (
     login_user,
     logout_user,
 )
-from flask_rq import get_queue
-
 from app import db
 from app.account.forms import (
     ChangeEmailForm,
@@ -49,7 +47,7 @@ def login():
 @account.route('/register', methods=['GET', 'POST'])
 @login_required
 def register():
-    """Register a new user, and send them a confirmation email."""
+    """Register a new user."""
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(
@@ -59,17 +57,6 @@ def register():
             password=form.password.data)
         db.session.add(user)
         db.session.commit()
-        token = user.generate_confirmation_token()
-        confirm_link = url_for('account.confirm', token=token, _external=True)
-        get_queue().enqueue(
-            send_email,
-            recipient=user.email,
-            subject='Confirm Your Account',
-            template='account/email/confirm',
-            user=user,
-            confirm_link=confirm_link)
-        flash('A confirmation link has been sent to {}.'.format(user.email),
-              'warning')
         return redirect(url_for('main.index'))
     return render_template('account/register.html', form=form)
 

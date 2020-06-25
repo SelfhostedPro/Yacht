@@ -1,27 +1,38 @@
-FROM ubuntu:16.04
+FROM lsiobase/alpine:3.12
+#MAINTANER Your Name "info@selfhosted.pro"
 
-#MAINTANER Your Name "youremail@domain.tld"
-
-ENV MAIL_USERNAME=yourmail@test.com
-ENV MAIL_PASSWORD=testpass
-ENV SECRET_KEY=SuperRandomStringToBeUsedForEncryption
-
-RUN apt-get update -y && \
-    apt-get install -y python3-pip python3-dev
-RUN apt-get install -y ruby-dev
-RUN gem install foreman
-# We copy just the requirements.txt first to leverage Docker cache
-COPY ./requirements.txt /app/requirements.txt
-
-
-RUN apt-get install -y redis-server
-WORKDIR /app
-RUN apt-get install -y build-essential libpq-dev
-RUN pip3 install -r requirements.txt
+ENV ADMIN_EMAIL=admin@yacht.local
+ENV ADMIN_PASSWORD=password
+ENV FLASK_CONFIG=production
 ENV PYTHONIOENCODING=UTF-8
-RUN pip3 install sqlalchemy_utils flask_dance flask_caching python-gitlab
-COPY . /app
-RUN python3 manage.py recreate_db && python3 manage.py setup_dev
 
-CMD ["foreman", "start" ,"-f", "Local"]
+COPY ./requirements.txt /app/requirements.txt
+RUN \
+ echo "**** install build packages ****" && \
+ apk add --no-cache --virtual=build-dependencies \
+	g++ \
+	gcc \
+	libxml2-dev \
+	libxslt-dev \
+	py3-pip \
+	python3-dev \
+    postgresql-dev &&\
+ echo "**** install packages ****" && \
+ apk add --no-cache \
+    wget \
+	python3 \
+	unrar \
+	unzip \
+    docker
+WORKDIR /app
+RUN  pip3 install -r requirements.txt
+COPY app /app
+COPY root /
+COPY config /
+COPY manage.py /
+COPY config.py /
+VOLUME /config
+EXPOSE 5000
+
+
 
