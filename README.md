@@ -1,14 +1,26 @@
-## SelfhostinGUI (Temporary Name) is going to be a flask based replacement for [Portainer](https://portainer.io)
+## Yacht is a flask based replacement for [Portainer](https://portainer.io)
+
+## Installation:
+Currently only linux has been verified as working but we are open to the idea of supporting windows eventually as well.
+
+**Keep in mind, this is an Alpha so the risk of data loss is real and it may not be stable**
+
+Once docker is installed you'll simply run the following commands to get started:
+```
+docker volume create yacht
+docker run -d -p 5000:5000 -v /var/run/docker.sock:/var/run/docker.sock -v yacht:/config yacht:latest
+```
 
 ## Features So Far:
 * User Managment
 * User and Admin Roles
 * Container Templating Compatibility (Portainer Compatible)
 * Semantic UI Framework
-* Container Managment
+* Basic Container Managment
 
 ## Planned Features:
 * Easy Template Updating
+* Advanced Container Managment (Edit, Modify, Create without a template)
 * Container Monitoring
 * Docker-Compose Compatibility
 * Easy access to container interfaces
