@@ -1,16 +1,15 @@
 #!/usr/bin/with-contenv bash
-cd /app
-# UMASK_SET=${UMASK_SET:-022}
-# umask "$UMASK_SET"
+cd /
+UMASK_SET=${UMASK_SET:-022}
+umask "$UMASK_SET"
 
 export SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(16))")
 
-DB=/config/data-dev.sqlite
-if [ -f "$DB" ]; then
-    echo "$DB exists."
-else
-    python3 /app/manage.py recreate_db && python3 /app/manage.py setup_prod
+DB=/config/data.sqlite
+if [ ! -f "$DB" ]; then
+    s6-setuidgid abc python3 manage.py recreate_db && python3 manage.py setup_prod
 fi
+
 
 exec \
 	s6-setuidgid abc gunicorn \

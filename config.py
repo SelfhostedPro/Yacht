@@ -20,7 +20,7 @@ if os.path.exists('config.env'):
 
 
 class Config:
-    APP_NAME = os.environ.get('APP_NAME', 'Flask-Base')
+    APP_NAME = os.environ.get('APP_NAME', 'Yacht')
 
     if os.environ.get('SECRET_KEY'):
         SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -58,7 +58,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     ASSETS_DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL',
-        'sqlite:///' + os.path.join(basedir, 'storage/data-dev.sqlite'))
+        'sqlite:///' + os.path.join(basedir, 'config/data-dev.sqlite'))
 
     @classmethod
     def init_app(cls, app):
@@ -82,7 +82,7 @@ class ProductionConfig(Config):
     DEBUG = False
     USE_RELOADER = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL',
-        'sqlite:///' + os.path.join(basedir, 'data.sqlite'))
+        'sqlite:////config/data.sqlite')
     SSL_DISABLE = (os.environ.get('SSL_DISABLE', 'True') == 'True')
 
     @classmethod

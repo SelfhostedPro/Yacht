@@ -2,7 +2,7 @@ FROM lsiobase/alpine:3.12
 #MAINTANER Your Name "info@selfhosted.pro"
 
 ENV ADMIN_EMAIL=admin@yacht.local
-ENV ADMIN_PASSWORD=password1
+ENV ADMIN_PASSWORD=password
 ENV FLASK_CONFIG=production
 ENV PYTHONIOENCODING=UTF-8
 
@@ -22,27 +22,17 @@ RUN \
     wget \
 	python3 \
 	unrar \
-	unzip
+	unzip \
+    docker
 WORKDIR /app
 RUN  pip3 install -r requirements.txt
-COPY . /app
-COPY /root /
-COPY /config /config
+COPY app /app
+COPY root /
+COPY config /
+COPY manage.py /
+COPY config.py /
 VOLUME /config
 EXPOSE 5000
 
-#####
-# RUN apt-get update -y \
-#  && apt-get install -y \
-#     python3-pip python3-dev build-essential libpq-dev \
-#  && rm -rf /var/lib/apt/lists/*
-
-# # We copy just the requirements.txt first to leverage Docker cache
-# COPY ./requirements.txt /app/requirements.txt
-# WORKDIR /app
-# RUN pip3 install -r requirements.txt
-# RUN pip3 install sqlalchemy_utils flask_dance flask_caching python-gitlab
-# COPY . /app
-# RUN python3 manage.py recreate_db && python3 manage.py setup_dev
 
 
