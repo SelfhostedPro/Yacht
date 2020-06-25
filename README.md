@@ -1,4 +1,4 @@
-## Yacht is a flask based replacement for [Portainer](https://portainer.io)
+## Yacht is a flask based container managment UI with a focus on templates and 1-click deployments.
 
 ## Installation:
 Currently only linux has been verified as working but we are open to the idea of supporting windows eventually as well.
@@ -31,7 +31,7 @@ Currently SelfhostinGUI is compatible with portainer templates. You'll add a tem
 
 
 ## Demo:
-![Tempaltes](readme_media/TemplateDemo.gif "templates")
+![Tempaltes](readme_media/Yacht-Demo.gif "templates")
 
 
 ## Dev Info:

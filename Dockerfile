@@ -28,7 +28,6 @@ WORKDIR /app
 RUN  pip3 install -r requirements.txt
 COPY app /app
 COPY root /
-COPY config /
 COPY manage.py /
 COPY config.py /
 VOLUME /config
