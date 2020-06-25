@@ -125,6 +125,8 @@ def running_apps():
 
 @apps.route('/view/<container_name>')
 @apps.route('/view/<container_name>/info')
+@login_required
+@admin_required
 def container_info(container_name):
     """ View container info """
     dclient = docker.from_env()
@@ -133,6 +135,8 @@ def container_info(container_name):
 
 
 @apps.route('/view/<container_name>/<action>')
+@login_required
+@admin_required
 def container_actions(container_name, action):
     """ Do an action on a container """
     dclient = docker.from_env()

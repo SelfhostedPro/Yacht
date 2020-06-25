@@ -47,6 +47,8 @@ def view_templates():
 
 @templates.route('/templates/<int:template_id>')
 @templates.route('/templates/<int:template_id>/info')
+@login_required
+@admin_required
 def template_info(template_id):
     """ View template info. """
     template = Template.query.filter_by(id=template_id).first()
