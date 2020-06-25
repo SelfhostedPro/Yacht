@@ -34,9 +34,20 @@ def validate_name(self, field):
         dclient = docker.from_env()
         if any(app.name == field.data for app in dclient.containers.list(all=True)):
             raise ValidationError('name already exists')
-        for app in dclient.containers.list(all=True):
-            print(app)
 
+
+def validate_ports(form, field):
+    hp,cp = [],[]
+    dclient = docker.from_env()
+    for app in dclient.containers.list(all=True):
+        assign = app.ports
+        a = tuple(assign.keys())
+        hp += a
+        cp += [assign[k][0]['HostPort'] for k in a if assign[k]]
+    for port in field.data:
+        a,b = port.split(':',1)
+        if a in cp or b in hp:
+            raise ValidationError('port already in use')
 
 class _VolumeForm(Form):
     container = StringField('Container Path')
