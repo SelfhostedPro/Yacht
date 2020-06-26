@@ -1,5 +1,8 @@
 ## Yacht is a flask based container management UI with a focus on templates and 1-click deployments.
 
+## Demo:
+![Tempaltes](readme_media/Yacht-Demo.gif "templates")
+
 ## Installation:
 Currently only linux has been verified as working but we are open to the idea of supporting windows eventually as well.
 
@@ -36,9 +39,6 @@ Currently SelfhostinGUI is compatible with portainer templates. You'll add a tem
 We recommend starting with: https://raw.githubusercontent.com/SelfhostedPro/selfhosted_templates/master/Template/template.json
 
 
-
-## Demo:
-![Tempaltes](readme_media/Yacht-Demo.gif "templates")
 
 
 ## Dev Info:
