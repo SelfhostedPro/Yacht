@@ -45,7 +45,7 @@
                                         <div class="ui fluid right action left icon input">
                                             {{ p.form.host(class="form-control") }}
                                             <i class="hdd icon"></i>
-                                            <button class="ui icon button" type="button" data-toggle="fieldset-remove-item"><i class="icon minus"></i></button>
+                                            <button class="ui icon button" type="button" data-toggle="fieldset-remove-item" data-target="#fieldset-ports"><i class="icon minus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@
                                         <div class="ui fluid right action left icon input">
                                             {{ l.form.bind(class="form-control") }}
                                             <i class="hdd icon"></i>
-                                            <button class="ui icon button" type="button" data-toggle="fieldset-remove-item"><i class="icon minus"></i></button>
+                                            <button class="ui icon button" type="button" data-toggle="fieldset-remove-item" data-target="#fieldset-volumes"><i class="icon minus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -96,7 +96,7 @@
                                     <div class="ui fluid right action left icon input">
                                         {{ e.form.default(class="form-control") }}
                                         <i class="code icon"></i>
-                                        <button class="ui icon button" type="button" data-toggle="fieldset-remove-item"><i class="icon minus"></i></button>
+                                        <button class="ui icon button" type="button" data-toggle="fieldset-remove-item" data-target="#fieldset-env"><i class="icon minus"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -147,8 +147,10 @@
 
         // remove fieldset-entry
         $(this).find('button[data-toggle=fieldset-remove-item]').click(function() {
-        let elem = $(this).closest('[data-toggle=fieldset-item]')
-        if(elem.length > 0) elem.remove();
+        let target = $($(this).data('target'));
+        if (target.find('[data-toggle=fieldset-item]').length > 1) {
+            $(this).closest('[data-toggle=fieldset-item]').remove();
+        }
         });
         // endof fieldset-entry
     });
