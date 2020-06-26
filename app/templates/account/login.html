@@ -18,9 +18,6 @@
                 {{ f.render_form_field(form.password) }}
                 <div class="ui two column grid">
                     {{ f.render_form_field(form.remember_me, extra_classes='column') }}
-                    <div class="right aligned column">
-                        <a href="{{ url_for('account.reset_password_request') }}">Forgot password?</a>
-                    </div>
                 </div>
 
                 {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
