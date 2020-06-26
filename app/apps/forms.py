@@ -36,18 +36,13 @@ def validate_name(self, field):
             raise ValidationError('name already exists')
 
 
-def validate_ports(form, field):
-    hp,cp = [],[]
+def validate_ports(self, field):
+    _,host_port = field.data.split(':',1)
     dclient = docker.from_env()
     for app in dclient.containers.list(all=True):
-        assign = app.ports
-        a = tuple(assign.keys())
-        hp += a
-        cp += [assign[k][0]['HostPort'] for k in a if assign[k]]
-    for port in field.data:
-        a,b = port.split(':',1)
-        if a in cp or b in hp:
-            raise ValidationError('port already in use')
+        for _host_port in app.ports.keys():
+            if host_port == _host_port: 
+                raise ValidationError('port already exists')
 
 class _VolumeForm(Form):
     container = StringField('Container Path')
@@ -64,7 +59,7 @@ class _EnvForm(Form):
 class DeployForm(FlaskForm):
     name = StringField('App Name', validators=[InputRequired(), validate_name])
     image = StringField('Image', validators=[InputRequired()])
-    ports = FieldList(StringField('Port'))
+    ports = FieldList(StringField('Port', validators=[InputRequired(), validate_ports]))
     volumes = FieldList(FormField(_VolumeForm))
     env = FieldList(FormField(_EnvForm))
     restart_policy = StringField(

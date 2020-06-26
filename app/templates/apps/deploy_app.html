@@ -30,14 +30,18 @@
                     {% if ports %}
                     <div class=" ui horizontal section divider "> Ports </div>
                     <div class="ui two column very relaxed centered grid">
-                            {% for field in form.ports %}
+                            {% for p in form.ports %}
                             <div class=row>
                                 <div class="column">
-                                    {{ field.label(class="col-sm-2 col-form-label") }}
-                                    <div class="ui fluid icon input">
-                                        {{ field(class="form-control") }}
+                                    <h3 class="ui center aligned header">container:host/tcp</h3>
+                                    <div class="field {% if p.errors %}error{% endif %} ui fluid icon input">                                        {{ p }}
                                         <i class="check circle outline icon"></i>
                                     </div>
+                                    {% if p.errors %}
+                                        <div class="ui red pointing label">
+                                            {{ p.errors[0] | safe }}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                             {% endfor %}
