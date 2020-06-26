@@ -115,7 +115,7 @@
     <script type="text/javascript">
     (function() {
     $(document).ready(function() {
-        
+
         // add fieldset-entry
         $('button[data-toggle=fieldset-add-item]').click(function() {
         let target = $($(this).data("target"));
@@ -124,21 +124,21 @@
 
         let elems = newrow.find('input'),
             elemnum = parseInt(elems[0].id.replace(
-                /.*-(\d+)-.*/g,
+                /.*-(\d+).*/g,
                 function(a, b) { return +b+1; }));
 
         elems.each(function() {
             let self = $(this),
                 id = self.attr('id').replace(
-                    '-' + (elemnum - 1) + '-',
-                    '-' + (elemnum) + '-');
+                    '-' + (elemnum - 1),
+                    '-' + (elemnum));
             self.attr('id', id)
                 .attr('name', id)
                 .val('');
         });
         newrow.find('label').each(function() {
             $(this).attr('for', function(i, value) {
-            return value.replace(/(.*)-(\d+)-(.*)/g, '$1-'+ elemnum +'-$3')
+            return value.replace(/(.*)-(\d+)(.*)/g, '$1-'+ elemnum +'$3')
             })
         });
         oldrow.after(newrow);

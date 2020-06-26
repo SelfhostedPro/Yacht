@@ -66,12 +66,12 @@ def deploy_app(app_id):
         print('valid')
         if form.env.data:
             env = transform_env_data(form)
-        # if form.ports.data:
-        #     ports = transform_port_data(form)
+        if form.ports.data:
+            transformed_ports = transform_port_data(form)
         if form.volumes.data:
             volumes = transform_volume_data(form)
         print('stop')
-        launch_container(form, volumes, ports, env)
+        launch_container(form, volumes, transformed_ports, env)
         return redirect(url_for('apps.index'))
     return render_template('apps/deploy_app.html', **locals())
 
@@ -97,15 +97,12 @@ def transform_volume_data(form):
     return devices_dict
 
 
-# def transform_port_data(form):
-#     port_list = []
-#     for port_data in form.ports.data:
-#         separator = ':'
-#         port_list.append(port_data.split(separator))
-#     port_dict = {i[0]: i[1] for i in port_list}
-#     print(port_dict)
-#     return port_dict
-
+def transform_port_data(form):
+    port_dict = {}
+    for port_data in form.ports.data:
+        port_dict.update(
+            {port_data.get('host'): ('0.0.0.0', port_data.get('container'))})
+    return port_dict
 
 def transform_env_data(form):
     env_list = []
@@ -116,14 +113,14 @@ def transform_env_data(form):
     return env_list
 
 
-def launch_container(form, volumes, ports, env):
+def launch_container(form, volumes, transformed_ports, env):
     dclient = docker.from_env()
     dclient.containers.run(
         name=form.name.data,
         image=form.image.data,
         volumes=volumes,
         environment=env,
-        ports=ports,
+        ports=transformed_ports,
         restart_policy={"Name": 'unless-stopped'},
         detach=True
     )
