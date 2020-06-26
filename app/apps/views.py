@@ -81,7 +81,10 @@ def tansform_port_form(app):
     master_port_list = []
     for port_data in app.ports:
         separator = ':'
-        port_list.append(port_data.split(separator))
+        if separator in port_data:
+            port_list.append(port_data.split(separator))
+        else: 
+            port_list.append((None, port_data))
     for container, host in port_list:
         port_dict['container'] = container
         port_dict['host'] = host
@@ -98,11 +101,7 @@ def transform_volume_data(form):
 
 
 def transform_port_data(form):
-    port_dict = {}
-    for port_data in form.ports.data:
-        port_dict.update(
-            {port_data.get('host'): ('0.0.0.0', port_data.get('container'))})
-    return port_dict
+    return dict(d.values() for d in form.ports.data)
 
 def transform_env_data(form):
     env_list = []

@@ -56,7 +56,7 @@ class _VolumeForm(Form):
 class _EnvForm(Form):
     label = StringField()
     name = StringField(label)
-    default = StringField('Data', validators=[InputRequired()])
+    default = StringField('Data')
 # Form for deploying an application. WIP
 
 
@@ -66,6 +66,5 @@ class DeployForm(FlaskForm):
     ports = FieldList(FormField(_PortForm))
     volumes = FieldList(FormField(_VolumeForm))
     env = FieldList(FormField(_EnvForm))
-    restart_policy = StringField(
-        'Restart Policy', validators=[InputRequired()])
+    restart_policy = StringField('Restart Policy')
     submit = SubmitField('Deploy App')
