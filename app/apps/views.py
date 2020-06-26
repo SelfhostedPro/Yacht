@@ -60,6 +60,7 @@ def deploy_app(app_id):
     volumes = app.volumes
     ports = app.ports
     env = app.env
+    notes = app.notes
     form.ports.data.append(ports)
 
     if form.validate_on_submit():
@@ -166,6 +167,7 @@ def container_actions(container_name, action):
         container.kill()
     elif action == 'remove':
         container.remove(force=True)
+        return redirect(url_for('apps.view_apps'))
     else:
         print('else')
 

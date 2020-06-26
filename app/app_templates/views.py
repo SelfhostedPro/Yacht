@@ -123,7 +123,7 @@ def new_template():
                     type=f.get('type'),
                     title=f.get('title'),
                     name=f.get('name'),
-                    notes=f.get('notes'),
+                    notes=f.get('note'),
                     description=f.get('description'),
                     logo=f.get('logo'),
                     image=f.get('image'),
