@@ -27,12 +27,12 @@
         <tr><td>Container Status</td><td>{{ container.status }}</td></tr>
     </table>
     <div class="ui horizontal section divider "> Actions </div>    
-    <div class="ui fluid buttons">
-        <a class="ui green basic button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='start') }}';">Start</a>
-        <a class="ui red basic button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='stop') }}';">Stop</a>
-        <a class="ui red basic button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='kill') }}';">Kill</a>
-        <a class="ui blue basic button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='restart') }}';">Restart</a>
-        <a class="ui red basic button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='remove') }}';">Remove</a>
+    <div class="ui five buttons">
+        <a class="ui green inverted button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='start') }}';">Start</a>
+        <a class="ui red inverted button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='stop') }}';">Stop</a>
+        <a class="ui red inverted button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='kill') }}';">Kill</a>
+        <a class="ui blue inverted button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='restart') }}';">Restart</a>
+        <a class="ui red inverted button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='remove') }}';">Remove</a>
     </div>
     <div class="ui horizontal section divider "> Networking </div>
     <table class="ui compact definition table">
