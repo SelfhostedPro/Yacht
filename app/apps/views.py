@@ -13,7 +13,8 @@ from app import db
 from app.apps.forms import (
     DeployForm,
     _VolumeForm,
-    _EnvForm
+    _EnvForm,
+    _PortForm
 )
 from app.decorators import admin_required
 from app.email import send_email
@@ -52,23 +53,40 @@ def view_apps():
 def deploy_app(app_id):
     """ Form to deploy an app """
     app = Template_Content.query.filter_by(id=app_id).first()
+    if app.ports:
+        if type(app.ports[0]) != type(dict()):
+            app.ports = tansform_port_form(app)
     form = DeployForm(request.form, obj=app)  # Set the form for this page
     volumes = app.volumes
     ports = app.ports
     env = app.env
+    form.ports.data.append(ports)
 
     if form.validate_on_submit():
         print('valid')
         if form.env.data:
             env = transform_env_data(form)
         if form.ports.data:
-            ports = transform_port_data(form)
+            transformed_ports = transform_port_data(form)
         if form.volumes.data:
             volumes = transform_volume_data(form)
         print('stop')
-        launch_container(form, volumes, ports, env)
+        launch_container(form, volumes, transformed_ports, env)
         return redirect(url_for('apps.index'))
     return render_template('apps/deploy_app.html', **locals())
+
+def tansform_port_form(app):
+    port_list = []
+    port_dict = {}
+    master_port_list = []
+    for port_data in app.ports:
+        separator = ':'
+        port_list.append(port_data.split(separator))
+    for container, host in port_list:
+        port_dict['container'] = container
+        port_dict['host'] = host
+        master_port_list.append(port_dict)
+    return master_port_list
 
 
 def transform_volume_data(form):
@@ -80,14 +98,11 @@ def transform_volume_data(form):
 
 
 def transform_port_data(form):
-    port_list = []
+    port_dict = {}
     for port_data in form.ports.data:
-        separator = ':'
-        port_list.append(port_data.split(separator))
-    port_dict = {i[0]: i[1] for i in port_list}
-    print(port_dict)
+        port_dict.update(
+            {port_data.get('host'): ('0.0.0.0', port_data.get('container'))})
     return port_dict
-
 
 def transform_env_data(form):
     env_list = []
@@ -98,14 +113,14 @@ def transform_env_data(form):
     return env_list
 
 
-def launch_container(form, volumes, ports, env):
+def launch_container(form, volumes, transformed_ports, env):
     dclient = docker.from_env()
     dclient.containers.run(
         name=form.name.data,
         image=form.image.data,
         volumes=volumes,
         environment=env,
-        ports=ports,
+        ports=transformed_ports,
         restart_policy={"Name": 'unless-stopped'},
         detach=True
     )
