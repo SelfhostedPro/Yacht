@@ -15,6 +15,16 @@
             <h2 class="ui header">
                 New App Template
                 <div class="sub header">Add a new app template</div>
+                {% if notes %}
+                    <div class="ui mini floating compact message">
+                    <div class="content">
+                        <h3 class="ui small header">
+                        Note:
+                        </h3>
+                        <p style="font-weight: normal;">{{ notes }}</p>
+                    </div>
+                    </div>
+                {% endif %}
                 {% set flashes = {
                     'error':   get_flashed_messages(category_filter=['form-error']),
                     'warning': get_flashed_messages(category_filter=['form-check-email']),
