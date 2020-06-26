@@ -27,55 +27,63 @@
                     {{ f.render_form_field(form.name)}}
                     {{ f.render_form_field(form.image) }}
                     {{ f.render_form_field(form.restart_policy) }}
-                    {% if ports %}
                     <div class=" ui horizontal section divider "> Ports </div>
-                    <div class="ui two column very relaxed centered grid">
+                    <div class="ui two column very relaxed centered grid" id="fieldset-ports">
+                        <button class="circular ui icon button" type="button" data-toggle="fieldset-add-item" data-target="#fieldset-ports"><i class="icon plus"></i></button>
+                        {% if ports %}
                             {% for p in form.ports %}
-                            <div class=row>
-                                <div class="column">
-                                    <h3 class="ui center aligned header">container:host/tcp</h3>
-                                    <div class="field {% if p.errors %}error{% endif %} ui fluid icon input">                                        {{ p }}
-                                        <i class="check circle outline icon"></i>
-                                    </div>
-                                    {% if p.errors %}
-                                        <div class="ui red pointing label">
-                                            {{ p.errors[0] | safe }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    {% if volumes %}
-                    <div class=" ui horizontal section divider "> Volumes </div>
-                    <div class="ui two column very relaxed centered grid">
-                            {% for l in form.volumes %}
-                            <div class=row>
-                                <div class="column">
-                                    {{ l.form.container.label(class="col-sm-2 col-form-label") }}
-                                    <div class="ui fluid icon input">
-                                        {{ l.form.container(class="form-control") }}
-                                        <i class="server icon"></i>
-                                    </div>
-                                </div>
+                                <div class="row" data-toggle="fieldset-item" >
                                     <div class="column">
-                                    {{ l.form.bind.label(class="col-sm-2 col-form-label") }}
-                                    <div class="ui fluid icon input">
-                                        {{ l.form.bind(class="form-control") }}
-                                        <i class="hdd icon"></i>
+                                        {{ p.form.container.label(class="col-sm-2 col-form-label") }}
+                                        <div class="ui fluid icon input">
+                                            {{ p.form.container(class="form-control") }}
+                                            <i class="server icon"></i>
+                                        </div>
+                                    </div>
+                                        <div class="column">
+                                        {{ p.form.host.label(class="col-sm-2 col-form-label") }}
+                                        <div class="ui fluid right action left icon input">
+                                            {{ p.form.host(class="form-control") }}
+                                            <i class="hdd icon"></i>
+                                            <button class="ui icon button" type="button" data-toggle="fieldset-remove-item"><i class="icon minus"></i></button>
+                                        </div>
                                     </div>
                                 </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    <div class=" ui horizontal section divider "> Volumes </div>
+                    <div class="ui two column very relaxed centered grid" id="fieldset-volumes">
+                        <button class="circular ui icon button" type="button" data-toggle="fieldset-add-item" data-target="#fieldset-volumes"><i class="icon plus"></i></button>
+                        {% if volumes %}
+                            {% for l in form.volumes %}
+                                <div class="row" data-toggle="fieldset-item" >
+                                    <div class="column">
+                                        {{ l.form.container.label(class="col-sm-2 col-form-label") }}
+                                        <div class="ui fluid icon input">
+                                            {{ l.form.container(class="form-control") }}
+                                            <i class="server icon"></i>
+                                        </div>
+                                    </div>
+                                        <div class="column">
+                                        {{ l.form.bind.label(class="col-sm-2 col-form-label") }}
+                                        <div class="ui fluid right action left icon input">
+                                            {{ l.form.bind(class="form-control") }}
+                                            <i class="hdd icon"></i>
+                                            <button class="ui icon button" type="button" data-toggle="fieldset-remove-item"><i class="icon minus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     <div class="ui hidden divider"></div>
                     {% if env %}
                     <div class=" ui horizontal section divider "> Environment Variables </div>
-                    <div class="ui two column very relaxed centered grid">
+                    <div class="ui two column very relaxed centered grid" id="fieldset-env">
+                            <button class="circular ui icon button" type="button" data-toggle="fieldset-add-item" data-target="#fieldset-env"><i class="icon plus"></i></button>
                             {% for e in form.env %}
-                            <div class=row>
+                            <div class="row" data-toggle="fieldset-item">
                                 <div class="column">
                                     {{ e.form.label.label(class="col-sm-2 col-form-label") }}
                                     <div class="ui fluid icon input">
@@ -85,9 +93,10 @@
                                 </div>
                                     <div class="column">
                                     {{ e.form.default.label(class="col-sm-2 col-form-label") }}
-                                    <div class="ui fluid icon input">
+                                    <div class="ui fluid right action left icon input">
                                         {{ e.form.default(class="form-control") }}
                                         <i class="code icon"></i>
+                                        <button class="ui icon button" type="button" data-toggle="fieldset-remove-item"><i class="icon minus"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -103,4 +112,46 @@
             </h2>
         </div>
     </div>
+    <script type="text/javascript">
+    (function() {
+    $(document).ready(function() {
+
+        // add fieldset-entry
+        $('button[data-toggle=fieldset-add-item]').click(function() {
+        let target = $($(this).data("target"));
+            oldrow = target.find("[data-toggle=fieldset-item]:last"),
+            newrow = oldrow.clone(true, true);
+
+        let elems = newrow.find('input'),
+            elemnum = parseInt(elems[0].id.replace(
+                /.*-(\d+).*/g,
+                function(a, b) { return +b+1; }));
+
+        elems.each(function() {
+            let self = $(this),
+                id = self.attr('id').replace(
+                    '-' + (elemnum - 1),
+                    '-' + (elemnum));
+            self.attr('id', id)
+                .attr('name', id)
+                .val('');
+        });
+        newrow.find('label').each(function() {
+            $(this).attr('for', function(i, value) {
+            return value.replace(/(.*)-(\d+)(.*)/g, '$1-'+ elemnum +'$3')
+            })
+        });
+        oldrow.after(newrow);
+        });
+        // endof add fieldset-entry
+
+        // remove fieldset-entry
+        $(this).find('button[data-toggle=fieldset-remove-item]').click(function() {
+        let elem = $(this).closest('[data-toggle=fieldset-item]')
+        if(elem.length > 0) elem.remove();
+        });
+        // endof fieldset-entry
+    });
+    })()
+    </script>
 {% endblock %}
