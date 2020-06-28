@@ -71,13 +71,13 @@
                 {% elif form %} {# Not currently used #}
                     {{ f.render_form(form) }}
                 {% elif apps %} {# Show application list #}
-                    <div class=" ui horizontal section divider "> Apps </div>    
+                    <div class=" ui horizontal section divider "> Apps </div>
                         <div class="ui three column middle aligned centered grid">
-                            {%- for n, l in apps %}
+                            {%- for app in apps %}
                             <div class="column">
                                 <div class="ui circular mini center compact aligned  black segment">
-                                    <img class="ui mini centered avatar image" src={{ l|tojson }}" style="height:50px;width:50px;>
-                                    <h5 class="ui header"> {{ n }} </h5>
+                                    <img class="ui mini centered avatar image" src={{ app.logo|tojson }}" style="height:50px;width:50px;>
+                                    <h5 class="ui header"> {{ app.title }} </h5>
                                 </div>
                             </div>
                             {%- endfor %}

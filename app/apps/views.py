@@ -18,7 +18,7 @@ from app.apps.forms import (
 )
 from app.decorators import admin_required
 from app.email import send_email
-from app.models import Template, Template_Content, Compose
+from app.models import Template, TemplateContent, Compose
 
 import os  # used for getting file type and deleting files
 from urllib.parse import urlparse  # used for getting filetype from url
@@ -41,7 +41,7 @@ def index():
 @admin_required
 def view_apps():
     """ View available apps """
-    apps = Template_Content.query.all()
+    apps = TemplateContent.query.all()
     return render_template('apps/add_app.html', apps=apps)
 
 
@@ -51,7 +51,7 @@ def view_apps():
 @admin_required
 def deploy_app(app_id):
     """ Form to deploy an app """
-    app = Template_Content.query.get_or_404(app_id)
+    app = TemplateContent.query.get_or_404(app_id)
     form = DeployForm(request.form, obj=app)
     if form.validate_on_submit():
         print('valid')
