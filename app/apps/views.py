@@ -51,11 +51,13 @@ def view_apps():
 @admin_required
 def deploy_app(app_id):
     """ Form to deploy an app """
-    # app = Template_Content.query.filter_by(id=app_id).first()
     app = Template_Content.query.get_or_404(app_id)
 
     # only in request.method == 'GET' or not form.is_submitted()
     if not form.is_submitted():
+        # Reformat the loaded template during the migration of apps.
+        # Move this code to app_templates/views/new_template to
+        # validate and customize template. [conv_ports2dict(...)]
         try: app.ports = conv_ports2form(app.ports)
         except (TypeError, ValueError) as err: raise
 
