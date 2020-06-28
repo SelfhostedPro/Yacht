@@ -96,20 +96,20 @@ class _VolumeForm(NoCsrfForm):
     )
 
 class _EnvForm(NoCsrfForm):
-    # HiddenField!?
-    default = HiddenField('Default')
-    label = StringField('Label',
+    name = StringField(
+        'Label',
         validators=[
-            InputRequired()
+#            InputRequired()
+        ],
+#        filters = [lambda x: x or None]
+    )
+    default = StringField('Data',
+        validators=[
+#            InputRequired()
         ]
     )
-    name = StringField(
-        'Name',
-        validators=[
-            Optional()
-        ],
-        filters = [lambda x: x or None]
-    )
+    # unused:
+    # label = HiddenField('Label')
     # deprecated:
     # set = StringField('Set')
 

@@ -52,16 +52,7 @@ def view_apps():
 def deploy_app(app_id):
     """ Form to deploy an app """
     app = Template_Content.query.get_or_404(app_id)
-    form = DeployForm(request.form, obj=app)  # Set the form for this page
-
-    # only in request.method == 'GET' or not form.is_submitted()
-    if not form.is_submitted():
-        # Reformat the loaded template during the migration of apps.
-        # Move this code to app_templates/views/new_template to
-        # validate and customize template. [conv_ports2dict(...)]
-        try: app.ports = conv_ports2form(app.ports)
-        except (TypeError, ValueError) as err: raise
-
+    form = DeployForm(request.form, obj=app)
     if form.validate_on_submit():
         print('valid')
         try:
@@ -75,45 +66,15 @@ def deploy_app(app_id):
         print('stop')
         return redirect(url_for('apps.index'))
 
+    # only for debugging!
+    # for fieldName, errorMessages in form.errors.items():
+    #     for err in errorMessages:
+    #         print(f'{fieldName}: {err}')
+
     return render_template('apps/deploy_app.html', **locals())
 
 # begin utils.py
 # Note: I use a different folder structure in my project.
-
-import re
-
-REGEXP_PORT_ASSIGN = r'^(?:\d{1,5}\:)?\d{1,5}/(?:tcp|udp)$'
-
-# Input Format:
-# [
-#     '80:8080/tcp',
-#     '123:123/udp'
-#     '4040/tcp',
-# ]
-# Result Format:
-# [
-#     {
-#         'cport': '80',
-#         'hport': '8080',
-#         'proto': 'tcp',
-#     },
-#     ...
-# ]
-def conv_ports2form(data):
-    if not all(isinstance(x, str) for x in data):
-        raise TypeError('Expected list or str types.')
-    if not all(re.match(REGEXP_PORT_ASSIGN, x, flags=re.IGNORECASE) for x in data):
-        raise ValueError('Malformed port assignment.')
-
-    delim = ':'
-    portlst = []
-    for port_data in data:
-        cport,hport = None,port_data
-        if delim in hport:
-            cport,hport = hport.split(delim, 1)
-        hport,proto = hport.split('/', 1)
-        portlst.append({ 'cport': cport, 'hport': hport, 'proto': proto })
-    return portlst
 
 # Input Format:
 # [
@@ -159,8 +120,7 @@ def conv_volumes2data(data):
 # Input Format:
 # [
 #     {
-#         'label': 'SOMEVARIABLE',
-#         'name': None,
+#         'name': 'SOMEVARIABLE',
 #         'default': '1000'
 #     }
 #     ...
@@ -171,13 +131,9 @@ def conv_volumes2data(data):
 # ]
 def conv_env2data(data):
     # Set is depracated. Name is the actual value. Label is the name of the field.
+    # Label is the label of the label field.
     delim = '='
-    env = []
-    for d in data:
-        key = d['label']
-        val = d['name'] if d['name'] else d['default']
-        env.append(delim.join((key, val)))
-    return env
+    return [delim.join((d['name'], d['default'])) for d in data]
 
 def launch_container(name, image, ports, volumes, env):
     dclient = docker.from_env()
