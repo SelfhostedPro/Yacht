@@ -51,9 +51,7 @@ def view_templates():
 @admin_required
 def template_info(template_id):
     """ View template info. """
-    template = Template.query.filter_by(id=template_id).first()
-    if template is None:
-        abort(404)
+    template = Template.query.get_or_404(template_id)
     return render_template('app_templates/manage_templates.html', template=template)
 
 
@@ -83,9 +81,7 @@ def template_content(template_id):
 @admin_required
 def delete_template_request(template_id):
     """Request deletion of a template."""
-    template = Template.query.filter_by(id=template_id).first()
-    if template is None:
-        abort(404)
+    template = Template.query.get_or_404(template_id)
     return render_template('app_templates/manage_templates.html', template=template)
 
 
@@ -94,7 +90,7 @@ def delete_template_request(template_id):
 @admin_required
 def delete_template(template_id):
     """Delete a template."""
-    template = Template.query.filter_by(id=template_id).first()
+    template = Template.query.get_or_404(template_id)
     db.session.delete(template)
     db.session.commit()
     flash('Successfully deleted template.')
@@ -106,38 +102,47 @@ def delete_template(template_id):
 @admin_required
 def new_template():
     """Add a new app template."""
-    form = TemplateForm(request.form)  # Set the form for this page
-
+    # Set the form for this page
+    form = TemplateForm(request.form)
     if form.validate_on_submit():
-        # Check the file type and depending on the file, download it and add it to the db.
+        # Check the file type and depending on the file, download it and add it
+        # to the db.
         template_name = form.template_name.data
         template_url = form.template_url.data
         template = Template(
             name=template_name,
             url=template_url,
         )
+        # Break down template into individual apps and then put their data into
+        # the db for later use.
         try:
-            # Break down template into individual apps and then put their data into the db for later use
-            for f in fetch_json(template_url):
-                template_content = Template_Content(
-                    type=f.get('type'),
-                    title=f.get('title'),
-                    name=f.get('name'),
-                    notes=f.get('note'),
-                    description=f.get('description'),
-                    logo=f.get('logo'),
-                    image=f.get('image'),
-                    categories=f.get('categories'),
-                    platform=f.get('platform'),
-                    restart_policy=f.get('restart_policy'),
-                    ports=f.get('ports'),
-                    volumes=f.get('volumes'),
-                    env=f.get('env'),
-                )
-                template.items.append(template_content)
-        except OSError as err:
-            print('data request failed', err)
+            # Opens the JSON and iterate over the content.
+            with urllib.request.urlopen(template_url) as file:
+                for entry in json.load(file):
+
+                    ports = conv_ports2form(entry.get('ports', []))
+
+                    # Optional use classmethod from_dict
+                    template_content = Template_Content(
+                        type=int(entry['type']), 
+                        title=entry['title'],
+                        platform=entry['platform'],
+                        description=entry.get('description', ''),
+                        name=entry.get('name', entry['title'].lower()),
+                        logo=entry.get('logo', ''),
+                        image=entry.get('image', ''),
+                        notes=entry.get('note', ''),
+                        categories=entry.get('categories', ''), # default: '' or []
+                        restart_policy=entry.get('restart_policy'),
+                        ports=ports,
+                        volumes=entry.get('volumes'),
+                        env=entry.get('env'),
+                    )
+                    template.items.append(template_content)
+        except (OSError, TypeError, ValueError) as err:
+            print('data request failed')
             raise
+
         try:
             db.session.add(template)
             db.session.commit()
@@ -150,9 +155,46 @@ def new_template():
     return render_template('app_templates/new_template.html', form=form)
 
 
-def fetch_json(template_url):  # Opens the JSON template for use in the above route
-    with urllib.request.urlopen(template_url) as file:
-        return json.load(file)
+# begin utils.py
+# Note: I use a different folder structure in my project.
+
+import re
+
+REGEXP_PORT_ASSIGN = r'^(?:\d{1,5}\:)?\d{1,5}|\:\d{1,5}/(?:tcp|udp)$'
+
+# Input Format:
+# [
+#     '80:8080/tcp',
+#     '123:123/udp'
+#     '4040/tcp',
+# ]
+# Result Format:
+# [
+#     {
+#         'cport': '80',
+#         'hport': '8080',
+#         'proto': 'tcp',
+#     },
+#     ...
+# ]
+def conv_ports2form(data):
+    if not all(isinstance(x, str) for x in data):
+        raise TypeError('Expected list or str types.')
+    if not all(re.match(REGEXP_PORT_ASSIGN, x, flags=re.IGNORECASE) for x in data):
+        raise ValueError('Malformed port assignment.')
+
+    delim = ':'
+    portlst = []
+    for port_data in data:
+        cport,hport = None,port_data
+        if delim in hport:
+            cport,hport = hport.split(delim, 1)
+            if not cport: cport = None
+        hport,proto = hport.split('/', 1)
+        portlst.append({ 'cport': cport, 'hport': hport, 'proto': proto })
+    return portlst
+
+# endof utils.py
 
 # Below section is not in use yet
 
