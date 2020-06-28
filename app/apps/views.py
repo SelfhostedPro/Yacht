@@ -171,13 +171,9 @@ def conv_volumes2data(data):
 # ]
 def conv_env2data(data):
     # Set is depracated. Name is the actual value. Label is the name of the field.
+    # Label is the label of the label field. 
     delim = '='
-    env = []
-    for d in data:
-        key = d['label']
-        val = d['name'] if d['name'] else d['default']
-        env.append(delim.join((key, val)))
-    return env
+    return [delim.join((d['name'], d['default'])) for d in data]
 
 def launch_container(name, image, ports, volumes, env):
     dclient = docker.from_env()
