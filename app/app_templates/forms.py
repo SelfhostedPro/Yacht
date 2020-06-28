@@ -35,7 +35,7 @@ def validate_json(form, field): ### Make sure they're trying to download a json 
 
 def validate_json_content(form, field): ### Verify that the file is a valid json file
     with urllib.request.urlopen(field.data) as file:
-        try: 
+        try:
             print(file)
             return json.load(file)
         except:
@@ -60,17 +60,16 @@ def reject_compose_duplicates(form, field): ### Same as above but for compose (n
         raise ValidationError('Template name already exists')
     elif Compose.query.filter_by(url=field.data).first():
         raise ValidationError('Template url already exists')
+
 ### Form for adding a new template
 class TemplateForm(FlaskForm):
     template_name = StringField('Template Name', validators=[InputRequired(), reject_template_duplicates])
     template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error'), reject_template_duplicates, validate_json, validate_json_content])
     submit = SubmitField('Add Template')
+
 ### Form for adding a compose temmplate (Not in use yet)
 class ComposeForm(FlaskForm):
     template_name = StringField('Template Name', validators=[InputRequired(), reject_compose_duplicates])
     template_url = URLField( 'Template URL', validators=[InputRequired(), URL(message='error'), reject_compose_duplicates, validate_yaml])
     description = TextAreaField( 'Template Description', validators=[InputRequired()])
     submit = SubmitField('Add Compose Template')
-
-
-

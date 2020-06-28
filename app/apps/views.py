@@ -28,7 +28,6 @@ import docker
 
 apps = Blueprint('apps', __name__)
 
-
 @apps.route('/')
 @login_required
 @admin_required
@@ -52,81 +51,154 @@ def view_apps():
 @admin_required
 def deploy_app(app_id):
     """ Form to deploy an app """
-    app = Template_Content.query.filter_by(id=app_id).first()
-    if app.ports:
-        if type(app.ports[0]) != type(dict()):
-            app.ports = tansform_port_form(app)
-    form = DeployForm(request.form, obj=app)  # Set the form for this page
-    volumes = app.volumes
-    ports = app.ports
-    env = app.env
-    notes = app.notes
-    form.ports.data.append(ports)
+    app = Template_Content.query.get_or_404(app_id)
 
+    # only in request.method == 'GET' or not form.is_submitted()
+    if not form.is_submitted():
+        # Reformat the loaded template during the migration of apps.
+        # Move this code to app_templates/views/new_template to
+        # validate and customize template. [conv_ports2dict(...)]
+        try: app.ports = conv_ports2form(app.ports)
+        except (TypeError, ValueError) as err: raise
+
+    form = DeployForm(request.form, obj=app)  # Set the form for this page
     if form.validate_on_submit():
         print('valid')
-        if form.env.data:
-            env = transform_env_data(form)
-        if form.ports.data:
-            transformed_ports = transform_port_data(form)
-        if form.volumes.data:
-            volumes = transform_volume_data(form)
+        try:
+            launch_container(
+                form.name.data,
+                form.image.data,
+                conv_ports2data(form.ports.data),
+                conv_volumes2data(form.volumes.data),
+                conv_env2data(form.env.data))
+        except Exception as exc: raise
         print('stop')
-        launch_container(form, volumes, transformed_ports, env)
         return redirect(url_for('apps.index'))
+
     return render_template('apps/deploy_app.html', **locals())
 
-def tansform_port_form(app):
-    port_list = []
-    port_dict = {}
-    master_port_list = []
-    for port_data in app.ports:
-        separator = ':'
-        if separator in port_data:
-            port_list.append(port_data.split(separator))
-        else: 
-            port_list.append((None, port_data))
-    for container, host in port_list:
-        port_dict['container'] = container
-        port_dict['host'] = host
-        master_port_list.append(port_dict)
-    return master_port_list
+# begin utils.py
+# Note: I use a different folder structure in my project.
 
+import re
 
-def transform_volume_data(form):
-    devices_dict = {}
-    for volume_data in form.volumes.data:
-        devices_dict.update(
-            {volume_data['bind']: {'bind': volume_data['container'], 'mode': 'rw'}})
-    return devices_dict
+REGEXP_PORT_ASSIGN = r'^(?:\d{1,5}\:)?\d{1,5}/(?:tcp|udp)$'
 
+# Input Format:
+# [
+#     '80:8080/tcp',
+#     '123:123/udp'
+#     '4040/tcp',
+# ]
+# Result Format:
+# [
+#     {
+#         'cport': '80',
+#         'hport': '8080',
+#         'proto': 'tcp',
+#     },
+#     ...
+# ]
+def conv_ports2form(data):
+    if not all(isinstance(x, str) for x in data):
+        raise TypeError('Expected list or str types.')
+    if not all(re.match(REGEXP_PORT_ASSIGN, x, flags=re.IGNORECASE) for x in data):
+        raise ValueError('Malformed port assignment.')
 
-def transform_port_data(form):
-    return dict(d.values() for d in form.ports.data)
+    delim = ':'
+    portlst = []
+    for port_data in data:
+        cport,hport = None,port_data
+        if delim in hport:
+            cport,hport = hport.split(delim, 1)
+        hport,proto = hport.split('/', 1)
+        portlst.append({ 'cport': cport, 'hport': hport, 'proto': proto })
+    return portlst
 
-def transform_env_data(form):
-    env_list = []
-    for env_data in form.env.data:
-        separator = '='
-        env_list.append(separator.join(env_data.values()))
-    print(env_list)
-    return env_list
+# Input Format:
+# [
+#     {
+#         'cport': '53',
+#         'hport': '53',
+#         'proto': 'tcp',
+#     },
+#     ...
+# ]
+# Result Format:
+# {
+#     '53/tcp': ('0.0.0.0', 53),
+#     '53/udp': ('0.0.0.0', 53),
+#     '67/udp': ('0.0.0.0', 67),
+#     '80/tcp': ('0.0.0.0', 1010),
+#     '443/tcp': ('0.0.0.0', 4443)
+# }
+def conv_ports2data(data):
+    ports = {}
+    for d in data:
+        cport,hport,proto = d.values()
+        if not cport: cport = None
+        ports['/'.join((str(hport), proto))] = ('0.0.0.0', cport)
+    return ports
 
+# Input Format:
+# [
+#     {
+#         'container': '/mnt/vol2',
+#         'bind': '/home/user1'
+#     }
+#     ...
+# ]
+# Result Format:
+# {
+#     '/home/user1/': {'bind': '/mnt/vol2', 'mode': 'rw'},
+#     '/var/www': {'bind': '/mnt/vol1', 'mode': 'ro'}
+# }
+def conv_volumes2data(data):
+    return dict((d['bind'], {'bind': d['container'], 'mode': 'rw'}) for d in data)
 
-def launch_container(form, volumes, transformed_ports, env):
+# Input Format:
+# [
+#     {
+#         'label': 'SOMEVARIABLE',
+#         'name': None,
+#         'default': '1000'
+#     }
+#     ...
+# ]
+# Result Format:
+# [
+#     "SOMEVARIABLE=xxx", "OTHERVARIABLE=yyy"
+# ]
+def conv_env2data(data):
+    # Set is depracated. Name is the actual value. Label is the name of the field.
+    delim = '='
+    env = []
+    for d in data:
+        key = d['label']
+        val = d['name'] if d['name'] else d['default']
+        env.append(delim.join((key, val)))
+    return env
+
+def launch_container(name, image, ports, volumes, env):
     dclient = docker.from_env()
     dclient.containers.run(
-        name=form.name.data,
-        image=form.image.data,
+        name=name,
+        image=image,
         volumes=volumes,
         environment=env,
-        ports=transformed_ports,
+        ports=ports,
         restart_policy={"Name": 'unless-stopped'},
         detach=True
     )
-    print("something")
+    print(f'''Container started successfully.
+       Name: {name},
+      Image: {image},
+      Ports: {ports},
+    Volumes: {volumes},
+        Env: {env}''')
     return
 
+# endof utils.py
 
 @apps.route('/view')
 @login_required
