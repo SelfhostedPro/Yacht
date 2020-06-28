@@ -52,6 +52,7 @@ def view_apps():
 def deploy_app(app_id):
     """ Form to deploy an app """
     app = Template_Content.query.get_or_404(app_id)
+    form = DeployForm(request.form, obj=app)  # Set the form for this page
 
     # only in request.method == 'GET' or not form.is_submitted()
     if not form.is_submitted():
@@ -61,7 +62,6 @@ def deploy_app(app_id):
         try: app.ports = conv_ports2form(app.ports)
         except (TypeError, ValueError) as err: raise
 
-    form = DeployForm(request.form, obj=app)  # Set the form for this page
     if form.validate_on_submit():
         print('valid')
         try:
