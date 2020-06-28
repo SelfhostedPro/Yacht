@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import Form as NoCsrfForm
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.fields import (
-    FormField
+    FormField,
     FieldList,
     HiddenField,
     IntegerField,
@@ -22,8 +22,9 @@ from wtforms.validators import (
     InputRequired,
     Length,
     NumberRange,
+    Optional,
     Regexp,
-    URL
+    URL,
     ValidationError
 )
 from app import db
@@ -83,11 +84,15 @@ class _PortForm(NoCsrfForm):
 class _VolumeForm(NoCsrfForm):
     container = StringField(
         'Container Path',
-        validators=[]
+        validators=[
+#            InputRequired()
+        ]
     )
     bind = StringField(
         'Host Path',
-        validators=[]
+        validators=[
+#            InputRequired()
+        ]
     )
 
 class _EnvForm(NoCsrfForm):

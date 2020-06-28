@@ -18,3 +18,7 @@ dump.rdb
 app/storage
 migrations/
 config/
+
+
+.ftpconfig
+.ftpignore

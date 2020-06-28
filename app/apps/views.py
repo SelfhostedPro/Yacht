@@ -51,18 +51,19 @@ def view_apps():
 @admin_required
 def deploy_app(app_id):
     """ Form to deploy an app """
-    app = Template_Content.query.filter_by(id=app_id).first()
+    # app = Template_Content.query.filter_by(id=app_id).first()
+    app = Template_Content.query.get_or_404(app_id)
 
-    try: item.ports = conv_ports2form(item.ports)
-    except (TypeError, ValueError) as err: raise
+    # only in request.method == 'GET' or not form.is_submitted()
+    if not form.is_submitted():
+        try: app.ports = conv_ports2form(app.ports)
+        except (TypeError, ValueError) as err: raise
 
     form = DeployForm(request.form, obj=app)  # Set the form for this page
     if form.validate_on_submit():
         print('valid')
         try:
             launch_container(
-                form.name.data,
-                form.image.data,
                 form.name.data,
                 form.image.data,
                 conv_ports2data(form.ports.data),
