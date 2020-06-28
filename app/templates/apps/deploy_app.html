@@ -44,16 +44,24 @@
                             {% for p in form.ports %}
                                 <div class="row" data-toggle="fieldset-item" >
                                     <div class="column">
-                                        {{ p.form.container.label(class="col-sm-2 col-form-label") }}
+                                        {{ p.form.cport.label(class="col-sm-2 col-form-label") }}
                                         <div class="ui fluid icon input">
-                                            {{ p.form.container(class="form-control") }}
+                                            {{ p.form.cport(class="form-control") }}
                                             <i class="server icon"></i>
                                         </div>
                                     </div>
-                                        <div class="column">
-                                        {{ p.form.host.label(class="col-sm-2 col-form-label") }}
+                                    <div class="column">
+                                        {{ p.form.hport.label(class="col-sm-2 col-form-label") }}
                                         <div class="ui fluid right action left icon input">
-                                            {{ p.form.host(class="form-control") }}
+                                            {{ p.form.hport(class="form-control") }}
+                                            <i class="hdd icon"></i>
+                                            <button class="ui icon button" type="button" data-toggle="fieldset-remove-item" data-target="#fieldset-ports"><i class="icon minus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="column">
+                                        {{ p.form.proto.label(class="col-sm-2 col-form-label") }}
+                                        <div class="ui fluid right action left icon input">
+                                            {{ p.form.proto(class="form-control") }}
                                             <i class="hdd icon"></i>
                                             <button class="ui icon button" type="button" data-toggle="fieldset-remove-item" data-target="#fieldset-ports"><i class="icon minus"></i></button>
                                         </div>
@@ -93,6 +101,7 @@
                     <div class="ui two column very relaxed centered grid" id="fieldset-env">
                             <button class="circular ui icon button" type="button" data-toggle="fieldset-add-item" data-target="#fieldset-env"><i class="icon plus"></i></button>
                             {% for e in form.env %}
+                            {{ field.form.default(class='form-control') }}
                             <div class="row" data-toggle="fieldset-item">
                                 <div class="column">
                                     {{ e.form.label.label(class="col-sm-2 col-form-label") }}
@@ -102,9 +111,9 @@
                                     </div>
                                 </div>
                                     <div class="column">
-                                    {{ e.form.default.label(class="col-sm-2 col-form-label") }}
+                                    {{ e.form.name.label(class="col-sm-2 col-form-label") }}
                                     <div class="ui fluid right action left icon input">
-                                        {{ e.form.default(class="form-control") }}
+                                        {{ e.form.name(class="form-control") }}
                                         <i class="code icon"></i>
                                         <button class="ui icon button" type="button" data-toggle="fieldset-remove-item" data-target="#fieldset-env"><i class="icon minus"></i></button>
                                     </div>
