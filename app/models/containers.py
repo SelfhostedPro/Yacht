@@ -6,13 +6,13 @@ class Template(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
     url = db.Column(db.String(256), unique=True)
-    items = db.relationship('Template_Content', backref='template', cascade="save-update, merge, delete", lazy='dynamic') ### Makes sure template contents are deleted if a template is
+    items = db.relationship('TemplateContent', backref='template', cascade="save-update, merge, delete", lazy='dynamic') ### Makes sure template contents are deleted if a template is
 
     #def __repr__(self):
      #   return f"('{self.name}', '{self.url}', '{self.path}')"
 
-class Template_Content(db.Model):
-    __tablename__ = 'template_conent'
+class TemplateContent(db.Model):
+    __tablename__ = 'template_content'
     id = db.Column(db.Integer, primary_key=True)
     # type = db.Column(db.String(1))
     type = db.Column(db.Integer)
