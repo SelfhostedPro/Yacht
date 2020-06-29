@@ -36,6 +36,10 @@ from urllib.parse import urlparse
 import urllib.request
 import docker
 
+def validate_name(self, field):
+    dclient = docker.from_env()
+    if any(app.name == field.data for app in dclient.containers.list(all=True)):
+        raise ValidationError('name already exists')
 
 # def validate_ports(self, field):
 #     dclient = docker.from_env()
@@ -112,18 +116,18 @@ class _EnvForm(NoCsrfForm):
     # label = HiddenField('Label')
     # deprecated:
     # set = StringField('Set')
-
+class _SysctlsForm(NoCsrfForm):
+    name = StringField('Name')
+    value = StringField('Value')
 
 class DeployForm(FlaskForm):
-    name = StringField('App Name', validators=[InputRequired()])
+    name = StringField('App Name', validators=[InputRequired(), validate_name])
     image = StringField('Image', validators=[InputRequired()])
     ports = FieldList(FormField(_PortForm))
     volumes = FieldList(FormField(_VolumeForm))
     env = FieldList(FormField(_EnvForm))
+    sysctls = FieldList(FormField(_SysctlsForm))
     restart_policy = StringField('Restart Policy')
     submit = SubmitField('Deploy App')
 
-    def validate_name(self, field):
-        dclient = docker.from_env()
-        if any(app.name == field.data for app in dclient.containers.list(all=True)):
-            raise ValidationError('name already exists')
+

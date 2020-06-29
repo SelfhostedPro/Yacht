@@ -16,7 +16,7 @@ from app.app_templates.forms import (
 )
 from app.decorators import admin_required
 from app.email import send_email
-from app.models import Template, Template_Content, Compose
+from app.models import Template, TemplateContent, Compose
 
 import wget
 import os  # used for getting file type and deleting files
@@ -60,20 +60,18 @@ def template_info(template_id):
 @admin_required
 def template_content(template_id):
     """ Generate a list of apps associated with the template based on id """
-    template = Template.query.filter_by(id=template_id).first()
-    template_list = Template_Content.query.filter_by(
-        template_id=template_id).all()
-    app_names = []
-    app_logos = []
-    for n in template_list:
-        app_names.append(n.title)
-    for l in template_list:
-        app_logos.append(l.logo)
-    # Combine the names and urls into a turple in order to refrence them together in a list
-    apps = tuple(zip(app_names, app_logos))
-    sorted_apps = sorted(apps)
-    print(apps)
-    return render_template('app_templates/manage_templates.html', template=template, apps=sorted_apps)
+    template = Template.query.get_or_404(template_id)
+    apps = TemplateContent.query.join(
+        Template, Template.id == TemplateContent.template_id
+    ).with_entities(
+        TemplateContent.title,
+        TemplateContent.logo
+    ).filter(
+        TemplateContent.template_id==template_id
+    ).order_by(
+        TemplateContent.title.asc()
+    ).all()
+    return render_template('app_templates/manage_templates.html', **locals())
 
 
 @templates.route('/apps/<int:template_id>/delete')
@@ -123,8 +121,8 @@ def new_template():
                     ports = conv_ports2form(entry.get('ports', []))
 
                     # Optional use classmethod from_dict
-                    template_content = Template_Content(
-                        type=int(entry['type']), 
+                    template_content = TemplateContent(
+                        type=int(entry['type']),
                         title=entry['title'],
                         platform=entry['platform'],
                         description=entry.get('description', ''),
@@ -134,13 +132,15 @@ def new_template():
                         notes=entry.get('note', ''),
                         categories=entry.get('categories', ''), # default: '' or []
                         restart_policy=entry.get('restart_policy'),
+                        sysctls=entry.get('sysctls'),
                         ports=ports,
                         volumes=entry.get('volumes'),
                         env=entry.get('env'),
                     )
                     template.items.append(template_content)
         except (OSError, TypeError, ValueError) as err:
-            print('data request failed')
+            # Optional handle KeyError here too.
+            print('data request failed', err)
             raise
 
         try:

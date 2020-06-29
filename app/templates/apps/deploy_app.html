@@ -120,6 +120,30 @@
                             {% endfor %}
                         </div>
                     {% endif %}
+                    <div class=" ui horizontal section divider "> Sysctls </div>
+                    <div class="ui two column very relaxed centered grid" id="fieldset-sysctls">
+                        <button class="circular ui icon button" type="button" data-toggle="fieldset-add-item" data-target="#fieldset-sysctls"><i class="icon plus"></i></button>
+                        {% if form.sysctls %}
+                            {% for s in form.sysctls %}
+                                <div class="row" data-toggle="fieldset-item" >
+                                    <div class="column">
+                                        {{ s.form.name.label(class="col-sm-2 col-form-label") }}
+                                        <div class="ui fluid icon input">
+                                            {{ s.form.name(class="form-control") }}
+                                            <i class="server icon"></i>
+                                        </div>
+                                    </div>
+                                        <div class="column">
+                                        {{ s.form.value.label(class="col-sm-2 col-form-label") }}
+                                        <div class="ui fluid right action left icon input">
+                                            {{ s.form.value(class="form-control") }}
+                                            <i class="hdd icon"></i>
+                                            <button class="ui icon button" type="button" data-toggle="fieldset-remove-item" data-target="#fieldset-sysctls"><i class="icon minus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                        {% endif %}
                     <div class="ui hidden divider"></div>
                         <button type="submit" class="ui right floated labeled icon button">
                             <i class="play icon"></i>
