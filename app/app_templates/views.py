@@ -140,7 +140,7 @@ def new_template():
                     template.items.append(template_content)
         except (OSError, TypeError, ValueError) as err:
             # Optional handle KeyError here too.
-            print('data request failed')
+            print('data request failed', err)
             raise
 
         try:

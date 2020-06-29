@@ -53,6 +53,8 @@ def view_apps():
 def deploy_app(app_id):
     """ Form to deploy an app """
     app = TemplateContent.query.get_or_404(app_id)
+    if app.sysctls and 'name' not in app.sysctls[0]:
+        app.sysctls = conv_ctls2form(app.sysctls)
     form = DeployForm(request.form, obj=app)
     if form.validate_on_submit():
         print('valid')
@@ -142,11 +144,20 @@ def conv_env2data(data):
 # Result Format:
 #
 # {"sysctl_name": "sysctl_value"}
+def conv_ctls2form(data):
+    if not all(isinstance(x, dict) for x in data):
+        raise TypeError('Expected list of str types.')
+
+    return [{'name':k,'value':v} for d in data for k,v in d.items()]
 
 def conv_sysctls2data(data):
-    return {k:v for element in data for k,v in element.items()}
+    if data:
+        return dict((d['name'], d['value']) for d in data)
+    else:
+        sysctls = None
+        return sysctls
 
-def launch_container(name, image, ports, volumes, env, sysctl):
+def launch_container(name, image, ports, volumes, env, sysctls):
     dclient = docker.from_env()
     dclient.containers.run(
         name=name,
