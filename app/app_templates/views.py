@@ -132,6 +132,7 @@ def new_template():
                         notes=entry.get('note', ''),
                         categories=entry.get('categories', ''), # default: '' or []
                         restart_policy=entry.get('restart_policy'),
+                        sysctls=entry.get('sysctls'),
                         ports=ports,
                         volumes=entry.get('volumes'),
                         env=entry.get('env'),

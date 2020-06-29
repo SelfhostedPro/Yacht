@@ -14,7 +14,8 @@ from app.apps.forms import (
     DeployForm,
     _VolumeForm,
     _EnvForm,
-    _PortForm
+    _PortForm,
+    _SysctlsForm
 )
 from app.decorators import admin_required
 from app.email import send_email
@@ -61,7 +62,8 @@ def deploy_app(app_id):
                 form.image.data,
                 conv_ports2data(form.ports.data),
                 conv_volumes2data(form.volumes.data),
-                conv_env2data(form.env.data))
+                conv_env2data(form.env.data),
+                conv_sysctls2data(form.sysctls.data))
         except Exception as exc: raise
         print('stop')
         return redirect(url_for('apps.index'))
@@ -135,7 +137,16 @@ def conv_env2data(data):
     delim = '='
     return [delim.join((d['name'], d['default'])) for d in data]
 
-def launch_container(name, image, ports, volumes, env):
+# Input Format:
+# [{"sysctl_name": "sysctl_value"}]
+# Result Format:
+#
+# {"sysctl_name": "sysctl_value"}
+
+def conv_sysctls2data(data):
+    return {k:v for element in data for k,v in element.items()}
+
+def launch_container(name, image, ports, volumes, env, sysctl):
     dclient = docker.from_env()
     dclient.containers.run(
         name=name,
@@ -143,6 +154,7 @@ def launch_container(name, image, ports, volumes, env):
         volumes=volumes,
         environment=env,
         ports=ports,
+        sysctls=sysctls,
         restart_policy={"Name": 'unless-stopped'},
         detach=True
     )

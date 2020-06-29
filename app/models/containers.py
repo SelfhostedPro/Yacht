@@ -25,6 +25,7 @@ class TemplateContent(db.Model):
     categories = db.Column(db.JSON)
     platform = db.Column(db.String(20))
     restart_policy = db.Column(db.String(20))
+    sysctls = db.Column(db.JSON, nullable=True)
     ports = db.Column(db.JSON, nullable=True)
     volumes = db.Column(db.JSON, nullable=True)
     env = db.Column(db.JSON, nullable=True)
