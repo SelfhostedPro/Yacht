@@ -14,7 +14,8 @@ from app.apps.forms import (
     DeployForm,
     _VolumeForm,
     _EnvForm,
-    _PortForm
+    _PortForm,
+    _SysctlsForm
 )
 from app.decorators import admin_required
 from app.email import send_email
@@ -52,6 +53,8 @@ def view_apps():
 def deploy_app(app_id):
     """ Form to deploy an app """
     app = TemplateContent.query.get_or_404(app_id)
+    if app.sysctls and 'name' not in app.sysctls[0]:
+        app.sysctls = conv_ctls2form(app.sysctls)
     form = DeployForm(request.form, obj=app)
     if form.validate_on_submit():
         print('valid')
@@ -61,7 +64,8 @@ def deploy_app(app_id):
                 form.image.data,
                 conv_ports2data(form.ports.data),
                 conv_volumes2data(form.volumes.data),
-                conv_env2data(form.env.data))
+                conv_env2data(form.env.data),
+                conv_sysctls2data(form.sysctls.data))
         except Exception as exc: raise
         print('stop')
         return redirect(url_for('apps.index'))
@@ -135,7 +139,25 @@ def conv_env2data(data):
     delim = '='
     return [delim.join((d['name'], d['default'])) for d in data]
 
-def launch_container(name, image, ports, volumes, env):
+# Input Format:
+# [{"sysctl_name": "sysctl_value"}]
+# Result Format:
+#
+# {"sysctl_name": "sysctl_value"}
+def conv_ctls2form(data):
+    if not all(isinstance(x, dict) for x in data):
+        raise TypeError('Expected list of str types.')
+
+    return [{'name':k,'value':v} for d in data for k,v in d.items()]
+
+def conv_sysctls2data(data):
+    if data[0]['name']:
+        return dict((d['name'], d['value']) for d in data)
+    else:
+        sysctls = None
+        return sysctls
+
+def launch_container(name, image, ports, volumes, env, sysctls):
     dclient = docker.from_env()
     dclient.containers.run(
         name=name,
@@ -143,6 +165,7 @@ def launch_container(name, image, ports, volumes, env):
         volumes=volumes,
         environment=env,
         ports=ports,
+        sysctls=sysctls,
         restart_policy={"Name": 'unless-stopped'},
         detach=True
     )

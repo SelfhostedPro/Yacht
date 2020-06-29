@@ -1,0 +1,109 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('templates.template_content', template_id=template.id) }}">
+                <i class="caret left icon"></i>
+                Back to all templates
+            </a>
+            <a class="ui basic compact right floated button" href="{{ url_for('apps.deploy_app', app_id=app.id,) }}">
+                <i class="rocket icon"></i>
+                Deploy Application
+            </a>
+        </div>
+        <div class="twelve wide column">
+        <img class="ui bordered circular image" src={{ app.logo|tojson }} style="width:200px;height:200px;object-fit:contain;object-position:center;">
+            <h2 class="ui header">
+                {{ app.name }}
+                <div class="sub header">View and deploy {{ app.name }}.</div>
+            </h2>
+            </p> {{ app.description }} </p>
+            {% if app.notes %}
+            <div class="ui message">
+                <div class="header">
+                    Note:
+                </div>
+                <p>
+                    {{ app.notes }}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    <div class="twelve wide column">
+            <div class=" ui horizontal section divider "> General </div>
+                <table class="ui green definition table">
+                    <tr><td>Title</td><td>{{ app.title }}</td></tr>
+                    <tr><td>Name</td><td>{{ app.name }}</td></tr>
+                    <tr><td>Image</td><td>{{ app.image }}</td></tr>
+                    <tr><td>Platform</td><td>{{ app.platform }}</td></tr>
+                    <tr><td>Categories</td><td>{% for category in app.categories %} {{ category }} {%endfor%}</td></tr>
+                    <tr><td>Template Name</td><td>{{ template.name }}</td></tr>
+                    <tr><td>Template URL</td><td>{{ template.url }}</td></tr>
+                </table>
+    {% if app.volumes %}
+        <div class="six wide column">
+            <div class=" ui horizontal section divider "> Volumes </div>
+            <table class="ui selectable blue table">
+                <thead>
+                    <tr>
+                        <th>Container Path</th>
+                        <th>Host Path</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mount in app.volumes %}
+                        <tr>
+                            <td>{{ mount.get('bind') }}</td>
+                            <td>{{ mount.get('container') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    {% if app.ports %}
+        <div class="six wide column">
+            <div class="ui horizontal section divider "> Networking </div>
+            <table class="ui selectable orange table">
+                <thead>
+                    <tr>
+                        <th>Host Port</th>
+                        <th>Container Port</th>
+                        <th>Protocol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for port in app.ports %}
+                    <tr>
+                        <td>{{port.get('hport')}}</td>
+                        <td>{{port.get('cport')}}</td>
+                        <td>{{port.get('proto')}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    {% if app.env %}
+        <div class="sixteen wide column">
+            <div class=" ui horizontal section divider "> Environment Variables </div>
+            <table class="ui selectable yellow table">
+                <thead>
+                    <tr>
+                        <th>Variable Name</th>
+                        <th class="right aligned">Variable Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for env in app.env %}
+                    <tr>
+                        <td>{{ env.get('name') }}</td>
+                        <td class="right aligned">{{ env.get('default') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
