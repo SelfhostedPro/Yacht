@@ -6,6 +6,7 @@
 {% set endpoints = [
     ('templates.template_info', 'Template Information'),
     ('templates.template_content', 'Template Content'),
+    ('templates.update', 'Update Template'),
     (deletion_endpoint, 'Delete Template')
 ] %}
 
@@ -42,9 +43,6 @@
         <div class="stretched divided very relaxed row">
             <div class="four wide column">
                 {{ navigation(endpoints) }}
-                <!-- HERE!!!! -->
-                <a href="{{ url_for('templates.update', template_id=template.id) }}">Update Template</a>
-                <!-- HERE!!!! -->
             </div>
             <div class="ten wide column"> {# Show deletion tab if it's clicked on #}
                 {% if request.endpoint == deletion_endpoint %}
