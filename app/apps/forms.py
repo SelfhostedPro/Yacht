@@ -126,7 +126,7 @@ class DeployForm(FlaskForm):
     ports = FieldList(FormField(_PortForm))
     volumes = FieldList(FormField(_VolumeForm))
     env = FieldList(FormField(_EnvForm))
-    sysctls = FieldList(FormField(_SysctlsForm))
+    sysctls = FieldList(FormField(_SysctlsForm), min_entries=1)
     restart_policy = StringField('Restart Policy')
     submit = SubmitField('Deploy App')
 

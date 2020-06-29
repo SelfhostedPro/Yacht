@@ -73,13 +73,28 @@
                 {% elif apps %} {# Show application list #}
                     <div class=" ui horizontal section divider "> Apps </div>
                         <div class="ui three column middle aligned centered grid">
+                            <div class="ui three stackable raised blue link cards">
                             {%- for app in apps %}
-                            <div class="column">
-                                <div class="ui circular mini center compact aligned  black segment">
-                                    <img class="ui mini centered avatar image" src={{ app.logo|tojson }}" style="height:50px;width:50px;>
-                                    <h5 class="ui header"> {{ app.title }} </h5>
+                            {# <div class="column"> #}
+                                <div class="card" onclick="window.location.href = '{{ url_for('templates.template_content_app', app_id=app.id, template_id=template.id) }}';">
+                                    <div class="ui centered image">
+                                    <img src={{ app.logo|tojson }} style="width:200px;height:200px;object-fit:contain;object-position:center;">
+                                    </div>
+                                    <div class="content">
+                                    <div class="header">{{ app.title }}</div>
+                                    <div class="meta">
+                                        {% for c in app.categories %}
+                                        <a> {{ c }} </a>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="description">
+                                        {% if app.description %}
+                                            {{ app.description| truncate(160, False) }}
+                                        {% endif %}
+                                    </div>
+                                    </div>
                                 </div>
-                            </div>
+                            {# </div> #}
                             {%- endfor %}
                         </div>
                     </div>

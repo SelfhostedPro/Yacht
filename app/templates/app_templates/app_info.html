@@ -1,0 +1,52 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+    <div class="ui stackable centered grid container">
+        <div class="twelve wide column">
+            <a class="ui basic compact button" href="{{ url_for('templates.template_content', template_id=template.id) }}">
+                <i class="caret left icon"></i>
+                Back to all templates
+            </a>
+        </div>
+        <div class="twelve wide column">
+        <img class="ui bordered circular image" src={{ app.logo|tojson }} style="width:200px;height:200px;object-fit:contain;object-position:center;">
+            <h2 class="ui header">
+                {{ app.name }}
+                <div class="sub header">View and deploy {{ app.name }}.</div>
+            </h2>
+        </div>
+        <div class=" ui horizontal section divider "> General </div>
+    <table class="ui compact definition table">
+        <tr><td>App Title</td><td>{{ app.title }}</td></tr>
+        <tr><td>App Name</td><td>{{ app.name }}</td></tr>
+        <tr><td>App Image</td><td>{{ app.image }}</td></tr>
+    </table>
+    <div class="ui horizontal section divider "> Networking </div>
+    <table class="ui compact definition table">
+        <tr><td>App Ports</td><td>
+        {% for port in app.ports %}
+            {% if port %}
+                {{port.get('hport')}},
+            {% endif %}
+        {% endfor %}
+        </td></tr>
+    </table>
+    <div class=" ui horizontal section divider "> Volumes </div>
+    <table class="ui collapsing searchable sortable two column unstackable selectable very basic table">
+        <thead>
+            <tr>
+                <th>Container Path</th>
+                <th>Host Path</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mount in app.volumes %}
+                {% if mount %}
+                <tr>
+                    <td>{{ mount.get('bind') }}</td>
+                    <td>{{ mount.get('container') }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+
+{% endblock %}

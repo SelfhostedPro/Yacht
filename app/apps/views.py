@@ -151,7 +151,7 @@ def conv_ctls2form(data):
     return [{'name':k,'value':v} for d in data for k,v in d.items()]
 
 def conv_sysctls2data(data):
-    if data:
+    if data[0]['name']:
         return dict((d['name'], d['value']) for d in data)
     else:
         sysctls = None

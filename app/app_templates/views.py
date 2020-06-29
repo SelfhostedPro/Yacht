@@ -65,13 +65,25 @@ def template_content(template_id):
         Template, Template.id == TemplateContent.template_id
     ).with_entities(
         TemplateContent.title,
-        TemplateContent.logo
+        TemplateContent.logo,
+        TemplateContent.description,
+        TemplateContent.categories,
+        TemplateContent.id
     ).filter(
         TemplateContent.template_id==template_id
     ).order_by(
         TemplateContent.title.asc()
     ).all()
     return render_template('app_templates/manage_templates.html', **locals())
+
+@templates.route('/templates/<int:template_id>/content/<int:app_id>')
+@login_required
+@admin_required
+def template_content_app(template_id, app_id):
+    template = Template.query.get_or_404(template_id)
+    app = TemplateContent.query.get_or_404(app_id)
+    return render_template('app_templates/app_info.html', **locals())
+
 
 
 @templates.route('/apps/<int:template_id>/delete')
