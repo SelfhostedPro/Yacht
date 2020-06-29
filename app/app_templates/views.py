@@ -25,6 +25,10 @@ import urllib.request
 import json  # Used for getting template data
 import docker
 
+# used to reset the object for later use within the db.session
+from sqlalchemy.orm.session import make_transient
+
+
 templates = Blueprint('templates', __name__)
 
 
@@ -86,6 +90,7 @@ def template_content_app(template_id, app_id):
 
 
 
+# combine those two using methods GET and POST
 @templates.route('/apps/<int:template_id>/delete')
 @login_required
 @admin_required
@@ -94,7 +99,7 @@ def delete_template_request(template_id):
     template = Template.query.get_or_404(template_id)
     return render_template('app_templates/manage_templates.html', template=template)
 
-
+# combine those two using methods GET and POST
 @templates.route('/apps/<int:template_id>/_delete')
 @login_required
 @admin_required
@@ -130,7 +135,7 @@ def new_template():
             with urllib.request.urlopen(template_url) as file:
                 for entry in json.load(file):
 
-                    ports = conv_ports2form(entry.get('ports', []))
+                    ports = conv_ports2dict(entry.get('ports', []))
 
                     # Optional use classmethod from_dict
                     template_content = TemplateContent(
@@ -189,7 +194,7 @@ REGEXP_PORT_ASSIGN = r'^(?:\d{1,5}\:)?\d{1,5}|\:\d{1,5}/(?:tcp|udp)$'
 #     },
 #     ...
 # ]
-def conv_ports2form(data):
+def conv_ports2dict(data):
     if not all(isinstance(x, str) for x in data):
         raise TypeError('Expected list or str types.')
     if not all(re.match(REGEXP_PORT_ASSIGN, x, flags=re.IGNORECASE) for x in data):
@@ -207,6 +212,58 @@ def conv_ports2form(data):
     return portlst
 
 # endof utils.py
+
+
+# should be HTTP POST request
+@templates.route('/templates/<int:template_id>/refresh')
+@login_required
+@admin_required
+def update(template_id):
+    template = Template.query.get_or_404(template_id)
+    items = []
+    try:
+        with urllib.request.urlopen(template.url) as fp:
+            for entry in json.load(fp):
+                # Optional use classmethod from_dict
+
+                ports = conv_ports2dict(entry.get('ports', []))
+
+                template_content = TemplateContent(
+                    type=int(entry['type']),
+                    title=entry['title'],
+                    platform=entry['platform'],
+                    description=entry.get('description', ''),
+                    name=entry.get('name', entry['title'].lower()),
+                    logo=entry.get('logo', ''),
+                    image=entry.get('image', ''),
+                    notes=entry.get('note', ''),
+                    categories=entry.get('categories', ''), # default: '' or []
+                    restart_policy=entry.get('restart_policy'),
+                    ports=ports,
+                    volumes=entry.get('volumes'),
+                    env=entry.get('env'),
+                )
+                items.append(template_content)
+    except Exception as exc:
+        # connection problems or incorrect JSON data
+        flash('Template update failed')
+    else:
+        db.session.delete(template)
+        db.session.commit()
+
+        make_transient(template)
+        template.id = None
+        template.items = items
+
+        try:
+            db.session.add(template)
+            db.session.commit()
+        except Exception as exc:
+            db.session.rollback()
+            raise
+
+    return redirect(url_for('templates.index'))
+
 
 # Below section is not in use yet
 
