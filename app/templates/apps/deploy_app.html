@@ -15,13 +15,13 @@
             <h2 class="ui header">
                 New App Template
                 <div class="sub header">Add a new app template</div>
-                {% if notes %}
+                {% if app.notes %}
                     <div class="ui mini floating compact message">
                     <div class="content">
                         <h3 class="ui small header">
                         Note:
                         </h3>
-                        <p style="font-weight: normal;">{{ notes }}</p>
+                        <p style="font-weight: normal;">{{ app.notes|safe }}</p>
                     </div>
                     </div>
                 {% endif %}
@@ -66,6 +66,13 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% endfor %}
+                                {% for subfield in form.ports %}
+                                    {% if subfield.errors %}
+                                        {% for error in subfield.errors.values() %}
+                                            <div class="ui red label" style="object-align:center;"> {{ error }} </div>
+                                        {% endfor %}
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                         {% endif %}

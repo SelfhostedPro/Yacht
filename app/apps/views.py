@@ -218,7 +218,7 @@ def container_actions(container_name, action):
         container.kill()
     elif action == 'remove':
         container.remove(force=True)
-        return redirect(url_for('apps.view_apps'))
+        return redirect(url_for('apps.running_apps'))
     else:
         print('else')
 
