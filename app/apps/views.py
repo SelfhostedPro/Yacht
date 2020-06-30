@@ -100,9 +100,9 @@ def deploy_app(app_id):
 def conv_ports2data(data):
     ports = {}
     for d in data:
-        cport,hport,proto = d.values()
-        if not cport: cport = None
-        ports['/'.join((str(hport), proto))] = ('0.0.0.0', cport)
+        hport,cport,proto = d.values()
+        if not hport: hport = None
+        ports['/'.join((str(cport), proto))] = ('0.0.0.0', hport)
     return ports
 
 # Input Format:

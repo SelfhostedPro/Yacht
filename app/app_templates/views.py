@@ -205,12 +205,12 @@ def conv_ports2dict(data):
     delim = ':'
     portlst = []
     for port_data in data:
-        cport,hport = None,port_data
-        if delim in hport:
-            cport,hport = hport.split(delim, 1)
-            if not cport: cport = None
-        hport,proto = hport.split('/', 1)
-        portlst.append({ 'cport': cport, 'hport': hport, 'proto': proto })
+        hport, cport = None,port_data
+        if delim in cport:
+            hport,cport = cport.split(delim, 1)
+            if not hport: hport = None
+        cport,proto = cport.split('/', 1)
+        portlst.append({ 'hport': hport, 'cport': cport, 'proto': proto })
     return portlst
 
 # endof utils.py
