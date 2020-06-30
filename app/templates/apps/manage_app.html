@@ -50,10 +50,12 @@
                 {% for cport, others in container.ports.items() %}
                     <tr>
                         <td>{{cport}}</td>
-                        {% for value in others %}
-                        <td>{{ value.get('HostIp') }}</td>
-                        <td>{{ value.get('HostPort') }}</td>
-                        {% endfor %}
+                        {% if others %}
+                            {% for value in others %}
+                            <td>{{ value.get('HostIp') }}</td>
+                            <td>{{ value.get('HostPort') }}</td>
+                            {% endfor %}
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>
