@@ -47,11 +47,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for port in container.ports %}
+                {% for cport, others in container.ports.items() %}
                     <tr>
-                        <td>{{container.ports[port][0].get('HostIp')}}</td>
-                        <td>{{container.ports[port][0].get('HostPort')}}</td>
-                        <td>{{port}}</td>
+                        <td>{{cport}}</td>
+                        {% for value in others %}
+                        <td>{{ value.get('HostIp') }}</td>
+                        <td>{{ value.get('HostPort') }}</td>
+                        {% endfor %}
                     </tr>
                 {% endfor %}
                 </tbody>
