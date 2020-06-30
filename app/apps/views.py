@@ -199,6 +199,15 @@ def container_info(container_name):
     container = dclient.containers.get(container_name)
     return render_template('apps/manage_app.html', container=container)
 
+@apps.route('/view/<container_name>/processes')
+@login_required
+@admin_required
+def container_processes(container_name):
+    """ View running processes """
+    dclient = docker.from_env()
+    container = dclient.containers.get(container_name)
+    processes = container.top()
+    return render_template('apps/manage_app.html', container=container, processes=processes)
 
 @apps.route('/view/<container_name>/<action>')
 @login_required
