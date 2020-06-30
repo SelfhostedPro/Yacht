@@ -1,4 +1,4 @@
-## Yacht 
+## Yacht
 Yacht is a flask based container management UI with a focus on templates and 1-click deployments.
 
 ## Demo:
