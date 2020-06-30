@@ -1,6 +1,7 @@
 from flask import render_template
 
 from app.main.views import main
+import traceback
 
 
 @main.app_errorhandler(403)
@@ -15,4 +16,6 @@ def page_not_found(_):
 
 @main.app_errorhandler(500)
 def internal_server_error(_):
-    return render_template('errors/500.html', exception=_), 500
+    raw_tb = traceback.format_exc()
+    tb = "<br />".join(raw_tb.split("\n"))
+    return render_template('errors/500.html', exception=_, tb=tb ), 500

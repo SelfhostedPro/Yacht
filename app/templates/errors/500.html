@@ -4,6 +4,9 @@
     <div class="ui text container">
         <h1 class="ui header">500</h1>
         <h2 class="ui header">Internal Server Error</h2>
-        <h3 class="ui header"> {{ exception.original_exception.explanation }} </h3>
+        <div class="ui raised very padded text container segment">
+            <h3 class="ui header"> {{ exception.original_exception.explanation }} </h3>
+            <p> {{ tb|safe }} </p>
+        </div>
     </div>
 {% endblock %}
