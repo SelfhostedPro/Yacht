@@ -41,7 +41,7 @@
             <table class="ui selectable orange table">
                 <thead>
                     <tr>
-                        <th>Container_Port</th>
+                        <th>Container Port</th>
                         <th>Host IP</th>
                         <th>Host Port</th>
                     </tr>
@@ -52,7 +52,7 @@
                         <td>{{cport}}</td>
                         {% for value in (others or [{}]) %}
                         <td>{{ value.get('HostIp') }}</td>
-                        <td>{{ value.get('HostPort') }}</td>
+                        <td><a href="{{ 'http://' + value.get('HostIp')+':'+ value.get('HostPort') }}">{{ value.get('HostPort') }}</a></td>
                         {% endfor %}
                     </tr>
                 {% endfor %}
