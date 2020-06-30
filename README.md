@@ -1,4 +1,5 @@
-## Yacht is a flask based container management UI with a focus on templates and 1-click deployments.
+## Yacht 
+Yacht is a flask based container management UI with a focus on templates and 1-click deployments.
 
 ## Demo:
 ![Tempaltes](readme_media/Yacht-Demo.gif "templates")
@@ -161,15 +162,6 @@ $ honcho start -e config.env -f Local
 ```
 
 For Windows users having issues with binding to a redis port locally, refer to [this issue](https://github.com/hack4impact/flask-base/issues/132).
-
-
-## Gettin up and running with Docker
-
-Currently we have a `Dockerfile` intended for testing purposes and it automates the whole cycle of running the application, setting up the database and redis. 
-
-##### Note
-
-A more robust version with docker-compose is being developed to separate redis in separate container and allow the deployment of production-level applications automatically without the need of manual provisioning
 
 ## Formatting code
 

@@ -5,6 +5,7 @@
 
 {% set endpoints = [
     ('apps.container_info', 'Container Information'),
+    ('apps.container_processes', 'Container Processes')
 ] %}
 
 {% macro navigation(items) %}
@@ -20,7 +21,7 @@
 {# Show data for container #}
 {% macro container_info(container) %}
     <div class=" ui horizontal section divider "> General </div>
-    <table class="ui compact definition table">
+    <table class="ui green definition table">
         <tr><td>Container Name</td><td>{{ container.name }}</td></tr>
         <tr><td>Container ID</td><td>{{ container.short_id }}</td></tr>
         <tr><td>Container Image</td><td>{{ container.image.tags[0] }}</td></tr>
@@ -34,43 +35,88 @@
         <a class="ui blue inverted button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='restart') }}';">Restart</a>
         <a class="ui red inverted button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='remove') }}';">Remove</a>
     </div>
-    <div class="ui horizontal section divider "> Networking </div>
-    <table class="ui compact definition table">
-        <tr><td>Container Ports</td><td>
-        {% for port in container.ports.values() %}
-            {% if port %}
-                {% for entry in port %}
-                    {{entry.get('HostIp')}}:{{entry.get('HostPort')}},
+    <div class="six wide column">
+        <div class="ui horizontal section divider "> Networking </div>
+        {% if container.ports.values() %}
+            <table class="ui selectable orange table">
+                <thead>
+                    <tr>
+                        <th>Host IP</th>
+                        <th>Host Port</th>
+                        <th>Container Port</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for port in container.ports %}
+                    <tr>
+                        <td>{{container.ports[port][0].get('HostIp')}}</td>
+                        <td>{{container.ports[port][0].get('HostPort')}}</td>
+                        <td>{{port}}</td>
+                    </tr>
                 {% endfor %}
-            {% endif %}
-        {% endfor %}
-        </td></tr>
-        <tr><td>Container IP</td><td>{{ container.attrs.NetworkSettings.get('IPAddress') }}</td></tr>
-    </table>
-    <div class=" ui horizontal section divider "> Volumes </div>
-    <table class="ui collapsing searchable sortable two column unstackable selectable very basic table">
+                </tbody>
+            </table>
+            <table class="ui orange definition table">
+                <tr><td>Container IP</td><td>{{ container.attrs.NetworkSettings.get('IPAddress') }}</td></tr>
+                <tr><td>Container Networks</td><td>{% for network in container.attrs.NetworkSettings.Networks.keys() %}{{ network }} {% endfor %}</td></tr>
+            </table>
+        </div>
+    {% endif %}
+    <div class="six wide column">
+        <div class=" ui horizontal section divider "> Volumes </div>
+    {% if container.attrs.Mounts %}
+        <table class="ui selectable blue table">
+            <thead>
+                <tr>
+                    <th>Container Path</th>
+                    <th>Host Path</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mount in container.attrs.Mounts %}
+                    <tr>
+                        <td>{{ mount.get('Destination') }}</td>
+                        <td>{{ mount.get('Source') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro container_process(container, processes) %}
+<div class="ui twelve wide column">
+    <div class=" ui horizontal section divider "> General </div>
+    {% if container.status == 'running' %}
+    <table class="ui red small sortable compact table">
         <thead>
             <tr>
-                <th>Container Path</th>
-                <th>Host Path</th>
+            {% for title in processes.get('Titles') %}
+                <th>{{title}}</th>
+            {% endfor %}
             </tr>
         </thead>
         <tbody>
-            {% for mount in container.attrs.Mounts %}
-                {% if mount %}
-                <tr>
-                    <td>{{ mount.get('Destination') }}</td>
-                    <td>{{ mount.get('Source') }}</td>
-                </tr>
-                {% endif %}
+            {% for process in processes.get('Processes') %}
+            <tr>
+                {% for item in process %}
+                <td>
+                    {{ item }}
+                </td>
+                {% endfor %}
+            </tr>
             {% endfor %}
         </tbody>
+    </table>
+    {% endif %}
+</div>
 {% endmacro %}
 
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
-            <a class="ui basic compact button" href="{{ url_for('apps.running_apps') }}">
+            <a class="ui compact basic button" href="{{ url_for('apps.running_apps') }}">
                 <i class="caret left icon"></i>
                 Back to all containers
             </a>
@@ -108,8 +154,8 @@
                         </a>
                     </div>
                     </div>
-                {% elif form %} {# Not currently used #}
-                    {{ f.render_form(form) }}
+                {% elif processes %} {# Not currently used #}
+                    {{ container_process(container, processes) }}
                 {% else %} {# Show container info listed above #}
                     {{ container_info(container) }}
                 {% endif %}

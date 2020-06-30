@@ -49,17 +49,6 @@ def validate_host_port(self, field):
                 raise ValidationError('Host port ' + _host_port + ' already exists')
 
 class _PortForm(NoCsrfForm):
-    cport = IntegerField('Container Port',
-        description='The port exposed by the container.',
-        validators=[
-            Optional(),
-            NumberRange(0, 65535)
-        ],
-        render_kw={
-            'placeholder': 'Container Port',
-            'aria-discribedby': 'Container Port',
-        }
-    )
     hport = IntegerField('Host Port',
         description='The port exposed by the host.',
         validators=[
@@ -69,6 +58,17 @@ class _PortForm(NoCsrfForm):
         render_kw={
             'placeholder': 'Host Port',
             'aria-discribedby': 'Host Port',
+        }
+    )
+    cport = IntegerField('Container Port',
+        description='The port exposed by the container.',
+        validators=[
+            Optional(),
+            NumberRange(0, 65535)
+        ],
+        render_kw={
+            'placeholder': 'Container Port',
+            'aria-discribedby': 'Container Port',
         }
     )
     proto = SelectField('Protocol',
