@@ -52,8 +52,8 @@ class _PortForm(NoCsrfForm):
     hport = IntegerField('Host Port',
         description='The port exposed by the host.',
         validators=[
+            Optional(),
             NumberRange(0, 65535),
-            validate_host_port
         ],
         render_kw={
             'placeholder': 'Host Port',
@@ -64,7 +64,6 @@ class _PortForm(NoCsrfForm):
         description='The port exposed by the container.',
         validators=[
             Optional(),
-            NumberRange(0, 65535)
         ],
         render_kw={
             'placeholder': 'Container Port',
