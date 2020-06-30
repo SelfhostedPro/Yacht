@@ -17,14 +17,14 @@
                 {{ app.name }}
                 <div class="sub header">View and deploy {{ app.name }}.</div>
             </h2>
-            </p> {{ app.description }} </p>
+            </p> {{ app.description|safe }} </p>
             {% if app.notes %}
             <div class="ui message">
                 <div class="header">
                     Note:
                 </div>
                 <p>
-                    {{ app.notes }}
+                    {{ app.notes|safe }}
                 </p>
             </div>
             {% endif %}

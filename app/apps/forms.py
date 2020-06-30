@@ -41,12 +41,12 @@ def validate_name(self, field):
     if any(app.name == field.data for app in dclient.containers.list(all=True)):
         raise ValidationError('name already exists')
 
-# def validate_ports(self, field):
-#     dclient = docker.from_env()
-#     for app in dclient.containers.list(all=True):
-#         for _host_port in app.ports.keys():
-#             if host_port == _host_port:
-#                 raise ValidationError('port already exists')
+def validate_host_port(self, field):
+    dclient = docker.from_env()
+    for app in dclient.containers.list(all=True):
+        for _host_port in app.ports.keys():
+            if str(field.data) + '/' + self.proto.data == _host_port:
+                raise ValidationError('Host port ' + _host_port + ' already exists')
 
 class _PortForm(NoCsrfForm):
     cport = IntegerField('Container Port',
@@ -63,7 +63,8 @@ class _PortForm(NoCsrfForm):
     hport = IntegerField('Host Port',
         description='The port exposed by the host.',
         validators=[
-            NumberRange(0, 65535)
+            NumberRange(0, 65535),
+            validate_host_port
         ],
         render_kw={
             'placeholder': 'Host Port',

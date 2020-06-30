@@ -25,8 +25,10 @@ import urllib.request
 import json  # Used for getting template data
 import docker
 
+
 # used to reset the object for later use within the db.session
 from sqlalchemy.orm.session import make_transient
+from datetime import datetime
 
 
 templates = Blueprint('templates', __name__)
@@ -253,16 +255,18 @@ def update(template_id):
 
         make_transient(template)
         template.id = None
+        template.updated_at = datetime.utcnow()
         template.items = items
 
         try:
             db.session.add(template)
             db.session.commit()
+            print("Template \"" + template.name + "\" updated successfully.")
         except Exception as exc:
             db.session.rollback()
             raise
 
-    return redirect(url_for('templates.index'))
+    return redirect(url_for('templates.view_templates'))
 
 
 # Below section is not in use yet

@@ -7,6 +7,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
+from flask_moment import Moment
 
 from app.assets import app_css, app_js, vendor_css, vendor_js
 from config import config as Config
@@ -18,6 +19,7 @@ mail = Mail()
 db = SQLAlchemy()
 csrf = CSRFProtect()
 compress = Compress()
+moment = Moment()
 dclient = docker.from_env()
 
 # Set up Flask-Login
@@ -45,6 +47,7 @@ def create_app(config):
     login_manager.init_app(app)
     csrf.init_app(app)
     compress.init_app(app)
+    moment.init_app(app)
 
     # Register Jinja template functions
     from .utils import register_template_utils

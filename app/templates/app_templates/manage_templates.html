@@ -6,7 +6,6 @@
 {% set endpoints = [
     ('templates.template_info', 'Template Information'),
     ('templates.template_content', 'Template Content'),
-    ('templates.update', 'Update Template'),
     (deletion_endpoint, 'Delete Template')
 ] %}
 
@@ -25,6 +24,8 @@
     <table class="ui compact very basic table">
         <tr><td>Template Name</td><td>{{ template.name }}</td></tr>
         <tr><td>Template URL</td><td>{{ template.url }}</td></tr>
+        <tr><td>Template Updated</td><td>{{ moment(template.updated_at).fromNow() }}</td></tr>
+        <tr><td>Template Created</td><td>{{ moment(template.created_at).fromNow() }}</td></tr>
     </table>
 {% endmacro %}
 

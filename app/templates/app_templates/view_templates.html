@@ -38,12 +38,12 @@
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
             <div style="overflow-x: auto;">
-                <table class="ui searchable sortable unstackable selectable very basic table">
+                <table class="ui searchable sortable unstackable selectable celled blue table">
                     <thead>
                         <tr>
                             <th class="sorted ascending">Template Name</th>
                             <th>Template URL</th>
-                            <th>Template Path</th>
+                            <th colspan="2">Updated</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,7 +51,15 @@
                         <tr onclick="window.location.href = '{{ url_for('templates.template_info', template_id=t.id) }}';">
                             <td>{{ t.name }}</td>
                             <td>{{ t.url }}</td>
-                            <td>{{ t.path }}</td>
+                            <td>{{ moment(t.updated_at).fromNow() }}</td>
+                            <td>
+                                <a href = '{{ url_for('templates.update', template_id=t.id) }}'>
+                                    <button class="ui fluid blue labeled icon button">
+                                        <i class="sync alternate icon"></i>
+                                        Update
+                                    </button>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
