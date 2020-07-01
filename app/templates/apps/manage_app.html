@@ -28,7 +28,7 @@
         <tr><td>Container Status</td><td>{{ container.status }}</td></tr>
     </table>
     <div class="ui horizontal section divider "> Actions </div>    
-    <div class="ui five buttons">
+    <div class="ui five inverted buttons">
         <a class="ui green inverted button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='start') }}';">Start</a>
         <a class="ui red inverted button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='stop') }}';">Stop</a>
         <a class="ui red inverted button" onclick="window.location.href = '{{ url_for('apps.container_actions', container_name=container.name, action='kill') }}';">Kill</a>
@@ -38,7 +38,7 @@
     <div class="six wide column">
         <div class="ui horizontal section divider "> Networking </div>
         {% if container.ports.values() %}
-            <table class="ui selectable orange table">
+            <table class="ui celled orange table">
                 <thead>
                     <tr>
                         <th>Container Port</th>
@@ -50,10 +50,17 @@
                 {% for cport, others in container.ports.items() %}
                     <tr>
                         <td>{{cport}}</td>
-                        {% for value in (others or [{}]) %}
-                        <td>{{ value.get('HostIp') }}</td>
-                        <td><a href="{{ 'http://' + value.get('HostIp')+':'+ value.get('HostPort') }}">{{ value.get('HostPort') }}</a></td>
-                        {% endfor %}
+                        {% if others %}
+                            {% for value in (others or [{}]) %}
+                            <td>{{ value.get('HostIp') }}</td>
+                            <td>
+                                <button class="ui blue fluid tiny labeled icon button" onclick="window.open('{{ 'http://' + value.get('HostIp')+':'+ value.get('HostPort') }}');">
+                                    <i class="linkify icon"></i>
+                                    {{ value.get('HostPort') }}
+                                </button>
+                            </td>
+                            {% endfor %}
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -67,7 +74,7 @@
     <div class="six wide column">
         <div class=" ui horizontal section divider "> Volumes </div>
     {% if container.attrs.Mounts %}
-        <table class="ui selectable blue table">
+        <table class="ui blue table">
             <thead>
                 <tr>
                     <th>Container Path</th>
@@ -118,10 +125,13 @@
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
-            <a class="ui compact basic button" href="{{ url_for('apps.running_apps') }}">
-                <i class="caret left icon"></i>
-                Back to all containers
-            </a>
+            <div class="ui compact basic buttons">
+                <a class="ui button" href="{{ url_for('apps.running_apps') }}">
+                    <i class="caret left icon"></i>
+                    Back to all containers
+                </a>
+            </div>
+
             <h2 class="ui header">
                 {{ container.name }}
                 <div class="sub header">View and manage {{ container.name }}.</div>
