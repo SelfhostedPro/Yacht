@@ -27,4 +27,4 @@ If applicable, add screenshots to help explain your problem.
 Add any other context about the problem here.
 
 ** Logs **
-Run using the -it option instead of -d and post the error that appears if there is one.
+Post all of the text on the 500 error page or run using the -it option instead of -d and post the error that appears if there is one.
