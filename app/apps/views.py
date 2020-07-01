@@ -68,7 +68,8 @@ def deploy_app(app_id):
                 conv_sysctls2data(form.sysctls.data))
         except Exception as exc: raise
         print('stop')
-        return redirect(url_for('apps.index'))
+        container_name = form.name.data
+        return redirect(url_for('apps.container_info', container_name=container_name))
 
     # only for debugging!
     # for fieldName, errorMessages in form.errors.items():
