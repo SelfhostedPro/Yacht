@@ -103,7 +103,7 @@ def conv_ports2data(data):
     for d in data:
         hport,cport,proto = d.values()
         if not hport: hport = None
-        ports['/'.join((str(cport), proto))] = ('0.0.0.0', hport)
+        ports.update({str(cport)+'/'+proto:hport for d in data})
     return ports
 
 # Input Format:
