@@ -32,10 +32,12 @@
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
-            <a class="ui basic compact button" href="{{ url_for('templates.view_templates') }}">
-                <i class="caret left icon"></i>
-                Back to all templates
-            </a>
+            <div class="ui compact basic buttons">
+                <a class="ui basic compact button" href="{{ url_for('templates.view_templates') }}">
+                    <i class="caret left icon"></i>
+                    Back to all templates
+                </a>
+            </div>
             <h2 class="ui header">
                 {{ template.name }}
                 <div class="sub header">View and manage {{ template.name }}.</div>

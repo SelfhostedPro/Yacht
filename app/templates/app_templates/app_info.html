@@ -2,14 +2,18 @@
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
-            <a class="ui basic compact button" href="{{ url_for('templates.template_content', template_id=template.id) }}">
-                <i class="caret left icon"></i>
-                Back to all templates
-            </a>
-            <a class="ui basic compact right floated button" href="{{ url_for('apps.deploy_app', app_id=app.id,) }}">
-                <i class="rocket icon"></i>
-                Deploy Application
-            </a>
+                <div class="ui compact basic buttons">
+                    <a class="ui basic compact button" href="{{ url_for('templates.template_content', template_id=template.id) }}">
+                        <i class="caret left icon"></i>
+                        Back to all templates
+                    </a>
+                </div>
+            <div class="ui compact basic right floated buttons">
+                <a class="ui basic compact right floated button" href="{{ url_for('apps.deploy_app', app_id=app.id,) }}">
+                    <i class="rocket icon"></i>
+                    Deploy Application
+                </a>
+            </div>
         </div>
         <div class="twelve wide column">
         <img class="ui bordered circular image" src={{ app.logo|tojson }} style="width:200px;height:200px;object-fit:contain;object-position:center;">

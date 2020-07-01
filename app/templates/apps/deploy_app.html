@@ -8,10 +8,12 @@
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
-            <a class="ui basic compact button" href="{{ url_for('apps.view_apps') }}">
-                <i class="caret left icon"></i>
-                Back to Add New Apps
-            </a>
+            <div class="ui compact basic buttons">
+                <a class="ui basic compact button" href="{{ url_for('apps.view_apps') }}">
+                    <i class="caret left icon"></i>
+                    Back to Add New Apps
+                </a>
+            </div>
             <h2 class="ui header">
                 New App Template
                 <div class="sub header">Add a new app template</div>

@@ -8,10 +8,12 @@
 {% block content %}
     <div class="ui stackable centered grid container">
         <div class="twelve wide column">
-            <a class="ui basic compact button" href="{{ url_for('templates.index') }}">
-                <i class="caret left icon"></i>
-                Back to dashboard
-            </a>
+            <div class="ui compact basic buttons">
+                <a class="ui basic compact button" href="{{ url_for('templates.index') }}">
+                    <i class="caret left icon"></i>
+                    Back to dashboard
+                </a>
+            </div>
             <h2 class="ui header">
                 New Compose Template
                 <div class="sub header">Add a new app template</div>

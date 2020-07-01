@@ -3,10 +3,12 @@
 {% block content %}
     <div class="ui stackable grid container">
         <div class="fourteen wide tablet twelve wide computer centered column">
-            <a class="ui basic compact button" href="{{ url_for('apps.index') }}">
-                <i class="caret left icon"></i>
-                Back to dashboard
-            </a>
+            <div class="ui compact basic buttons">
+                <a class="ui basic compact button" href="{{ url_for('apps.index') }}">
+                    <i class="caret left icon"></i>
+                    Back to dashboard
+                </a>
+            </div>
             <h2 class="ui header">
                 New Application
                 <div class="sub header">
