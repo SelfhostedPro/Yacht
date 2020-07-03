@@ -40,7 +40,10 @@ You can change these by setting the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environme
 ## Templating:
 Currently Yacht is compatible with portainer templates. You'll add a template url in the "Add Template" settings. The the template will be read, separated into apps, and imported into the database. The apps associated with the templates are linked via a db relationship so when the template is removed, so are the apps associated with it. We store the template url as well so we can enable updating templates with a button press.
 
-We recommend starting with: https://raw.githubusercontent.com/SelfhostedPro/selfhosted_templates/yacht/Template/template.json
+We recommend starting with: 
+```
+https://raw.githubusercontent.com/SelfhostedPro/selfhosted_templates/yacht/Template/template.json
+```
 
 ## License
 [MIT License](LICENSE.md)
