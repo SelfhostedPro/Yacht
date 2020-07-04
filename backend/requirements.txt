@@ -1,0 +1,9 @@
+blueprint
+flask
+flask-jwt-extended
+flask-marshmallow
+flask-sqlalchemy
+marshmallow-sqlalchemy
+webargs
+
+pytest
