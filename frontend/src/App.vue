@@ -2,31 +2,25 @@
   <div id="app">
     <Navbar v-if="isAuthenticated"></Navbar>
     <b-container fluid>
-      <b-row>
-        <b-col cols="2" v-if="isAuthenticated">
-        <Sidebar></Sidebar>
-        </b-col>
-        <b-col>
-          <router-view id="content" />
-        </b-col>
-      </b-row>
+      <Sidebar v-if="isAuthenticated"></Sidebar>
+      <router-view id="content" />
     </b-container>
   </div>
 </template>
 
 <script type="text/javascript">
-import Navbar from "./components/nav/Navbar"
-import Sidebar from "./components/nav/Sidebar"
+import Navbar from "./components/nav/Navbar";
+import Sidebar from "./components/nav/Sidebar";
 export default {
   components: {
-    "Navbar" : Navbar,
-    "Sidebar" : Sidebar,
+    Navbar: Navbar,
+    Sidebar: Sidebar
   },
   computed: {
     isAuthenticated() {
       return this.$store.getters["auth/isAuthenticated"];
     }
-  },
+  }
 };
 </script>
 
