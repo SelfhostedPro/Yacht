@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar v-if="isAuthenticated"></Navbar>
+    <Navbar v-if="isAuthenticated" ></Navbar>
     <b-container fluid>
       <Sidebar v-if="isAuthenticated"></Sidebar>
       <router-view id="content" />
@@ -31,6 +31,7 @@ export default {
 }
 #navbar {
   min-height: 4em;
+  z-index: 2000;
 }
 #sidebar-small {
   top: 4em;

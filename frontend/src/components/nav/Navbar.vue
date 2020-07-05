@@ -3,7 +3,7 @@
     <b-navbar-brand href="#">
       <img alt="Vue logo" src="@/assets/logo.png" width="32" height="32" />
     </b-navbar-brand>
-
+    
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>

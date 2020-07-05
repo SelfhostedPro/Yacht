@@ -11,7 +11,15 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Login // Home
+    // perhaps use same view different components (Login, Dashboard) if isAuthenticated
+    component: Login,  // Home
+    beforeEnter: (to, from, next) => {
+      if (store.getters["auth/isAuthenticated"]) {
+        // if is authenticated then redirect to dashboard
+        return next("dashboard")
+      }
+      next();
+    }
   },
   // {
   //   path: "/about",

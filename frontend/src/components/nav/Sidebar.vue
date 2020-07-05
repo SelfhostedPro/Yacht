@@ -13,8 +13,6 @@
       <!-- big sidebar header -->
       <div class="sidebar-header">
         <img alt="Vue logo" src="@/assets/logo.png" width="32" height="32" />
-        <!-- <h3>Yacht</h3>
-        <p>Container Managment UI</p> -->
       </div>
       <!-- big sidebar content -->
       <div>
