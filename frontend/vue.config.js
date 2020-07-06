@@ -10,7 +10,7 @@ module.exports = {
         pathRewrite: {
           "^/api": "/api"
         },
-        logLevel: "debug"
+        // logLevel: "debug"
       }
     }
   }

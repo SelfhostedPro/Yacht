@@ -8,20 +8,25 @@
           <b-nav vertical>
             <b-collapse id="collapse-settings" accordion="main-menu">
               <b-button block squared class="m-1 text-left" variant="light">
-                <b-icon-info-circle />Info
+                <b-icon-info-circle />
+                Info
               </b-button>
               <b-button block squared class="m-1 text-left" variant="light">
-                <b-icon-gear-wide-connected />Server Settings
+                <b-icon-gear-wide-connected />
+                Server Settings
               </b-button>
               <b-button block squared class="m-1 text-left" variant="light">
-                <b-icon-person-circle />Account Settings
+                <b-icon-person-circle />
+                Account Settings
               </b-button>
             </b-collapse>
             <b-button squared v-b-toggle="'collapse-settings'" class="m-1" variant="dark">
-              <b-icon-gear />Settings
+              <b-icon-gear />
+              Settings
             </b-button>
-            <b-button squared class="m-1" variant="dark">
-              <b-icon-box-arrow-left />Log out
+            <b-button squared @click="logout" class="m-1" variant="dark">
+              <b-icon-box-arrow-left />
+              Log out
             </b-button>
           </b-nav>
         </div>
@@ -38,7 +43,7 @@
       <!-- big sidebar content -->
       <div>
         <b-nav vertical>
-          <b-button :to="'dashboard'" squared class="m-1" variant="dark">
+          <b-button :to="{name: 'Home'}" squared class="m-1" variant="dark">
             <b-icon-house />
             Home
           </b-button>
@@ -67,7 +72,7 @@
               <b-icon-plus />
               Add Template
             </b-button>
-            <b-button :to="{ name: 'TemplatesList' }" squared class="m-1" variant="light">
+            <b-button :to="{name: 'TemplatesList'}" squared class="m-1" variant="light">
               <b-icon-list-ul />
               List Templates
             </b-button>
@@ -127,7 +132,7 @@
       <!-- small sidebar content -->
       <div>
         <b-nav vertical>
-          <b-button :to="'dashboard'" squared class="m-1" variant="dark">
+          <b-button :to="{name: 'Home'}" squared class="m-1" variant="dark">
             <b-icon-house />
           </b-button>
           <!-- Apps collapse -->
@@ -156,7 +161,7 @@
             <b-button squared class="m-1" title="Add Template" variant="light">
               <b-icon-plus />
             </b-button>
-            <b-button :to="{ name: 'TemplatesList' }" squared class="m-1" title="List Templates" variant="light">
+            <b-button :to="{name: 'TemplatesList'}" squared class="m-1" title="List Templates" variant="light">
               <b-icon-list-ul />
             </b-button>
           </b-collapse>

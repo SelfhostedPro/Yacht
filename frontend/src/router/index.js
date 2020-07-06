@@ -64,7 +64,7 @@ const routes = [
       {
         // UserProfile will be rendered inside User's <router-view>
         // when /user/:id/profile is matched
-        path: ":templateId",
+        path: "/templates/:templateId",
         component: TemplatesDetails,
       },
     ]
