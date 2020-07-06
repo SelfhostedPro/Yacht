@@ -35,7 +35,6 @@ pyparsing==2.4.2
 python-dateutil==2.8.0
 python-editor==1.0.4
 python-gitlab
-raygun4py==4.3.0
 requests==2.22.0
 SQLAlchemy==1.3.8
 sqlalchemy_utils

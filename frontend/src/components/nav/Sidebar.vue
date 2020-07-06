@@ -67,7 +67,7 @@
               <b-icon-plus />
               Add Template
             </b-button>
-            <b-button :to="'templates'" squared class="m-1" variant="light">
+            <b-button :to="{ name: 'TemplatesList' }" squared class="m-1" variant="light">
               <b-icon-list-ul />
               List Templates
             </b-button>
@@ -109,7 +109,7 @@
             >
               <b-icon-gear />
             </b-button>
-            <b-button squared class="m-1" title="Logout" variant="dark">
+            <b-button squared class="m-1" @click="logout" title="Logout" variant="dark">
               <b-icon-box-arrow-left />
             </b-button>
           </b-nav>
@@ -156,7 +156,7 @@
             <b-button squared class="m-1" title="Add Template" variant="light">
               <b-icon-plus />
             </b-button>
-            <b-button :to="'templates'" squared class="m-1" title="List Templates" variant="light">
+            <b-button :to="{ name: 'TemplatesList' }" squared class="m-1" title="List Templates" variant="light">
               <b-icon-list-ul />
             </b-button>
           </b-collapse>
@@ -165,3 +165,16 @@
     </b-sidebar>
   </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    logout() {
+      console.log("logout");
+      this.$store.dispatch("auth/logout").then(() => {
+        this.$router.push("/");
+      });
+    }
+  }
+};
+</script>

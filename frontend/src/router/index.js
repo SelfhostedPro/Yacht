@@ -52,13 +52,13 @@ const routes = [
 
   {
     path: "/templates",
-    name: "Templates",
     component: Templates,
     children: [
       {
         // UserProfile will be rendered inside User's <router-view>
         // when /user/:id/profile is matched
         path: "",
+        name: "TemplatesList",
         component: TemplatesList
       },
       {
