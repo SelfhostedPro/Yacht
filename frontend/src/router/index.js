@@ -3,6 +3,10 @@ import VueRouter from "vue-router";
 // import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Dashboard from "../views/Dashboard.vue";
+import Templates from "../views/Templates.vue";
+import TemplatesList from "../components/templates/TemplatesList.vue";
+import TemplatesDetails from "../components/templates/TemplatesDetails.vue";
+
 import store from "@/store";
 
 Vue.use(VueRouter);
@@ -42,7 +46,28 @@ const routes = [
       requiresAuth: true
     },
     // nested routes for (example: /sample/apps)
-    children: []
+    children: [
+    ]
+  },
+
+  {
+    path: "/templates",
+    name: "Templates",
+    component: Templates,
+    children: [
+      {
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
+        path: "",
+        component: TemplatesList
+      },
+      {
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
+        path: ":templateId",
+        component: TemplatesDetails,
+      },
+    ]
   },
   // otherwise return home
   {

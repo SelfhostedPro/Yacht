@@ -19,6 +19,5 @@ app/storage
 migrations/
 config/
 
-
 .ftpconfig
 .ftpignore

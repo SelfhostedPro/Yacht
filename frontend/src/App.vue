@@ -1,9 +1,15 @@
 <template>
   <div id="app">
-    <Navbar v-if="isAuthenticated" ></Navbar>
+    <Navbar v-if="isAuthenticated"></Navbar>
     <b-container fluid>
-      <Sidebar v-if="isAuthenticated"></Sidebar>
-      <router-view id="content" />
+      <b-row no-gutters> 
+        <b-col cols="1" >
+          <Sidebar v-if="isAuthenticated"></Sidebar>
+        </b-col>
+        <b-col>
+          <router-view id="content" />
+        </b-col>
+      </b-row>
     </b-container>
   </div>
 </template>

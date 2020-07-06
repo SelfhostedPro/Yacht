@@ -5,33 +5,32 @@ import router from "./router";
 import store from "./store";
 import axios from "axios";
 
-Vue.config.productionTip = false;
-Vue.prototype.$http = axios;
-
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
-// 401 handler
-Vue.prototype.$http.interceptors.response.use(
-  response => {
-    console.log("intercept resp - response");
-    return response;
-  },
-  error => {
-    // handle 401 error here!
-    console.log("intercept resp - error", error);
-    if (error.response && error.response.status === 401) {
-      store.commit("clearAuth");
-      localStorage.removeItem("username");
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      delete axios.defaults.headers.common["Authorization"];
-      router.push('/')
-    }
-    return Promise.reject();
-  });
+
+Vue.config.productionTip = false;
+Vue.prototype.$http = axios;
+// Vue.prototype.$http.interceptors.response.use(
+//   response => {
+//     console.log("intercept resp - response");
+//     return response;
+//   },
+//   error => {
+//     // handle 401 error here!
+//     console.log("intercept resp - error", error);
+//     if (error.response && error.response.status === 401) {
+//       store.commit("clearAuth");
+//       localStorage.removeItem("username");
+//       localStorage.removeItem("access_token");
+//       localStorage.removeItem("refresh_token");
+//       delete axios.defaults.headers.common["Authorization"];
+//       router.push('/')
+//     }
+//     return Promise.reject();
+//   });
 
 // Hmmm ?
 const token = localStorage.getItem("access_token");
@@ -40,6 +39,9 @@ if (token) {
     "Authorization"
   ] = `Bearer ${token}`;
 }
+//  else {
+//   router.push("/");
+// }
 
 new Vue({
   router,

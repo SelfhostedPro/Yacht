@@ -1,6 +1,7 @@
 <template lang="html">
   <div>
     <span>{{ message }}</span>
+    <hr/>
   </div>
 </template>
 

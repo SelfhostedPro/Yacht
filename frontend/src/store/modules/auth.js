@@ -58,7 +58,7 @@ const actions = {
   login(context, credentials) {
     return new Promise((resolve, reject) => {
       axios
-        .post("/api/login", {
+        .post("/api/auth/login", {
           username: credentials.username,
           password: credentials.password
         })
