@@ -48,9 +48,9 @@ const mutations = {
     state.refreshToken = data.refresh_token;
   },
   clearAuth(state) {
-    state.username = null;
-    state.accessToken = null;
-    state.refreshToken = null;
+    state.username = "";
+    state.accessToken = "";
+    state.refreshToken = "";
   }
 };
 
