@@ -15,12 +15,11 @@
 </template>
 
 <script type="text/javascript">
-import Navbar from "./components/nav/Navbar";
+// import Navbar from "./components/nav/Navbar";
 import Sidebar from "./components/nav/Sidebar";
 export default {
   components: {
-    Navbar: Navbar,
-    Sidebar: Sidebar
+    Sidebar: Sidebar,
   },
   computed: {
     isAuthenticated() {
@@ -49,12 +48,12 @@ export default {
   min-height: 4em;
   z-index: 2000;
 }
-#sidebar-small {
+/* #sidebar-small {
   top: 4em;
   max-height: calc(100vh - 4rem);
 }
 #sidebar-big {
   top: 4em;
   max-height: calc(100vh - 4rem);
-}
+} */
 </style>

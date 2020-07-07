@@ -1,6 +1,6 @@
 <template lang="html">
   <div id="templates-view" class="templates">
-    <h1>Templates View</h1>
+    <h1>Templates</h1>
     <router-view></router-view>
   </div>
 </template>
@@ -17,10 +17,6 @@ export default {
 </script>
 
 <style lang="css" scoped>
-#templates-view{
-  padding-top: 2em;
-}
-
 #templates {
   padding-top: 1em;
   overflow-x: hidden;

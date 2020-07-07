@@ -26,6 +26,8 @@ import urllib.request
 import json  # Used for getting template data
 import docker
 
+from datetime import datetime
+from sqlalchemy.orm.session import make_transient
 from sqlalchemy.exc import IntegrityError
 from webargs import fields, validate
 from webargs.flaskparser import use_args, use_kwargs
@@ -195,7 +197,7 @@ def update(template_id):
         try:
             db.session.add(template)
             db.session.commit()
-            print("Template \"" + template.name + "\" updated successfully.")
+            print("Template \"" + template.title + "\" updated successfully.")
         except Exception as exc:
             db.session.rollback()
             raise
