@@ -56,7 +56,7 @@ export default {
         .delete(url)
         .then((response) => {
           this.templateData = response.data.data;
-          router.push('/templates/');
+          this.forceUpdate();
         })
     }
   }

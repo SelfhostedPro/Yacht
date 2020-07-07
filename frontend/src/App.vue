@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <Navbar v-if="isAuthenticated"></Navbar>
     <b-container fluid>
       <b-row no-gutters> 
         <b-col cols="1" >
@@ -39,21 +38,14 @@ export default {
 };
 </script>
 
-<style>
-#app {
-  text-align: center;
-  color: #2c3e50;
-}
-#navbar {
-  min-height: 4em;
-  z-index: 2000;
-}
-/* #sidebar-small {
-  top: 4em;
-  max-height: calc(100vh - 4rem);
-}
-#sidebar-big {
-  top: 4em;
-  max-height: calc(100vh - 4rem);
-} */
+<style lang="scss">
+
+  @import "assets/_custom.scss";
+  @import "~bootstrap/scss/bootstrap.scss";
+  @import '~bootstrap-vue/dist/bootstrap-vue.css';
+
+  #app {
+    text-align: center;
+    color: #2c3e50;
+  }
 </style>

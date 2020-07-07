@@ -124,7 +124,7 @@
             >
               <b-icon-gear />
             </b-button>
-            <b-button squared class="m-1" @click="logout" title="Logout" variant="dark">
+            <b-button squared class="mr-1" @click="logout" title="Logout" variant="dark">
               <b-icon-box-arrow-left />
             </b-button>
           </b-nav>
