@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="templates">
+  <div id="templates-view" class="templates">
     <h1>Templates View</h1>
     <router-view></router-view>
   </div>
@@ -16,4 +16,15 @@ export default {
 };
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+#templates-view{
+  padding-top: 2em;
+}
+
+#templates {
+  padding-top: 1em;
+  overflow-x: hidden;
+  padding-left: 5em;
+  padding-right: 2em;
+}
+</style>

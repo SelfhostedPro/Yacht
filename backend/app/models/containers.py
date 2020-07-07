@@ -5,7 +5,7 @@ from datetime import datetime
 class Template(db.Model):
     __tablename__ = 'templates'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
+    title = db.Column(db.String(64), index=True, unique=True)
     url = db.Column(db.String(256), unique=True)
     created_at = db.Column(db.DateTime, nullable=False, unique=False, index=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, unique=False, index=False, default=datetime.utcnow, onupdate=datetime.utcnow)

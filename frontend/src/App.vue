@@ -26,6 +26,16 @@ export default {
     isAuthenticated() {
       return this.$store.getters["auth/isAuthenticated"];
     }
+  },
+  methods: {
+    logout() {
+      console.log("logout");
+      this.$store.dispatch("auth/logout").then(() => {
+        this.$router.push("/");
+      });
+    }
+  },
+  created() {
   }
 };
 </script>

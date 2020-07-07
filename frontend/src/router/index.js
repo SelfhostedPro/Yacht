@@ -4,8 +4,9 @@ import VueRouter from "vue-router";
 import Login from "../views/Login.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Templates from "../views/Templates.vue";
-import TemplatesList from "../components/templates/TemplatesList.vue";
+import TemplatesIndex from "../components/templates/TemplatesIndex.vue";
 import TemplatesDetails from "../components/templates/TemplatesDetails.vue";
+import TemplatesCreate from "../components/templates/TemplatesCreate.vue";
 
 import store from "@/store";
 
@@ -52,19 +53,27 @@ const routes = [
 
   {
     path: "/templates",
+    // name: "Templates",
     component: Templates,
     children: [
       {
         // UserProfile will be rendered inside User's <router-view>
         // when /user/:id/profile is matched
         path: "",
-        name: "TemplatesList",
-        component: TemplatesList
+        name: "Templates",
+        component: TemplatesIndex
       },
       {
         // UserProfile will be rendered inside User's <router-view>
         // when /user/:id/profile is matched
-        path: "/templates/:templateId",
+        name: "NewTemplate",
+        path: "new",
+        component: TemplatesCreate,
+      },
+      {
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
+        path: ":templateId",
         component: TemplatesDetails,
       },
     ]

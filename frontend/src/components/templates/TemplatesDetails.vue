@@ -1,36 +1,34 @@
 <template lang="html">
   <div v-if="templateData">
+    <b-button type="button" @click="removeTemplate">Delete</b-button>
     <h4>{{ templateData.title }}</h4>
     <p>{{ templateData.url }}</p>
   </div>
 </template>
 
 <script>
+import templateMixin from "@/mixins/templates";
+
 export default {
+  mixins: [templateMixin],
   data() {
     return {
-      templateData: null
+      // templateData: null
     };
   },
   methods: {
-    fetchTemplateData() { // possible init => _fetchTemplateData(templateId)
-      const templateId = this.$route.params.templateId;
-      const url = `/api/templates/${templateId}`;
-      this.$http.get(url)
-        .then(response => {
-          this.templateData = response.data.data;
-        })
-        .catch(error => {
-          console.error(error);
-          this.$router.push('/dashboard');
-        });
+    removeTemplate() {
+      console.log(this.templateData.id);
+      this.deleteTemplate(this.templateData.id);
     }
   },
   mounted() {
-    this.fetchTemplateData();
+    const templateId = this.$route.params.templateId;
+    this.readTemplate(templateId);
   },
   beforeRouterUpdates(to, from, next) {
-    this.fetchTemplateData();
+    const templateId = this.$route.params.templateId;
+    this.readTemplate(templateId);
     next();
   }
 };

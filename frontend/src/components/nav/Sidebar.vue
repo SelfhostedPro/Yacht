@@ -43,7 +43,7 @@
       <!-- big sidebar content -->
       <div>
         <b-nav vertical>
-          <b-button :to="{name: 'Home'}" squared class="m-1" variant="dark">
+          <b-button :to="{name:'Dashboard'}" squared class="m-1" variant="dark">
             <b-icon-house />
             Home
           </b-button>
@@ -68,11 +68,11 @@
             Templates
           </b-button>
           <b-collapse id="collapse-templates" accordion="main-menu">
-            <b-button squared class="m-1" variant="light">
+            <b-button :to="{name: 'NewTemplate'}" squared class="m-1" variant="light">
               <b-icon-plus />
               Add Template
             </b-button>
-            <b-button :to="{name: 'TemplatesList'}" squared class="m-1" variant="light">
+            <b-button :to="{name: 'Templates'}" squared class="m-1" variant="light">
               <b-icon-list-ul />
               List Templates
             </b-button>
@@ -132,7 +132,7 @@
       <!-- small sidebar content -->
       <div>
         <b-nav vertical>
-          <b-button :to="{name: 'Home'}" squared class="m-1" variant="dark">
+          <b-button :to="{name:'Dashboard'}" squared class="m-1" variant="dark">
             <b-icon-house />
           </b-button>
           <!-- Apps collapse -->
@@ -158,10 +158,10 @@
             <b-icon-card-list />
           </b-button>
           <b-collapse id="collapse-templates" accordion="main-menu">
-            <b-button squared class="m-1" title="Add Template" variant="light">
+            <b-button :to="{name: 'NewTemplate'}" squared class="m-1" title="Add Template" variant="light">
               <b-icon-plus />
             </b-button>
-            <b-button :to="{name: 'TemplatesList'}" squared class="m-1" title="List Templates" variant="light">
+            <b-button :to="{name: 'Templates'}" squared class="m-1" title="List Templates" variant="light">
               <b-icon-list-ul />
             </b-button>
           </b-collapse>
