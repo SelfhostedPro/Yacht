@@ -22,6 +22,7 @@ export default {
     }),
     template() {
       const templateId = this.$route.params.templateId;
+      console.log("from calling function" + templateId)
       return this.getTemplateById(templateId);
     }
   },
@@ -39,19 +40,19 @@ export default {
   },
   mounted() {
     // BUG:
-    // const templateId = this.$route.params.templateId;
-    // this.readTemplate(templateId);
+    const templateId = this.$route.params.templateId;
+    this.readTemplate(templateId);
 
     // NO BUG:
-    this.readTemplates();
+    // this.readTemplates();
   },
   beforeRouterUpdates(to, from, next) {
     // BUG:
-    // const templateId = this.$route.params.templateId;
-    // this.readTemplate(templateId);
+    const templateId = this.$route.params.templateId;
+    this.readTemplate(templateId);
 
     // NO BUG:
-    this.readTemplates();
+    // this.readTemplates();
     next();
   }
 };

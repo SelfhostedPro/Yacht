@@ -8,9 +8,12 @@ const state = {
 const getters = {
   /* BUG: Can't get property of state.templates on readTemplate */
   getTemplateById: (state) => (id) => {
-    console.log(state)
-    console.log(state.templates)
-    console.log(state.templates[id])
+    console.log("id: " + id )
+    console.log("state: " + state)
+    console.log("state.templates: " + state.templates)
+    console.log("state.templates[1]: " + state.templates[1])
+    console.log("print state as json" + JSON.stringify(state))
+    console.log(JSON.stringify(state))
     return state.templates[id];
   },
   getTemplates: (state) => {
@@ -25,16 +28,14 @@ const mutations = {
       return map;
     }, {});
   },
-  addTemplate(state, template) {
-    state.templates.push(template);
+  setTemplate(state, template) {
+    state.templates[template.id] = template;
   },
   updateTemplate(state, template) {
     state.templates = { ...state.templates, template };
   },
   removeTemplate(state, template) {
-    state.templates = state.templates.filter(
-      (_template) => _template.id == template.id
-    );
+    delete state.templates[template.id];
   },
 };
 
