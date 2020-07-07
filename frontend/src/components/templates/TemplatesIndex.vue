@@ -9,7 +9,7 @@
       hover
       outlined
       borderless
-      :items="templates"
+      :items="getTemplates"
       :fields="fields"
       :sort-compare="mySortCompare"
       @row-clicked="templateDetails"
@@ -85,10 +85,13 @@
 </template>
 
 <script>
-import templateMixin from "@/mixins/templates";
+// import templateMixin from "@/mixins/templates";
+import { mapState } from "vuex";
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex"; 
 
 export default {
-  mixins: [templateMixin],
+  // mixins: [templateMixin],
   data() {
     return {
       // fields to display
@@ -121,6 +124,11 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      readTemplates: "templates/readTemplates",
+      updateTemplate: "templates/updateTemplate",
+      deleteTemplate: "templates/deleteTemplate"
+    }),
     /* format date to local string */
     fmtDate(value) {
       return new Date(Date.parse(value)).toLocaleString();
@@ -131,6 +139,7 @@ export default {
     },
     updateThis(id) {
       this.updateTemplate(id);
+      // this.readTemplates();
     },
     templateDetails(template) {
       this.$router.push({ path: `/templates/${template.id}` });
@@ -138,16 +147,20 @@ export default {
     removeTemplate(id) {
       console.log(id);
       this.deleteTemplate(id);
+      this.readTemplates();
     },
   },
   computed: {
-    templates() {
-      return this.$store.state.templates.templates;
-    },
+    ...mapState('templates', [
+      "templates"
+    ]),
+    ...mapGetters({
+      getTemplates: 'templates/getTemplates'
+    }),
   },
   mounted() {
-    this.$store.dispatch("templates/loadTemplates");
-  },
+    this.readTemplates();
+  }
 };
 </script>
 

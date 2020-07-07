@@ -19,6 +19,7 @@ from flask_jwt_extended import (
     jwt_optional
 )
 
+import time
 import wget
 import os  # used for getting file type and deleting files
 from urllib.parse import urlparse  # used for getting filetype from url
@@ -186,11 +187,10 @@ def update(template_id):
         # connection problems or incorrect JSON data
         print('Template update failed')
     else:
-        db.session.delete(template)
-        db.session.commit()
+        # db.session.delete(template)
+        # db.session.commit()
 
-        make_transient(template)
-        template.id = None
+        # make_transient(template)
         template.updated_at = datetime.utcnow()
         template.items = items
 
@@ -203,7 +203,7 @@ def update(template_id):
             raise
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
-    return jsonify({ 'data': data})
+    return jsonify({ 'data': data })
 
 
 @templates.route('/<int:id>', methods=['DELETE'])

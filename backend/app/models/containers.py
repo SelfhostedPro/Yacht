@@ -9,7 +9,7 @@ class Template(db.Model):
     url = db.Column(db.String(256), unique=True)
     created_at = db.Column(db.DateTime, nullable=False, unique=False, index=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, unique=False, index=False, default=datetime.utcnow, onupdate=datetime.utcnow)
-    items = db.relationship('TemplateContent', backref='template', cascade="save-update, merge, delete", lazy='dynamic') ### Makes sure template contents are deleted if a template is
+    items = db.relationship('TemplateContent', backref='template', cascade="save-update, merge, delete, delete-orphan", lazy='dynamic') ### Makes sure template contents are deleted if a template is
 
     #def __repr__(self):
      #   return f"('{self.name}', '{self.url}', '{self.path}')"

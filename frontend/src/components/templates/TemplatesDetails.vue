@@ -1,34 +1,57 @@
 <template lang="html">
-  <div v-if="templateData">
-    <b-button type="button" @click="removeTemplate">Delete</b-button>
-    <h4>{{ templateData.title }}</h4>
-    <p>{{ templateData.url }}</p>
+  <div v-if="template">
+    <b-button type="button" @click="removeTemplate(template.id)">Delete</b-button>
+    <h4>{{ template.title }}</h4>
+    <p>{{ template.url }}</p>
   </div>
 </template>
 
 <script>
-import templateMixin from "@/mixins/templates";
+import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
-  mixins: [templateMixin],
   data() {
     return {
       // templateData: null
     };
   },
+  computed: {
+    ...mapGetters({
+      getTemplateById: 'templates/getTemplateById'
+    }),
+    template() {
+      const templateId = this.$route.params.templateId;
+      return this.getTemplateById(templateId);
+    }
+  },
   methods: {
-    removeTemplate() {
-      console.log(this.templateData.id);
-      this.deleteTemplate(this.templateData.id);
+    ...mapActions({
+      readTemplate: "templates/readTemplate",
+      readTemplates: "templates/readTemplates",
+      deleteTemplate: "templates/deleteTemplate"
+    }),
+    removeTemplate(id) {
+      // console.log(id);
+      this.deleteTemplate(id);
+      this.$router.push('/templates/');
     }
   },
   mounted() {
-    const templateId = this.$route.params.templateId;
-    this.readTemplate(templateId);
+    // BUG:
+    // const templateId = this.$route.params.templateId;
+    // this.readTemplate(templateId);
+
+    // NO BUG:
+    this.readTemplates();
   },
   beforeRouterUpdates(to, from, next) {
-    const templateId = this.$route.params.templateId;
-    this.readTemplate(templateId);
+    // BUG:
+    // const templateId = this.$route.params.templateId;
+    // this.readTemplate(templateId);
+
+    // NO BUG:
+    this.readTemplates();
     next();
   }
 };

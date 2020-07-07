@@ -8,6 +8,7 @@ Vue.use(Vuex);
 const state = {};
 const mutations = {};
 const actions = {};
+const getters = {};
 const modules = {
   auth,
   templates
@@ -16,6 +17,7 @@ const modules = {
 export default new Vuex.Store({
   state,
   mutations,
+  getters,
   actions,
   modules
 });
