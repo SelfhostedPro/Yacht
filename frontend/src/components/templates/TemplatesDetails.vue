@@ -1,28 +1,30 @@
 <template lang="html">
-  <div v-if="template">
-    <b-button type="button" @click="removeTemplate(template.id)">Delete</b-button>
-    <h4>{{ template.title }}</h4>
-    <p>{{ template.url }}</p>
+  <div v-if="currentTemplate">
+    <h2>{{ currentTemplate.title }}</h2>
+    <p>{{ currentTemplate.url }}</p>
+    <b-button type="button" @click="removeTemplate(currentTemplate.id)">Delete</b-button>    
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { mapActions } from 'vuex'
-
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      // templateData: null
     };
   },
   computed: {
+    ...mapState("templates", [
+      "currentTemplate"
+    ]),
     ...mapGetters({
-      getTemplateById: 'templates/getTemplateById'
+      getTemplateById: "templates/getTemplateById"
     }),
+    // currently unused, see currentTemplate
     template() {
       const templateId = this.$route.params.templateId;
-      console.log("from calling function" + templateId)
       return this.getTemplateById(templateId);
     }
   },
@@ -42,7 +44,6 @@ export default {
     // BUG:
     const templateId = this.$route.params.templateId;
     this.readTemplate(templateId);
-
     // NO BUG:
     // this.readTemplates();
   },
@@ -50,7 +51,6 @@ export default {
     // BUG:
     const templateId = this.$route.params.templateId;
     this.readTemplate(templateId);
-
     // NO BUG:
     // this.readTemplates();
     next();
