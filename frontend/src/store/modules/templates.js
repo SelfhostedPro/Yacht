@@ -32,6 +32,7 @@ const mutations = {
     state.templates[template.id] = template;
   },
   updateTemplate(state, template) {
+    delete state.templates[template.id];
     state.templates = { ...state.templates, template };
   },
   removeTemplate(state, template) {

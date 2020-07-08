@@ -187,10 +187,12 @@ def update(template_id):
         # connection problems or incorrect JSON data
         print('Template update failed')
     else:
-        # db.session.delete(template)
-        # db.session.commit()
+        oldid = template.id
+        db.session.delete(template)
+        db.session.commit()
 
-        # make_transient(template)
+        make_transient(template)
+        template.id = None
         template.updated_at = datetime.utcnow()
         template.items = items
 
@@ -201,6 +203,7 @@ def update(template_id):
         except Exception as exc:
             db.session.rollback()
             raise
+    assert oldid == template.id, 'id changed on template'
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
     return jsonify({ 'data': data })
