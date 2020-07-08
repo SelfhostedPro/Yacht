@@ -1,4 +1,5 @@
 import axios from "axios";
+import Vue from "vue";
 
 const state = {
   // better use object as set {<id>: template} to guarantee uniqueness
@@ -45,7 +46,14 @@ const mutations = {
     state.templates[payload.id] = payload;
   },
   removeTemplate(state, template) {
-    delete state.templates[template.id];
+      // delete state.templates[template.id];
+    console.log("Deleting Now: "+template.id )
+    Vue.delete(state.templates, template.id)
+  },
+  addTemplate(state, payload) {
+    console.log(payload)
+    Vue.set(state.templates, payload)
+    // state.tempaltes = {...state.templates, payload}
   },
   // workaround to prevent BUG in single view
   setCurrentTemplate(state, template) {

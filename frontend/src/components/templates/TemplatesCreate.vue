@@ -1,6 +1,6 @@
 <template lang="html">
   <div>
-    <b-card style="max-width: 75%;" header="Add a Template" header-class="h2" header-text-variant="white" header-bg-variant="dark" border-variant="dark" class="mx-auto mt-5">
+    <b-card squared style="max-width: 75%;" header="Add a Template" header-class="h2" header-text-variant="white" header-bg-variant="dark" border-variant="dark" class="mx-auto mt-5">
       <b-form @submit.prevent="onSubmit">
           <b-form-group
             label="Title:"
@@ -39,7 +39,6 @@
 <script>
 // import templateMixin from "@/mixins/templates";
 import { mapActions } from "vuex";
-
 export default {
   // mixins: [templateMixin],
   data() {

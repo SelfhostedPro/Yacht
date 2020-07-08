@@ -1,5 +1,77 @@
 <template lang="html">
   <div id="templates">
+    <!-- Flexbox for button -->
+    <div class="d-flex center-align-items">
+      <!-- Plus button -->
+      <b-button
+        squared
+        v-b-modal="'addTemplate'"
+        title="Add Template"
+        class="ml-auto mb-1"
+        variant="dark"
+      >
+        <b-icon-plus />
+        <!-- Modal -->
+      </b-button>
+      <b-modal
+        :id="'addTemplate'"
+        :title="'Add Template'"
+        header-bg-variant="dark"
+        header-text-variant="light"
+        hide-backdrop
+        content-class="shadow"
+      >
+        <!-- Modal Footer -->
+        <template slot="modal-footer" slot-scope="{ ok, cancel }">
+          <div class="d-flex">
+            <b-button @click="cancel" variant="dark"> Cancel </b-button>
+            <b-button
+              @click="
+                addTemplateSubmit();
+                ok();
+              "
+              variant="primary"
+              class=" ml-2 "
+            >
+              Add
+              <b-icon-plus />
+            </b-button>
+          </div>
+        </template>
+        <!-- Modal Content -->
+        <b-form @submit.prevent="onSubmit">
+          <b-form-group
+            label="Title:"
+            label-for="title"
+            description="The title of the template."
+          >
+            <b-form-input
+              id="title"
+              v-model="form.title"
+              type="text"
+              placeholder="Template Name"
+              required
+            >
+            </b-form-input>
+          </b-form-group>
+
+          <b-form-group
+            label="URL:"
+            label-for="url"
+            description="The URL of the template."
+          >
+            <b-form-input
+              id="title"
+              v-model="form.url"
+              type="url"
+              placeholder="http://example.com/path/to/template.json"
+              required
+            >
+            </b-form-input>
+          </b-form-group>
+        </b-form>
+      </b-modal>
+    </div>
     <b-table
       responsive
       fixed
@@ -14,9 +86,6 @@
       :sort-compare="mySortCompare"
       @row-clicked="templateDetails"
     >
-      <template v-slot:cell(titleid)="data">
-        {{ data.item.title }}
-      </template>
       <template v-slot:cell(update_now)="data">
         <div>
           <b-button
@@ -46,41 +115,40 @@
                 <b-icon-arrow-repeat class="ml-auto" />
               </b-button>
               <b-button
-                v-b-modal="`delete-modal` + data.item.id"
+                v-b-modal="'modal-delete'"
                 squared
                 class="d-flex px-4 align-items-center"
                 title="Remove Template"
                 variant="light"
+                @click="selectedTemplate = data.item"
               >
-                Remove
-                <b-icon-dash class="ml-auto" />
+                Delete
+                <b-icon-trash class="ml-auto" />
               </b-button>
-              <b-modal
-                :id="`delete-modal` + data.item.id"
-                :title="'Delete Template: ' + data.item.title"
-                header-bg-variant="dark"
-                header-text-variant="light"
-                ok-variant="danger"
-                hide-backdrop
-                content-class="shadow"
-              >
-                <template slot="modal-footer" slot-scope="{ ok, cancel }" >
-                  <div class="d-flex">
-                    <b-button @click="cancel" variant="dark" > Cancel </b-button>
-                    <b-button @click="removeTemplate( data.item.id );ok();" variant="danger" class=" ml-2 "> Delete </b-button>
-                  </div>
-                </template>
-                <p>
-                  Deleting this template will remove the ability to lauch all
-                  apps defined by it. <br>
-                  (this will have no effect on running apps)
-                </p>
-              </b-modal>
             </b-card>
           </b-collapse>
         </div>
       </template>
     </b-table>
+
+    <!-- title="Delete Template" -->
+    <b-modal
+      v-if="selectedTemplate"
+      id="modal-delete"
+      :title="`Delete Template: &quot;${selectedTemplate.title}&quot;`"
+      header-bg-variant="dark"
+      header-text-variant="light"
+      ok-variant="danger"
+      hide-backdrop
+      content-class="shadow"
+      @ok="removeTemplate(selectedTemplate.id)"
+    >
+      <p>
+        Deleting this template will remove the ability to lauch all apps defined
+        by it. <br />
+        (this will have no effect on running apps)
+      </p>
+    </b-modal>
   </div>
 </template>
 
@@ -88,8 +156,7 @@
 // import templateMixin from "@/mixins/templates";
 import { mapState } from "vuex";
 import { mapActions } from "vuex";
-import { mapGetters } from "vuex"; 
-
+import { mapGetters } from "vuex";
 export default {
   // mixins: [templateMixin],
   data() {
@@ -97,7 +164,7 @@ export default {
       // fields to display
       fields: [
         {
-          key: "titleid",
+          key: "title",
           label: "Title",
           sortable: true,
         },
@@ -121,13 +188,16 @@ export default {
         },
       ],
       templatesData: [],
+      form: {},
+      selectedTemplate: null,
     };
   },
   methods: {
     ...mapActions({
       readTemplates: "templates/readTemplates",
       updateTemplate: "templates/updateTemplate",
-      deleteTemplate: "templates/deleteTemplate"
+      deleteTemplate: "templates/deleteTemplate",
+      writeTemplate: "templates/writeTemplate",
     }),
     /* format date to local string */
     fmtDate(value) {
@@ -149,18 +219,20 @@ export default {
       this.deleteTemplate(id);
       this.readTemplates();
     },
+    addTemplateSubmit() {
+      const data = { ...this.form };
+      this.writeTemplate(data);
+    },
   },
   computed: {
-    ...mapState('templates', [
-      "templates"
-    ]),
+    ...mapState("templates", ["templates"]),
     ...mapGetters({
-      getTemplates: 'templates/getTemplates'
+      getTemplates: "templates/getTemplates",
     }),
   },
   mounted() {
     this.readTemplates();
-  }
+  },
 };
 </script>
 

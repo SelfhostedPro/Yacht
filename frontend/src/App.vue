@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!-- <Navbar></Navbar> -->
     <b-container fluid>
       <b-row no-gutters> 
         <b-col cols="1" >
@@ -19,6 +20,7 @@ import Sidebar from "./components/nav/Sidebar";
 export default {
   components: {
     Sidebar: Sidebar,
+    // Navbar: Navbar,
   },
   computed: {
     isAuthenticated() {
