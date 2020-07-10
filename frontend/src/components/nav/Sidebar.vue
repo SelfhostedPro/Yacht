@@ -240,11 +240,11 @@ export default {
 </script>
 
 <style lang="scss">
-// .btn:focus {
-//     background-color: #41B883 !important;
-//     border-color: #41B883 !important;
-//     box-shadow: 0 0 0 0.2rem rgba(65, 184, 131, 0.5) !important;
-// }
+.btn:focus {
+    background-color: rgba(65, 184, 131, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0) !important;
+    box-shadow: 0 0 0 0.2rem rgba(65, 184, 131, 0.5) !important;
+}
 .btn:hover {
     background-color: rgba(65, 184, 131, 0.8) !important;
     border-color: rgba(255, 255, 255, 0) !important;

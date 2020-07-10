@@ -15,23 +15,24 @@
             <h2>Template Details</h2>
             <hr />
           </b-card-text>
-          <b-container fluid>
-            <b-row class="justify-content-md-center">
-              <b-column col>
-                <b-button>
-                  Test
-                </b-button>
-              </b-column>
-              <b-column md="auto">
+          <b-container >
+            <b-row align-v="center" align-h="center">
+              <b-col cols="1">
+                <b-button-group vertical>
+                  <b-button>update</b-button>
+                  <b-button>delete</b-button>
+                </b-button-group>
+              </b-col>
+              <b-col cols="7">
                 <b-table
                   stacked
                   borderless
-                  bordered
+                  small
                   responsive
                   :fields="fields"
                   :items="currentTemplateTable"
                 ></b-table>
-              </b-column>
+              </b-col>
             </b-row>
           </b-container>
         </b-tab>
