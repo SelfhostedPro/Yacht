@@ -41,10 +41,9 @@ export default {
 </script>
 
 <style lang="scss">
-
-  @import "assets/_custom.scss";
-  @import "~bootstrap/scss/bootstrap.scss";
-  @import '~bootstrap-vue/dist/bootstrap-vue.css';
+@import "./assets/_custom.scss";
+@import "~bootstrap/scss/bootstrap.scss";
+@import "~bootstrap-vue/src/index.scss";
 
   #app {
     text-align: center;

@@ -16,7 +16,11 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
+  @import "@/assets/_custom.scss";
+  @import "~bootstrap/scss/bootstrap.scss";
+  @import '~bootstrap-vue/dist/bootstrap-vue.css';
+
 #templates {
   padding-top: 2em;
   overflow-x: hidden;

@@ -45,10 +45,11 @@ def create_app(config):
     from .main import main as main_blueprint
     from .auth import auth as auth_blueprint
     from .templates import templates as templates_blueprint
+    from .apps import apps as apps_blueprint
     app.register_blueprint(main_blueprint, url_prefix='/api')
     app.register_blueprint(auth_blueprint, url_prefix='/api/auth')
     app.register_blueprint(templates_blueprint, url_prefix='/api/templates')
-
+    app.register_blueprint(apps_blueprint, url_prefix="/api/apps")
     return app
 
 def register_endpoints(app):

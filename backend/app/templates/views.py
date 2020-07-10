@@ -1,10 +1,12 @@
 from .. import db
 from ..models.containers import (
     Template,
-    TemplateContent
+    TemplateContent,
+    Compose
 )
 from ..models.container_schemes import (
-    TemplateSchema
+    TemplateSchema,
+    TemplateContentSchema
 )
 
 from flask import Blueprint
@@ -50,7 +52,6 @@ def index():
     return jsonify({ 'data': data })
 
 @templates.route('/<int:id>')
-@jwt_required
 def show(id):
     """ View Template Info """
     try:
@@ -63,9 +64,30 @@ def show(id):
     except IntegrityError as err:
         abort(400, { 'error': 'Bad Request' })
 
+@templates.route('/<int:template_id>/contents')
+def template_content(template_id):
+    """ Generate a list of apps associated with the template based on id """
+    template = Template.query.get_or_404(template_id)
+    apps = TemplateContent.query.join(
+        Template, Template.id == TemplateContent.template_id
+    ).with_entities(
+        TemplateContent.title,
+        TemplateContent.logo,
+        TemplateContent.description,
+        TemplateContent.categories,
+        TemplateContent.id
+    ).filter(
+        TemplateContent.template_id==template_id
+    ).order_by(
+        TemplateContent.title.asc()
+    ).all()
+    template_schema = TemplateContentSchema(many=True)
+    data = template_schema.dump(apps, many=True)
+    return jsonify({ 'data': data })
+
+
 @templates.route('/', methods=['POST'])
 @use_args(TemplateSchema(), location='json')
-@jwt_required
 
 def create(args):
     """ Add a new Template """
@@ -207,7 +229,6 @@ def update(template_id):
 
 
 @templates.route('/<int:id>', methods=['DELETE'])
-@jwt_required
 
 # perhaps use webargs for id
 def delete(id):
@@ -227,3 +248,11 @@ def delete(id):
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
     return jsonify({ 'data': data})
+
+@templates.route('/compose')
+
+def compose_index():
+    templates = Compose.query.all()
+    templates_schema = TemplateSchema(many=True)
+    data = templates_schema.dump(templates, many=True)
+    return jsonify({ 'data': data })

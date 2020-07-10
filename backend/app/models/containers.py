@@ -38,7 +38,8 @@ class TemplateContent(db.Model):
 class Compose(db.Model):
     __tablename__ = 'compose'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
-    description = db.Column(db.String(256))
-    url = db.Column(db.String(256), unique=True)
-    path = db.Column(db.String(256), unique = True)
+    title = db.Column(db.String(64), index=True, unique=True)
+    description = db.Column(db.String)
+    url = db.Column(db.String(256), unique=True, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False, unique=False, index=False, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=False, unique=False, index=False, default=datetime.utcnow, onupdate=datetime.utcnow)

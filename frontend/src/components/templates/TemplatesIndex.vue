@@ -11,7 +11,7 @@
         variant="dark"
       >
         <b-icon-plus />
-        <!-- Modal -->
+        <!-- Add Template Modal -->
       </b-button>
       <b-modal
         :id="'addTemplate'"
@@ -27,8 +27,8 @@
             <b-button @click="cancel" variant="dark"> Cancel </b-button>
             <b-button
               @click="
-                addTemplateSubmit();
                 ok();
+                addTemplateSubmit();
               "
               variant="primary"
               class=" ml-2 "
@@ -72,6 +72,7 @@
         </b-form>
       </b-modal>
     </div>
+    <!-- Table -->
     <b-table
       responsive
       fixed
@@ -81,11 +82,11 @@
       hover
       outlined
       borderless
-      :items="getTemplates"
+      :items="templates"
       :fields="fields"
-      :sort-compare="mySortCompare"
       @row-clicked="templateDetails"
     >
+    <!-- Update column -->
       <template v-slot:cell(update_now)="data">
         <div>
           <b-button
@@ -105,7 +106,7 @@
           >
             <b-card bg-variant="light" no-body>
               <b-button
-                @click="updateThis(data.item.id)"
+                @click="updateTemplate(data.item.id)"
                 squared
                 class="d-flex px-4 align-items-center"
                 title="Update Template"
@@ -141,7 +142,7 @@
       ok-variant="danger"
       hide-backdrop
       content-class="shadow"
-      @ok="removeTemplate(selectedTemplate.id)"
+      @ok="deleteTemplate(selectedTemplate.id)"
     >
       <p>
         Deleting this template will remove the ability to lauch all apps defined
@@ -153,12 +154,11 @@
 </template>
 
 <script>
-// import templateMixin from "@/mixins/templates";
 import { mapState } from "vuex";
+// import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
-import { mapGetters } from "vuex";
+
 export default {
-  // mixins: [templateMixin],
   data() {
     return {
       // fields to display
@@ -166,30 +166,31 @@ export default {
         {
           key: "title",
           label: "Title",
-          sortable: true,
+          sortable: true
         },
         {
           key: "created_at",
           sortable: true,
-          formatter: "fmtDate",
-          thClass: "w-25",
+          formatter: "formarDate",
+          thClass: "w-25"
         },
         {
           key: "updated_at",
           sortable: true,
           formatter: "fmtDate",
-          thClass: "w-25",
+          thClass: "w-25"
         },
         {
           key: "update_now",
           sortable: false,
           label: "",
-          headerTitle: "Update Buttons",
-        },
+          headerTitle: "Update Buttons"
+        }
       ],
-      templatesData: [],
-      form: {},
-      selectedTemplate: null,
+      form: {
+      },
+      selectedTemplate: null
+
     };
   },
   methods: {
@@ -197,42 +198,32 @@ export default {
       readTemplates: "templates/readTemplates",
       updateTemplate: "templates/updateTemplate",
       deleteTemplate: "templates/deleteTemplate",
-      writeTemplate: "templates/writeTemplate",
+      writeTemplate: "templates/writeTemplate"
     }),
     /* format date to local string */
     fmtDate(value) {
       return new Date(Date.parse(value)).toLocaleString();
     },
-    mySortCompare: function(a, b, key) {
-      key = key === "titleid" ? "title" : key;
-      return a[key].toString().localeCompare(b[key].toString());
-    },
-    updateThis(id) {
-      this.updateTemplate(id);
-      // this.readTemplates();
-    },
     templateDetails(template) {
       this.$router.push({ path: `/templates/${template.id}` });
-    },
-    removeTemplate(id) {
-      console.log(id);
-      this.deleteTemplate(id);
-      this.readTemplates();
     },
     addTemplateSubmit() {
       const data = { ...this.form };
       this.writeTemplate(data);
-    },
+      this.$refs.form.reset();
+    }
   },
   computed: {
-    ...mapState("templates", ["templates"]),
-    ...mapGetters({
-      getTemplates: "templates/getTemplates",
-    }),
+    ...mapState("templates", ["templates"])
   },
   mounted() {
     this.readTemplates();
   },
+  watch: {
+    templates: (oldval, newval) => {
+      console.log(oldval, newval);
+    }
+  }
 };
 </script>
 

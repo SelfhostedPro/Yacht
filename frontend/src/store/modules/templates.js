@@ -1,62 +1,40 @@
 import axios from "axios";
-import Vue from "vue";
 
 const state = {
   // better use object as set {<id>: template} to guarantee uniqueness
-  templates: {},
-  // workaround to prevent BUG in single view
+  templates: [],
+  // workaround to prevent BUG in singleview
   currentTemplate: null
 };
 
 const getters = {
-  /* BUG: Can't get property of state.templates on readTemplate */
-  // getTemplateById: state => id => {
-  //   return state.templates[id]
-  // },
-  // getTemplateById(state) {
-  //   return id => {
-  //     return state.templates[id];
-  //   }
-  // },
+  // BUG: Can't get property of state.templates on readTemplate(ctx, id)
   getTemplateById(state) {
-    return function(id) {
-      console.log(state.templates);
-      return state.templates[id];
-    }
+    return id => {
+      return state.templates.find(x => x.id == id);
+    };
   },
-  // getTemplates: state => {
-  //   return Object.values(state.templates);
-  // },
-  getTemplates(state) {
-    return Object.values(state.templates);
-  }
 };
 
 const mutations = {
   setTemplates(state, templates) {
-    state.templates = templates.reduce((map, obj) => {
-      map[obj.id] = obj;
-      return map;
-    }, {});
+    state.templates = templates
   },
   setTemplate(state, template) {
-    state.templates[template.id] = template;
+    const idx = state.templates.findIndex(x => x.id === template.id);
+    state.templates.splice(idx, 1, template);
   },
-  updateTemplate(state, payload) {
-    state.templates[payload.id] = payload;
+  addTemplate(state, template) {
+    state.templates.push(template);
   },
   removeTemplate(state, template) {
-      // delete state.templates[template.id];
-    console.log("Deleting Now: "+template.id )
-    Vue.delete(state.templates, template.id)
-  },
-  addTemplate(state, payload) {
-    console.log(payload)
-    Vue.set(state.templates, payload)
-    // state.tempaltes = {...state.templates, payload}
+    const idx = state.templates.findIndex(x => x.id === template.id);
+    state.templates.splice(idx, 1);
+    console.log(state.templates);
   },
   // workaround to prevent BUG in single view
   setCurrentTemplate(state, template) {
+    // console.log(template)
     state.currentTemplate = template;
   }
 };
@@ -64,7 +42,7 @@ const mutations = {
 const actions = {
   readTemplates({ commit }) {
     const url = "/api/templates/";
-    axios.get(url).then((response) => {
+    axios.get(url).then(response => {
       let templates = response.data.data;
       commit("setTemplates", templates);
     });
@@ -81,25 +59,25 @@ const actions = {
   },
   writeTemplate({ commit }, payload) {
     const url = "/api/templates/";
-    axios.post(url, payload).then((response) => {
+    axios.post(url, payload).then(response => {
       let template = response.data.data;
       commit("addTemplate", template);
     });
   },
   updateTemplate(context, id) {
     const url = `/api/templates/${id}/refresh`;
-    axios.get(url).then((response) => {
+    axios.get(url).then(response => {
       let template = response.data.data;
-      context.commit("updateTemplate", template);
+      context.commit("setTemplate", template);
     });
   },
   deleteTemplate(context, id) {
     const url = `/api/templates/${id}`;
-    axios.delete(url).then((response) => {
+    axios.delete(url).then(response => {
       let template = response.data.data;
       context.commit("removeTemplate", template);
     });
-  },
+  }
 };
 
 export default {
@@ -107,5 +85,5 @@ export default {
   state,
   mutations,
   getters,
-  actions,
+  actions
 };
