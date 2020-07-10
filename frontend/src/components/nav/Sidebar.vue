@@ -7,8 +7,8 @@
       shadow
       no-header-close
       no-close-on-esc
-      no-close-on-route-change
       width="12em"
+      z-index="1036"
     >
       <!-- big sidebar footer -->
       <template v-slot:footer>
@@ -61,7 +61,7 @@
           </b-nav>
         </div>
         <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
-          <b-button squared v-b-toggle="'sidebar-big sidebar-small'">
+          <b-button squared v-b-toggle="'sidebar-big'">
             <b-icon-arrow-bar-left></b-icon-arrow-bar-left>
           </b-button>
         </div>
@@ -147,29 +147,18 @@
           <b-nav vertical>
             <b-collapse id="collapse-settings" accordion="main-menu">
               <b-card bg-variant="light" no-body>
-                <b-button squared class="m-1" title="Info" variant="light">
+                <b-button class="m-1" title="Info" variant="light">
                   <b-icon-info-circle />
                 </b-button>
-                <b-button
-                  squared
-                  class="m-1"
-                  title="Server Settings"
-                  variant="light"
-                >
+                <b-button class="m-1" title="Server Settings" variant="light">
                   <b-icon-gear-wide-connected />
                 </b-button>
-                <b-button
-                  squared
-                  class="m-1"
-                  title="User Settings"
-                  variant="light"
-                >
+                <b-button class="m-1" title="User Settings" variant="light">
                   <b-icon-person-circle />
                 </b-button>
               </b-card>
             </b-collapse>
             <b-button
-              squared
               v-b-toggle="'collapse-settings'"
               title="Settings"
               class="m-1"
@@ -178,7 +167,6 @@
               <b-icon-gear />
             </b-button>
             <b-button
-              squared
               class="mr-1"
               @click="logout"
               title="Logout"
@@ -189,7 +177,7 @@
           </b-nav>
         </div>
         <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
-          <b-button squared v-b-toggle="'sidebar-big sidebar-small'">
+          <b-button squared v-b-toggle="'sidebar-big'">
             <b-icon-arrow-bar-right></b-icon-arrow-bar-right>
           </b-button>
         </div>
@@ -201,17 +189,11 @@
       <!-- small sidebar content -->
       <div>
         <b-nav vertical>
-          <b-button
-            :to="{ name: 'Dashboard' }"
-            
-            class="m-1"
-            variant="dark"
-          >
+          <b-button :to="{ name: 'Dashboard' }" class="m-1" variant="dark">
             <b-icon-house />
           </b-button>
           <!-- Apps collapse -->
           <b-button
-            
             v-b-toggle="'collapse-apps'"
             title="Apps"
             class="m-1"
@@ -221,10 +203,10 @@
           </b-button>
           <b-collapse id="collapse-apps" accordion="main-menu">
             <b-card bg-variant="light" no-body>
-              <b-button squared class="m-1" title="Add App" variant="light">
+              <b-button class="m-1" title="Add App" variant="light">
                 <b-icon-plus />
               </b-button>
-              <b-button squared class="m-1" title="App List" variant="light">
+              <b-button class="m-1" title="App List" variant="light">
                 <b-icon-list-ul />
               </b-button>
             </b-card>
@@ -232,7 +214,6 @@
           <!-- Templates collapse -->
           <b-button
             :to="{ name: 'Templates' }"
-            
             class="m-1"
             title="List Templates"
             variant="dark"
@@ -257,3 +238,19 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+// .btn:focus {
+//     background-color: #41B883 !important;
+//     border-color: #41B883 !important;
+//     box-shadow: 0 0 0 0.2rem rgba(65, 184, 131, 0.5) !important;
+// }
+.btn:hover {
+    background-color: rgba(65, 184, 131, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0) !important;
+    box-shadow: 0 0 0 0.2rem rgba(65, 184, 131, 0.5) !important;
+}
+.btn {
+  border-color: rgba(255, 255, 255, 0) !important;
+}
+</style>

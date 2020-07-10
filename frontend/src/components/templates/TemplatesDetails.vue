@@ -9,31 +9,64 @@
         class="text-light bg-dark"
         active-tab-class="text-light bg-primary"
         card
-        vertical
       >
         <b-tab title="Template Details" class="text-dark bg-light" active>
-          <b-card-text> <h2>Template Details</h2> </b-card-text>
-          <b-table
-            stacked
-            :fields="fields"
-            :items="currentTemplateTable"
-          ></b-table>
+          <b-card-text>
+            <h2>Template Details</h2>
+            <hr />
+          </b-card-text>
+          <b-container fluid>
+            <b-row class="justify-content-md-center">
+              <b-column col>
+                <b-button>
+                  Test
+                </b-button>
+              </b-column>
+              <b-column md="auto">
+                <b-table
+                  stacked
+                  borderless
+                  bordered
+                  responsive
+                  :fields="fields"
+                  :items="currentTemplateTable"
+                ></b-table>
+              </b-column>
+            </b-row>
+          </b-container>
         </b-tab>
         <b-tab title="Tab 2" class="text-dark bg-light">
-          <b-card-text v-if="contents"><h2>Template Contents</h2></b-card-text>
-          <b-card-group columns v-if="contents">
-            <b-card
-              v-for="app in contents"
-              :key="app.id"
-              :header="app.title"
-              header-bg-variant="white"
-              :img-src="app.logo"
-            >
-              <b-card-text>
-                {{ app.description }}
-              </b-card-text>
-            </b-card>
-          </b-card-group>
+          <b-card-text v-if="contents">
+            <h2>Template Contents</h2>
+            <hr />
+          </b-card-text>
+          <b-container fluid>
+            <b-row cols="1" cols-sm="2" cols-md="3" cols-lg="4">
+              <b-col
+                v-for="app in contents"
+                :key="app.id"
+                col
+                no-gutters
+                class="mb-2"
+              >
+                <b-card
+                  :title="app.title"
+                  :img-src="app.logo"
+                  border-variant="secondary"
+                  img-width="100%"
+                  align="center"
+                  class="h-100"
+                >
+                  <b-card-text>
+                    {{ app.description | truncate(50, "...") }}
+                  </b-card-text>
+                  <template v-slot:footer v-if="app.categories">
+                    {{ app.categories }}
+                  </template>
+                </b-card>
+              </b-col>
+            </b-row>
+          </b-container>
         </b-tab>
         <b-tab title="Tab 3" class="text-dark bg-light"
           ><b-card-text>Tab contents 3</b-card-text></b-tab
@@ -78,11 +111,6 @@ export default {
       ],
       contents: [],
     };
-  },
-  filters: {
-    truncate: function(text, length, suffix) {
-      return text.substring(0, length) + suffix;
-    },
   },
   computed: {
     ...mapState("templates", ["currentTemplate"]),
