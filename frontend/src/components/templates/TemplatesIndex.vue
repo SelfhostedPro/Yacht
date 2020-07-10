@@ -2,6 +2,8 @@
   <div id="templates">
     <!-- Flexbox for button -->
       <div class="d-flex center-align-items">
+      <b-form-input v-model="filter" placeholder="Type to Search" class="mr-2">
+      </b-form-input>
         <!-- Plus button -->
         <b-button
           squared
@@ -84,6 +86,10 @@
         borderless
         :items="templates"
         :fields="fields"
+        :filter="filter"
+        :filter-included-fields="['title']"
+        :per-page="perPage"
+        :current-page="currentPage"
         @row-clicked="templateDetails"
       >
         <!-- Update column -->
@@ -223,7 +229,7 @@ export default {
     },
   },
   computed: {
-    ...mapState("templates", ["templates"]),
+    ...mapState("templates", ["templates", "loading"]),
   },
   mounted() {
     this.readTemplates();

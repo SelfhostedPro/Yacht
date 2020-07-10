@@ -7,7 +7,9 @@
           <Sidebar v-if="isAuthenticated"></Sidebar>
         </b-col>
         <b-col>
-          <router-view id="content" />
+          <!-- <b-overlay :show="loading" variant="white" rounded="sm"> -->
+            <router-view id="content" />
+          <!-- </b-overlay>  -->
         </b-col>
       </b-row>
     </b-container>
@@ -15,6 +17,7 @@
 </template>
 
 <script type="text/javascript">
+import { mapState } from "vuex";
 // import Navbar from "./components/nav/Navbar";
 import Sidebar from "./components/nav/Sidebar";
 export default {
@@ -23,6 +26,7 @@ export default {
     // Navbar: Navbar,
   },
   computed: {
+    ...mapState("templates", ["templates", "loading"]),
     isAuthenticated() {
       return this.$store.getters["auth/isAuthenticated"];
     }

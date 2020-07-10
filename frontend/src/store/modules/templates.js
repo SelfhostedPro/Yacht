@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const state = {
+  loading: false,
   // better use object as set {<id>: template} to guarantee uniqueness
   templates: [],
   // workaround to prevent BUG in singleview
@@ -17,6 +18,9 @@ const getters = {
 };
 
 const mutations = {
+  setLoading(state, loading) {
+    state.loading = loading;
+  },
   setTemplates(state, templates) {
     state.templates = templates
   },
@@ -41,42 +45,67 @@ const mutations = {
 
 const actions = {
   readTemplates({ commit }) {
+    commit("setLoading", true);
     const url = "/api/templates/";
-    axios.get(url).then(response => {
-      let templates = response.data.data;
-      commit("setTemplates", templates);
-    });
+    axios
+      .get(url).then(response => {
+        let templates = response.data.data;
+        commit("setTemplates", templates);
+      })
+      .finally(() => {
+        commit("setLoading", false);
+      });
   },
   readTemplate({ commit }, id) {
     const url = `/api/templates/${id}`;
-    axios.get(url).then(response => {
-      let template = response.data.data;
-      // workaround to prevent BUG in single view
-      commit("setCurrentTemplate", template);
-      // BUG: getter getTemplateById(id) result undefined
-      commit("setTemplate", template);
-    });
+    commit("setLoading", true);
+    axios.get(url)
+      .then(response => {
+        let template = response.data.data;
+        // workaround to prevent BUG in single view
+        commit("setCurrentTemplate", template);
+        // BUG: getter getTemplateById(id) result undefined
+        commit("setTemplate", template);
+      })
+      .finally(() => {
+        commit("setLoading", false);
+      });
   },
   writeTemplate({ commit }, payload) {
     const url = "/api/templates/";
-    axios.post(url, payload).then(response => {
-      let template = response.data.data;
-      commit("addTemplate", template);
-    });
+    commit("setLoading", true);
+    axios.post(url, payload)
+      .then(response => {
+        let template = response.data.data;
+        commit("addTemplate", template);
+      })
+      .finally(() => {
+        commit("setLoading", false);
+      });
   },
-  updateTemplate(context, id) {
+  updateTemplate({ commit }, id) {
     const url = `/api/templates/${id}/refresh`;
-    axios.get(url).then(response => {
-      let template = response.data.data;
-      context.commit("setTemplate", template);
-    });
+    commit("setLoading", true);
+    axios.post(url)
+      .then(response => {
+          let template = response.data.data;
+          commit("setTemplate", template);
+        })
+      .finally(() => {
+        commit("setLoading", false);
+      });
   },
-  deleteTemplate(context, id) {
+  deleteTemplate({ commit }, id) {
     const url = `/api/templates/${id}`;
-    axios.delete(url).then(response => {
-      let template = response.data.data;
-      context.commit("removeTemplate", template);
-    });
+    commit("setLoading", true);
+    axios.delete(url)
+      .then(response => {
+        let template = response.data.data;
+        commit("removeTemplate", template);
+      })
+      .finally(() => {
+        commit("setLoading", false);
+      });
   }
 };
 

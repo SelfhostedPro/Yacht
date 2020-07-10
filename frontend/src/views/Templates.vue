@@ -2,17 +2,21 @@
   <div id="templates-view" class="templates">
     <h1> Templates </h1>
     <hr/>
-    <router-view></router-view>
+    <b-overlay :show="loading" variant="white" rounded="sm">
+      <router-view></router-view>
+    </b-overlay>
   </div>
 </template>
 <script>
-
+import { mapState } from "vuex"; 
 export default {
   name: "Templates",
   data() {
-    return {
-    };
+    return {};
   },
+  computed: {
+    ...mapState("templates", ["loading"])
+  }
 };
 </script>
 
