@@ -7,6 +7,7 @@ from flask_script import Manager, Shell
 
 from app import create_app, db
 from config import Config
+from app.models.user import User
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
@@ -38,6 +39,13 @@ def recreate_db():
     """
     db.drop_all()
     db.create_all()
+    db.session.commit()
+
+    user = User(
+        username='user',
+        password='pass'
+    )
+    db.session.add(user)
     db.session.commit()
 
 

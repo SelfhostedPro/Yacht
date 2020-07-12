@@ -1,45 +1,63 @@
-from flask import current_app
+
 from .. import db
+
 from datetime import datetime
+from werkzeug.security import check_password_hash, generate_password_hash
+
+
 
 class Template(db.Model):
     __tablename__ = 'templates'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64), index=True, unique=True)
-    url = db.Column(db.String(256), unique=True)
-    created_at = db.Column(db.DateTime, nullable=False, unique=False, index=False, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, nullable=False, unique=False, index=False, default=datetime.utcnow, onupdate=datetime.utcnow)
-    items = db.relationship('TemplateContent', backref='template', cascade="save-update, merge, delete, delete-orphan", lazy='dynamic') ### Makes sure template contents are deleted if a template is
 
-    #def __repr__(self):
-     #   return f"('{self.name}', '{self.url}', '{self.path}')"
+    # alternative: DateTime(timezone=True), sqlalchemy.sql.func.now()
+    created_at = db.Column(db.DateTime,
+        nullable=False, unique=False, index=False,
+        default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime,
+        nullable=False, unique=False, index=False,
+        default=datetime.utcnow, onupdate=datetime.utcnow)
 
-class TemplateContent(db.Model):
-    __tablename__ = 'template_content'
+    # rename to title
+    title = db.Column(db.String(255),
+        nullable=False, unique=True, index=True)
+    url = db.Column(db.Text,
+        nullable=False, unique=True, index=False)
+
+    items = db.relationship('TemplateItem',
+        backref='template', lazy='dynamic', cascade='all, delete-orphan')
+
+class TemplateItem(db.Model):
+    __tablename__ = 'template_item'
     id = db.Column(db.Integer, primary_key=True)
-    # type = db.Column(db.String(1))
-    type = db.Column(db.Integer)
-    title = db.Column(db.String(64), index=True)
-    name = db.Column(db.String(64), index=True)
-    notes = db.Column(db.String, nullable=True)
-    description = db.Column(db.String, nullable=True)
-    logo = db.Column(db.String)
-    image = db.Column(db.String(64))
-    categories = db.Column(db.JSON)
-    platform = db.Column(db.String(20))
-    restart_policy = db.Column(db.String(20))
-    sysctls = db.Column(db.JSON, nullable=True)
-    ports = db.Column(db.JSON, nullable=True)
-    volumes = db.Column(db.JSON, nullable=True)
-    env = db.Column(db.JSON, nullable=True)
-    template_id = db.Column(db.Integer, db.ForeignKey('templates.id')) #Links template content to template above
 
-### Not in use yet
-class Compose(db.Model):
-    __tablename__ = 'compose'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64), index=True, unique=True)
-    description = db.Column(db.String)
-    url = db.Column(db.String(256), unique=True, nullable=True)
-    created_at = db.Column(db.DateTime, nullable=False, unique=False, index=False, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, nullable=False, unique=False, index=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    type= db.Column(db.Integer,
+        nullable=False, unique=False, index=False)
+    title = db.Column(db.String(255),
+        nullable=False, unique=False, index=True)
+    platform = db.Column(db.String(64),
+        nullable=False, unique=False, index=False)
+    description = db.Column(db.Text,
+        nullable=True, unique=False, index=False)
+    name = db.Column(db.String(255),
+        nullable=True, unique=False, index=True)
+    logo = db.Column(db.Text,
+        nullable=True, unique=False, index=False)
+    image = db.Column(db.String(128),
+        nullable=True, unique=False, index=False)
+    notes = db.Column(db.Text,
+        nullable=True, unique=False, index=False)
+    categories = db.Column(db.JSON,
+        nullable=True, unique=False, index=False)
+    restart_policy = db.Column(db.String(20),
+        nullable=True, unique=False, index=False)
+    ports = db.Column(db.JSON,
+        nullable=True, unique=False, index=False)
+    volumes = db.Column(db.JSON,
+        nullable=True, unique=False, index=False)
+    env = db.Column(db.JSON,
+        nullable=True, unique=False, index=False)
+    sysctls = db.Column(db.JSON,
+        nullable=True, unique=False, index=False)
+    template_id = db.Column(db.Integer,
+        db.ForeignKey('templates.id'))

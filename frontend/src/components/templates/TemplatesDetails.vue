@@ -15,7 +15,7 @@
             <h2>Template Details</h2>
             <hr />
           </b-card-text>
-          <b-container >
+          <b-container>
             <b-row align-v="center" align-h="center">
               <b-col cols="1">
                 <b-button-group vertical>
@@ -42,29 +42,24 @@
             <hr />
           </b-card-text>
           <b-container fluid>
-            <b-row cols="1" cols-sm="2" cols-md="3" cols-lg="4">
+            <b-row cols="1">
               <b-col
-                v-for="app in contents"
+                v-for="app in currentTemplate.items"
                 :key="app.id"
                 col
                 no-gutters
                 class="mb-2"
               >
-                <b-card
-                  :title="app.title"
-                  :img-src="app.logo"
-                  border-variant="secondary"
-                  img-width="100%"
-                  align="center"
-                  class="h-100"
-                >
-                  <b-card-text>
-                    {{ app.description | truncate(50, "...") }}
-                  </b-card-text>
-                  <template v-slot:footer v-if="app.categories">
-                    {{ app.categories }}
+                <b-media>
+                  <template v-slot:aside>
+                    <img :src="app.logo" width="64" alt="Media Aside" />
                   </template>
-                </b-card>
+
+                  <h2 class="text-left">{{ app.title }}</h2>
+                  <p class="text-left">{{ app.description }}</p>
+                  <!-- b-[Optional: add media children here for nesting] -->
+                </b-media>
+                <hr />
               </b-col>
             </b-row>
           </b-container>

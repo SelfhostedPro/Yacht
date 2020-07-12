@@ -1,5 +1,9 @@
 <template lang="html">
-  <b-form @submit.prevent="onSubmit" class="form-signin mt-5">
+  <b-form
+    ref="form"
+    @submit.prevent="onSubmit"
+    class="form-signin mt-5 text-center"
+  >
     <!-- add validation for required to both fields -->
     <img
       class="mb-4"
@@ -31,6 +35,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -39,15 +45,16 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      login: "auth/login"
+    }),
     onSubmit() {
-      let data = {
+      this.login({
         username: this.username,
         password: this.password
-      };
-      this.$store
-        .dispatch("auth/login", data)
-        .then(() => this.$router.push("dashboard"))
-        .catch(err => console.log(err));
+      });
+      this.password = "";
+      // this.$refs.form.reset();
     }
   }
 };

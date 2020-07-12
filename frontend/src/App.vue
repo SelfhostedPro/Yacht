@@ -2,9 +2,9 @@
   <div id="app">
     <!-- <Navbar></Navbar> -->
     <b-container fluid>
-      <b-row no-gutters> 
+      <b-row no-gutters v-if="isLoggedIn"> 
         <b-col cols="1" >
-          <Sidebar v-if="isAuthenticated"></Sidebar>
+          <Sidebar></Sidebar>
         </b-col>
         <b-col>
           <!-- <b-overlay :show="loading" variant="white" rounded="sm"> -->
@@ -12,37 +12,41 @@
           <!-- </b-overlay>  -->
         </b-col>
       </b-row>
+      <b-row v-else>
+       <LoginForm />
+      </b-row>
     </b-container>
   </div>
 </template>
 
 <script type="text/javascript">
-import { mapState } from "vuex";
-// import Navbar from "./components/nav/Navbar";
+import { mapActions, mapGetters } from "vuex";
+import LoginForm from "./components/auth/LoginForm";
 import Sidebar from "./components/nav/Sidebar";
 export default {
   components: {
+    LoginForm,
     Sidebar: Sidebar,
-    // Navbar: Navbar,
+  },
+  data() {
+    return {};
   },
   computed: {
-    ...mapState("templates", ["templates", "loading"]),
-    isAuthenticated() {
-      return this.$store.getters["auth/isAuthenticated"];
-    }
+    ...mapGetters({
+      isLoggedIn: "auth/isLoggedIn"
+    })
   },
   methods: {
-    logout() {
-      console.log("logout");
-      this.$store.dispatch("auth/logout").then(() => {
-        this.$router.push("/");
-      });
-    }
+    ...mapActions({
+      logout: "auth/logout"
+    })
   },
   created() {
+    document.addEventListener("beforeunload", this.logout);
   }
 };
 </script>
+
 
 <style lang="scss">
 @import "./assets/_custom.scss";

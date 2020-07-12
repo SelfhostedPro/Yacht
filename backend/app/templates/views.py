@@ -1,12 +1,11 @@
 from .. import db
 from ..models.containers import (
     Template,
-    TemplateContent,
-    Compose
+    TemplateItem,
 )
 from ..models.container_schemes import (
     TemplateSchema,
-    TemplateContentSchema
+    TemplateItemSchema
 )
 
 from flask import Blueprint
@@ -21,21 +20,15 @@ from flask_jwt_extended import (
     jwt_optional
 )
 
-import time
-import wget
-import os  # used for getting file type and deleting files
-from urllib.parse import urlparse  # used for getting filetype from url
-import urllib.request
-import json  # Used for getting template data
-import docker
-
 from datetime import datetime
+import json
+from sqlalchemy import or_
 from sqlalchemy.orm.session import make_transient
 from sqlalchemy.exc import IntegrityError
+import urllib.request
 from webargs import fields, validate
 from webargs.flaskparser import use_args, use_kwargs
 from werkzeug.exceptions import MethodNotAllowed, UnprocessableEntity
-
 
 templates = Blueprint('templates', __name__)
 
@@ -46,46 +39,27 @@ templates = Blueprint('templates', __name__)
 # @use_kwargs({'per_page': fields.Int(missing=10)}, locations=('query',))
 # ...
 def index():
-    templates = Template.query.all()
+    templates = Template.query.order_by(Template.title).all()
     templates_schema = TemplateSchema(many=True)
     data = templates_schema.dump(templates, many=True)
     return jsonify({ 'data': data })
 
+# endpoint: show
+#  methods: GET
+#   errors: 200 (OK) | 404 (Not Found)
 @templates.route('/<int:id>')
 def show(id):
-    """ View Template Info """
     try:
-        template = Template.query.get(id)
-        if not template:
-            abort(404, { 'error': 'Not Found' })
+        template = Template.query.get_or_404(id)
         template_schema = TemplateSchema()
         data = template_schema.dump(template)
         return jsonify({ 'data': data })
     except IntegrityError as err:
         abort(400, { 'error': 'Bad Request' })
 
-@templates.route('/<int:template_id>/contents')
-def template_content(template_id):
-    """ Generate a list of apps associated with the template based on id """
-    template = Template.query.get_or_404(template_id)
-    apps = TemplateContent.query.join(
-        Template, Template.id == TemplateContent.template_id
-    ).with_entities(
-        TemplateContent.title,
-        TemplateContent.logo,
-        TemplateContent.description,
-        TemplateContent.categories,
-        TemplateContent.id
-    ).filter(
-        TemplateContent.template_id==template_id
-    ).order_by(
-        TemplateContent.title.asc()
-    ).all()
-    template_schema = TemplateContentSchema(many=True)
-    data = template_schema.dump(apps, many=True)
-    return jsonify({ 'data': data })
-
-
+# endpoint: create
+#  methods: POST
+#   errors: 201 (Created) | [200 (OK) | 204 (No Content)] | 400 (Bad Request)
 @templates.route('/', methods=['POST'])
 @use_args(TemplateSchema(), location='json')
 
@@ -106,7 +80,7 @@ def create(args):
                 ports = conv_ports2dict(entry.get('ports', []))
 
                 # Optional use classmethod from_dict
-                template_content = TemplateContent(
+                template_content = TemplateItem(
                     type=int(entry['type']),
                     title=entry['title'],
                     platform=entry['platform'],
@@ -176,83 +150,109 @@ def conv_ports2dict(data):
         portlst.append({ 'hport': hport, 'cport': cport, 'proto': proto })
     return portlst
 
-@templates.route('/<int:template_id>/refresh')
-def update(template_id):
-    template = Template.query.get(template_id)
-    if not template:
-        abort(404, { 'error': 'Not Found' })
+
+# endpoint: edit
+#  methods: PUT
+#   errors: 201 (Created) | [200 (OK) | 204 (No Content)] | 409 (Conflict)
+# endpoint: update
+#  methods: PATCH
+#   errors: ... 400 (Bad Request) | 409 (Conflict) | 415 (Unsupported Media Type)
+
+# endpoint: delete/destroy
+#  methods: DELETE (optional: POST)
+#   errors: 204 (No Content) | 404 (Not Found)
+@templates.route('/<int:id>', methods=['DELETE'])
+# perhaps use webargs for id
+def delete(id):
+    '''curl --header "Content-Type: application/json" \
+    -X "DELETE" \
+    http://127.0.0.1:5000/api/templates/2
+    '''
+
+    template = Template.query.get_or_404(id)
+    db.session.delete(template)
+    db.session.commit()
+    
+    template_schema = TemplateSchema()
+    data = template_schema.dump(template)
+    return jsonify({ 'data': data})
+
+# ---
+
+@templates.route('/<int:id>/refresh', methods=['POST'])
+def refresh(id):
+    '''curl --header "Content-Type: application/json" \
+      --request POST \
+      http://127.0.0.1:5000/api/templates/1/refresh
+    '''
+    template = Template.query.get_or_404(id)
+
     items = []
     try:
         with urllib.request.urlopen(template.url) as fp:
             for entry in json.load(fp):
-                # Optional use classmethod from_dict
 
                 ports = conv_ports2dict(entry.get('ports', []))
 
-                template_content = TemplateContent(
-                    type=int(entry['type']),
-                    title=entry['title'],
-                    platform=entry['platform'],
-                    description=entry.get('description', ''),
-                    name=entry.get('name', entry['title'].lower()),
-                    logo=entry.get('logo', ''),
-                    image=entry.get('image', ''),
-                    notes=entry.get('note', ''),
-                    categories=entry.get('categories', ''), # default: '' or []
-                    restart_policy=entry.get('restart_policy'),
-                    ports=ports,
-                    volumes=entry.get('volumes'),
-                    env=entry.get('env'),
+                item = TemplateItem(
+                    type = int(entry['type']),
+                    title = entry['title'],
+                    platform = entry['platform'],
+                    description = entry.get('description', ''),
+                    name = entry.get('name', entry['title'].lower()),
+                    logo = entry.get('logo', ''), # default logo here!
+                    image = entry.get('image', ''),
+                    notes = entry.get('notes', ''),
+                    categories = entry.get('categories', ''),
+                    restart_policy = entry.get('restart_policy'),
+                    ports = ports,
+                    volumes = entry.get('volumes'),
+                    env = entry.get('env'),
                 )
-                items.append(template_content)
+                items.append(item)
     except Exception as exc:
-        # connection problems or incorrect JSON data
-        print('Template update failed')
+        print('Template update failed. ERR_001', exc)
+        raise
     else:
-        # db.session.delete(template)
-        # db.session.commit()
+        db.session.delete(template)
+        db.session.commit()
 
-        # make_transient(template)
+        make_transient(template)
         template.updated_at = datetime.utcnow()
         template.items = items
 
         try:
             db.session.add(template)
             db.session.commit()
-            print("Template \"" + template.title + "\" updated successfully.")
+            print(f"Template \"{template.title}\" updated successfully.")
         except Exception as exc:
             db.session.rollback()
+            print('Template update failed. ERR_002', exc)
             raise
+
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
     return jsonify({ 'data': data })
 
 
-@templates.route('/<int:id>', methods=['DELETE'])
+@templates.route('/items')
+# @use_kwargs({'per_page': fields.Int(missing=10)}, locations=('query',))
+# ...
+def itemindex():
+    template_items = TemplateItem.query.order_by(TemplateItem.title).all()
+    template_items_schema = TemplateItemSchema(many=True)
+    data = template_items_schema.dump(template_items, many=True)
+    return jsonify({ 'data': data })
 
-# perhaps use webargs for id
-def delete(id):
-    """ Delete a Template """
-    '''curl --header "Content-Type: application/json" \
-    -X "DELETE" \
-    http://127.0.0.1:5000/api/templates/2
-    '''
-    # check error code and return json error
+# endpoint: show
+#  methods: GET
+#   errors: 200 (OK) | 404 (Not Found)
+@templates.route('/<int:id>/contents')
+def showitems(id):
     try:
-        template = Template.query.get(id)
-        db.session.delete(template)
-        db.session.commit()
+        template_item = TemplateItem.query.get_or_404(id)
+        template_item_schema = TemplateItemSchema()
+        data = template_item_schema.dump(template_item)
+        return jsonify({ 'data': data })
     except IntegrityError as err:
         abort(400, { 'error': 'Bad Request' })
-
-    template_schema = TemplateSchema()
-    data = template_schema.dump(template)
-    return jsonify({ 'data': data})
-
-@templates.route('/compose')
-
-def compose_index():
-    templates = Compose.query.all()
-    templates_schema = TemplateSchema(many=True)
-    data = templates_schema.dump(templates, many=True)
-    return jsonify({ 'data': data })

@@ -1,12 +1,12 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 // import Home from "../views/Home.vue";
-import Login from "../views/Login.vue";
+// import Login from "../views/Login.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Templates from "../views/Templates.vue";
 import TemplatesIndex from "../components/templates/TemplatesIndex.vue";
 import TemplatesDetails from "../components/templates/TemplatesDetails.vue";
-import TemplatesCreate from "../components/templates/TemplatesCreate.vue";
+// import TemplatesCreate from "../components/templates/TemplatesCreate.vue";
 
 import store from "@/store";
 
@@ -15,46 +15,19 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Home",
-    // perhaps use same view different components (Login, Dashboard) if isAuthenticated
-    component: Login,  // Home
-    beforeEnter: (to, from, next) => {
-      if (store.getters["auth/isAuthenticated"]) {
-        // if is authenticated then redirect to dashboard
-        return next("dashboard")
-      }
-      next();
-    }
-  },
-  // {
-  //   path: "/about",
-  //   name: "About",
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import("../views/About.vue")
-  // },
-  // {
-  //   path: "/login",
-  //   name: "Login",
-  //   component: () => import("../views/Login.vue")
-  // },
-  {
-    path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
     meta: {
-      requiresAuth: true
-    },
-    // nested routes for (example: /sample/apps)
-    children: [
-    ]
+      // requiresAuth: true
+    }
   },
-
   {
     path: "/templates",
     // name: "Templates",
     component: Templates,
+    meta: {
+      requiresAuth: true
+    },
     children: [
       {
         // UserProfile will be rendered inside User's <router-view>
@@ -63,19 +36,14 @@ const routes = [
         name: "Templates",
         component: TemplatesIndex
       },
+      // {
+      //   path: "new",
+      //   component: TemplatesCreate,
+      // },
       {
-        // UserProfile will be rendered inside User's <router-view>
-        // when /user/:id/profile is matched
-        name: "NewTemplate",
-        path: "new",
-        component: TemplatesCreate,
-      },
-      {
-        // UserProfile will be rendered inside User's <router-view>
-        // when /user/:id/profile is matched
         path: ":templateId",
-        component: TemplatesDetails,
-      },
+        component: TemplatesDetails
+      }
     ]
   },
   // otherwise return home
@@ -92,7 +60,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   // check if username is stored in localStorage to prevent routing
   if (
-    !store.getters["auth/isAuthenticated"] &&
+    !store.getters["auth/isLoggedIn"] &&
     to.matched.some(record => record.meta.requiresAuth)
   ) {
     return next("/");
