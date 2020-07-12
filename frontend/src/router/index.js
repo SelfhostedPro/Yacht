@@ -18,7 +18,7 @@ const routes = [
     name: "Dashboard",
     component: Dashboard,
     meta: {
-      // requiresAuth: true
+      requiresAuth: true
     }
   },
   {
@@ -30,8 +30,6 @@ const routes = [
     },
     children: [
       {
-        // UserProfile will be rendered inside User's <router-view>
-        // when /user/:id/profile is matched
         path: "",
         name: "Templates",
         component: TemplatesIndex

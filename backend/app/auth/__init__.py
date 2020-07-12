@@ -6,4 +6,4 @@ def create_module(app, **kwargs):
     from ..errors import register_errorhandlers
 
     jwt.init_app(app)
-    register_errorhandlers(blueprint)
+    register_errorhandlers(auth)

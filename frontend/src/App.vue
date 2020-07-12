@@ -4,7 +4,7 @@
     <b-container fluid>
       <b-row no-gutters v-if="isLoggedIn"> 
         <b-col cols="1" >
-          <Sidebar></Sidebar>
+          <Sidebar />
         </b-col>
         <b-col>
           <!-- <b-overlay :show="loading" variant="white" rounded="sm"> -->

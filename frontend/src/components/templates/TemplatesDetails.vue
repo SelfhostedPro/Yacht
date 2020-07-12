@@ -15,28 +15,17 @@
             <h2>Template Details</h2>
             <hr />
           </b-card-text>
-          <b-container>
-            <b-row align-v="center" align-h="center">
-              <b-col cols="1">
-                <b-button-group vertical>
-                  <b-button>update</b-button>
-                  <b-button>delete</b-button>
-                </b-button-group>
-              </b-col>
-              <b-col cols="7">
                 <b-table
                   stacked
                   borderless
                   small
-                  responsive
+                  fixed
+                  thead-class="max"
                   :fields="fields"
                   :items="currentTemplateTable"
                 ></b-table>
-              </b-col>
-            </b-row>
-          </b-container>
         </b-tab>
-        <b-tab title="Tab 2" class="text-dark bg-light">
+        <b-tab title="Template Contents" class="text-dark bg-light">
           <b-card-text v-if="contents">
             <h2>Template Contents</h2>
             <hr />
@@ -168,4 +157,5 @@ export default {
 };
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+</style>
