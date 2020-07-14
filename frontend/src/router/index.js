@@ -1,69 +1,62 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-// import Home from "../views/Home.vue";
-// import Login from "../views/Login.vue";
-import Dashboard from "../views/Dashboard.vue";
+import Home from "../views/Home.vue";
 import Templates from "../views/Templates.vue";
-import TemplatesIndex from "../components/templates/TemplatesIndex.vue";
-import TemplatesDetails from "../components/templates/TemplatesDetails.vue";
-// import TemplatesCreate from "../components/templates/TemplatesCreate.vue";
-
-import store from "@/store";
+import TemplatesShow from "../components/templates/TemplatesDetails.vue";
+import TemplatesForm from "../components/templates/TemplatesForm.vue";
+import TemplatesList from "../components/templates/TemplatesList.vue";
+import Applications from "../views/Applications.vue";
+import ApplicationsForm from "../components/applications/ApplicationsForm.vue";
+import Container from "../views/Container.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Dashboard",
-    component: Dashboard,
-    meta: {
-      requiresAuth: true
-    }
+    name: "Home",
+    component: Home
   },
   {
     path: "/templates",
     // name: "Templates",
     component: Templates,
-    meta: {
-      requiresAuth: true
-    },
     children: [
       {
         path: "",
         name: "Templates",
-        component: TemplatesIndex
+        component: TemplatesList // perhaps rename to TemplatesIndex
       },
-      // {
-      //   path: "new",
-      //   component: TemplatesCreate,
-      // },
+      {
+        path: "new",
+        component: TemplatesForm // perhaps rename to TemplatesCreate
+      },
       {
         path: ":templateId",
-        component: TemplatesDetails
+        component: TemplatesShow // perhaps rename to TemplateDetails
       }
     ]
   },
-  // otherwise return home
   {
-    path: "*",
-    redirect: "/"
+    path: "/apps",
+    component: Applications,
+    children: [
+      {
+        name: "Deploy",
+        path: "deploy/:appId",
+        component: ApplicationsForm
+      }
+    ]
+  },
+  {
+    path: "/images",
+    name: "Images",
+    component: Container
   }
 ];
 
 const router = new VueRouter({
   routes
-});
-
-router.beforeEach((to, from, next) => {
-  // check if username is stored in localStorage to prevent routing
-  if (
-    !store.getters["auth/isLoggedIn"] &&
-    to.matched.some(record => record.meta.requiresAuth)
-  ) {
-    return next("/");
-  }
-  next();
 });
 
 export default router;

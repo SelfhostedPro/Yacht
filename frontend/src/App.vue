@@ -1,60 +1,35 @@
 <template>
-  <div id="app">
-    <!-- <Navbar></Navbar> -->
-    <b-container fluid>
-      <b-row no-gutters v-if="isLoggedIn"> 
-        <b-col cols="1" >
-          <Sidebar />
-        </b-col>
-        <b-col>
-          <!-- <b-overlay :show="loading" variant="white" rounded="sm"> -->
-            <router-view id="content" />
-          <!-- </b-overlay>  -->
-        </b-col>
-      </b-row>
-      <b-row v-else>
-       <LoginForm />
-      </b-row>
-    </b-container>
-  </div>
+  <v-app id="yachtrevue">
+    <Sidebar />
+    <Appbar />
+
+    <v-main>
+      <!-- Provides the application the proper gutter -->
+      <v-container fluid>
+        <!-- If using vue-router -->
+        <router-view></router-view>
+      </v-container>
+    </v-main>
+
+    <!--
+    <v-footer app>
+       <span class="px-4">&copy; {{ new Date().getFullYear() }}</span>
+    </v-footer>
+  -->
+  </v-app>
 </template>
 
-<script type="text/javascript">
-import { mapActions, mapGetters } from "vuex";
-import LoginForm from "./components/auth/LoginForm";
+<script>
 import Sidebar from "./components/nav/Sidebar";
+import Appbar from "./components/nav/Appbar"
 export default {
+  name: "App",
+
   components: {
-    LoginForm,
-    Sidebar: Sidebar,
+    Sidebar:Sidebar,
+    Appbar:Appbar,
   },
-  data() {
-    return {};
-  },
-  computed: {
-    ...mapGetters({
-      isLoggedIn: "auth/isLoggedIn"
-    })
-  },
-  methods: {
-    ...mapActions({
-      logout: "auth/logout"
-    })
-  },
-  created() {
-    document.addEventListener("beforeunload", this.logout);
-  }
+
+  data: () => ({}),
 };
 </script>
-
-
-<style lang="scss">
-@import "./assets/_custom.scss";
-@import "~bootstrap/scss/bootstrap.scss";
-@import "~bootstrap-vue/src/index.scss";
-
-  #app {
-    text-align: center;
-    color: #2c3e50;
-  }
-</style>

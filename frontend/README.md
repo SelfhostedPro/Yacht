@@ -1,5 +1,4 @@
-# vue-yacht
-Backend of an application prototype using Flask and VueJS.
+# yachtrevue
 
 ## Project setup
 ```

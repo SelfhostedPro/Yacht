@@ -1,6 +1,5 @@
-// vue.config.js
-
 module.exports = {
+  transpileDependencies: ["vuetify"],
   devServer: {
     proxy: {
       "/api": {
@@ -8,9 +7,9 @@ module.exports = {
         ws: false,
         changeOrigin: true,
         pathRewrite: {
-          "^/api": "/api"
+          '^/api': '/api'
         },
-        // logLevel: "debug"
+        logLevel: 'debug'
       }
     }
   }

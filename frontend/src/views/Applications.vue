@@ -1,13 +1,11 @@
 <template lang="html">
-  <div class="templates">
+  <div class="apps">
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-export default {
-}
+export default {};
 </script>
 
-<style lang="css" scoped>
-</style>
+<style lang="css" scoped></style>
