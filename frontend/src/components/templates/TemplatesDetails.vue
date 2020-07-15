@@ -44,16 +44,51 @@
             </v-card-text>
 
             <v-card-actions>
-              <v-btn text>
+              <v-btn
+                text
+                @click="
+                  selectedApp = item;
+                  appDetailsDialog = true;
+                "
+              >
                 View
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn text :to="{ name: 'Deploy', params: { appId: item.id } }">
+              <v-btn
+                text
+                color="primary"
+                :to="{ name: 'Deploy', params: { appId: item.id } }"
+              >
                 Deploy
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
+        <v-dialog v-model="appDetailsDialog" max-width="290">
+          <v-card>
+            <v-card-title class="headline" style="word-break: break-all;">
+              Delete the template?
+            </v-card-title>
+            <v-card-text>
+              Are you sure you want to permanently delete the template?<br />
+              This action cannot be revoked.
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn text @click="appDetailsDialog = false">
+                Cancel
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                text
+                color="primary"
+                :to="{ name: 'Deploy', params: { appId: item.id } }"
+              >
+                Deploy
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-row>
     </v-container>
   </div>
@@ -61,27 +96,31 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-
 export default {
+  data() {
+    return {
+      appDetailsDialog: false,
+    };
+  },
   computed: {
     ...mapGetters({
-      getTemplateById: "templates/getTemplateById"
+      getTemplateById: "templates/getTemplateById",
     }),
     template() {
       const templateId = this.$route.params.templateId;
       return this.getTemplateById(templateId);
-    }
+    },
   },
   methods: {
     ...mapActions({
-      readTemplate: "templates/readTemplate"
-    })
+      readTemplate: "templates/readTemplate",
+    }),
   },
   created() {
     const templateId = this.$route.params.templateId;
     this.readTemplate(templateId);
     console.log(this.getTemplateById(templateId));
-  }
+  },
 };
 </script>
 

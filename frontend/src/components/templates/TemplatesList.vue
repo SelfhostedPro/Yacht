@@ -89,13 +89,14 @@
             text
             @click="deleteDialog=false"
           >
-            Disagree
+            Cancel
           </v-btn>
           <v-btn
             text
+            color="error"
             @click="deleteTemplate(selectedTemplate.id);deleteDialog=false"
           >
-            Agree
+            Delete
           </v-btn>
         </v-card-actions>
       </v-card>
