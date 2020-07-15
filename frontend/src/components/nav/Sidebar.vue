@@ -8,90 +8,102 @@
       <!-- -->
 
       <v-list nav dense>
+       <div v-for="(link, i) in links" :key="i">
 
-        <v-list-item to="/">
-          <v-list-item-icon>
-            <v-icon>mdi-view-dashboard</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Dashboard</v-list-item-title>
+        <v-list-item
+            v-if="!link.subLinks"
+            :to="link.to"
+            :active-class="color"
+            avatar
+            class="v-list-item"
+        >
+            <v-list-item-icon>
+                <v-icon>{{ link.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-title v-text="link.text" />
         </v-list-item>
 
-        <v-divider />
-
         <v-list-group
-          prepend-icon="mdi-folder"
-          :value="false">
+            v-else
+            :key="link.text"
+            no-action
+            :prepend-icon="link.icon"
+            :value="false"
+        >
+            <template v-slot:activator>
+              <v-list-item-title>{{ link.text }}</v-list-item-title>
+             </template>
 
-          <template v-slot:activator>
-            <v-list-item-title>My Templates</v-list-item-title>
-          </template>
+            <v-list-item
+                v-for="sublink in link.subLinks"
+                :to="sublink.to"
+                :key="sublink.text"
+            >
+                <v-list-item-icon>
+                  <v-icon>{{ sublink.icon }}</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>{{ sublink.text }}</v-list-item-title>
 
-          <v-list-item link to="/templates/">
-            <v-list-item-icon>
-              <v-icon>mdi-view-list</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>View Templates</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item link to="/templates/new">
-            <v-list-item-icon>
-              <v-icon>mdi-plus</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>New Template</v-list-item-title>
-          </v-list-item>
+            </v-list-item>
 
         </v-list-group>
 
-        <v-list-group
-          prepend-icon="mdi-application"
-          :value="false">
-
-          <template v-slot:activator>
-            <v-list-item-title>My Applications</v-list-item-title>
-          </template>
-
-          <v-list-item link to="/apps">
-            <v-list-item-icon>
-              <v-icon>mdi-view-list</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>View Applications</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item link to="/apps">
-            <v-list-item-icon>
-              <v-icon>mdi-plus</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>New Application</v-list-item-title>
-          </v-list-item>
-
-        </v-list-group>
-
-
-        <v-list-group
-          prepend-icon="mdi-package"
-          :value="false">
-
-          <template v-slot:activator>
-            <v-list-item-title>My Container</v-list-item-title>
-          </template>
-
-          <v-list-item link>
-            <v-list-item-icon to="/images">
-              <v-icon>mdi-view-list</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>View Container</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item link to="/images">
-            <v-list-item-icon>
-              <v-icon>mdi-plus</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>New Container</v-list-item-title>
-          </v-list-item>
-
-        </v-list-group>
+    </div>
 
       </v-list>
 
     </v-navigation-drawer>
 </template>
+
+<script>
+export default {
+  data: () => ({
+links: [
+    {
+        to     : '/dashboard',
+        icon   : 'mdi-view-dashboard',
+        text   : 'Dashboard',
+    },
+    {
+        icon     : 'mdi-folder',
+        text     : 'Templates',
+        subLinks : [
+            {
+                text : 'View Templates',
+                to    : '/templates',
+                icon  : 'mdi-view-list'
+            },
+            {
+                text : 'New Template',
+                to    : '/templates/new',
+                icon  : 'mdi-plus'
+            },
+        ]
+    },
+    {
+        icon     : 'mdi-application',
+        text     : 'Applications',
+        subLinks : [
+            {
+                text : 'View Applications',
+                to    : '/apps',
+                icon  : 'mdi-view-list'
+            },
+            {
+                text : 'New Application',
+                to    : '/apps',
+                icon  : 'mdi-plus'
+            },
+        ]
+    },
+]
+  })
+}
+</script>
+
+<style scoped>
+.v-application--is-ltr .v-list--dense.v-list--nav .v-list-group--no-action > .v-list-group__items > .v-list-item {
+  padding: 0 8px;
+}
+</style>
