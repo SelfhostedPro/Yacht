@@ -207,6 +207,7 @@ def refresh(id):
                     restart_policy = entry.get('restart_policy'),
                     ports = ports,
                     volumes = entry.get('volumes'),
+                    sysctls=entry.get('sysctls'),
                     env = entry.get('env'),
                 )
                 items.append(item)
