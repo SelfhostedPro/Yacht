@@ -40,10 +40,13 @@
                 "Deploy"
                 {{ item.description ? item.description : "" | truncate(200) }}
               -->
-              {{ item.description }}
+              {{ item.description ? item.description : "" | truncate(120) }}
             </v-card-text>
 
             <v-card-actions>
+              <v-btn text>
+                View
+              </v-btn>
               <v-spacer></v-spacer>
               <v-btn text :to="{ name: 'Deploy', params: { appId: item.id } }">
                 Deploy
