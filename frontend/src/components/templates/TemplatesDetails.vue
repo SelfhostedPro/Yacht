@@ -64,33 +64,33 @@
             </v-card-actions>
           </v-card>
         </v-col>
-        <v-dialog v-model="appDetailsDialog" max-width="290">
-          <v-card>
-            <v-card-title class="headline" style="word-break: break-all;">
-              Delete the template?
-            </v-card-title>
-            <v-card-text>
-              Are you sure you want to permanently delete the template?<br />
-              This action cannot be revoked.
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn text @click="appDetailsDialog = false">
-                Cancel
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn
-                text
-                color="primary"
-                :to="{ name: 'Deploy', params: { appId: item.id } }"
-              >
-                Deploy
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
       </v-row>
     </v-container>
+    <v-dialog v-model="appDetailsDialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline" style="word-break: break-all;">
+          Delete the template?
+        </v-card-title>
+        <v-card-text>
+          Are you sure you want to permanently delete the template?<br />
+          This action cannot be revoked.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="appDetailsDialog = false">
+            Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            color="primary"
+            :to="{ name: 'Deploy', params: { appId: item.id } }"
+          >
+            Deploy
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
