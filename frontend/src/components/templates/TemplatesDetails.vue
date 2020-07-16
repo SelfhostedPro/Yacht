@@ -70,7 +70,7 @@
     <v-dialog
       v-model="appDetailsDialog"
       max-width="500"
-      max-height="800"
+      scrollable
       v-if="selectedApp"
     >
       <v-card>
@@ -200,6 +200,7 @@
             </template>
           </v-simple-table>
         </v-card>
+        <v-divider />
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn text @click="appDetailsDialog = false">
