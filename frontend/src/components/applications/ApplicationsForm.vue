@@ -290,8 +290,8 @@
         <v-expansion-panel>
           <v-expansion-panel-header color="#303030">
             <v-row no-gutters>
-              <v-col cols="1">Sysctls</v-col>
-              <v-col cols="2" class="text--secondary"> (Kernel Options) </v-col>
+              <v-col cols="2">Sysctls</v-col>
+              <v-col cols="4" class="text--secondary"> (Kernel Options) </v-col>
             </v-row>
           </v-expansion-panel-header>
           <v-expansion-panel-content color="#303030">
@@ -350,9 +350,9 @@
         <v-expansion-panel>
           <v-expansion-panel-header color="#303030">
             <v-row no-gutters>
-              <v-col cols="1">Caps</v-col>
-              <v-col cols="2" class="text--secondary">
-                (Special Permissions)
+              <v-col cols="2">Capabilities</v-col>
+              <v-col cols="4" class="text--secondary">
+                (Special Permissions/Capabilities)
               </v-col>
             </v-row></v-expansion-panel-header
           >
