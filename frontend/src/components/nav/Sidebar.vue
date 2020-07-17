@@ -34,7 +34,7 @@
             <v-list-item-title>{{ sublink.text }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
-        <v-divider v-if="(link.to = '/dashboard')" />
+        <v-divider />
       </div>
     </v-list>
   </v-navigation-drawer>

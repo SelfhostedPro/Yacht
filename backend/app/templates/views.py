@@ -92,6 +92,7 @@ def create(args):
                     categories=entry.get('categories', ''), # default: '' or []
                     restart_policy=entry.get('restart_policy'),
                     sysctls=entry.get('sysctls'),
+                    cap_add=entry.get('cap_add'),
                     ports=ports,
                     volumes=entry.get('volumes'),
                     env=entry.get('env'),
@@ -202,12 +203,13 @@ def refresh(id):
                     name = entry.get('name', entry['title'].lower()),
                     logo = entry.get('logo', ''), # default logo here!
                     image = entry.get('image', ''),
-                    notes = entry.get('notes', ''),
+                    notes = entry.get('note', ''),
                     categories = entry.get('categories', ''),
                     restart_policy = entry.get('restart_policy'),
                     ports = ports,
                     volumes = entry.get('volumes'),
                     sysctls=entry.get('sysctls'),
+                    cap_add=entry.get('cap_add'),
                     env = entry.get('env'),
                 )
                 items.append(item)

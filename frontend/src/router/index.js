@@ -24,15 +24,17 @@ const routes = [
     children: [
       {
         path: "",
-        name: "Templates",
+        name: "View Templates",
         component: TemplatesList // perhaps rename to TemplatesIndex
       },
       {
         path: "new",
+        name: "New Template",
         component: TemplatesForm // perhaps rename to TemplatesCreate
       },
       {
         path: ":templateId",
+        name: "Template Details",
         component: TemplatesShow // perhaps rename to TemplateDetails
       }
     ]

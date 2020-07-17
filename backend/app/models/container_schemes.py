@@ -52,11 +52,19 @@ class EnvSchema(ma.Schema):
     default = ma.Str(
         required=True
     )
+    # not required
+    # exclude later, but it's nested in raw json data
+    name = ma.Str()
 
+class SysctlsSchema(ma.Schema):
+    name = ma.Str()
+    value = ma.Str()
 
 class DeploySchema(ma.Schema):
     title = ma.Str(required=True)
+    name = ma.Str(required=True)
     image = ma.Str(required=True)
+    notes = ma.Str(required=True)
     restart_policy = ma.Str(
         required=True,
         validate=validate.OneOf(['always','on-failure', 'unless-stopped'])
@@ -64,6 +72,8 @@ class DeploySchema(ma.Schema):
     ports = ma.List(ma.Nested(PortSchema))
     volumes = ma.List(ma.Nested(VolumesSchema))
     env = ma.List(ma.Nested(EnvSchema))
+    sysctls = ma.List(ma.Nested(SysctlsSchema))
+    cap_add = ma.Str(required=False)
 
 
 

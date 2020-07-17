@@ -4,7 +4,8 @@ from ..models.containers import (
     TemplateItem
 )
 from ..models.container_schemes import (
-    TemplateSchema
+    TemplateItemSchema,
+    DeploySchema
 )
 
 from flask import Blueprint
@@ -18,6 +19,12 @@ from flask_jwt_extended import (
     jwt_required,
     jwt_optional
 )
+
+from webargs import fields, validate
+from sqlalchemy.exc import IntegrityError
+from datetime import datetime
+from webargs.flaskparser import use_args, use_kwargs
+from werkzeug.exceptions import MethodNotAllowed, UnprocessableEntity
 
 import os  # used for getting file type and deleting files
 from urllib.parse import urlparse  # used for getting filetype from url
@@ -36,3 +43,26 @@ def index():
         apps_list.append(app.attrs)
     data = apps_list
     return jsonify({ 'data': data })
+
+@apps.route('/<int:id>')
+def list_apps(id):
+    try:
+        template_item = TemplateItem.query.get_or_404(id)
+        template_item_schema = TemplateItemSchema()
+        data = template_item_schema.dump(template_item)
+        return jsonify({ 'data': data })
+    except IntegrityError as err:
+        abort(400)
+
+
+@apps.route('/<int:id>/deploy', methods=['POST'])
+@use_args(DeploySchema(), location='json')
+def deploy(args, id):
+    '''curl -H "Content-Type: application/json" -X POST \
+    -d '{"title":"Untitled", "image":"my:image", "ports":[{"proto": "tcp", "hport":2020}]}' \
+    http://127.0.0.1:5000/api/apps/1/deploy
+    '''
+    print(args, id)
+    # print(id, title, image)
+    # print(args, kwargs)
+    return jsonify(data = '')

@@ -69,11 +69,12 @@
     </v-container>
     <v-dialog
       v-model="appDetailsDialog"
-      max-width="500"
       scrollable
+      class="mt-20"
+      max-width="90%"
       v-if="selectedApp"
     >
-      <v-card>
+      <v-card raised shaped>
         <v-img
           :src="selectedApp.logo"
           contain
@@ -88,125 +89,166 @@
         </v-img>
         <v-card-text class="pt-2">
           {{ selectedApp.description }}
-        </v-card-text>
-        <v-card-text v-if="selectedApp.notes">
-          <b>Notes:</b> <br />
-          <span v-html="selectedApp.notes" />
-        </v-card-text>
-        <v-divider />
+          <h4 v-if="selectedApp.notes" class="pt-2">Notes:</h4>
+          <p v-if="selectedApp.notes" v-html="selectedApp.notes" />
+          <v-card tile>
+            <v-card-title class="subheading primary font-weight-bold">
+              General
+            </v-card-title>
+            <v-divider />
+            <v-list class="secondary" dense>
+              <v-list-item>
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered font-weight-bold"
+                    >Name</v-list-title
+                  ></v-list-item-content
+                >
 
-        <v-card>
-          <v-card-title class="subheading font-weight-bold">
-            General
-          </v-card-title>
-          <v-divider />
-          <v-list dense>
-            <v-list-item>
-              <v-list-item-content>Name</v-list-item-content>
-              <v-list-item-content>
-                {{ selectedApp.name }}
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content>Image</v-list-item-content>
-              <v-list-item-content>
-                {{ selectedApp.image }}
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content>Platform</v-list-item-content>
-              <v-list-item-content>
-                {{ selectedApp.platform }}
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card>
-        <v-divider />
-        <v-card v-if="selectedApp.ports">
-          <v-card-title class="subheading font-weight-bold">
-            Ports
-          </v-card-title>
-          <v-divider />
-          <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="px-5 text-left">Host Port</th>
-                  <th class="px-5 text-left">Container Port/Proto</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="port in selectedApp.ports" :key="port.hport">
-                  <td class="px-5 text-left">{{ port.hport }}</td>
-                  <td class="px-5 text-left">
+                <v-list-item-content>
+                  <v-list-title class="px-5 text-centered">
+                    {{ selectedApp.name }}
+                  </v-list-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered font-weight-bold"
+                    >Image</v-list-title
+                  ></v-list-item-content
+                >
+                <v-list-item-content>
+                  <v-list-title class="px-5 text-centered">
+                    {{ selectedApp.image }}
+                  </v-list-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered font-weight-bold"
+                    >Platform</v-list-title
+                  ></v-list-item-content
+                >
+                <v-list-item-content>
+                  <v-list-title class="px-5 text-centered">
+                    {{ selectedApp.platform }}
+                  </v-list-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card>
+          <v-card v-if="selectedApp.ports" tile>
+            <v-card-title class="subheading indigo darken-2 font-weight-bold">
+              Ports
+            </v-card-title>
+            <v-divider />
+            <v-list dense class="secondary">
+              <v-list-item>
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered font-weight-bold"
+                    >Host Port</v-list-title
+                  ></v-list-item-content
+                >
+                <v-list-item-content>
+                  <v-list-title class="px-5 text-centered font-weight-bold"
+                    >Container Port/Proto</v-list-title
+                  ></v-list-item-content
+                >
+              </v-list-item>
+              <v-divider />
+              <v-list-item v-for="port in selectedApp.ports" :key="port.hport">
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered">{{
+                    port.hport
+                  }}</v-list-title></v-list-item-content
+                >
+                <v-list-item-content>
+                  <v-list-title class="px-5 text-centered">
                     {{ port.cport }}/{{ port.proto }}
-                  </td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card>
-        <v-divider />
+                  </v-list-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card>
 
-        <v-card v-if="selectedApp.volumes">
-          <v-card-title class="subheading font-weight-bold">
-            Volumes
-          </v-card-title>
-          <v-divider />
-          <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="px-5 text-left">Host</th>
-                  <th class="px-5 text-left">Container</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="volume in selectedApp.volumes"
-                  :key="volume.container"
+          <v-card v-if="selectedApp.volumes" tile>
+            <v-card-title class="subheading amber darken-2 font-weight-bold">
+              Volumes
+            </v-card-title>
+            <v-divider />
+            <v-list dense class="secondary">
+              <v-list-item>
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered font-weight-bold"
+                    >Host</v-list-title
+                  ></v-list-item-content
                 >
-                  <td>{{ volume.bind }}</td>
-                  <td>{{ volume.container }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card>
+                <v-list-item-content>
+                  <v-list-title class="px-5 text-centered font-weight-bold"
+                    >Container</v-list-title
+                  ></v-list-item-content
+                >
+              </v-list-item>
+              <v-divider />
+              <v-list-item
+                v-for="volume in selectedApp.volumes"
+                :key="volume.container"
+              >
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered">{{
+                    volume.bind
+                  }}</v-list-title></v-list-item-content
+                >
 
-        <v-divider />
-        <v-card v-if="selectedApp.env">
-          <v-card-title class="subheading font-weight-bold">
-            Env Variables
-          </v-card-title>
-          <v-divider />
-          <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="px-5 text-left">Label</th>
-                  <th class="px-5 text-left">Default</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="env in selectedApp.env"
-                  :key="env.label"
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered">{{
+                    volume.container
+                  }}</v-list-title></v-list-item-content
                 >
-                  <td>{{ env.label }}</td>
-                  <td>{{ env.default }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card>
-        <v-divider />
+              </v-list-item>
+            </v-list>
+          </v-card>
+
+          <v-card v-if="selectedApp.env" tile>
+            <v-card-title class="subheading green darken-3 font-weight-bold">
+              Env Variables
+            </v-card-title>
+            <v-divider />
+            <v-list dense class="secondary">
+              <v-list-item>
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered font-weight-bold"
+                    >Label</v-list-title
+                  ></v-list-item-content
+                >
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered font-weight-bold"
+                    >Default</v-list-title
+                  ></v-list-item-content
+                >
+              </v-list-item>
+              <v-divider />
+              <v-list-item v-for="env in selectedApp.env" :key="env.label">
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered">{{
+                    env.label
+                  }}</v-list-title></v-list-item-content
+                >
+
+                <v-list-item-content
+                  ><v-list-title class="px-5 text-centered">{{
+                    env.default
+                  }}</v-list-title></v-list-item-content
+                >
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
+
           <v-btn text @click="appDetailsDialog = false">
             Cancel
           </v-btn>
-          <v-spacer></v-spacer>
           <v-btn
             text
             color="primary"
@@ -254,4 +296,6 @@ export default {
 };
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+
+</style>

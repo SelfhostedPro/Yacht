@@ -59,5 +59,7 @@ class TemplateItem(db.Model):
         nullable=True, unique=False, index=False)
     sysctls = db.Column(db.JSON,
         nullable=True, unique=False, index=False)
+    cap_add = db.Column(db.JSON,
+        nullable=True, unique=False, index=False)
     template_id = db.Column(db.Integer,
         db.ForeignKey('templates.id'))
