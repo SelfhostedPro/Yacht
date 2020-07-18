@@ -73,7 +73,7 @@ class DeploySchema(ma.Schema):
     volumes = ma.List(ma.Nested(VolumesSchema))
     env = ma.List(ma.Nested(EnvSchema))
     sysctls = ma.List(ma.Nested(SysctlsSchema))
-    cap_add = ma.Str(required=False)
+    cap_add = ma.List(ma.Str())
 
 
 

@@ -25,14 +25,14 @@
           <ValidationObserver ref="obs1" v-slot="{ invalid }">
             <form>
               <ValidationProvider
-                name="Name"
+                name="Title"
                 rules="required"
                 v-slot="{ errors, valid }"
               >
                 <v-text-field
-                  label="Name"
+                  label="Title"
                   placeholder="My Container"
-                  v-model="form.name"
+                  v-model="form.title"
                   :error-messages="errors"
                   :success="valid"
                   required
@@ -473,7 +473,7 @@ export default {
       this.form.sysctls.splice(index, 1);
     },
     addCap_add() {
-      this.form.cap_add.push({ name: "", value: "" });
+      this.form.cap_add.push({ name: "" });
     },
     removeCap_add(index) {
       this.form.cap_add.splice(index, 1);
@@ -509,15 +509,15 @@ export default {
       const app = await this.readApp();
       if (!app) return;
       this.form = {
-        title: app.title,
-        name: app.name,
-        image: app.image,
-        restart_policy: app.restart_policy,
-        ports: app.ports,
-        volumes: app.volumes,
-        env: app.env,
-        sysctls: app.sysctls,
-        cap_add: app.cap_add,
+        title: app.title || "",
+        name: app.name || "",
+        image: app.image || "",
+        restart_policy: app.restart_policy || "",
+        ports: app.ports || [],
+        volumes: app.volumes || [],
+        env: app.env || [],
+        sysctls: app.sysctls || [],
+        cap_add: app.cap_add || [],
       };
     },
   },
