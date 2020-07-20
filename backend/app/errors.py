@@ -109,6 +109,7 @@ def register_errorhandlers(blueprint):
     # Error used by Webargs.
     @blueprint.errorhandler(422)
     def unprocessable_entity(error):
+        print(error)
         return make_response(jsonify({
             'error': {
                 'code': 422,

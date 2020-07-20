@@ -1,5 +1,5 @@
 from .. import ma
-from ..models import (
+from .containers import (
     Template,
     TemplateItem
 )
@@ -20,7 +20,15 @@ class TemplateSchema(ma.SQLAlchemyAutoSchema):
 
     items = ma.Nested(
         TemplateItemSchema, many=True,
-            exclude=('template_id','restart_policy'))
+            exclude=(
+                'template_id',
+                'restart_policy',
+                'ports',
+                'volumes',
+                'env',
+                'sysctls',
+                'cap_add'
+            ))
 
 
 
@@ -57,14 +65,17 @@ class EnvSchema(ma.Schema):
     name = ma.Str()
 
 class SysctlsSchema(ma.Schema):
-    name = ma.Str()
-    value = ma.Str()
+    name = ma.Str(
+        required=True
+    )
+    value = ma.Str(
+        required=True
+    )
 
 class DeploySchema(ma.Schema):
     title = ma.Str(required=True)
     name = ma.Str(required=True)
     image = ma.Str(required=True)
-    notes = ma.Str(required=True)
     restart_policy = ma.Str(
         required=True,
         validate=validate.OneOf(['always','on-failure', 'unless-stopped'])
@@ -74,49 +85,3 @@ class DeploySchema(ma.Schema):
     env = ma.List(ma.Nested(EnvSchema))
     sysctls = ma.List(ma.Nested(SysctlsSchema))
     cap_add = ma.List(ma.Str())
-
-
-
-
-
-# class TemplateItemSchema(ma.SQLAlchemySchema):
-#     id = ma.Int(
-#         dump_only=True)
-#
-#     template_id=ma.Int(
-#         required=True)
-#     type = ma.Int()
-#     title = ma.Str(
-#         validate=Length(min=1, max=255))
-#     platform = ma.Str(
-#         validate=Length(min=1, max=255))
-#     description = ma.Str()
-#     name = ma.Str(
-#         validate=Length(min=1, max=255))
-#     logo = ma.Str(
-#         validate=Length(min=1, max=255))
-#     notes = ma.Str()
-#     categories = ma.List(ma.Str())
-#     # configuration data
-#     restart_policy = ma.Str()   # perhaps dump_only=True
-#     ports = ma.Raw()            # perhaps dump_only=True
-#     volumes = ma.Raw()          # perhaps dump_only=True
-#     env = ma.Raw()              # perhaps dump_only=True
-#
-#
-# class TemplateSchema(ma.SQLAlchemySchema):
-#     # perhapse use auto_field
-#     id = ma.Int(
-#         dump_only=True)
-#     created_at = ma.DateTime(
-#         dump_only=True)
-#     updated_at = ma.DateTime(
-#         dump_only=True)
-#     title = ma.Str(
-#         required=True,
-#         validate=Length(min=1, max=255))
-#     url = ma.Url(
-#         required=True)
-#     items = ma.Nested(
-#         TemplateItemSchema, many=True,
-#         exclude=('template_id','restart_policy','ports','volumes','env'))
