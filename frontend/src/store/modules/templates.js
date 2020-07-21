@@ -23,6 +23,14 @@ const mutations = {
     const idx = state.templates.findIndex(x => x.id === template.id);
     if (idx < 0) { return; }
     state.templates.splice(idx, 1);
+  },
+  setApp(state, app) {
+    const idx = state.apps.findIndex(x => x.id === app.id);
+    if (idx < 0) {
+      state.apps.push(app);
+    } else {
+      state.apps.splice(idx, 1, app);
+    }
   }
 };
 
@@ -71,7 +79,14 @@ const actions = {
         const template = response.data.data;
         commit("removeTemplate", template);
       })
-  }
+  },
+  readApp({ commit }, id) {
+    const url = `/api/apps/${id}`;
+    axios.get(url).then(response => {
+      const app = response.data.data;
+      commit("setApp", app);
+    });
+  },
 };
 
 const getters = {

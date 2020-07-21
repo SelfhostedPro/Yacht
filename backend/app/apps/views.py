@@ -203,3 +203,11 @@ def app_actions(container_name, action):
         apps_list.append(app.attrs)
     data = apps_list
     return jsonify({ 'data': data, 'error': err })
+
+@apps.route('/<container_name>')
+def app_details(container_name):
+    dclient = docker.from_env()
+    container = dclient.containers.get(container_name)
+
+    data = container.attrs
+    return jsonify({ 'data': data })

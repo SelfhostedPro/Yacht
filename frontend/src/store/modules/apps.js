@@ -9,17 +9,18 @@ const mutations = {
   setApps(state, apps) {
     state.apps = apps;
   },
-  setLoading(state, loading) {
-    state.isLoading = loading
-  },
   setApp(state, app) {
-    const idx = state.apps.findIndex(x => x.id === app.id);
+    const idx = state.apps.findIndex(x => x.Id === app.Id);
     if (idx < 0) {
       state.apps.push(app);
     } else {
       state.apps.splice(idx, 1, app);
     }
-  }
+  },
+  setLoading(state, loading) {
+    state.isLoading = loading
+  },
+
 };
 
 const actions = {
@@ -36,8 +37,8 @@ const actions = {
         commit("setLoading", false)
       });
   },
-  readApp({ commit }, id) {
-    const url = `/api/apps/${id}`;
+  readApp({ commit }, Name) {
+    const url = `/api/apps/${Name}`;
     axios.get(url).then(response => {
       const app = response.data.data;
       commit("setApp", app);
@@ -59,10 +60,10 @@ const actions = {
 };
 
 const getters = {
-  getAppById(state) {
-    return id => {
+  getAppByName(state) {
+    return name => {
       console.log(state.apps);
-      return state.apps.find(x => x.id == id);
+      return state.apps.find(x => x.name == name);
     };
   }
 };

@@ -1,31 +1,34 @@
 <template>
-    <h1 v-if="apps">Test</h1>
+  <div>
+    <h1>Test</h1>
+    <h2 v-if="app">hi</h2>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
 export default {
-  data() {},
   methods: {
     ...mapActions({
       readApp: "apps/readApp",
-      AppAction: "apps/AppAction",
     }),
-    handleRowClick(appName) {
-      this.$router.push({ path: `/apps/${appName.Name}` });
-    },
-    // templateDetails(templateId) {
-    //   this.$router.push({ path: `/templates/${templateId}` });
-    // }
-    debug(value) {
-      console.log(value);
+    created() {
+      const appName = this.$route.params.appName;
+      this.readApp(appName);
+      console.log(this.getAppByName(appName));
     },
   },
   computed: {
     ...mapState("apps", ["apps", "isLoading"]),
   },
+  app() {
+    const appName = this.$route.params.appName;
+    return this.getAppById(appName);
+  },
   mounted() {
-    this.readApps();
+    const appName = this.$route.params.appName;
+    console.log(this.readApp(appName))
+    this.readApp(appName);
   },
 };
 </script>
