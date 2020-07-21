@@ -1,6 +1,8 @@
-import re
 
-REGEXP_PORT_ASSIGN = r'^(?:(?:\d{1,5}\:)?\d{1,5})|\:d{1,5}/(?:tcp|udp)$'
+import re
+from typing import Dict, List
+
+REGEXP_PORT_ASSIGN = r'^(?:(?:\d{1,5}:)?\d{1,5}|:\d{1,5})/(?:tcp|udp)$'
 
 # Input Format:
 # [
@@ -17,19 +19,33 @@ REGEXP_PORT_ASSIGN = r'^(?:(?:\d{1,5}\:)?\d{1,5})|\:d{1,5}/(?:tcp|udp)$'
 #     },
 #     ...
 # ]
-def conv_ports2dict(data):
-    if not all(isinstance(x, str) for x in data):
-        raise TypeError('Expected list or str types.')
-    if not all(re.match(REGEXP_PORT_ASSIGN, x, flags=re.IGNORECASE) for x in data):
-        raise ValueError('Malformed port assignment.')
-
+def conv_ports2dict(data: List[str]) -> List[Dict[str,str]]:
     delim = ':'
     portlst = []
     for port_data in data:
-        hport, cport = None,port_data
-        if delim in cport:
-            hport,cport = cport.split(delim, 1)
-            if not hport: hport = None
-        cport,proto = cport.split('/', 1)
-        portlst.append({ 'hport': hport, 'cport': cport, 'proto': proto })
+        if not re.match(REGEXP_PORT_ASSIGN, port_data, flags=re.IGNORECASE):
+            raise ValueError('Malformed port assignment.')
+
+        cport,hport = None,port_data
+        if delim in hport:
+            cport,hport = hport.split(delim, 1)
+            if not cport: cport = None
+        hport,proto = hport.split('/', 1)
+        portlst.append({ 'cport': cport, 'hport': hport, 'proto': proto })
     return portlst
+
+# Input Format:
+# [
+#     {
+#         'net.ipv6.conf.all.disable_ipv6': '0'
+#     }
+# ]
+# Result Format:
+# [
+#     {
+#         'name': 'net.ipv6.conf.all.disable_ipv6',
+#         'value': '0'
+#     }
+# ]
+def conv_sysctls2dict(data: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    return [{ 'name': k, 'value': v } for item in data for k,v in item.items()]

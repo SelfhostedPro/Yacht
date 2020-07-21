@@ -25,14 +25,14 @@
           <ValidationObserver ref="obs1" v-slot="{ invalid }">
             <form>
               <ValidationProvider
-                name="Name"
+                name="Title"
                 rules="required"
                 v-slot="{ errors, valid }"
               >
                 <v-text-field
-                  label="Name"
+                  label="Title"
                   placeholder="My Container"
-                  v-model="form.name"
+                  v-model="form.title"
                   :error-messages="errors"
                   :success="valid"
                   required
@@ -241,15 +241,16 @@
                 </v-col>
                 <v-col>
                   <ValidationProvider
-                    name="Host"
+                    name="Value"
                     rules="required"
                     v-slot="{ errors, valid }"
                   >
                     <v-text-field
-                      label="Host"
+                      label="Value"
                       v-model="item['default']"
                       :error-messages="errors"
                       :success="valid"
+                      :messages="item.description"
                       required
                     ></v-text-field>
                   </ValidationProvider>
@@ -290,8 +291,8 @@
         <v-expansion-panel>
           <v-expansion-panel-header color="#303030">
             <v-row no-gutters>
-              <v-col cols="1">Sysctls</v-col>
-              <v-col cols="2" class="text--secondary"> (Kernel Options) </v-col>
+              <v-col cols="2">Sysctls</v-col>
+              <v-col cols="4" class="text--secondary"> (Kernel Options) </v-col>
             </v-row>
           </v-expansion-panel-header>
           <v-expansion-panel-content color="#303030">
@@ -350,47 +351,26 @@
         <v-expansion-panel>
           <v-expansion-panel-header color="#303030">
             <v-row no-gutters>
-              <v-col cols="1">Caps</v-col>
-              <v-col cols="2" class="text--secondary">
-                (Special Permissions)
+              <v-col cols="2">Capabilities</v-col>
+              <v-col cols="4" class="text--secondary">
+                (Special Permissions/Capabilities)
               </v-col>
             </v-row></v-expansion-panel-header
           >
           <v-expansion-panel-content color="#303030">
             <form>
-              <v-row v-for="(item, index) in form.cap_add" :key="index">
-                <v-col>
-                  <ValidationProvider
-                    name="Name"
-                    rules="required"
-                    v-slot="{ errors, valid }"
-                  >
-                    <v-text-field
-                      label="Name"
-                      v-model="item['name']"
-                      :error-messages="errors"
-                      :success="valid"
-                      required
-                    ></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-                <v-col class="d-flex justify-end" cols="1">
-                  <v-btn
-                    icon
-                    class="align-self-center"
-                    @click="removeCap_add(index)"
-                  >
-                    <v-icon>mdi-minus</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12" class="d-flex justify-end">
-                  <v-btn icon class="align-self-center" @click="addCap_add">
-                    <v-icon>mdi-plus</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
+              <v-combobox
+              v-model="form['cap_add']"
+              :items="cap_options"
+              label="Add Capabilities"
+              multiple
+              hide-selected
+              clearable
+              auto-select-first
+              chips
+              deletable-chips
+              
+               />
             </form>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -443,8 +423,33 @@ export default {
             value: "value",
           },
         ],
-        cap_add: "cap_add",
+        cap_add: "",
       },
+      cap_options: [
+        'SYS_MODULE',
+        'SYS_RAWIO',
+        'SYS_PACCT',
+        'SYS_ADMIN',
+        'SYS_NICE',
+        'SYS_RESOURCE',
+        'SYS_TIME',
+        'SYS_TTY_CONFIG',
+        'AUDIT_CONTROL',
+        'MAC_ADMIN',
+        'MAC_OVERRIDE',
+        'NET_ADMIN',
+        'SYSLOG',
+        'DAC_READ_SEARCH',
+        'LINUX_IMMUTABLE',
+        'NET_BROADCAST',
+        'IPC_LOCK',
+        'IPC_OWNER',
+        'SYS_PTRACE',
+        'SYS_BOOT',
+        'LEASE',
+        'WAKE_ALARM',
+        'BLOCK_SUSPEND'
+      ]
     };
   },
   methods: {
@@ -473,7 +478,7 @@ export default {
       this.form.sysctls.splice(index, 1);
     },
     addCap_add() {
-      this.form.cap_add.push({ name: "", value: "" });
+      this.form.cap_add.push("");
     },
     removeCap_add(index) {
       this.form.cap_add.splice(index, 1);
@@ -509,15 +514,15 @@ export default {
       const app = await this.readApp();
       if (!app) return;
       this.form = {
-        title: app.title,
-        name: app.name,
-        image: app.image,
-        restart_policy: app.restart_policy,
-        ports: app.ports,
-        volumes: app.volumes,
-        env: app.env,
-        sysctls: app.sysctls,
-        cap_add: app.cap_add,
+        title: app.title || "",
+        name: app.name || "",
+        image: app.image || "",
+        restart_policy: app.restart_policy || "",
+        ports: app.ports || [],
+        volumes: app.volumes || [],
+        env: app.env || [],
+        sysctls: app.sysctls || [],
+        cap_add: app.cap_add || [],
       };
     },
   },

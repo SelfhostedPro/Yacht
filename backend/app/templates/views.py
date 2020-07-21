@@ -7,6 +7,7 @@ from ..models.container_schemes import (
     TemplateSchema,
     TemplateItemSchema
 )
+from ..utils import conv_ports2dict, conv_sysctls2dict
 
 from flask import Blueprint
 from flask import (
@@ -78,24 +79,25 @@ def create(args):
             for entry in json.load(file):
 
                 ports = conv_ports2dict(entry.get('ports', []))
+                sysctls = conv_sysctls2dict(entry.get('sysctls', []))
 
                 # Optional use classmethod from_dict
                 template_content = TemplateItem(
-                    type=int(entry['type']),
-                    title=entry['title'],
-                    platform=entry['platform'],
-                    description=entry.get('description', ''),
-                    name=entry.get('name', entry['title'].lower()),
-                    logo=entry.get('logo', ''),
-                    image=entry.get('image', ''),
-                    notes=entry.get('note', ''),
-                    categories=entry.get('categories', ''), # default: '' or []
-                    restart_policy=entry.get('restart_policy'),
-                    sysctls=entry.get('sysctls'),
-                    cap_add=entry.get('cap_add'),
-                    ports=ports,
-                    volumes=entry.get('volumes'),
-                    env=entry.get('env'),
+                    type = int(entry['type']),
+                    title = entry['title'],
+                    platform = entry['platform'],
+                    description = entry.get('description', ''),
+                    name = entry.get('name', entry['title'].lower()),
+                    logo = entry.get('logo', ''), # default logo here!
+                    image = entry.get('image', ''),
+                    notes = entry.get('notes', ''),
+                    categories = entry.get('categories', ''),
+                    restart_policy = entry.get('restart_policy'),
+                    ports = ports,
+                    volumes = entry.get('volumes', []),
+                    env = entry.get('env', []),
+                    sysctls = sysctls,
+                    cap_add = entry.get('cap_add', [])
                 )
                 template.items.append(template_content)
     except (OSError, TypeError, ValueError) as err:
@@ -114,43 +116,6 @@ def create(args):
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
     return jsonify({ 'data': data })
-
-import re
-
-REGEXP_PORT_ASSIGN = r'^(?:\d{1,5}\:)?\d{1,5}|\:\d{1,5}/(?:tcp|udp)$'
-
-# Input Format:
-# [
-#     '80:8080/tcp',
-#     '123:123/udp'
-#     '4040/tcp',
-# ]
-# Result Format:
-# [
-#     {
-#         'cport': '80',
-#         'hport': '8080',
-#         'proto': 'tcp',
-#     },
-#     ...
-# ]
-def conv_ports2dict(data):
-    if not all(isinstance(x, str) for x in data):
-        raise TypeError('Expected list or str types.')
-    if not all(re.match(REGEXP_PORT_ASSIGN, x, flags=re.IGNORECASE) for x in data):
-        raise ValueError('Malformed port assignment.')
-
-    delim = ':'
-    portlst = []
-    for port_data in data:
-        hport, cport = None,port_data
-        if delim in cport:
-            hport,cport = cport.split(delim, 1)
-            if not hport: hport = None
-        cport,proto = cport.split('/', 1)
-        portlst.append({ 'hport': hport, 'cport': cport, 'proto': proto })
-    return portlst
-
 
 # endpoint: edit
 #  methods: PUT
@@ -194,6 +159,7 @@ def refresh(id):
             for entry in json.load(fp):
 
                 ports = conv_ports2dict(entry.get('ports', []))
+                sysctls = conv_sysctls2dict(entry.get('sysctls', []))
 
                 item = TemplateItem(
                     type = int(entry['type']),
@@ -203,14 +169,14 @@ def refresh(id):
                     name = entry.get('name', entry['title'].lower()),
                     logo = entry.get('logo', ''), # default logo here!
                     image = entry.get('image', ''),
-                    notes = entry.get('note', ''),
+                    notes = entry.get('notes', ''),
                     categories = entry.get('categories', ''),
                     restart_policy = entry.get('restart_policy'),
                     ports = ports,
-                    volumes = entry.get('volumes'),
-                    sysctls=entry.get('sysctls'),
-                    cap_add=entry.get('cap_add'),
-                    env = entry.get('env'),
+                    volumes = entry.get('volumes', []),
+                    env = entry.get('env', []),
+                    sysctls = sysctls,
+                    cap_add = entry.get('cap_add', [])
                 )
                 items.append(item)
     except Exception as exc:
