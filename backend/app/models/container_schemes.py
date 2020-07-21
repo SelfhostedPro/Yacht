@@ -63,6 +63,7 @@ class EnvSchema(ma.Schema):
     # not required
     # exclude later, but it's nested in raw json data
     name = ma.Str()
+    description = ma.Str()
 
 class SysctlsSchema(ma.Schema):
     name = ma.Str(
