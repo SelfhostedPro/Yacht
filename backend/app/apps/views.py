@@ -160,15 +160,6 @@ def conv_restart2data(data):
         return restart
 
 def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
-    print(name)
-    print(image)
-    print(restart_policy)
-    print(ports)
-    print(volumes)
-    print(env)
-    print(sysctls)
-    print(caps)
-    print('something')
     dclient = docker.from_env()
     dclient.containers.run(
         name=name,
@@ -187,3 +178,18 @@ def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
     Volumes: {volumes},
         Env: {env}''')
     return
+
+@apps.route('/<container_name>/<action>')
+def app_actions(container_name, action):
+    apps_list = []
+    dclient = docker.from_env()
+    container = dclient.containers.get(container_name)
+    # _action = action + '()'
+    _action = getattr(container, action)
+    _action()
+
+    apps = dclient.containers.list(all=True)
+    for app in apps:
+        apps_list.append(app.attrs)
+    data = apps_list
+    return jsonify({ 'data': data })
