@@ -63,6 +63,127 @@ def deploy(args, id):
     http://127.0.0.1:5000/api/apps/1/deploy
     '''
     print(args, id)
+    try:
+        launch_app(
+        args.get('name'),
+        args.get('image'),
+        conv_restart2data(args.get('restart_policy')),
+        conv_ports2data(args.get('ports')),
+        conv_volumes2data(args.get('volumes')),
+        conv_env2data(args.get('env')),
+        conv_sysctls2data(args.get('sysctls')),
+        conv_caps2data(args.get('cap_add')))
+    except Exception as exc: raise
+    print('done deploying')
     # print(id, title, image)
     # print(args, kwargs)
     return jsonify(data = '')
+
+# Input Format:
+# [
+#     {
+#         'cport': '53',
+#         'hport': '53',
+#         'proto': 'tcp',
+#     },
+#     ...
+# ]
+# Result Format:
+# {
+#     '53/tcp': ('0.0.0.0', 53),
+#     '53/udp': ('0.0.0.0', 53),
+#     '67/udp': ('0.0.0.0', 67),
+#     '80/tcp': ('0.0.0.0', 1010),
+#     '443/tcp': ('0.0.0.0', 4443)
+# }
+def conv_ports2data(data):
+    ports = {}
+    for d in data:
+        cport = d.get('cport')
+        hport = d.get('hport')
+        proto = d.get('proto')
+        if not hport: hport = None
+        ports.update({str(cport)+'/'+proto:hport for d in data})
+    return ports
+
+# Input Format:
+# [
+#     {
+#         'container': '/mnt/vol2',
+#         'bind': '/home/user1'
+#     }
+#     ...
+# ]
+# Result Format:
+# {
+#     '/home/user1/': {'bind': '/mnt/vol2', 'mode': 'rw'},
+#     '/var/www': {'bind': '/mnt/vol1', 'mode': 'ro'}
+# }
+def conv_volumes2data(data):
+    return dict((d['bind'], {'bind': d['container'], 'mode': 'rw'}) for d in data)
+
+# Input Format:
+# [
+#     {
+#         'name': 'SOMEVARIABLE',
+#         'default': '1000'
+#     }
+#     ...
+# ]
+# Result Format:
+# [
+#     "SOMEVARIABLE=xxx", "OTHERVARIABLE=yyy"
+# ]
+def conv_env2data(data):
+    # Set is depracated. Name is the actual value. Label is the name of the field.
+    # Label is the label of the label field.
+    delim = '='
+    return [delim.join((d['name'], d['default'])) for d in data]
+
+def conv_sysctls2data(data):
+    if data:
+        return dict((d['name'], d['value']) for d in data)
+    else:
+        sysctls = None
+        return sysctls
+def conv_caps2data(data):
+    if data:
+        return data
+    else:
+        caps = None
+        return caps
+def conv_restart2data(data):
+    if data:
+        return {'name': data}
+    else:
+        restart = None
+        return restart
+
+def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
+    print(name)
+    print(image)
+    print(restart_policy)
+    print(ports)
+    print(volumes)
+    print(env)
+    print(sysctls)
+    print(caps)
+    print('something')
+    dclient = docker.from_env()
+    dclient.containers.run(
+        name=name,
+        image=image,
+        restart_policy=restart_policy,
+        ports=ports,
+        volumes=volumes,
+        environment=env,
+        sysctls=sysctls,
+        cap_add=caps
+    )
+    print(f'''Container started successfully.
+       Name: {name},
+      Image: {image},
+      Ports: {ports},
+    Volumes: {volumes},
+        Env: {env}''')
+    return
