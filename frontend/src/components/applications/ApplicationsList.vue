@@ -1,11 +1,17 @@
 <template lang="html">
   <div class="apps-list">
+
     <v-card>
+        <v-fade-transition>
+            <v-progress-linear
+        indeterminate
+        v-if="isLoading"
+        color="primary"
+        bottom
+        />
+        </v-fade-transition>
       <v-card-title>
         Apps
-        <v-fade-transition>
-          <v-progress-circular class="ml-2" indeterminate v-if="isLoading" color="primary" />
-        </v-fade-transition>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -21,6 +27,7 @@
         :items-per-page="10"
         :search="search"
         @click:row="handleRowClick"
+        single-select
       >
         <template v-slot:item.name="{ item }">
           <div class="namecell">
@@ -47,30 +54,27 @@
                   <v-list-item-title>Start</v-list-item-title>
                 </v-list-item>
                 <v-list-item
-                  @click="
-                    AppAction({ Name: item.Name, Action: 'stop' });
-                    stopping(item.State.Status);
-                  "
+                  @click="AppAction({ Name: item.Name, Action: 'stop' })"
                 >
                   <v-list-item-icon>
                     <v-icon>mdi-stop</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title>Stop</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="debug('restart ' + item.Name)">
+                <v-list-item @click="AppAction({ Name: item.Name, Action: 'restart' })">
                   <v-list-item-icon>
                     <v-icon>mdi-refresh</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title>Restart</v-list-item-title>
                 </v-list-item>
                 <v-divider />
-                <v-list-item @click="debug('kill ' + item.Name)">
+                <v-list-item @click="AppAction({ Name: item.Name, Action: 'kill' })">
                   <v-list-item-icon>
                     <v-icon>mdi-fire</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title>Kill</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="debug('remove ' + item.Name)">
+                <v-list-item @click="AppAction({ Name: item.Name, Action: 'remove' })">
                   <v-list-item-icon>
                     <v-icon>mdi-delete</v-icon>
                   </v-list-item-icon>
@@ -99,9 +103,6 @@
 <script>
 import { mapActions, mapState } from "vuex";
 export default {
-  props: {
-    isLoading: { type: Boolean },
-  },
   data() {
     return {
       search: "",
@@ -138,8 +139,8 @@ export default {
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
     }),
-    handleRowClick(value) {
-      console.log(value);
+    handleRowClick(appName) {
+      this.$router.push({ path: `/apps/${appName.Name}` });
     },
     // templateDetails(templateId) {
     //   this.$router.push({ path: `/templates/${templateId}` });
@@ -156,3 +157,9 @@ export default {
   },
 };
 </script>
+
+<style>
+tr:hover {
+  cursor: pointer;
+}
+</style>

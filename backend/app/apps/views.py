@@ -181,15 +181,25 @@ def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
 
 @apps.route('/<container_name>/<action>')
 def app_actions(container_name, action):
+    err = None
     apps_list = []
     dclient = docker.from_env()
     container = dclient.containers.get(container_name)
     # _action = action + '()'
     _action = getattr(container, action)
-    _action()
-
+    if action == 'remove':
+        try:
+          _action(force=True)
+        except Exception as exc:
+            err = f"{exc}"
+    else:
+        try: 
+          _action()
+        except Exception as exc:
+            err = exc.explanation
+    
     apps = dclient.containers.list(all=True)
     for app in apps:
         apps_list.append(app.attrs)
     data = apps_list
-    return jsonify({ 'data': data })
+    return jsonify({ 'data': data, 'error': err })

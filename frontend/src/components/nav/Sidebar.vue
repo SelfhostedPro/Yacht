@@ -77,7 +77,7 @@ export default {
           },
           {
             text: "New Application",
-            to: "/apps",
+            to: "/apps/new",
             icon: "mdi-plus",
           },
         ],

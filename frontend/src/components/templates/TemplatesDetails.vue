@@ -9,10 +9,10 @@
           {{ template.url }}
         </v-card-subtitle>
       </v-card>
-
+      <v-text-field label="Search" v-model="search"></v-text-field>
       <v-row dense class="mt-3">
         <v-col
-          v-for="item in template.items"
+          v-for="item in sortByTitle(filteredTemplateItems)"
           :key="item.id"
           cols="12"
           xl="2"
@@ -269,6 +269,7 @@ export default {
     return {
       appDetailsDialog: false,
       selectedApp: null,
+      search: "",
     };
   },
   computed: {
@@ -279,14 +280,33 @@ export default {
       const templateId = this.$route.params.templateId;
       return this.getTemplateById(templateId);
     },
+    filteredTemplateItems() {
+      const templ = this.template;
+      if (!templ) {
+        return [];
+      }
+      if (this.search.length === "") {
+        return this.items;
+      }
+      return templ.items.filter(this.filterByTitle);
+    },
   },
   methods: {
     ...mapActions({
       readTemplate: "templates/readTemplate",
     }),
-    debugthis(app) {
-      console.log(app);
+    sortByTitle(arr) {
+      // Set slice() to avoid to generate an infinite loop!
+      return arr.slice().sort(function(a, b) {
+        return a.title.localeCompare(b.title);
+      });
     },
+    filterByTitle(item) {
+      if (!("title" in item)) { return false; }
+      const regex = new RegExp(this.search, "i");
+      return regex.test(item.title);
+      // return item.title.includes(this.search);
+    }
   },
   created() {
     const templateId = this.$route.params.templateId;
@@ -296,6 +316,4 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
-
-</style>
+<style lang="css" scoped></style>

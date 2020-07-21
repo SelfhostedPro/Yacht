@@ -23,9 +23,6 @@ class TemplateSchema(ma.SQLAlchemyAutoSchema):
             exclude=(
                 'template_id',
                 'restart_policy',
-                'ports',
-                'volumes',
-                'env',
                 'sysctls',
                 'cap_add'
             ))
