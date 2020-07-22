@@ -37,12 +37,13 @@ const actions = {
         commit("setLoading", false)
       });
   },
-  readApp({ commit }, Name) {
+  async readApp({ commit }, Name) {
     const url = `/api/apps/${Name}`;
-    axios.get(url).then(response => {
-      const app = response.data.data;
-      commit("setApp", app);
-    });
+    let response = await axios.get(url)
+    if (response) {
+       const app = response.data.data;
+       commit("setApp", app);
+    }
   },
   AppAction({ commit }, { Name, Action }) {
     commit("setLoading", true)

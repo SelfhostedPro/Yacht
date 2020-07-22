@@ -78,6 +78,7 @@ class DeploySchema(ma.Schema):
         required=True,
         validate=validate.OneOf(['always','on-failure', 'unless-stopped'])
     )
+    notes = ma.Str()
     ports = ma.List(ma.Nested(PortSchema))
     volumes = ma.List(ma.Nested(VolumesSchema))
     env = ma.List(ma.Nested(EnvSchema))

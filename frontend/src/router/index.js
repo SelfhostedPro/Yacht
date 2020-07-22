@@ -51,19 +51,19 @@ const routes = [
         component: ApplicationsForm
       },
       {
-        name: "Applications List",
+        name: "View Applications",
         path: "/",
         component: ApplicationsList
+      },
+      {
+        name: "Add Application",
+        path: "deploy",
+        component: ApplicationsForm
       },
       {
         name: "Application Details",
         path: ":appName",
         component: ApplicationDetails
-      },
-      {
-        name: "Add App",
-        path: "add",
-        component: ApplicationsForm
       }
     ]
   },

@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="apps-list">
+  <div class="apps-list component">
 
     <v-card>
         <v-fade-transition>

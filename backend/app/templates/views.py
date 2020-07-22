@@ -90,7 +90,7 @@ def create(args):
                     name = entry.get('name', entry['title'].lower()),
                     logo = entry.get('logo', ''), # default logo here!
                     image = entry.get('image', ''),
-                    notes = entry.get('notes', ''),
+                    notes = entry.get('note', ''),
                     categories = entry.get('categories', ''),
                     restart_policy = entry.get('restart_policy'),
                     ports = ports,
@@ -169,7 +169,7 @@ def refresh(id):
                     name = entry.get('name', entry['title'].lower()),
                     logo = entry.get('logo', ''), # default logo here!
                     image = entry.get('image', ''),
-                    notes = entry.get('notes', ''),
+                    notes = entry.get('note', ''),
                     categories = entry.get('categories', ''),
                     restart_policy = entry.get('restart_policy'),
                     ports = ports,

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-details component">
     <h1>Test</h1>
     <h2 v-if="app">hi</h2>
   </div>
@@ -25,10 +25,10 @@ export default {
     const appName = this.$route.params.appName;
     return this.getAppById(appName);
   },
-  mounted() {
+  async mounted() {
     const appName = this.$route.params.appName;
-    console.log(this.readApp(appName))
-    this.readApp(appName);
+    console.log(this.readApp(appName));
+    await this.readApp(appName);
   },
 };
 </script>

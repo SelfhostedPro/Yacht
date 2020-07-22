@@ -5,6 +5,7 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import VueUtils from "./plugins/vueutils";
 import "./vee-validate";
+require('animate.css/animate.compat.css');
 
 Vue.config.productionTip = false;
 

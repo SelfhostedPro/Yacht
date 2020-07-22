@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="templates-list">
+  <div class="templates-list component">
     <v-card>
       <v-card-title>
         Templates

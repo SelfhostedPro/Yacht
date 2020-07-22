@@ -1,6 +1,6 @@
 <template lang="html">
-  <div class="templates-details">
-    <v-container fluid v-if="template">
+  <div class="templates-details component">
+    <v-container fluid v-if="template" class="templateDetailsContainer">
       <v-card>
         <v-card-title>
           {{ template.title }}
@@ -316,4 +316,8 @@ export default {
 };
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css">
+.templateDetailsContainer{
+  width:98%
+}
+</style>

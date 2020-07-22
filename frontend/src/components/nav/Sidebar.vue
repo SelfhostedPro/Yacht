@@ -27,6 +27,7 @@
             :to="sublink.to"
             :key="sublink.text"
             exact
+            class="mb-1"
           >
             <v-list-item-icon>
               <v-icon>{{ sublink.icon }}</v-icon>
@@ -77,7 +78,7 @@ export default {
           },
           {
             text: "New Application",
-            to: "/apps/new",
+            to: "/apps/deploy",
             icon: "mdi-plus",
           },
         ],
