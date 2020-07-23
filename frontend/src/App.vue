@@ -2,12 +2,15 @@
   <v-app id="yacht">
     <Sidebar />
     <Appbar />
-
     <v-main>
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
         <!-- If using vue-router -->
-        <transition name="slide" enter-active-class="animated slideInRight delay" leave-active-class="animated slideOutLeft">
+        <transition
+          name="slide"
+          enter-active-class="animated slideInRight delay"
+          leave-active-class="animated slideOutLeft"
+        >
           <router-view></router-view>
         </transition>
       </v-container>
@@ -28,8 +31,8 @@ export default {
   name: "App",
 
   components: {
-    Sidebar:Sidebar,
-    Appbar:Appbar,
+    Sidebar: Sidebar,
+    Appbar: Appbar,
   },
 
   data: () => ({}),
@@ -37,26 +40,26 @@ export default {
 </script>
 
 <style>
-html{
-  overflow-y:auto;
-  background-color:black;
+html {
+  overflow-y: auto;
+  background-color: black;
 }
 .animated {
-  --animate-duration: .3s;
+  --animate-duration: 0.3s;
 }
-.fast-anim{
-  --animate-duration: .1s
+.fast-anim {
+  --animate-duration: 0.1s;
 }
 #yacht {
   display: flex;
   width: 100vw;
 }
-.page{
-  position: relative;;
+.page {
+  position: relative;
   flex-grow: 1;
 }
-.component{
+.component {
   position: absolute;
-  min-width:100%;
+  min-width: 100%;
 }
 </style>
