@@ -1,5 +1,8 @@
 ## Yacht
 Yacht is a flask based container management UI with a focus on templates and 1-click deployments.
+## REWRITE:
+Yacht is currently being rewritten here: https://github.com/SelfhostedPro/yacht-vue
+That is why there have been no recent updates. Once finished it will be a flask backend with a vue UI. Once the rewrite is done this repo will be overwritten.
 
 ## Demo:
 ![Tempaltes](readme_media/Yacht-Demo.gif "templates")
