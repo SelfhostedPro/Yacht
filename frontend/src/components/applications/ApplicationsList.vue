@@ -30,7 +30,7 @@
       >
         <template v-slot:item.name="{ item }">
           <div class="namecell">
-            <span class="nametext">{{ item.Name }}</span>
+            <span class="nametext">{{ item.name }}</span>
             <v-menu close-on-click close-on-content-click offset-y>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn

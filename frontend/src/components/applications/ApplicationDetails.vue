@@ -1,16 +1,14 @@
 <template lang="html">
   <v-card class="d-flex mx-auto page">
     <v-container fluid class="component">
-      <v-card>
+      <Nav/>
+      <v-card tile>
         <v-row>
-          <v-col class="flex-shrink-1 flex-grow-0" cols="2">
-            <Nav/>
-          </v-col>
-          <v-col class="flex-grow-1 flex-shrink-0" style="max-width:80%;">
+          <v-col class="flex-grow-1 flex-shrink-0">
             <v-card-title>
-              {{ app.Name }}
+              {{ app.name }}
             </v-card-title>
-            <v-card-subtitle> View and Manage {{ app.Name }} </v-card-subtitle>
+            <v-card-subtitle> View and Manage {{ app.name }} </v-card-subtitle>
             <v-card-text>
               <transition
                 name="slide"

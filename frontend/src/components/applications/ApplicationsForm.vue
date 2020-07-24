@@ -86,8 +86,8 @@
             <form>
               <transition-group
                 name="slide"
-                enter-active-class="animated fadeIn fast-anim"
-                leave-active-class="animated fadeOut fast-anim"
+                enter-active-class="animated fadeInLeft fast-anim"
+                leave-active-class="animated fadeOutLeft fast-anim"
               >
                 <v-row v-for="(item, index) in form.ports" :key="index">
                   <v-col>
@@ -177,8 +177,8 @@
             <form>
               <transition-group
                 name="slide"
-                enter-active-class="animated fadeIn fast-anim"
-                leave-active-class="animated fadeOut fast-anim"
+                enter-active-class="animated fadeInLeft fast-anim"
+                leave-active-class="animated fadeOutLeft fast-anim"
               >
                 <v-row v-for="(item, index) in form.volumes" :key="index">
                   <v-col>
@@ -246,8 +246,8 @@
             <form>
               <transition-group
                 name="slide"
-                enter-active-class="animated fadeIn fast-anim"
-                leave-active-class="animated fadeOut fast-anim"
+                enter-active-class="animated fadeInLeft fast-anim"
+                leave-active-class="animated fadeOutLeft fast-anim"
               >
                 <v-row v-for="(item, index) in form.env" :key="index">
                   <v-col>
@@ -326,8 +326,8 @@
             <form>
               <transition-group
                 name="slide"
-                enter-active-class="animated fadeIn fast-anim"
-                leave-active-class="animated fadeOut fast-anim"
+                enter-active-class="animated fadeInLeft fast-anim"
+                leave-active-class="animated fadeOutLeft fast-anim"
               >
                 <v-row v-for="(item, index) in form.sysctls" :key="index">
                   <v-col>

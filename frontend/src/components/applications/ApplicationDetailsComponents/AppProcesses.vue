@@ -3,9 +3,11 @@
     <v-card-title class="primary font-weight-bold">
       Processes
     </v-card-title>
+    <v-card-text v-if="app.State.Status != 'running'" class="font-weight-bold">
+      Start the app to view processes
+    </v-card-text>
     <v-simple-table
-      v-if="processes"
-      dense
+      v-else-if="processes"
     >
     <template v-slot:default>
       <thead>

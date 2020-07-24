@@ -19,7 +19,8 @@ from flask_jwt_extended import (
     jwt_required,
     jwt_optional
 )
-
+import json  # Used for getting template data
+from json import JSONEncoder
 from webargs import fields, validate
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
@@ -29,7 +30,6 @@ from werkzeug.exceptions import MethodNotAllowed, UnprocessableEntity
 import os  # used for getting file type and deleting files
 from urllib.parse import urlparse  # used for getting filetype from url
 import urllib.request
-import json  # Used for getting template data
 import docker
 
 apps = Blueprint('apps', __name__)
@@ -40,9 +40,17 @@ def index():
     dclient = docker.from_env()
     apps = dclient.containers.list(all=True)
     for app in apps:
-        apps_list.append(app.attrs)
+        attrs=app.attrs
+        attrs.update(conv2dict('ports', app.ports))
+        attrs.update(conv2dict('short_id', app.short_id))
+        attrs.update(conv2dict('name', app.name))
+        apps_list.append(attrs)
     data = apps_list
     return jsonify({ 'data': data })
+
+def conv2dict(name, value):
+    _tmp_attr = { name: value}
+    return _tmp_attr
 
 @apps.route('/<int:id>')
 def list_apps(id):
@@ -209,12 +217,22 @@ def app_details(container_name):
     container_info= []
     dclient = docker.from_env()
     container = dclient.containers.get(container_name)
+    attrs = container.attrs
 
-    
-    data = container.attrs
+    #Add extra values to Attrs
+    attrs.update(conv2dict('ports', container.ports))
+    attrs.update(conv2dict('short_id', container.short_id))
+    attrs.update(conv2dict('name', container.name))
+
+
+    data=attrs
     print(jsonify({ 'data': data }))
     return jsonify({ 'data': data })
 
+# Convert fields we need into a value we can add to attrs Format: conv2dict('name', container.value)
+def conv2dict(name, value):
+    _tmp_attr = { name: value}
+    return _tmp_attr
 
 
 @apps.route('/<container_name>/processes')

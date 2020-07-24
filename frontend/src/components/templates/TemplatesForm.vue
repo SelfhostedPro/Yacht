@@ -1,6 +1,14 @@
 <template lang="html">
   <div class="template-form component">
     <v-card>
+      <v-fade-transition>
+        <v-progress-linear
+          indeterminate
+          v-if="isLoading"
+          color="primary"
+          bottom
+        />
+      </v-fade-transition>
       <v-card-title>
         New Template
       </v-card-title>
@@ -26,7 +34,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   data: () => ({
@@ -50,6 +58,9 @@ export default {
       },
     ],
   }),
+  computed: {
+    ...mapState("templates", ["templates", "isLoading"]),
+  },
   methods: {
     ...mapActions({
       writeTemplate: "templates/writeTemplate",

@@ -1,6 +1,14 @@
 <template lang="html">
   <div class="templates-list component">
     <v-card>
+      <v-fade-transition>
+        <v-progress-linear
+          indeterminate
+          v-if="isLoading"
+          color="primary"
+          bottom
+        />
+      </v-fade-transition>
       <v-card-title>
         Templates
         <v-spacer></v-spacer>
@@ -22,18 +30,9 @@
         <template v-slot:item.title="{ item }">
           <div class="namecell">
             <span class="nametext">{{ item.title }}</span>
-            <v-menu
-              close-on-click
-              close-on-content-click
-              offset-y
-            >
+            <v-menu close-on-click close-on-content-click offset-y>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  icon
-                  size="small"
-                  v-bind="attrs"
-                  v-on="on"
-                >
+                <v-btn icon size="small" v-bind="attrs" v-on="on">
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
@@ -51,7 +50,12 @@
                   <v-list-item-title>Update</v-list-item-title>
                 </v-list-item>
                 <v-divider />
-                <v-list-item @click="selectedTemplate=item;deleteDialog=true;">
+                <v-list-item
+                  @click="
+                    selectedTemplate = item;
+                    deleteDialog = true;
+                  "
+                >
                   <v-list-item-icon>
                     <v-icon>mdi-delete</v-icon>
                   </v-list-item-icon>
@@ -70,11 +74,7 @@
       </v-data-table>
     </v-card>
 
-    <v-dialog
-      v-if="selectedTemplate"
-      v-model="deleteDialog"
-      max-width="290"
-    >
+    <v-dialog v-if="selectedTemplate" v-model="deleteDialog" max-width="290">
       <v-card>
         <v-card-title class="headline" style="word-break: break-all;">
           Delete the template?
@@ -85,16 +85,16 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="deleteDialog=false"
-          >
+          <v-btn text @click="deleteDialog = false">
             Cancel
           </v-btn>
           <v-btn
             text
             color="error"
-            @click="deleteTemplate(selectedTemplate.id);deleteDialog=false"
+            @click="
+              deleteTemplate(selectedTemplate.id);
+              deleteDialog = false;
+            "
           >
             Delete
           </v-btn>
@@ -111,27 +111,27 @@ export default {
     return {
       selectedTemplate: null,
       deleteDialog: false,
-      search:"",
+      search: "",
       headers: [
         {
           text: "Title",
           value: "title",
           sortable: true,
-          align: "start"
+          align: "start",
         },
         {
           text: "Created At",
           value: "created_at",
           sortable: true,
-          width: "20%"
+          width: "20%",
         },
         {
           text: "Updated At",
           value: "updated_at",
           sortable: true,
-          width: "20%"
-        }
-      ]
+          width: "20%",
+        },
+      ],
     };
   },
   methods: {
@@ -145,15 +145,15 @@ export default {
     },
     templateDetails(templateId) {
       this.$router.push({ path: `/templates/${templateId}` });
-    }
+    },
   },
   computed: {
-    ...mapState("templates", ["templates"])
+    ...mapState("templates", ["templates", "isLoading"]),
   },
   mounted() {
     this.readTemplates();
-  }
-}
+  },
+};
 </script>
 
 <style lang="css" scoped>

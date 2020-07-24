@@ -1,7 +1,19 @@
 <template lang="html">
-  <div class="templates-details component">
-    <v-container fluid v-if="template" class="templateDetailsContainer">
+  <div class="d-flex templates-details page">
+    <v-container
+      fluid
+      v-if="template"
+      class="templateDetailsContainer component"
+    >
       <v-card>
+        <v-fade-transition>
+          <v-progress-linear
+            indeterminate
+            v-if="isLoading"
+            color="primary"
+            bottom
+          />
+        </v-fade-transition>
         <v-card-title>
           {{ template.title }}
         </v-card-title>
@@ -75,6 +87,14 @@
       v-if="selectedApp"
     >
       <v-card raised shaped>
+        <v-fade-transition>
+          <v-progress-linear
+            indeterminate
+            v-if="isLoading"
+            color="primary"
+            bottom
+          />
+        </v-fade-transition>
         <v-img
           :src="selectedApp.logo"
           contain
@@ -302,11 +322,13 @@ export default {
       });
     },
     filterByTitle(item) {
-      if (!("title" in item)) { return false; }
+      if (!("title" in item)) {
+        return false;
+      }
       const regex = new RegExp(this.search, "i");
       return regex.test(item.title);
       // return item.title.includes(this.search);
-    }
+    },
   },
   created() {
     const templateId = this.$route.params.templateId;
@@ -316,7 +338,7 @@ export default {
 </script>
 
 <style lang="css">
-.templateDetailsContainer{
+/* .templateDetailsContainer{
   width:98%
-}
+} */
 </style>

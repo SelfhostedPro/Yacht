@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
   apps: [],
+  processes: [],
   isLoading: false,
 };
 
@@ -46,6 +47,7 @@ const actions = {
     let response = await axios.get(url);
     if (response) {
       const app = response.data.data;
+      console.log(app.ports)
       commit("setApp", app);
     }
   },

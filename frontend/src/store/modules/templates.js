@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const state = {
-  templates: []
+  templates: [],
+  isLoading: false,
 };
 
 const mutations = {
@@ -31,38 +32,54 @@ const mutations = {
     } else {
       state.apps.splice(idx, 1, app);
     }
-  }
+  },
+  setLoading(state, loading) {
+    state.isLoading = loading;
+  },
 };
 
 const actions = {
   readTemplates({ commit }) {
+    commit("setLoading", true);
     const url = "/api/templates/";
     axios
       .get(url)
       .then(response => {
         const templates = response.data.data;
         commit("setTemplates", templates);
+      })
+      .finally(() => {
+        commit("setLoading", false);
       });
   },
   readTemplate({ commit }, id) {
+    commit("setLoading", true);
     const url = `/api/templates/${id}`;
     axios
       .get(url)
       .then(response => {
         const template = response.data.data;
         commit("setTemplate", template);
+      })
+      .finally(() => {
+        commit("setLoading", false);
       });
   },
   writeTemplate({ commit }, payload) {
+    commit("setLoading", true);
     const url = "/api/templates/";
     axios
       .post(url, payload)
       .then(response => {
         const template = response.data.data;
         commit("addTemplate", template);
+      })
+      .finally(() => {
+        commit("setLoading", false);
       });
   },
   updateTemplate({ commit }, id) {
+    commit("setLoading", true);
     const url = `/api/templates/${id}/refresh`;
     axios
       .post(url)
@@ -70,8 +87,12 @@ const actions = {
         const template = response.data.data;
         commit("setTemplate", template);
       })
+      .finally(() => {
+        commit("setLoading", false);
+      });
   },
   deleteTemplate({ commit }, id) {
+    commit("setLoading", true);
     const url = `/api/templates/${id}`;
     axios
       .delete(url)
@@ -79,12 +100,19 @@ const actions = {
         const template = response.data.data;
         commit("removeTemplate", template);
       })
+      .finally(() => {
+        commit("setLoading", false);
+      });
   },
   readApp({ commit }, id) {
+    commit("setLoading", true);
     const url = `/api/apps/${id}`;
     axios.get(url).then(response => {
       const app = response.data.data;
       commit("setApp", app);
+    })
+    .finally(() => {
+      commit("setLoading", false);
     });
   },
 };

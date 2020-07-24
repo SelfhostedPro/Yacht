@@ -52,22 +52,6 @@ export default {
         divider: true,
       },
       {
-        icon: "mdi-folder",
-        text: "Templates",
-        subLinks: [
-          {
-            text: "View Templates",
-            to: "/templates",
-            icon: "mdi-view-list",
-          },
-          {
-            text: "New Template",
-            to: "/templates/new",
-            icon: "mdi-plus",
-          },
-        ],
-      },
-      {
         icon: "mdi-application",
         text: "Applications",
         subLinks: [
@@ -79,6 +63,22 @@ export default {
           {
             text: "New Application",
             to: "/apps/deploy",
+            icon: "mdi-plus",
+          },
+        ],
+      },
+      {
+        icon: "mdi-folder",
+        text: "Templates",
+        subLinks: [
+          {
+            text: "View Templates",
+            to: "/templates",
+            icon: "mdi-view-list",
+          },
+          {
+            text: "New Template",
+            to: "/templates/new",
             icon: "mdi-plus",
           },
         ],
