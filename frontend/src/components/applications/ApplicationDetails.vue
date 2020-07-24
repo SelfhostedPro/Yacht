@@ -2,14 +2,11 @@
   <v-card class="d-flex mx-auto page">
     <v-container fluid class="component">
       <v-card>
-        <v-row justify="space-between">
-          <v-col cols="auto" class="text-center px-0">
-            <v-row class="flex-column ma-0 fill-height">
-              <Nav />
-            </v-row>
+        <v-row>
+          <v-col class="flex-shrink-1 flex-grow-0" cols="2">
+            <Nav/>
           </v-col>
-
-          <v-col cols="auto" class="flex-grow-1">
+          <v-col class="flex-grow-1 flex-shrink-0" style="max-width:80%;">
             <v-card-title>
               {{ app.Name }}
             </v-card-title>
@@ -21,7 +18,7 @@
                 leave-active-class="animated slideOutRight"
                 mode="out-in"
               >
-                <router-view :app="app"/>
+                <router-view :app="app" :processes="processes"/>
               </transition>
             </v-card-text>
           </v-col>
@@ -42,7 +39,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading"]),
+    ...mapState("apps", ["apps", "isLoading", "processes"]),
     ...mapGetters({
       getAppByName: "apps/getAppByName",
     }),
@@ -54,7 +51,7 @@ export default {
   methods: {
     ...mapActions({
       readApp: "apps/readApp",
-      readAppProcesses: "apps/readAppProcesses"
+      readAppProcesses: "apps/readAppProcesses",
     }),
   },
   created() {
@@ -70,5 +67,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
