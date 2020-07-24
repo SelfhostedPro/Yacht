@@ -73,55 +73,42 @@
         Ports
       </v-card-title>
       <v-divider />
-      <v-list class="secondary px-0 text-center">
-        <v-list-item>
-          <v-list-item-content
-            ><v-list-title class="font-weight-bold"
-              >Container Port</v-list-title
-            ></v-list-item-content
-          ><v-divider vertical />
-          <!-- <v-list-item-content>
-            <v-list-title class="font-weight-bold"
-              >Host IP</v-list-title
-            ></v-list-item-content
-          ><v-divider vertical /> -->
-          <v-list-item-content>
-            <v-list-title class="font-weight-bold"
-              >Host Port</v-list-title
-            ></v-list-item-content
-          >
-        </v-list-item>
-        <v-divider />
-        <v-list-item v-for="(port, index) in convPorts(app.ports)" :key="index">
-          <v-list-item-content
-            ><v-list-title>{{ port.cport }}</v-list-title></v-list-item-content
-          ><v-divider vertical />
-          <!-- <v-list-item-content
-            ><v-list-title>{{ port.hip }}</v-list-title></v-list-item-content
-          ><v-divider vertical /> -->
-          <v-list-item-content
-            ><v-list-title
-              ><v-chip
-                v-if="port.hip == '0.0.0.0'"
-                color="indigo darken-2"
-                label
-                :href="'http://' + host_ip + ':' + port.hport"
-                target="_blank"
-                ><v-icon small class="mr-1">mdi-link-variant</v-icon
-                >{{ port.hport }}</v-chip
-              ><v-chip
-                v-else
-                color="indigo darken-2"
-                label
-                :href="'http://' + port.hip + ':' + port.hport"
-                target="_blank"
-                ><v-icon small class="mr-1">mdi-link-variant</v-icon
-                >{{ port.hport }}</v-chip
-              >
-            </v-list-title></v-list-item-content
-          >
-        </v-list-item>
-      </v-list>
+      <v-simple-table class="secondary px-0 text-center">
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th class="text-center">Container Port</th>
+              <th class="text-center">Host IP</th>
+              <th class="text-center">Host Port</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(port, index) in convPorts(app.ports)" :key="index">
+              <td>{{ port.cport }}</td>
+              <td>{{ port.hip }}</td>
+              <td>
+                <v-chip
+                  v-if="port.hip == '0.0.0.0'"
+                  color="indigo darken-2"
+                  label
+                  :href="'http://' + host_ip + ':' + port.hport"
+                  target="_blank"
+                  ><v-icon small class="mr-1">mdi-link-variant</v-icon
+                  >{{ port.hport }}</v-chip
+                ><v-chip
+                  v-else
+                  color="indigo darken-2"
+                  label
+                  :href="'http://' + port.hip + ':' + port.hport"
+                  target="_blank"
+                  ><v-icon small class="mr-1">mdi-link-variant</v-icon
+                  >{{ port.hport }}</v-chip
+                >
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
     </v-card>
   </div>
 </template>
