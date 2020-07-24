@@ -10,12 +10,6 @@ const mutations = {
     state.apps = apps;
   },
   setApp(state, app) {
-    console.log("-------From setApp: --------")
-    console.log("app=")
-    console.log(app)
-    console.log("~~~Find~~~")
-    console.log("result of find=")
-    console.log(state.apps.findIndex((x) => x.Name === app.Name))
     const idx = state.apps.findIndex((x) => x.Name === app.Name);
     if (idx < 0) {
       state.apps.push(app);
@@ -42,21 +36,13 @@ const actions = {
         commit("setLoading", false);
       });
   },
-  readApp({ commit }, Name) {
-    commit("setLoading", true);
+  async readApp({ commit }, Name) {
     const url = `/api/apps/${Name}`;
-    axios
-      .get(url)
-      .then((response) => {
-        const app = response.data.data;
-        console.log("------From readApp:---- ")
-        console.log("app=")
-        console.log(app)
-        commit("setApp", app);
-      })
-      .finally(() => {
-        commit("setLoading", false);
-      });
+    let response = await axios.get(url);
+    if (response) {
+      const app = response.data.data;
+      commit("setApp", app);
+    }
   },
   AppAction({ commit }, { Name, Action }) {
     commit("setLoading", true);
@@ -75,17 +61,8 @@ const actions = {
 
 const getters = {
   getAppByName(state) {
-    console.log("--- From getAppByName: ---")
-    console.log("state=")
-    console.log(state)
     return (Name) => {
-      console.log("~~~Return~~~")
-      console.log("state.apps =")
-      console.log(state.apps);
-      console.log("~~~Return - find: ~~~")
-      console.log("result of find=")
-      console.log(state.apps.find(x => x.Name == Name))
-      console.log(state.apps.find((x) => x.Name == Name))
+      Name = "/" + Name;
       return state.apps.find((x) => x.Name == Name);
     };
   },

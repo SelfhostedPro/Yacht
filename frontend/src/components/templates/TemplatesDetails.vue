@@ -311,7 +311,6 @@ export default {
   created() {
     const templateId = this.$route.params.templateId;
     this.readTemplate(templateId);
-    console.log(this.getTemplateById(templateId));
   },
 };
 </script>

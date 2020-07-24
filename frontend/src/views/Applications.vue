@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="apps page">
     <transition name="slide" enter-active-class="animated slideInRight delay" leave-active-class="animated slideOutLeft">
-      <router-view></router-view>
+      <router-view />
     </transition>
   </div>
 </template>

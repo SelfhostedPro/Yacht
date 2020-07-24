@@ -2,6 +2,14 @@
   <div class="apps-form component">
     <h1>Deploy {{ form.title }}</h1>
     <v-stepper v-model="deployStep">
+      <v-fade-transition>
+        <v-progress-linear
+          indeterminate
+          v-if="isLoading"
+          color="primary"
+          bottom
+        />
+      </v-fade-transition>
       <v-stepper-header>
         <v-stepper-step step="1" :complete="deployStep > 1">
           Basics
@@ -427,6 +435,7 @@ export default {
         sysctls: [],
         cap_add: "",
       },
+      isLoading: false,
       cap_options: [
         "SYS_MODULE",
         "SYS_RAWIO",
@@ -495,13 +504,19 @@ export default {
     },
     submitFormData() {
       const payload = { ...this.form };
-      console.log("submit", payload);
+      this.isLoading = true;
       const appId = this.$route.params.appId;
       const url = `/api/apps/${appId}/deploy`;
-      axios.post(url, payload).then((response) => {
-        console.log(response);
-        this.deployStep = 1;
-      });
+      axios
+        .post(url, payload)
+        .then((response) => {
+          console.log(response);
+          this.deployStep = 1;
+        })
+        .finally(() => {
+          this.isLoading = false;
+          this.$router.push({ name: "View Applications" });
+        });
     },
     async readApp() {
       const appId = this.$route.params.appId;

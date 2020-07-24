@@ -1,13 +1,42 @@
 <template lang="html">
-  <div class="app-details component">
-    <h1>Test</h1>
-    <h2 v-if="item">hi</h2>
-  </div>
+  <v-card class="d-flex mx-auto">
+    <v-container fluid class="component">
+      <v-card>
+        <v-row justify="space-between">
+          <v-col cols="auto" class="text-center px-0">
+            <v-row class="flex-column ma-0 fill-height">
+              <Nav />
+            </v-row>
+          </v-col>
+
+          <v-col cols="auto" class="flex-grow-1">
+            <v-card-title>
+              {{ app.Name }}
+            </v-card-title>
+            <v-card-subtitle> View and Manage {{ app.Name }} </v-card-subtitle>
+            <v-card-text>
+              <transition
+                name="slide"
+                enter-active-class="animated slideInRight delay"
+                leave-active-class="animated slideOutLeft"
+              >
+                <router-view />
+              </transition>
+            </v-card-text>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
+import ApplicationDetailsNav from "./ApplicationDetailsComponents/ApplicationDetailsNav";
 import { mapActions, mapGetters, mapState } from "vuex";
 export default {
+  components: {
+    Nav: ApplicationDetailsNav,
+  },
   data() {
     return {};
   },
@@ -29,7 +58,10 @@ export default {
   created() {
     const appName = this.$route.params.appName;
     this.readApp(appName);
-    console.log("From created"+this.getAppByName(appName));
+  },
+  async mounted() {
+    const appName = this.$route.params.appName;
+    await this.readApp(appName);
   },
 };
 </script>

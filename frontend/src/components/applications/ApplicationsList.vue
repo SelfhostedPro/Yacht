@@ -140,7 +140,7 @@ export default {
       AppAction: "apps/AppAction",
     }),
     handleRowClick(appName) {
-      this.$router.push({ path: `/apps${appName.Name}` });
+      this.$router.push({ path: `/apps${appName.Name}/info` });
     },
     // templateDetails(templateId) {
     //   this.$router.push({ path: `/templates/${templateId}` });

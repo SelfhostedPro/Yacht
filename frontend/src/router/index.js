@@ -6,6 +6,8 @@ import TemplatesShow from "../components/templates/TemplatesDetails.vue";
 import TemplatesForm from "../components/templates/TemplatesForm.vue";
 import TemplatesList from "../components/templates/TemplatesList.vue";
 import Applications from "../views/Applications.vue";
+import ApplicationsDetailsContent from "../components/applications/ApplicationDetailsComponents/ApplicationDetailsContent.vue"
+import ApplicationsDetailsProcesses from "../components/applications/ApplicationDetailsComponents/ApplicationDetailsProcesses.vue"
 import ApplicationDetails from "../components/applications/ApplicationDetails.vue"
 import ApplicationsList from "../components/applications/ApplicationsList.vue"
 import ApplicationsForm from "../components/applications/ApplicationsForm.vue";
@@ -63,7 +65,19 @@ const routes = [
       {
         name: "Application Details",
         path: ":appName",
-        component: ApplicationDetails
+        component: ApplicationDetails,
+        children: [
+          {
+            name: "Info",
+            path: "info",
+            component: ApplicationsDetailsContent
+          },
+          {
+            name: "Processes",
+            path: "processes",
+            componenet: ApplicationsDetailsProcesses
+          }
+        ]
       }
     ]
   },
