@@ -217,10 +217,12 @@ def app_details(container_name):
 
 
 
-    #     apps_list = []
-    # dclient = docker.from_env()
-    # apps = dclient.containers.list(all=True)
-    # for app in apps:
-    #     apps_list.append(app.attrs)
-    # data = apps_list
-    # return jsonify({ 'data': data })
+@apps.route('/<container_name>/processes')
+def app_processes(container_name):
+    dclient = docker.from_env()
+    container = dclient.containers.get(container_name)
+    processes = container.top()
+
+    data = processes
+    print(jsonify({ 'data': data }))
+    return jsonify({ 'data': data })

@@ -17,6 +17,11 @@ const mutations = {
       state.apps.splice(idx, 1, app);
     }
   },
+  setAppProcesses(state, processes) {
+    state.processes = processes
+    console.log("---FROM setAppProcesses---")
+    console.log(processes)
+  },
   setLoading(state, loading) {
     state.isLoading = loading;
   },
@@ -42,6 +47,16 @@ const actions = {
     if (response) {
       const app = response.data.data;
       commit("setApp", app);
+    }
+  },
+  async readAppProcesses({ commit }, Name) {
+    const url = `/api/apps/${Name}/processes`;
+    let response = await axios.get(url);
+    if (response) {
+      const processes = response.data.data;
+      console.log("---FROM readAppProcesses---")
+      console.log(processes)
+      commit("setAppProcesses", processes);
     }
   },
   AppAction({ commit }, { Name, Action }) {

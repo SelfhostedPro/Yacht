@@ -1,6 +1,5 @@
 <template lang="html">
   <div class="apps-list component">
-
     <v-card>
         <v-fade-transition>
             <v-progress-linear
@@ -142,9 +141,6 @@ export default {
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
     },
-    // templateDetails(templateId) {
-    //   this.$router.push({ path: `/templates/${templateId}` });
-    // }
     debug(value) {
       console.log(value);
     },

@@ -1,5 +1,5 @@
 <template>
-  <v-card raised>
+  <v-card raised class="flex-grow-1">
     <v-card-title class="subheading primary font-weight-bold">
       General
     </v-card-title>
@@ -70,33 +70,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
 export default {
-  data() {
-    return {};
-  },
-  computed: {
-    ...mapState("apps", ["apps", "isLoading"]),
-    ...mapGetters({
-      getAppByName: "apps/getAppByName",
-    }),
-    app() {
-      const appName = this.$route.params.appName;
-      return this.getAppByName(appName);
-    },
-  },
-  methods: {
-    ...mapActions({
-      readApp: "apps/readApp",
-    }),
-  },
-  created() {
-    const appName = this.$route.params.appName;
-    this.readApp(appName);
-  },
-  async mounted() {
-    const appName = this.$route.params.appName;
-    await this.readApp(appName);
-  },
-};
+  props: ['app']
+}
 </script>

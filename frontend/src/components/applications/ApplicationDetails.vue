@@ -1,5 +1,5 @@
 <template lang="html">
-  <v-card class="d-flex mx-auto">
+  <v-card class="d-flex mx-auto page">
     <v-container fluid class="component">
       <v-card>
         <v-row justify="space-between">
@@ -18,9 +18,10 @@
               <transition
                 name="slide"
                 enter-active-class="animated slideInRight delay"
-                leave-active-class="animated slideOutLeft"
+                leave-active-class="animated slideOutRight"
+                mode="out-in"
               >
-                <router-view />
+                <router-view :app="app"/>
               </transition>
             </v-card-text>
           </v-col>
@@ -53,15 +54,21 @@ export default {
   methods: {
     ...mapActions({
       readApp: "apps/readApp",
+      readAppProcesses: "apps/readAppProcesses"
     }),
   },
   created() {
     const appName = this.$route.params.appName;
     this.readApp(appName);
+    this.readAppProcesses(appName);
   },
   async mounted() {
     const appName = this.$route.params.appName;
     await this.readApp(appName);
+    await this.readAppProcesses(appName);
   },
 };
 </script>
+
+<style>
+</style>
