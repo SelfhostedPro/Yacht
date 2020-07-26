@@ -93,7 +93,7 @@
                   <v-col>
                     <ValidationProvider
                       name="Container"
-                      rules=""
+                      rules="required"
                       v-slot="{ errors, valid }"
                     >
                       <v-text-field
@@ -105,13 +105,14 @@
                         v-model="item['cport']"
                         :error-messages="errors"
                         :success="valid"
+                        required
                       ></v-text-field>
                     </ValidationProvider>
                   </v-col>
                   <v-col>
                     <ValidationProvider
                       name="Host"
-                      rules="required"
+                      rules=""
                       v-slot="{ errors, valid }"
                     >
                       <v-text-field
@@ -123,7 +124,6 @@
                         v-model="item['hport']"
                         :error-messages="errors"
                         :success="valid"
-                        required
                       ></v-text-field>
                     </ValidationProvider>
                   </v-col>
@@ -304,7 +304,8 @@
               Back
             </v-btn>
             <v-btn color="primary" @click="nextStep(4)" :disabled="invalid">
-              Submit
+              <div v-if="isLoading"> Deploying <v-progress-circular indeterminate color="white" size="15" width="2" /></div>
+              <div v-else>Deploy</div>
             </v-btn>
           </ValidationObserver>
         </v-stepper-content>

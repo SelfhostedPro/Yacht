@@ -3,7 +3,7 @@
     <v-card-title class="primary font-weight-bold">
       Processes
     </v-card-title>
-    <v-card-text v-if="app.State.Status != 'running'" class="font-weight-bold">
+    <v-card-text v-if="app.State.Status != 'running'" class="secondary text-center px-5 py-5">
       Start the app to view processes
     </v-card-text>
     <v-simple-table

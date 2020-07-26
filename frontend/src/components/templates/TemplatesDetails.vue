@@ -29,7 +29,7 @@
           cols="12"
           xl="2"
           md="3"
-          sm="6"
+          sm="4"
           xs="12"
           class="d-flex"
           style="flex-direction:column"

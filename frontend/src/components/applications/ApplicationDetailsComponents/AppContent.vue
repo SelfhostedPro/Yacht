@@ -73,7 +73,10 @@
         Ports
       </v-card-title>
       <v-divider />
-      <v-simple-table class="secondary px-0 text-center">
+      <v-card-text v-if="app.State.Status != 'running'" class="secondary text-center px-5 py-5">
+        Start the app to view ports
+         </v-card-text>
+      <v-simple-table v-else class="secondary px-0 text-center">
         <template v-slot:default>
           <thead>
             <tr>
@@ -125,12 +128,14 @@ export default {
     convPorts(data) {
       let o = [];
       for (var k in data) {
-        o = o.concat(
-          data[k].map(function(x) {
-            console.log(x.HostIp);
-            return { cport: k, hip: x.HostIp, hport: x.HostPort };
-          })
-        );
+        if (data[k]) {
+          o = o.concat(
+            data[k].map(function(x) {
+              console.log(x.HostIp);
+              return { cport: k, hip: x.HostIp, hport: x.HostPort };
+            })
+          );
+        }
       }
       return o;
     },

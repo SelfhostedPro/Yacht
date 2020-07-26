@@ -26,11 +26,11 @@ def conv_ports2dict(data: List[str]) -> List[Dict[str,str]]:
         if not re.match(REGEXP_PORT_ASSIGN, port_data, flags=re.IGNORECASE):
             raise ValueError('Malformed port assignment.')
 
-        cport,hport = None,port_data
-        if delim in hport:
-            cport,hport = hport.split(delim, 1)
-            if not cport: cport = None
-        hport,proto = hport.split('/', 1)
+        hport,cport = None,port_data
+        if delim in cport:
+            hport,cport = cport.split(delim, 1)
+            if not hport: hport = None
+        cport,proto = cport.split('/', 1)
         portlst.append({ 'cport': cport, 'hport': hport, 'proto': proto })
     return portlst
 
