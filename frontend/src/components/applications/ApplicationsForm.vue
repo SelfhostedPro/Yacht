@@ -1,6 +1,8 @@
 <template lang="html">
   <div class="apps-form component">
-    <h1>Deploy {{ form.title }}</h1>
+    <h1>Deploy {{ form.title }}
+      <v-btn v-if="!this.$route.params.appId" tile :to="{ name: 'View Templates' }" class="primary float-right"> <v-icon>mdi-plus</v-icon> From Template </v-btn>
+    </h1>
     <v-stepper v-model="deployStep">
       <v-fade-transition>
         <v-progress-linear

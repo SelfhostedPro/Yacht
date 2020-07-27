@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card raised class="flex-grow-1">
+    <v-card tile raised class="flex-grow-1">
       <v-card-title class="subheading primary font-weight-bold">
         General
       </v-card-title>
@@ -11,14 +11,14 @@
       <v-list class="secondary px-5">
         <v-list-item>
           <v-list-item-content
-            ><v-list-title class="font-weight-bold"
-              >Container Name</v-list-title
+            ><v-list-item-title class="font-weight-bold"
+              >Container Name</v-list-item-title
             ></v-list-item-content
           >
           <v-list-item-content>
-            <v-list-title>
+            <v-list-item-title>
               {{ app.name }}
-            </v-list-title>
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -26,14 +26,14 @@
 
         <v-list-item>
           <v-list-item-content
-            ><v-list-title class="font-weight-bold"
-              >Container ID</v-list-title
+            ><v-list-item-title class="font-weight-bold"
+              >Container ID</v-list-item-title
             ></v-list-item-content
           >
           <v-list-item-content>
-            <v-list-title>
+            <v-list-item-title>
               {{ app.short_id }}
-            </v-list-title>
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -41,14 +41,14 @@
 
         <v-list-item>
           <v-list-item-content
-            ><v-list-title class="font-weight-bold"
-              >Container Created On</v-list-title
+            ><v-list-item-title class="font-weight-bold"
+              >Container Created On</v-list-item-title
             ></v-list-item-content
           >
           <v-list-item-content>
-            <v-list-title>
+            <v-list-item-title>
               {{ app.Created | formatDate }}
-            </v-list-title>
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -56,14 +56,14 @@
 
         <v-list-item>
           <v-list-item-content
-            ><v-list-title class="font-weight-bold"
-              >Container Status</v-list-title
+            ><v-list-item-title class="font-weight-bold"
+              >Container Status</v-list-item-title
             ></v-list-item-content
           >
           <v-list-item-content>
-            <v-list-title>
+            <v-list-item-title>
               {{ app.State.Status }}
-            </v-list-title>
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -73,9 +73,12 @@
         Ports
       </v-card-title>
       <v-divider />
-      <v-card-text v-if="app.State.Status != 'running'" class="secondary text-center px-5 py-5">
+      <v-card-text
+        v-if="app.State.Status != 'running'"
+        class="secondary text-center px-5 py-5"
+      >
         Start the app to view ports
-         </v-card-text>
+      </v-card-text>
       <v-simple-table v-else class="secondary px-0 text-center">
         <template v-slot:default>
           <thead>
@@ -113,6 +116,101 @@
         </template>
       </v-simple-table>
     </v-card>
+    <v-card v-if="app.Mounts" tile>
+      <v-card-title class="subheading amber darken-2 font-weight-bold">
+        Volumes
+      </v-card-title>
+      <v-divider />
+      <v-card-text
+        v-if="app.State.Status != 'running'"
+        class="secondary text-center px-5 py-5"
+      >
+        Start the app to view volumes
+      </v-card-text>
+      <v-simple-table v-else class="secondary px-0 text-center">
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th class="text-center">Container Path</th>
+              <th class="text-center">Host Path</th>
+              <th class="text-center">Mode</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(mount, index) in app.Mounts" :key="index">
+              <td>{{ mount.Destination }}</td>
+              <td>{{ mount.Source }}</td>
+              <td>{{ mount.Mode }}</td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </v-card>
+    <v-card v-if="app.Config.Env" tile>
+      <v-card-title class="subheading green darken-3 font-weight-bold">
+        Environment Variables
+      </v-card-title>
+      <v-divider />
+      <v-card-text
+        v-if="app.State.Status != 'running'"
+        class="secondary text-center px-5 py-5"
+      >
+        Start the app to view volumes
+      </v-card-text>
+      <v-simple-table v-else class="secondary px-0 text-center">
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th class="text-center">Label</th>
+              <th class="text-center">Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(env, index) in splitEnv(app.Config.Env)" :key="index">
+              <td>{{ env[0] }}</td>
+              <td>{{ env[1] }}</td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </v-card>
+    <v-card tile raised v-if="app.HostConfig.CapAdd || app.HostConfig.Sysctls">
+      <v-card-title class="subheading primary font-weight-bold">
+        Advanced
+      </v-card-title>
+      <!-- <v-card-subtitle>
+              General container information
+            </v-card-subtitle> -->
+      <v-divider />
+      <v-list class="secondary px-5">
+        <v-list-item v-if="app.HostConfig.CapAdd">
+          <v-list-item-content
+            ><v-list-item-title class="font-weight-bold"
+              >Added Capabilities</v-list-item-title
+            ></v-list-item-content
+          >
+          <v-list-item-content>
+            <v-list-item-title v-for="(cap, index) in app.HostConfig.CapAdd" :key="index">
+              {{ cap }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider />
+        <v-list-item v-if="app.HostConfig.Sysctls">
+          <v-list-item-content
+            ><v-list-item-title class="font-weight-bold"
+              >Sysctls</v-list-item-title
+            ></v-list-item-content
+          >
+          <v-list-item-content>
+            <v-list-item-title v-for="(sysctl, index) in Object.keys(app.HostConfig.Sysctls)" :key="index">
+              {{ sysctl }} = {{app.HostConfig.Sysctls[sysctl]}},
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-card>
   </div>
 </template>
 
@@ -131,13 +229,25 @@ export default {
         if (data[k]) {
           o = o.concat(
             data[k].map(function(x) {
-              console.log(x.HostIp);
               return { cport: k, hip: x.HostIp, hport: x.HostPort };
             })
           );
         }
       }
       return o;
+    },
+    refresh() {
+      const appName = this.$route.params.appName;
+      this.readApp(appName);
+      this.readAppProcesses(appName);
+    },
+    splitEnv(data) {
+      const env = [];
+      for (let index = 0; index < data.length; index++) {
+        let _split_data = data[index].split("=");
+        env.push(_split_data);
+      }
+      return env;
     },
   },
 };

@@ -1,12 +1,20 @@
-FROM lsiobase/alpine:3.12
-#MAINTANER Your Name "info@selfhosted.pro"
+# Build Vue
+FROM node:14.5.0-alpine as build-stage
+WORKDIR /app
+COPY ./frontend/package*.json ./
+RUN npm install
+COPY ./frontend/ .
+RUN npm run build
 
-ENV ADMIN_EMAIL=admin@yacht.local
-ENV ADMIN_PASSWORD=password
+# Setup Container
+FROM lsiobase/alpine:3.12 as deploy-stage
+# MAINTANER Your Name "info@selfhosted.pro"
+
+# Set Variables
 ENV FLASK_CONFIG=production
 ENV PYTHONIOENCODING=UTF-8
 
-COPY ./requirements.txt /app/requirements.txt
+# Install Dependancies
 RUN \
  echo "**** install build packages ****" && \
  apk add --no-cache --virtual=build-dependencies \
@@ -25,16 +33,24 @@ RUN \
 	unzip \
     docker \
 	make \
+	nginx \
 	ruby-dev &&\
  gem install sass
-WORKDIR /app
+
+# Flask
+WORKDIR /api
+COPY ./backend/requirements.txt .
 RUN  pip3 install -r requirements.txt
-COPY app /app
+
+COPY ./backend/api .
 COPY root /
-COPY manage.py /
-COPY config.py /
+COPY ./backend/manage.py /
+COPY ./backend/config.py /
+
+# Vue
+COPY --from=build-stage /app/dist /app
+COPY nginx.conf /config/nginx/nginx.conf
+
+# Expose
 VOLUME /config
-EXPOSE 5000
-
-
-
+EXPOSE 8000

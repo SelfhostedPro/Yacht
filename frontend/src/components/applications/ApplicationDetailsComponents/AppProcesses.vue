@@ -12,12 +12,12 @@
     <template v-slot:default>
       <thead>
         <tr>
-          <th class="secondary" v-for="title in processes.Titles" :key="title"> {{ title }}</th>
+          <th class="secondary" v-for="(title, index) in processes.Titles" :key="index"> {{ title }}</th>
         </tr>
       </thead>
       <tbody class="secondary">
-        <tr v-for="item in processes.Processes" :key="item">
-          <td v-for="field in item" :key="field"> {{ field }}</td>
+        <tr v-for="(item, index) in processes.Processes" :key="index">
+          <td v-for="(field, index) in item" :key="index"> {{ field }}</td>
         </tr>
       </tbody>
     </template>

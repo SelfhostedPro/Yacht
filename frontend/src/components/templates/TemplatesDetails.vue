@@ -283,7 +283,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -296,6 +296,7 @@ export default {
     ...mapGetters({
       getTemplateById: "templates/getTemplateById",
     }),
+    ...mapState("templates", ["isLoading"]),
     template() {
       const templateId = this.$route.params.templateId;
       return this.getTemplateById(templateId);

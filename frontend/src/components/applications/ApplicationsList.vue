@@ -1,16 +1,16 @@
 <template lang="html">
   <div class="apps-list component">
     <v-card>
-        <v-fade-transition>
-            <v-progress-linear
-        indeterminate
-        v-if="isLoading"
-        color="primary"
-        bottom
+      <v-fade-transition>
+        <v-progress-linear
+          indeterminate
+          v-if="isLoading"
+          color="primary"
+          bottom
         />
-        </v-fade-transition>
+      </v-fade-transition>
       <v-card-title>
-        Apps
+        Apps <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -45,7 +45,7 @@
               </template>
               <v-list dense>
                 <v-list-item
-                  @click="AppAction({ Name: item.Name, Action: 'start' })"
+                  @click="AppAction({ Name: item.name, Action: 'start' })"
                 >
                   <v-list-item-icon>
                     <v-icon>mdi-play</v-icon>
@@ -53,27 +53,33 @@
                   <v-list-item-title>Start</v-list-item-title>
                 </v-list-item>
                 <v-list-item
-                  @click="AppAction({ Name: item.Name, Action: 'stop' })"
+                  @click="AppAction({ Name: item.name, Action: 'stop' })"
                 >
                   <v-list-item-icon>
                     <v-icon>mdi-stop</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title>Stop</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="AppAction({ Name: item.Name, Action: 'restart' })">
+                <v-list-item
+                  @click="AppAction({ Name: item.name, Action: 'restart' })"
+                >
                   <v-list-item-icon>
                     <v-icon>mdi-refresh</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title>Restart</v-list-item-title>
                 </v-list-item>
                 <v-divider />
-                <v-list-item @click="AppAction({ Name: item.Name, Action: 'kill' })">
+                <v-list-item
+                  @click="AppAction({ Name: item.name, Action: 'kill' })"
+                >
                   <v-list-item-icon>
                     <v-icon>mdi-fire</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title>Kill</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="AppAction({ Name: item.Name, Action: 'remove' })">
+                <v-list-item
+                  @click="AppAction({ Name: item.name, Action: 'remove' })"
+                >
                   <v-list-item-icon>
                     <v-icon>mdi-delete</v-icon>
                   </v-list-item-icon>
@@ -143,6 +149,9 @@ export default {
     },
     debug(value) {
       console.log(value);
+    },
+    refresh() {
+      this.readApps();
     },
   },
   computed: {

@@ -1,14 +1,19 @@
 <template lang="html">
   <v-card class="d-flex mx-auto page">
     <v-container fluid class="component">
-      <Nav/>
+      <Nav :isLoading="isLoading" />
       <v-card tile>
         <v-row>
           <v-col class="flex-grow-1 flex-shrink-0">
             <v-card-title>
               {{ app.name }}
             </v-card-title>
-            <v-card-subtitle> View and Manage {{ app.name }} </v-card-subtitle>
+            <v-card-subtitle>
+              View and Manage {{ app.name }}
+              <v-icon v-on:click="refresh()"
+                >mdi-refresh</v-icon
+              ></v-card-subtitle
+            >
             <v-card-text>
               <transition
                 name="slide"
@@ -16,7 +21,10 @@
                 leave-active-class="animated slideOutRight"
                 mode="out-in"
               >
-                <router-view :app="app" :processes="processes"/>
+                <router-view
+                  :app="app"
+                  :processes="processes"
+                />
               </transition>
             </v-card-text>
           </v-col>
@@ -37,7 +45,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading", "processes"]),
+    ...mapState("apps", ["apps", "app", "isLoading", "processes"]),
     ...mapGetters({
       getAppByName: "apps/getAppByName",
     }),
@@ -51,6 +59,11 @@ export default {
       readApp: "apps/readApp",
       readAppProcesses: "apps/readAppProcesses",
     }),
+    refresh() {
+      const appName = this.$route.params.appName;
+      this.readApp(appName);
+      this.readAppProcesses(appName);
+    },
   },
   created() {
     const appName = this.$route.params.appName;

@@ -12,6 +12,9 @@
       <v-card-title>
         New Template
       </v-card-title>
+      <v-card-text v-if="templates.length < 1">
+        Consider adding templates crafted for Yacht: <br> https://raw.githubusercontent.com/SelfhostedPro/selfhosted_templates/yacht/Template/template.json
+      </v-card-text>
       <v-card-text>
         <v-form ref="form" @submit.prevent="submit">
           <v-text-field

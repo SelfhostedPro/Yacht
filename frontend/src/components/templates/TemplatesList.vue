@@ -27,6 +27,9 @@
         :search="search"
         @click:row="handleRowClick"
       >
+        <template slot="no-data">
+          <div>No templates available. <a href="/#/templates/new">Add</a> one to view information and launch apps from here.</div>
+        </template>
         <template v-slot:item.title="{ item }">
           <div class="namecell">
             <span class="nametext">{{ item.title }}</span>
@@ -141,7 +144,7 @@ export default {
       updateTemplate: "templates/updateTemplate",
     }),
     handleRowClick(value) {
-      console.log(value);
+      this.$router.push({ path: `/templates/${value.id}` });
     },
     templateDetails(templateId) {
       this.$router.push({ path: `/templates/${templateId}` });

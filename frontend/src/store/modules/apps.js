@@ -20,8 +20,6 @@ const mutations = {
   },
   setAppProcesses(state, processes) {
     state.processes = processes
-    console.log("---FROM setAppProcesses---")
-    console.log(processes)
   },
   setLoading(state, loading) {
     state.isLoading = loading;
@@ -43,11 +41,13 @@ const actions = {
       });
   },
   async readApp({ commit }, Name) {
+    commit("setLoading", true);
     const url = `/api/apps/${Name}`;
     let response = await axios.get(url);
     if (response) {
       const app = response.data.data;
-      console.log(app.ports)
+      console.log(app)
+      commit("setLoading", false);
       commit("setApp", app);
     }
   },
@@ -56,8 +56,6 @@ const actions = {
     let response = await axios.get(url);
     if (response) {
       const processes = response.data.data;
-      console.log("---FROM readAppProcesses---")
-      console.log(processes)
       commit("setAppProcesses", processes);
     }
   },

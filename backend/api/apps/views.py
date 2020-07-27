@@ -41,9 +41,9 @@ def index():
     apps = dclient.containers.list(all=True)
     for app in apps:
         attrs=app.attrs
+        attrs.update(conv2dict('name', app.name))
         attrs.update(conv2dict('ports', app.ports))
         attrs.update(conv2dict('short_id', app.short_id))
-        attrs.update(conv2dict('name', app.name))
         apps_list.append(attrs)
     data = apps_list
     return jsonify({ 'data': data })
@@ -208,9 +208,17 @@ def app_actions(container_name, action):
     
     apps = dclient.containers.list(all=True)
     for app in apps:
-        apps_list.append(app.attrs)
+        attrs=app.attrs
+        attrs.update(conv2dict('name', app.name))
+        attrs.update(conv2dict('ports', app.ports))
+        attrs.update(conv2dict('short_id', app.short_id))
+        apps_list.append(attrs)
     data = apps_list
     return jsonify({ 'data': data, 'error': err })
+
+def conv2dict(name, value):
+    _tmp_attr = { name: value}
+    return _tmp_attr
 
 @apps.route('/<container_name>')
 def app_details(container_name):
@@ -239,8 +247,11 @@ def conv2dict(name, value):
 def app_processes(container_name):
     dclient = docker.from_env()
     container = dclient.containers.get(container_name)
-    processes = container.top()
-
-    data = processes
+    if container.status == 'running':
+        processes = container.top()
+        data = processes
+    else:
+        print('Container ' + container.name + ' is not running')
+        data = None
     print(jsonify({ 'data': data }))
     return jsonify({ 'data': data })

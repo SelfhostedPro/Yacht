@@ -5,13 +5,14 @@ umask "$UMASK_SET"
 
 export SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(16))")
 
+
 DB=/config/data.sqlite
 if [ ! -f "$DB" ]; then
-    s6-setuidgid abc python3 manage.py recreate_db && python3 manage.py setup_prod
+    s6-setuidgid abc python3 manage.py recreate_db
 fi
 
 
 exec \
 	s6-setuidgid abc gunicorn \
-    --bind 0.0.0.0:5000 \
+    --bind unix:/tmp/gunicorn.sock \
     manage:app

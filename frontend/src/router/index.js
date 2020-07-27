@@ -84,10 +84,12 @@ const routes = [
     path: "/images",
     name: "Images",
     component: Container
-  }
+  },
 ];
 
 const router = new VueRouter({
+  mode: 'hash',
+  base: '',
   routes
 });
 

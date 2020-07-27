@@ -1,4 +1,4 @@
-from app.auth.views import auth # noqa
+from api.auth.views import auth # noqa
 from flask_jwt_extended import JWTManager
 jwt = JWTManager()
 
