@@ -72,7 +72,7 @@ const actions = {
       .catch(() => {
         commit("loggedOut");
       });
-  }
+  },
 };
 
 const getters = {

@@ -35,6 +35,8 @@ import docker
 apps = Blueprint('apps', __name__)
 
 @apps.route('/')
+@jwt_required
+
 def index():
     apps_list = []
     dclient = docker.from_env()
@@ -53,6 +55,8 @@ def conv2dict(name, value):
     return _tmp_attr
 
 @apps.route('/<int:id>')
+@jwt_required
+
 def list_apps(id):
     try:
         template_item = TemplateItem.query.get_or_404(id)
@@ -64,6 +68,8 @@ def list_apps(id):
 
 
 @apps.route('/<int:id>/deploy', methods=['POST'])
+@jwt_required
+
 @use_args(DeploySchema(), location='json')
 def deploy(args, id):
     '''curl -H "Content-Type: application/json" -X POST \
@@ -188,6 +194,8 @@ def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
     return
 
 @apps.route('/<container_name>/<action>')
+@jwt_required
+
 def app_actions(container_name, action):
     err = None
     apps_list = []
@@ -221,6 +229,8 @@ def conv2dict(name, value):
     return _tmp_attr
 
 @apps.route('/<container_name>')
+@jwt_required
+
 def app_details(container_name):
     container_info= []
     dclient = docker.from_env()
@@ -244,6 +254,8 @@ def conv2dict(name, value):
 
 
 @apps.route('/<container_name>/processes')
+@jwt_required
+
 def app_processes(container_name):
     dclient = docker.from_env()
     container = dclient.containers.get(container_name)

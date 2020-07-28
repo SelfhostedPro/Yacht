@@ -62,6 +62,7 @@ def show(id):
 #  methods: POST
 #   errors: 201 (Created) | [200 (OK) | 204 (No Content)] | 400 (Bad Request)
 @templates.route('/', methods=['POST'])
+@jwt_required
 @use_args(TemplateSchema(), location='json')
 
 def create(args):
@@ -128,6 +129,8 @@ def create(args):
 #  methods: DELETE (optional: POST)
 #   errors: 204 (No Content) | 404 (Not Found)
 @templates.route('/<int:id>', methods=['DELETE'])
+@jwt_required
+
 # perhaps use webargs for id
 def delete(id):
     '''curl --header "Content-Type: application/json" \
@@ -146,6 +149,8 @@ def delete(id):
 # ---
 
 @templates.route('/<int:id>/refresh', methods=['POST'])
+@jwt_required
+
 def refresh(id):
     '''curl --header "Content-Type: application/json" \
       --request POST \
@@ -205,6 +210,8 @@ def refresh(id):
 
 
 @templates.route('/items')
+@jwt_required
+
 # @use_kwargs({'per_page': fields.Int(missing=10)}, locations=('query',))
 # ...
 def itemindex():
@@ -217,6 +224,8 @@ def itemindex():
 #  methods: GET
 #   errors: 200 (OK) | 404 (Not Found)
 @templates.route('/<int:id>/contents')
+@jwt_required
+
 def showitems(id):
     try:
         template_item = TemplateItem.query.get_or_404(id)

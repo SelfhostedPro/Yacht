@@ -28,6 +28,8 @@ def create_app(config):
     app.config.from_object(Config[config_name])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # not using sqlalchemy event system, hence disabling it
+    app.config['JWT_BLACKLIST_ENABLED'] = True
+    app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 
     Config[config_name].init_app(app)
 
@@ -41,6 +43,12 @@ def create_app(config):
     if not app.debug and not app.testing and not app.config['SSL_DISABLE']:
         from flask_sslify import SSLify
         SSLify(app)
+
+    @jwt.token_in_blacklist_loader
+    def check_if_token_revoked(decoded_token):
+        from .auth.helpers import is_token_revoked
+        
+        return is_token_revoked(decoded_token)
 
     from .main import main as main_blueprint
     from .auth import auth as auth_blueprint
