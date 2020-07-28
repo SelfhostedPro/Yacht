@@ -22,6 +22,7 @@ from flask_jwt_extended import (
     jwt_refresh_token_required,
     jwt_optional
 )
+import datetime
 from webargs import fields, validate
 from webargs.flaskparser import use_args, use_kwargs
 from werkzeug.exceptions import MethodNotAllowed, UnprocessableEntity
@@ -56,13 +57,14 @@ def login(username, password):
     user = User.query.filter_by(username=username).first()
     
     if user is not None and user.verify_password(password):
+        refresh_token_expires = datetime.timedelta(days=1)
         access_token = create_access_token(identity=user.username)
-        refresh_token = create_refresh_token(identity=user.username)
+        refresh_token = create_refresh_token(identity=user.username, expires_delta=refresh_token_expires)
 
         add_token_to_database(access_token, current_app.config['JWT_IDENTITY_CLAIM'])
         add_token_to_database(refresh_token, current_app.config['JWT_IDENTITY_CLAIM'])
-
         data = {
+            'username': username,
             'access_token': access_token,
             'refresh_token': refresh_token
         }
@@ -107,6 +109,7 @@ def get_tokens():
 def modify_token(token_id):
     # Get and verify the desired revoked status from the body
     json_data = request.get_json(silent=True)
+    print(json_data)
     if not json_data:
         return jsonify({"msg": "Missing 'revoke' in body"}), 400
     revoke = json_data.get('revoke', None)

@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      login: "auth/login",
+      login: "auth/AUTH_REQUEST",
     }),
     onSubmit() {
       this.login({

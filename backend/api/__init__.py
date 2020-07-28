@@ -28,9 +28,12 @@ def create_app(config):
     app.config.from_object(Config[config_name])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # not using sqlalchemy event system, hence disabling it
+    
+    ### JWT Settings
     app.config['JWT_BLACKLIST_ENABLED'] = True
     app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 
+    
     Config[config_name].init_app(app)
 
     # Set up extensions

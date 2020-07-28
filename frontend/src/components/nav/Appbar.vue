@@ -8,7 +8,7 @@
     <v-menu bottom offset-y>
       <template v-slot:activator="{ on, attrs }">
         <v-btn color="primary" v-bind="attrs" v-on="on" class="pr-2">
-          user
+          {{ username }}
           <v-icon> mdi-chevron-down </v-icon>
         </v-btn>
       </template>
@@ -27,12 +27,15 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   methods: {
     ...mapActions({
-      logout: "auth/logout",
+      logout: "auth/AUTH_LOGOUT",
     }),
+  },
+  computed: {
+    ...mapState("auth", ["username"]),
   },
 };
 </script>

@@ -37,6 +37,8 @@ templates = Blueprint('templates', __name__)
 #  methods: GET
 #   errors: 200 (OK) | 404 (Not Found)
 @templates.route('/')
+@jwt_required
+
 # @use_kwargs({'per_page': fields.Int(missing=10)}, locations=('query',))
 # ...
 def index():
@@ -49,6 +51,8 @@ def index():
 #  methods: GET
 #   errors: 200 (OK) | 404 (Not Found)
 @templates.route('/<int:id>')
+@jwt_required
+
 def show(id):
     try:
         template = Template.query.get_or_404(id)
