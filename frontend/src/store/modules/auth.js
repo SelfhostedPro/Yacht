@@ -58,9 +58,10 @@ const actions = {
       axios
         .post(url, {}, { headers: headers })
         .then((resp) => {
+          commit(AUTH_CLEAR, resp);
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
-          commit(AUTH_CLEAR, resp);
+          localStorage.removeItem("username");
           router.push({ path: '/'})
           resolve(resp);
         })

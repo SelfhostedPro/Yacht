@@ -16,7 +16,7 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-card-text>
-              <v-form @submit="onSubmit()">
+              <v-form @keyup.native.enter="onSubmit()">
                 <ValidationProvider
                   name="username"
                   rules="required"
@@ -50,7 +50,7 @@
                 </ValidationProvider>
                 <v-btn
                   class="float-right"
-                  type="submit"
+                  @click="onSubmit()"
                   color="primary"
                   :disabled="invalid || !validated"
                   >Login</v-btn
