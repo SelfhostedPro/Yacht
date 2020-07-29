@@ -39,9 +39,9 @@ auth = Blueprint('auth', __name__)
 # @blueprint.route('/sample')from exceptions import TokenNotFound
 #     return jsonify({ 'message': 'Hello from Flask API.'})
 
-@auth.before_app_first_request
-def setup_sqlalchemy():
-    db.create_all()
+# @auth.before_app_first_request
+# def setup_sqlalchemy():
+#     db.create_all()
 
 @auth.route('/login', methods=['POST'])
 @use_kwargs(

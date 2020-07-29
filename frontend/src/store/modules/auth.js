@@ -17,7 +17,7 @@ const state = {
 };
 
 const getters = {
-  isAuthenticated: (state) => !!state.accessToken,
+  isAuthenticated: (state) => !!state.accessToken && !!state.refreshToken,
   authStatus: (state) => state.status,
   getUsername: (state) => state.username,
 };

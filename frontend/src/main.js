@@ -16,73 +16,39 @@ if (accessToken) {
 }
 
 // Handle Token Refresh on 401
-// let isRefreshing = false;
+function createAxiosResponseInterceptor() {
+  const interceptor = axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response.status !== 401) {
+        return Promise.reject(error);
+      }
 
-// axios.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   (err) => {
-//     const {
-//       config,
-//       response: { status, data },
-//     } = err;
+      axios.interceptors.response.eject(interceptor);
 
-//     const originalRequest = config;
+      return store
+        .dispatch("auth/AUTH_REFRESH")
+        .then((response) => {
+          console.log(response);
+          console.log(error.response.config)
+          const accessToken = localStorage.getItem("accessToken");
+          const headers = { Authorization: `Bearer ${accessToken}` };
+          error.response.config.headers = headers
+          console.log(error.response.config)
+          return axios(error.response.config);
+        })
+        .catch((error) => {
+          store.dispatch("auth/AUTH_LOGOUT");
+          this.router.push("/");
+          return Promise.reject(error);
+        })
+        .finally(createAxiosResponseInterceptor);
+    }
+  );
+}
 
-//     if (status === 401 && data.message === "Token has expired") {
-//       if (!isRefreshing) {
-//         isRefreshing = true;
-//         store
-//           .dispatch("auth/AUTH_REFRESH")
-//           .then(({ status }) => {
-//             if (status === 200 || status === 204) {
-//               isRefreshing = false;
-//               return new Promise((resolve, reject) => {
-//                 axios
-//                   .request(originalRequest)
-//                   .then((response) => {
-//                     resolve(response);
-//                   })
-//                   .catch((error) => {
-//                     reject(error);
-//                   });
-//               });
-//             }
-//           })
-//           .catch((error) => {
-//             console.error(error);
-//           });
-//       }
-//     } else {
-//       store.dispatch("auth/AUTH_LOGOUT")
-//     }
-//   }
-// );
-
-// const interceptor = axios.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (errorResponse.status !== 401) {
-//       return Promise.reject(error);
-//     }
-
-//     axios.interceptors.response.eject(interceptor);
-
-//     return store
-//       .dispatch("auth/AUTH_REFRESH")
-//       .then((response) => {
-//         console.log(response);
-//         return axios(error.response.config);
-//       })
-//       .catch((error) => {
-//         store.dispatch("auth/AUTH_CLEAR");
-//         this.router.push("/");
-//         return Promise.reject(error);
-//       });
-//   }
-// );
-
+// Call interceptor
+createAxiosResponseInterceptor();
 Vue.use(VueUtils);
 
 new Vue({
