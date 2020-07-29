@@ -3,9 +3,10 @@ import {
   AUTH_ERROR,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
-  AUTH_REFRESH
+  AUTH_REFRESH,
+  AUTH_CLEAR,
 } from "../actions/auth";
-import axios from 'axios';
+import axios from "axios";
 
 const state = {
   accessToken: localStorage.getItem("accessToken") || "",
@@ -17,21 +18,23 @@ const state = {
 const getters = {
   isAuthenticated: (state) => !!state.accessToken,
   authStatus: (state) => state.status,
-  getUsername: (state) => state.username
+  getUsername: (state) => state.username,
 };
 
 const actions = {
   [AUTH_REQUEST]: ({ commit }, credentials) => {
     return new Promise((resolve, reject) => {
       commit(AUTH_REQUEST);
-      const url = "/api/auth/login"
+      const url = "/api/auth/login";
       axios
         .post(url, credentials)
         .then((resp) => {
           localStorage.setItem("accessToken", resp.data.access_token);
           localStorage.setItem("refreshToken", resp.data.refresh_token);
           localStorage.setItem("username", resp.data.username);
-          axios.defaults.headers.common["Authorization"] = `Bearer ${resp.data.access_token}`;
+          axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${resp.data.access_token}`;
           commit(AUTH_SUCCESS, resp);
           resolve(resp);
         })
@@ -45,33 +48,45 @@ const actions = {
     });
   },
   [AUTH_LOGOUT]: ({ commit }) => {
-    return new Promise((resolve) => {
-      commit(AUTH_LOGOUT);
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("username");
-      resolve();
+    return new Promise((resolve, reject) => {
+      commit(AUTH_REQUEST);
+      const url = "/api/auth/logout";
+      const refreshToken = localStorage.getItem("refreshToken");
+      const headers = { Authorization: `Bearer ${refreshToken}` };
+      axios
+        .post(url, {}, { headers: headers })
+        .then((resp) => {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("username");
+          commit(AUTH_CLEAR);
+          resolve(resp);
+        })
+        .catch((error) => {
+          console.log(error);
+          reject(error)
+        });
     });
   },
   [AUTH_REFRESH]: ({ commit }) => {
     return new Promise((resolve) => {
       commit(AUTH_REQUEST);
       const url = "/api/auth/refresh";
-      const refreshToken = localStorage.getItem("refreshToken")
-      const headers = { Authorization: `Bearer ${refreshToken}`};
+      const refreshToken = localStorage.getItem("refreshToken");
+      const headers = { Authorization: `Bearer ${refreshToken}` };
       axios
         .post(url, {}, { headers: headers })
-        .then(resp => {
+        .then((resp) => {
           localStorage.setItem("accessToken", resp.data.access_token);
           commit(AUTH_REFRESH, resp);
           resolve(resp);
         })
         .catch((error) => {
-          console.log(error)
-          commit(AUTH_LOGOUT)
-        })
-    })
-  }
+          console.log(error);
+          commit(AUTH_CLEAR);
+        });
+    });
+  },
 };
 
 const mutations = {
@@ -90,7 +105,7 @@ const mutations = {
   [AUTH_ERROR]: (state) => {
     state.status = "error";
   },
-  [AUTH_LOGOUT]: (state) => {
+  [AUTH_CLEAR]: (state) => {
     state.accessToken = "";
     state.refreshToken = "";
     state.username = "";

@@ -6,6 +6,7 @@ from .helpers import (
     revoke_token, unrevoke_token,
     prune_database
 )
+from .exceptions import TokenNotFound
 from flask import Blueprint
 from flask import (
     abort,
@@ -20,7 +21,8 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
     jwt_refresh_token_required,
-    jwt_optional
+    jwt_optional,
+    get_raw_jwt
 )
 import datetime
 from webargs import fields, validate
@@ -35,8 +37,7 @@ auth = Blueprint('auth', __name__)
 # def index():
 #     return jsonify({ 'message': 'Hello API.'})
 #
-# @blueprint.route('/sample')
-# def sample():
+# @blueprint.route('/sample')from exceptions import TokenNotFound
 #     return jsonify({ 'message': 'Hello from Flask API.'})
 
 @auth.before_app_first_request
@@ -71,6 +72,41 @@ def login(username, password):
         return jsonify(data), 200
     return abort(401)
 
+# @auth.route('/register', methods=['POST'])
+# @use_kwargs(
+#     {
+#         'username': fields.Str(required=True),
+#         'password': fields.Str(required=True),
+#     },
+#     location='json'
+# )
+# def register(username, password):
+#     '''curl -H "Content-Type: application/json" -X POST \
+#     -d '{"username":"user", "password":"pass"}' http://127.0.0.1:5000/api/register'''
+#     if len(User) < 1 and username is not None and password is not None:
+#         # Add user to db
+#         user = User(
+#             username=username,
+#             password=password
+#         )
+#         db.session.add(user)
+#         db.session.commit()
+        
+#         # Give tokens for immediate login
+#         refresh_token_expires = datetime.timedelta(days=1)
+#         access_token = create_access_token(identity=user.username)
+#         refresh_token = create_refresh_token(identity=user.username, expires_delta=refresh_token_expires)
+
+#         add_token_to_database(access_token, current_app.config['JWT_IDENTITY_CLAIM'])
+#         add_token_to_database(refresh_token, current_app.config['JWT_IDENTITY_CLAIM'])
+#         data = {
+#             'username': username,
+#             'access_token': access_token,
+#             'refresh_token': refresh_token
+#         }
+#         return jsonify(data), 200
+#     return abort(401)
+
 @auth.route('/refresh', methods=['POST'])
 @jwt_refresh_token_required
 def refresh():
@@ -104,35 +140,15 @@ def get_tokens():
     data = [token.to_dict() for token in all_tokens]
     return jsonify(data), 200    
 
-@auth.route('/auth/token/<token_id>', methods=['PUT'])
-@jwt_required
-def modify_token(token_id):
-    # Get and verify the desired revoked status from the body
-    json_data = request.get_json(silent=True)
-    print(json_data)
-    if not json_data:
-        return jsonify({"msg": "Missing 'revoke' in body"}), 400
-    revoke = json_data.get('revoke', None)
-    if revoke is None:
-        return jsonify({"msg": "Missing 'revoke' in body"}), 400
-    if not isinstance(revoke, bool):
-        return jsonify({"msg": "'revoke' must be a boolean"}), 400
-
-    # Revoke or unrevoke the token based on what was passed to this function
+@auth.route('/logout', methods=['POST'])
+@jwt_refresh_token_required
+def logout():
+    '''curl -H "Authorization: Bearer $REFRESH" -X POST http://127.0.0.1:5000/api/logout'''
+    # Revoke refresh token
     user_identity = get_jwt_identity()
+    jti = get_raw_jwt()['jti']
     try:
-        if revoke:
-            revoke_token(token_id, user_identity)
-            return jsonify({'msg': 'Token revoked'}), 200
-        else:
-            unrevoke_token(token_id, user_identity)
-            return jsonify({'msg': 'Token unrevoked'}), 200
+        revoke_token(jti, user_identity)
+        return jsonify({"msg": "Successfully logged out"}), 200
     except TokenNotFound:
         return jsonify({'msg': 'The specified token was not found'}), 404
-
-@auth.route('/count')
-@jwt_optional
-def user_count():
-    count = len(User.query.all())
-    print(count)
-    return jsonify(count), 200
