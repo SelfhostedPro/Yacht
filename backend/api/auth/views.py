@@ -3,8 +3,7 @@ from ..models.tokens import TokenBlacklist
 from .. import db
 from .helpers import (
     is_token_revoked, add_token_to_database, get_user_tokens,
-    revoke_token, unrevoke_token,
-    prune_database
+    revoke_token, prune_database
 )
 from .exceptions import TokenNotFound
 from flask import Blueprint
@@ -146,9 +145,8 @@ def logout():
     '''curl -H "Authorization: Bearer $REFRESH" -X POST http://127.0.0.1:5000/api/logout'''
     # Revoke refresh token
     user_identity = get_jwt_identity()
-    jti = get_raw_jwt()['jti']
     try:
-        revoke_token(jti, user_identity)
+        revoke_token(user_identity)
         return jsonify({"msg": "Successfully logged out"}), 200
     except TokenNotFound:
         return jsonify({'msg': 'The specified token was not found'}), 404

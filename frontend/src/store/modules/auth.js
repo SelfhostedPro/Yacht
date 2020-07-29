@@ -7,6 +7,7 @@ import {
   AUTH_CLEAR,
 } from "../actions/auth";
 import axios from "axios";
+import router from '@/router/index'
 
 const state = {
   accessToken: localStorage.getItem("accessToken") || "",
@@ -47,8 +48,9 @@ const actions = {
         });
     });
   },
+  
   [AUTH_LOGOUT]: ({ commit }) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       commit(AUTH_REQUEST);
       const url = "/api/auth/logout";
       const refreshToken = localStorage.getItem("refreshToken");
@@ -58,13 +60,13 @@ const actions = {
         .then((resp) => {
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
-          localStorage.removeItem("username");
-          commit(AUTH_CLEAR);
+          commit(AUTH_CLEAR, resp);
+          router.push({ path: '/'})
           resolve(resp);
         })
         .catch((error) => {
           console.log(error);
-          reject(error)
+          commit(AUTH_CLEAR);
         });
     });
   },

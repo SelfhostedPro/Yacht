@@ -32,8 +32,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
-// import axios from "axios";
+import { mapGetters } from "vuex";
 import Sidebar from "./components/nav/Sidebar";
 import Appbar from "./components/nav/Appbar";
 import LoginForm from "./components/auth/LoginForm";
@@ -49,10 +48,6 @@ export default {
   computed: {
     ...mapGetters({
       isLoggedIn: "auth/isAuthenticated",
-    }),
-    ...mapActions({
-      refreshTokens: "auth/AUTH_REFRESH",
-      logout: "auth/AUTH_LOGOUT",
     }),
   },
 

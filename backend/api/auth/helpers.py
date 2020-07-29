@@ -62,15 +62,16 @@ def get_user_tokens(user_identity):
     return TokenBlacklist.query.filter_by(user_identity=user_identity).all()
 
 
-def revoke_token(jti):
+def revoke_token(user_identity):
     """
     Revokes the given token. Raises a TokenNotFound error if the token does
     not exist in the database
     """
     try:
-        token = TokenBlacklist.query.filter_by(jti=token).one()
-        token.revoked = True
-        db.session.commit()
+        tokens = TokenBlacklist.query.filter_by(user_identity=user_identity).all()
+        for token in tokens:
+            token.revoked = True
+            db.session.commit()
     except NoResultFound:
         raise TokenNotFound("Could not find the token {}".format(token_id))
 

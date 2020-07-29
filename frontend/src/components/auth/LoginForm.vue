@@ -88,8 +88,6 @@ export default {
         username: this.username,
         password: this.password,
       });
-      this.password = "";
-      // this.$refs.form.reset();
     },
   },
 };
