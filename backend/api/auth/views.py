@@ -68,6 +68,7 @@ def login(username, password):
             'access_token': access_token,
             'refresh_token': refresh_token
         }
+        prune_database()
         return jsonify(data), 200
     return abort(401)
 
@@ -150,3 +151,44 @@ def logout():
         return jsonify({"msg": "Successfully logged out"}), 200
     except TokenNotFound:
         return jsonify({'msg': 'The specified token was not found'}), 404
+
+@auth.route('/changePassword', methods=['POST'])
+@jwt_required
+@use_kwargs(
+    {
+        'username': fields.Str(required=True),
+        'newPassword': fields.Str(required=False),
+        'oldPassword': fields.Str(required=True)
+    },
+    location='json'
+)
+
+def changePassword(username, newPassword, oldPassword):
+    '''curl -H "Content-Type: application/json" -X POST \
+    -d '{"username":"user", "password":"pass"}' http://127.0.0.1:5000/api/login'''
+    jwt_user = get_jwt_identity()
+    
+    user = User.query.filter_by(username=jwt_user).first()
+    
+    if user is not None and user.verify_password(oldPassword):
+        user.username = username
+        user.password = newPassword
+        revoke_token(jwt_user)
+        
+        refresh_token_expires = datetime.timedelta(days=1)
+        access_token = create_access_token(identity=user.username)
+        refresh_token = create_refresh_token(identity=user.username, expires_delta=refresh_token_expires)
+
+        add_token_to_database(access_token, current_app.config['JWT_IDENTITY_CLAIM'])
+        add_token_to_database(refresh_token, current_app.config['JWT_IDENTITY_CLAIM'])
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        data = {
+            'username': username,
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        }
+        return jsonify(data), 200
+    return abort(401)

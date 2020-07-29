@@ -50,7 +50,6 @@ export default {
       isLoggedIn: "auth/isAuthenticated",
     }),
   },
-
 };
 </script>
 

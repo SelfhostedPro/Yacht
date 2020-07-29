@@ -42,7 +42,7 @@ def recreate_db():
     db.session.commit()
 
     user = User(
-        username='user',
+        username='admin',
         password='pass'
     )
     db.session.add(user)

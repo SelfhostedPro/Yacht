@@ -13,6 +13,14 @@
         </v-btn>
       </template>
       <v-list>
+        <v-list-item :to="{ path: `/user/info` }">
+          <v-list-item-icon>
+            <v-icon>mdi-account-settings-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            User
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item @click="logout()">
           <v-list-item-icon>
             <v-icon>mdi-logout-variant</v-icon>
