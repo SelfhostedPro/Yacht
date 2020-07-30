@@ -27,10 +27,7 @@ RUN \
     postgresql-dev &&\
  echo "**** install packages ****" && \
  apk add --no-cache \
-    wget \
 	python3 \
-	unrar \
-	unzip \
     docker \
 	make \
 	nginx \
