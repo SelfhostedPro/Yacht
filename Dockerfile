@@ -23,21 +23,28 @@ RUN \
 	libxml2-dev \
 	libxslt-dev \
 	py3-pip \
-	python3-dev \
-    postgresql-dev &&\
+	make \
+	ruby-dev \
+	python3-dev &&\
  echo "**** install packages ****" && \
  apk add --no-cache \
 	python3 \
     docker \
-	make \
-	nginx \
-	ruby-dev &&\
+	nginx &&\
  gem install sass
 
 # Flask
 WORKDIR /api
 COPY ./backend/requirements.txt .
 RUN  pip3 install -r requirements.txt
+RUN apk del --purge --no-cache \
+	g++ \
+	gcc \
+	libxml2-dev \
+	py3-pip \
+	python3-dev \
+	make \
+	ruby-dev
 
 COPY ./backend/api .
 COPY root /
