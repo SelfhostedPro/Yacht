@@ -21,10 +21,7 @@
                 leave-active-class="animated slideOutRight"
                 mode="out-in"
               >
-                <router-view
-                  :app="app"
-                  :processes="processes"
-                />
+                <router-view :app="app" :processes="processes" :logs="logs" />
               </transition>
             </v-card-text>
           </v-col>
@@ -45,7 +42,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapState("apps", ["apps", "app", "isLoading", "processes"]),
+    ...mapState("apps", ["apps", "app", "isLoading", "processes", "logs"]),
     ...mapGetters({
       getAppByName: "apps/getAppByName",
     }),
@@ -58,22 +55,26 @@ export default {
     ...mapActions({
       readApp: "apps/readApp",
       readAppProcesses: "apps/readAppProcesses",
+      readAppLogs: "apps/readAppLogs",
     }),
     refresh() {
       const appName = this.$route.params.appName;
       this.readApp(appName);
       this.readAppProcesses(appName);
+      this.readAppLogs(appName);
     },
   },
   created() {
     const appName = this.$route.params.appName;
     this.readApp(appName);
     this.readAppProcesses(appName);
+    this.readAppLogs(appName);
   },
   async mounted() {
     const appName = this.$route.params.appName;
     await this.readApp(appName);
     await this.readAppProcesses(appName);
+    await this.readAppLogs(appName);
   },
 };
 </script>

@@ -16,7 +16,10 @@ from flask import (
 )
 from flask_jwt_extended import (
     create_access_token,
+    set_access_cookies,
     create_refresh_token,
+    set_refresh_cookies,
+    unset_jwt_cookies,
     get_jwt_identity,
     jwt_required,
     jwt_refresh_token_required,
@@ -63,13 +66,12 @@ def login(username, password):
 
         add_token_to_database(access_token, current_app.config['JWT_IDENTITY_CLAIM'])
         add_token_to_database(refresh_token, current_app.config['JWT_IDENTITY_CLAIM'])
-        data = {
-            'username': username,
-            'access_token': access_token,
-            'refresh_token': refresh_token
-        }
+
+        data = jsonify({'username': username,})
+        set_access_cookies(data, access_token)
+        set_refresh_cookies(data, refresh_token)
         prune_database()
-        return jsonify(data), 200
+        return data, 200
     return abort(401)
 
 # @auth.route('/register', methods=['POST'])
@@ -111,11 +113,17 @@ def login(username, password):
 @jwt_refresh_token_required
 def refresh():
     '''curl -H "Authorization: Bearer $REFRESH" -X POST http://127.0.0.1:5000/api/refresh'''
+    refresh_token = get_raw_jwt()
+    if is_token_revoked(refresh_token):
+        print("Token Revoked" + refresh_token)
+        return abort(401)
     current_user = get_jwt_identity()
     access_token = create_access_token(identity=current_user)
     add_token_to_database(access_token, current_app.config['JWT_IDENTITY_CLAIM'])
-    data = { 'access_token': access_token }
-    return jsonify(data), 200
+
+    data = jsonify({ 'refresh': True })
+    set_access_cookies(data, access_token)
+    return data, 200
 
 @auth.route('/secure')
 @jwt_required
@@ -141,14 +149,16 @@ def get_tokens():
     return jsonify(data), 200    
 
 @auth.route('/logout', methods=['POST'])
-@jwt_refresh_token_required
+@jwt_required
 def logout():
     '''curl -H "Authorization: Bearer $REFRESH" -X POST http://127.0.0.1:5000/api/logout'''
     # Revoke refresh token
     user_identity = get_jwt_identity()
     try:
         revoke_token(user_identity)
-        return jsonify({"msg": "Successfully logged out"}), 200
+        data = jsonify({"msg": "Successfully logged out"})
+        unset_jwt_cookies(data)
+        return data, 200
     except TokenNotFound:
         return jsonify({'msg': 'The specified token was not found'}), 404
 
@@ -166,17 +176,19 @@ def logout():
 def changePassword(username, newPassword, oldPassword):
     '''curl -H "Content-Type: application/json" -X POST \
     -d '{"username":"user", "password":"pass"}' http://127.0.0.1:5000/api/login'''
+    token = get_raw_jwt()
     jwt_user = get_jwt_identity()
     
     user = User.query.filter_by(username=jwt_user).first()
     
-    if user is not None and user.verify_password(oldPassword):
+    if user is not None and user.verify_password(oldPassword) and not is_token_revoked(token):
         user.username = username
         user.password = newPassword
         revoke_token(jwt_user)
         
         refresh_token_expires = datetime.timedelta(days=1)
-        access_token = create_access_token(identity=user.username)
+        access_token_expires = datetime.timedelta(minutes=5)
+        access_token = create_access_token(identity=user.username, expires_delta=access_token_expires)
         refresh_token = create_refresh_token(identity=user.username, expires_delta=refresh_token_expires)
 
         add_token_to_database(access_token, current_app.config['JWT_IDENTITY_CLAIM'])

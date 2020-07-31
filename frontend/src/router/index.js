@@ -8,6 +8,7 @@ import TemplatesList from "../components/templates/TemplatesList.vue";
 import Applications from "../views/Applications.vue";
 import AppContent from "../components/applications/ApplicationDetailsComponents/AppContent.vue";
 import AppProcesses from "../components/applications/ApplicationDetailsComponents/AppProcesses.vue";
+import AppLogs from "../components/applications/ApplicationDetailsComponents/AppLogs.vue"
 import ApplicationDetails from "../components/applications/ApplicationDetails.vue";
 import ApplicationsList from "../components/applications/ApplicationsList.vue";
 import ApplicationsForm from "../components/applications/ApplicationsForm.vue";
@@ -15,6 +16,8 @@ import Container from "../views/Container.vue";
 import UserSettings from "../views/UserSettings.vue";
 import ChangePasswordForm from "../components/userSettings/ChangePasswordForm.vue";
 import UserInfo from "../components/userSettings/UserInfo.vue"
+import ServerSettings from "../views/ServerSettings.vue";
+import ServerInfo from "../components/serverSettings/ServerInfo.vue"
 
 Vue.use(VueRouter);
 
@@ -79,6 +82,11 @@ const routes = [
             path: "info",
             component: AppContent,
           },
+          {
+            name: "Logs",
+            path: "logs",
+            component: AppLogs,
+          }
         ],
       },
     ],
@@ -88,16 +96,27 @@ const routes = [
     component: UserSettings,
     children: [
       {
-        name: "UserInfo",
+        name: "User Info",
         path: "info",
         component: UserInfo,
       },
       {
-        name: "Chane Password",
+        name: "Change Password",
         path: "changePassword",
         component: ChangePasswordForm,
       },
     ],
+  },
+  {
+    path: "/settings",
+    component: ServerSettings,
+    children: [
+      {
+        name: "Server Info",
+        path: "info",
+        component: ServerInfo,
+      }
+    ]
   },
   {
     path: "/images",

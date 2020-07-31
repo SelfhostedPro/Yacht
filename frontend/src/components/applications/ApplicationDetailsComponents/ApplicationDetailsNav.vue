@@ -7,6 +7,9 @@
       <v-tab class="text-left" :to="{ path: 'top' }">
         <v-icon left class="mr-1">mdi-view-list-outline</v-icon>Processes
       </v-tab>
+      <v-tab class="text-left" :to="{ path: 'logs' }">
+        <v-icon left class="mr-1">mdi-book-open-outline</v-icon>Logs
+      </v-tab>
     </v-tabs>
     <v-fade-transition>
       <v-progress-linear
@@ -21,9 +24,9 @@
 
 <script>
 export default {
-    data() {
-      return {}
-    },
+  data() {
+    return {};
+  },
   props: ["isLoading"],
 };
 </script>

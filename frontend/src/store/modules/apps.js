@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
   apps: [],
+  logs: [],
   processes: [],
   isLoading: false,
 };
@@ -20,6 +21,9 @@ const mutations = {
   },
   setAppProcesses(state, processes) {
     state.processes = processes
+  },
+  setAppLogs(state, logs) {
+    state.logs = logs
   },
   setLoading(state, loading) {
     state.isLoading = loading;
@@ -46,7 +50,6 @@ const actions = {
     let response = await axios.get(url);
     if (response) {
       const app = response.data.data;
-      console.log(app)
       commit("setLoading", false);
       commit("setApp", app);
     }
@@ -58,6 +61,26 @@ const actions = {
       const processes = response.data.data;
       commit("setAppProcesses", processes);
     }
+  },
+  async readAppLogs({commit}, Name) {
+    let url = `/api/apps/${Name}/logs`;
+    axios
+      .get(url)
+      .then((response) => {
+        console.log(response);
+        let logs = [];
+        let _log = response.data.logs;
+        let split_log = _log.split("\n");
+        split_log.forEach((element) => {
+          logs.push(element);
+        });
+        console.log(logs);
+        commit("setAppLogs", logs)
+      })
+      .catch((err) => {
+        console.log(err);
+        this.logs.push(err);
+      });
   },
   AppAction({ commit }, { Name, Action }) {
     commit("setLoading", true);

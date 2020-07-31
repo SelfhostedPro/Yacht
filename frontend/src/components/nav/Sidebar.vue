@@ -4,7 +4,7 @@
 
     <v-list nav dense>
       <div v-for="(link, i) in links" :key="i">
-        <v-list-item v-if="!link.subLinks" :to="link.to" exact>
+        <v-list-item v-if="!link.subLinks" :to="link.to" exact class="mt-1">
           <v-list-item-icon>
             <v-icon>{{ link.icon }}</v-icon>
           </v-list-item-icon>
@@ -82,6 +82,11 @@ export default {
             icon: "mdi-plus",
           },
         ],
+      },
+      {
+        to: "/settings/info",
+        icon: "mdi-cog",
+        text: "Settings"
       },
     ],
   }),

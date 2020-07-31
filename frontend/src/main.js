@@ -1,19 +1,22 @@
+// Setup Vue
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+// API Calls
 import axios from "axios";
+// UI Framework
 import vuetify from "./plugins/vuetify";
+// Form Validation
 import VueUtils from "./plugins/vueutils";
 import "./vee-validate";
+// Websockets
+// Animations
 require("animate.css/animate.compat.css");
 
-Vue.config.productionTip = false;
+// Socket.io
 
-const accessToken = localStorage.getItem("accessToken");
-if (accessToken) {
-  axios.defaults.headers.common = { Authorization: `Bearer ${accessToken}` };
-}
+Vue.config.productionTip = false;
 
 // Handle Token Refresh on 401
 function createAxiosResponseInterceptor() {
@@ -29,11 +32,7 @@ function createAxiosResponseInterceptor() {
       return store
         .dispatch("auth/AUTH_REFRESH")
         .then((response) => {
-          console.log(response);
-          console.log(error.response.config)
-          const accessToken = localStorage.getItem("accessToken");
-          const headers = { Authorization: `Bearer ${accessToken}` };
-          error.response.config.headers = headers
+          console.log(response)
           console.log(error.response.config)
           return axios(error.response.config);
         })

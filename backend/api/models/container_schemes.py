@@ -34,7 +34,7 @@ class PortSchema(ma.Schema):
         validate=validate.Range(min=0, max=65535)
     )
     hport = ma.Int(
-        required=True,
+        required=False,
         validate=validate.Range(min=0, max=65535)
     )
     proto = ma.Str(

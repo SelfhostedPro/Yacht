@@ -13,7 +13,8 @@ from flask import (
     abort,
     jsonify,
     make_response,
-    request
+    request,
+    Response
 )
 from flask_jwt_extended import (
     jwt_required,
@@ -27,6 +28,8 @@ from datetime import datetime
 from webargs.flaskparser import use_args, use_kwargs
 from werkzeug.exceptions import MethodNotAllowed, UnprocessableEntity
 
+from flask_socketio import emit
+from .. import socketio
 import os  # used for getting file type and deleting files
 from urllib.parse import urlparse  # used for getting filetype from url
 import urllib.request
@@ -34,6 +37,7 @@ import docker
 
 apps = Blueprint('apps', __name__)
 
+### Main List of Apps ###
 @apps.route('/')
 @jwt_required
 
@@ -66,7 +70,7 @@ def list_apps(id):
     except IntegrityError as err:
         abort(400)
 
-
+### Deploy App ###
 @apps.route('/<int:id>/deploy', methods=['POST'])
 @jwt_required
 
@@ -193,6 +197,7 @@ def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
         Env: {env}''')
     return
 
+### Docker Actions ###
 @apps.route('/<container_name>/<action>')
 @jwt_required
 
@@ -228,11 +233,11 @@ def conv2dict(name, value):
     _tmp_attr = { name: value}
     return _tmp_attr
 
+### Container Details ###
 @apps.route('/<container_name>')
 @jwt_required
 
 def app_details(container_name):
-    container_info= []
     dclient = docker.from_env()
     container = dclient.containers.get(container_name)
     attrs = container.attrs
@@ -252,7 +257,7 @@ def conv2dict(name, value):
     _tmp_attr = { name: value}
     return _tmp_attr
 
-
+### Container Processes ###
 @apps.route('/<container_name>/processes')
 @jwt_required
 
@@ -267,3 +272,20 @@ def app_processes(container_name):
         data = None
     print(jsonify({ 'data': data }))
     return jsonify({ 'data': data })
+
+### Container Logs ###
+@apps.route('/<container_name>/logs')
+@jwt_required
+def logs(container_name):
+    dclient = docker.from_env()
+    container = dclient.containers.get(container_name)
+    if container.status == 'running':
+        logs = []
+        raw_logs = container.logs()
+        decoded_logs = raw_logs.decode("utf-8")
+        data = jsonify({ 'logs': decoded_logs})
+        print(data)
+    else:
+        print('Container ' + container.name + ' is not running')
+        return jsonify({'msg': 'Container not running'}), 404
+    return data, 200
