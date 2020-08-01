@@ -28,8 +28,6 @@ from datetime import datetime
 from webargs.flaskparser import use_args, use_kwargs
 from werkzeug.exceptions import MethodNotAllowed, UnprocessableEntity
 
-from flask_socketio import emit
-from .. import socketio
 import os  # used for getting file type and deleting files
 from urllib.parse import urlparse  # used for getting filetype from url
 import urllib.request

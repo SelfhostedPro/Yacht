@@ -6,7 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from flask_socketio import SocketIO
 import docker
 
 from config import config as Config
@@ -17,7 +16,6 @@ db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 jwt = JWTManager()
-socketio = SocketIO()
 
 def create_app(config):
     app = Flask(__name__)
@@ -47,7 +45,6 @@ def create_app(config):
     ma.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    socketio.init_app(app)
 
     # Configure SSL if platform supports it
     # if not app.debug and not app.testing and not app.config['SSL_DISABLE']:
