@@ -18,7 +18,7 @@ It will be available on port 8000.
 
 The default login is `admin` and `pass` you should change this immediately by clicking on admin in the top right and then "User" then select "Change Password" in the top menu. You can also change your username using this field.
 
-If you need to reset your password you can connect to the container using `docker exec -it "INSERT CONTAINER ID HERE WITHOUT QUOTES" /bin/bash` then run `python manage.py recreate_db`.
+If you need to reset your password/username to the included defaults, you can connect to the container using `docker exec -it "INSERT CONTAINER ID HERE WITHOUT QUOTES" /bin/bash` then run `python3 /manage.py recreate_db`.
 
 ## Features So Far:
 * Container Templating Compatibility (Portainer Compatible)
