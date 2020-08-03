@@ -80,7 +80,7 @@ def deploy(args, id):
     '''
     print(args, id)
     try:
-        launch_app(
+        launch = launch_app(
         args.get('name'),
         args.get('image'),
         conv_restart2data(args.get('restart_policy')),
@@ -89,11 +89,16 @@ def deploy(args, id):
         conv_env2data(args.get('env')),
         conv_sysctls2data(args.get('sysctls')),
         conv_caps2data(args.get('cap_add')))
+        launch_logs = launch.logs()
+        print(launch_logs)
+        decoded_logs = launch_logs.decode("utf-8")
+
+        data = jsonify({ 'logs': decoded_logs})
     except Exception as exc: raise
     print('done deploying')
     # print(id, title, image)
     # print(args, kwargs)
-    return jsonify(data = '')
+    return data, 200
 
 # Input Format:
 # [
@@ -177,7 +182,7 @@ def conv_restart2data(data):
 
 def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
     dclient = docker.from_env()
-    dclient.containers.run(
+    lauch = dclient.containers.run(
         name=name,
         image=image,
         restart_policy=restart_policy,
@@ -185,15 +190,17 @@ def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
         volumes=volumes,
         environment=env,
         sysctls=sysctls,
-        cap_add=caps
+        cap_add=caps,
+        detach=True
     )
+    print(lauch)
     print(f'''Container started successfully.
        Name: {name},
       Image: {image},
       Ports: {ports},
     Volumes: {volumes},
         Env: {env}''')
-    return
+    return lauch
 
 ### Docker Actions ###
 @apps.route('/<container_name>/<action>')

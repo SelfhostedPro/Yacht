@@ -31,11 +31,12 @@ class TemplateSchema(ma.SQLAlchemyAutoSchema):
 
 class PortSchema(ma.Schema):
     cport = ma.Int(
+        required=True,
         validate=validate.Range(min=0, max=65535)
     )
     hport = ma.Int(
-        required=False,
-        validate=validate.Range(min=0, max=65535)
+        validate=validate.Range(max=65535),
+        allow_none=True
     )
     proto = ma.Str(
         required=True,
@@ -71,7 +72,6 @@ class SysctlsSchema(ma.Schema):
     )
 
 class DeploySchema(ma.Schema):
-    title = ma.Str(required=True)
     name = ma.Str(required=True)
     image = ma.Str(required=True)
     restart_policy = ma.Str(

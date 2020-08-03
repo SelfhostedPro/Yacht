@@ -36,6 +36,7 @@ def create_app(config):
     app.config['JWT_REFRESH_COOKIE_PATH'] = '/api/auth/refresh'
     app.config['JWT_COOKIE_CSRF_PROTECT'] = True
     app.config['JWT_SECRET_KEY'] = os.getenv('SECRET_KEY', 'super-secret')
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'super-secret')
 
     
     Config[config_name].init_app(app)

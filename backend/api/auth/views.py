@@ -61,7 +61,8 @@ def login(username, password):
     
     if user is not None and user.verify_password(password):
         refresh_token_expires = datetime.timedelta(days=1)
-        access_token = create_access_token(identity=user.username)
+        access_token_expires = datetime.timedelta(minutes=30)
+        access_token = create_access_token(identity=user.username, expires_delta=access_token_expires)
         refresh_token = create_refresh_token(identity=user.username, expires_delta=refresh_token_expires)
 
         add_token_to_database(access_token, current_app.config['JWT_IDENTITY_CLAIM'])

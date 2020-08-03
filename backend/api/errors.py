@@ -6,7 +6,7 @@ def register_errorhandlers(blueprint):
     # create helper function
 
     # werkzeug.exceptions.BadRequest
-    @blueprint.errorhandler(400)
+    @blueprint.app_errorhandler(400)
     def bad_request(error):
         return make_response(jsonify({
             'error': {
@@ -16,7 +16,7 @@ def register_errorhandlers(blueprint):
         }), 400)
 
     # werkzeug.exceptions.Unauthorized
-    @blueprint.errorhandler(401)
+    @blueprint.app_errorhandler(401)
     def unauthorized(error):
         return make_response(jsonify({
             'error': {
@@ -28,7 +28,7 @@ def register_errorhandlers(blueprint):
     # 402, Payment Required
 
     # werkzeug.exceptions.Forbidden
-    @blueprint.errorhandler(403)
+    @blueprint.app_errorhandler(403)
     def forbidden(error):
         return make_response(jsonify({
             'error': {
@@ -38,8 +38,9 @@ def register_errorhandlers(blueprint):
         }), 403)
 
     # werkzeug.exceptions.NotFound
-    @blueprint.errorhandler(404)
+    @blueprint.app_errorhandler(404)
     def not_found(error):
+        print("here!")
         return make_response(jsonify({
             'error': {
                 'code': 404,
@@ -49,7 +50,7 @@ def register_errorhandlers(blueprint):
 
     # Error used by Webargs.
     # werkzeug.exceptions.MethodNotAllowed
-    @blueprint.errorhandler(405)
+    @blueprint.app_errorhandler(405)
     def method_not_allowed(error):
         return make_response(jsonify({
             'error': {
@@ -64,7 +65,7 @@ def register_errorhandlers(blueprint):
 
     # werkzeug.exceptions.RequestTimeout 408
     # werkzeug.exceptions.Conflict       409
-    @blueprint.errorhandler(409)
+    @blueprint.app_errorhandler(409)
     def gone(error):
         return make_response(jsonify({
             'error': {
@@ -74,7 +75,7 @@ def register_errorhandlers(blueprint):
         }), 409)
 
     # werkzeug.exceptions.Gone
-    @blueprint.errorhandler(410)
+    @blueprint.app_errorhandler(410)
     def gone(error):
         return make_response(jsonify({
             'error': {
@@ -89,7 +90,7 @@ def register_errorhandlers(blueprint):
     # werkzeug.exceptions.RequestURITooLarge    414
 
     # werkzeug.exceptions.UnsupportedMediaType
-    @blueprint.errorhandler(415)
+    @blueprint.app_errorhandler(415)
     def unsupported_media_type(error):
         return make_response(jsonify({
             'error': {
@@ -107,9 +108,8 @@ def register_errorhandlers(blueprint):
     # 421, Misdirected Request
 
     # Error used by Webargs.
-    @blueprint.errorhandler(422)
+    @blueprint.app_errorhandler(422)
     def unprocessable_entity(error):
-        print(error)
         return make_response(jsonify({
             'error': {
                 'code': 422,
@@ -125,7 +125,7 @@ def register_errorhandlers(blueprint):
     # werkzeug.exceptions.PreconditionRequired          428
 
     # werkzeug.exceptions.TooManyRequests
-    @blueprint.errorhandler(429)
+    @blueprint.app_errorhandler(429)
     def too_many_requests(error):
         return make_response(jsonify({
             'error': {
@@ -143,7 +143,7 @@ def register_errorhandlers(blueprint):
     # 451, Unavailable For Legal Reasons
 
     # werkzeug.exceptions.InternalServerError
-    @blueprint.errorhandler(werkzeug.exceptions.InternalServerError)
+    @blueprint.app_errorhandler(werkzeug.exceptions.InternalServerError)
     def internal_server_error(error):
         return make_response(jsonify({
             'error': {
@@ -154,7 +154,7 @@ def register_errorhandlers(blueprint):
 
 
     # werkzeug.exceptions.NotImplemented
-    @blueprint.errorhandler(werkzeug.exceptions.NotImplemented)
+    @blueprint.app_errorhandler(werkzeug.exceptions.NotImplemented)
     def internal_server_error(error):
         return make_response(jsonify({
             'error': {
@@ -175,7 +175,7 @@ def register_errorhandlers(blueprint):
     # 510, Not Extended
     # 511, Authentication Reuired
 
-    @blueprint.errorhandler(Exception)
+    @blueprint.app_errorhandler(Exception)
     def uncaught_server_error(error):
         return make_response(jsonify({
             'error': {

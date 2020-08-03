@@ -1,7 +1,15 @@
 <template lang="html">
   <div class="apps-form component">
-    <h1>Deploy {{ form.title }}
-      <v-btn v-if="!this.$route.params.appId" tile :to="{ name: 'View Templates' }" class="primary float-right"> <v-icon>mdi-plus</v-icon> From Template </v-btn>
+    <h1>
+      Deploy {{ form.title }}
+      <v-btn
+        v-if="!this.$route.params.appId"
+        tile
+        :to="{ name: 'View Templates' }"
+        class="primary float-right"
+      >
+        <v-icon>mdi-plus</v-icon> From Template
+      </v-btn>
     </h1>
     <v-stepper v-model="deployStep">
       <v-fade-transition>
@@ -306,7 +314,15 @@
               Back
             </v-btn>
             <v-btn color="primary" @click="nextStep(4)" :disabled="invalid">
-              <div v-if="isLoading"> Deploying <v-progress-circular indeterminate color="white" size="15" width="2" /></div>
+              <div v-if="isLoading">
+                Deploying
+                <v-progress-circular
+                  indeterminate
+                  color="white"
+                  size="15"
+                  width="2"
+                />
+              </div>
               <div v-else>Deploy</div>
             </v-btn>
           </ValidationObserver>
@@ -416,6 +432,7 @@
 
 <script>
 import axios from "axios";
+import { mapActions } from "vuex";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 export default {
@@ -467,6 +484,9 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      readApp: "apps/readApp",
+    }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
     },
@@ -510,6 +530,7 @@ export default {
       this.isLoading = true;
       const appId = this.$route.params.appId;
       const url = `/api/apps/${appId}/deploy`;
+      console.log(payload);
       axios
         .post(url, payload)
         .then((response) => {
@@ -521,33 +542,27 @@ export default {
           this.$router.push({ name: "View Applications" });
         });
     },
-    async readApp() {
-      const appId = this.$route.params.appId;
-      if (appId) {
-        const url = `/api/apps/${appId}`;
-        const response = await axios.get(url);
-        if (!response.data.data) {
-          return undefined;
-        }
-        return response.data.data;
-      } else {
-        return undefined;
-      }
-    },
     async populateForm() {
-      const app = await this.readApp();
-      if (!app) return;
-      this.form = {
-        title: app.title || "",
-        name: app.name || "",
-        image: app.image || "",
-        restart_policy: app.restart_policy || "",
-        ports: app.ports || [],
-        volumes: app.volumes || [],
-        env: app.env || [],
-        sysctls: app.sysctls || [],
-        cap_add: app.cap_add || [],
-      };
+      const appId = this.$route.params.appId;
+      if (appId != null) {
+        try {
+          const app = await this.readApp(appId);
+          this.form = {
+            name: app.name || "",
+            image: app.image || "",
+            restart_policy: app.restart_policy || "",
+            ports: app.ports || [],
+            volumes: app.volumes || [],
+            env: app.env || [],
+            sysctls: app.sysctls || [],
+            cap_add: app.cap_add || [],
+          };
+        } catch (error) {
+          console.error(error, error.response);
+        }
+      } else {
+        console.log("No app selected");
+      }
     },
   },
   async created() {

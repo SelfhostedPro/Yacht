@@ -44,15 +44,21 @@ const actions = {
         commit("setLoading", false);
       });
   },
-  async readApp({ commit }, Name) {
-    commit("setLoading", true);
+  readApp({ commit }, Name) {
     const url = `/api/apps/${Name}`;
-    let response = await axios.get(url);
-    if (response) {
-      const app = response.data.data;
-      commit("setLoading", false);
-      commit("setApp", app);
-    }
+    commit("setLoading", true);
+    return new Promise((resolve, reject) => {
+      axios.get(url)
+        .then(response => {
+          const app = response.data.data;
+          commit("setLoading", false);
+          commit("setApp", app);
+          resolve(app);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    })
   },
   async readAppProcesses({ commit }, Name) {
     const url = `/api/apps/${Name}/processes`;
@@ -67,14 +73,12 @@ const actions = {
     axios
       .get(url)
       .then((response) => {
-        console.log(response);
         let logs = [];
         let _log = response.data.logs;
         let split_log = _log.split("\n");
         split_log.forEach((element) => {
           logs.push(element);
         });
-        console.log(logs);
         commit("setAppLogs", logs)
       })
       .catch((err) => {

@@ -31,8 +31,9 @@ function createAxiosResponseInterceptor() {
 
       return store
         .dispatch("auth/AUTH_REFRESH")
-        .then((response) => {
-          console.log(response)
+        .then(() => {
+          error.response.config.xsrfCookieName = "csrf_access_token"
+          error.response.config.xsrfHeaderName = "X-CSRF-TOKEN"
           console.log(error.response.config)
           return axios(error.response.config);
         })
