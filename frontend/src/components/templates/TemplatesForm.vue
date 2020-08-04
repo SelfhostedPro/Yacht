@@ -72,7 +72,6 @@ export default {
       const data = { ...this.form };
       console.log("submit", data);
       this.writeTemplate(data);
-      this.$router.push("/templates/");
     },
   },
 };

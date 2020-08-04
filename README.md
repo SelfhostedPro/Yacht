@@ -2,7 +2,7 @@
 Yacht is a container management UI with a focus on templates and 1-click deployments.
 
 ## Demo:
-![Tempaltes](https://github.com/SelfhostedPro/yacht-vue/raw/master/readme_media/Yacht-Demo.gif "templates")
+![Tempaltes](https://raw.githubusercontent.com/SelfhostedPro/Yacht/vue/readme_media/Yacht-Demo.gif "templates")
 
 ## Installation:
 Currently only linux has been verified as working but we are open to the idea of supporting windows eventually as well.

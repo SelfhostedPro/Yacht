@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from "@/router/index";
 
 const state = {
   templates: [],
@@ -76,6 +77,7 @@ const actions = {
       })
       .finally(() => {
         commit("setLoading", false);
+        router.push({ name: "View Templates" });
       });
   },
   updateTemplate({ commit }, id) {

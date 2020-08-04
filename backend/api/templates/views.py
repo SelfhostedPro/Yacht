@@ -116,6 +116,7 @@ def create(args):
     except IntegrityError as err:
         # TODO raises IntegrityError on duplicates (uniqueness)
         #       status
+        db.session.rollback()
         pass
 
     template_schema = TemplateSchema()
