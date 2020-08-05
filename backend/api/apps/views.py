@@ -1,7 +1,8 @@
 from .. import db
 from ..models.containers import (
     Template,
-    TemplateItem
+    TemplateItem,
+    TemplateVariables
 )
 from ..models.container_schemes import (
     TemplateItemSchema,
@@ -89,8 +90,8 @@ def deploy(args, id):
         conv_env2data(args.get('env')),
         conv_sysctls2data(args.get('sysctls')),
         conv_caps2data(args.get('cap_add')))
+
         launch_logs = launch.logs()
-        print(launch_logs)
         decoded_logs = launch_logs.decode("utf-8")
 
         data = jsonify({ 'logs': decoded_logs})
@@ -141,7 +142,16 @@ def conv_ports2data(data):
 #     '/var/www': {'bind': '/mnt/vol1', 'mode': 'ro'}
 # }
 def conv_volumes2data(data):
-    return dict((d['bind'], {'bind': d['container'], 'mode': 'rw'}) for d in data)
+    t_variables = TemplateVariables.query.all()
+    for volume in data:
+        if volume['bind']:
+            for t_var in t_variables:
+                if t_var.variable in volume['bind']:
+                  new_path = volume['bind'].replace(t_var.variable, t_var.replacement)
+                  volume['bind'] = new_path
+    volume_data = dict((d['bind'], {'bind': d['container'], 'mode': 'rw'}) for d in data)
+
+    return volume_data
 
 # Input Format:
 # [

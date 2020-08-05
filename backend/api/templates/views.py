@@ -2,6 +2,7 @@ from .. import db
 from ..models.containers import (
     Template,
     TemplateItem,
+    TemplateVariables
 )
 from ..models.container_schemes import (
     TemplateSchema,

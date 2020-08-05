@@ -1,12 +1,21 @@
 from .. import ma
 from .containers import (
     Template,
-    TemplateItem
+    TemplateItem,
+    TemplateVariables
 )
 from marshmallow.validate import (
     Length
 )
 from webargs import fields, validate
+
+class TemplateVariablesSchema(ma.Schema):
+    variable = ma.Str(
+        required=True
+    )
+    replacement = ma.Str(
+        required=True
+    )
 
 class TemplateItemSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

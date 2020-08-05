@@ -63,3 +63,11 @@ class TemplateItem(db.Model):
         nullable=True, unique=False, index=False)
     template_id = db.Column(db.Integer,
         db.ForeignKey('templates.id'))
+
+class TemplateVariables(db.Model):
+    __tablename__ = 'template_variables'
+    id = db.Column(db.Integer, primary_key=True)
+    variable = db.Column(db.String(255),
+        nullable=False, unique=True, index=True)
+    replacement = db.Column(db.String(255),
+        nullable=False, unique=True, index=True)
