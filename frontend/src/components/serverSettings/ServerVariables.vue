@@ -74,6 +74,14 @@
         </form>
       </ValidationObserver>
     </v-card-text>
+    <v-snackbar v-model="saved" bottom color="secondary">
+      Saved
+      <template v-slot:action="{ attrs }">
+        <v-btn color="primary" text v-bind="attrs" @click="saved = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -105,7 +113,7 @@ export default {
       this.form.templateVariables.splice(index, 1);
     },
     submitFormData() {
-      const payload = [ ...this.form.templateVariables ];
+      const payload = [...this.form.templateVariables];
       this.writeTemplateVariables(payload);
       this.saved = true;
     },
@@ -123,6 +131,7 @@ export default {
 
   async created() {
     await this.populateForm();
+    this.saved = false;
   },
 };
 </script>
