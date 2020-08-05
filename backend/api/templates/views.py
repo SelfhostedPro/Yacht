@@ -6,7 +6,8 @@ from ..models.containers import (
 )
 from ..models.container_schemes import (
     TemplateSchema,
-    TemplateItemSchema
+    TemplateItemSchema,
+    TemplateVariablesSchema
 )
 from ..utils import conv_ports2dict, conv_sysctls2dict
 
@@ -238,5 +239,45 @@ def showitems(id):
         template_item_schema = TemplateItemSchema()
         data = template_item_schema.dump(template_item)
         return jsonify({ 'data': data })
+    except IntegrityError as err:
+        abort(400, { 'error': 'Bad Request' })
+
+@templates.route('/settings/variables')
+@jwt_required
+
+def showvars():
+    try:
+        template_vars = TemplateVariables.query.all()
+        template_var_schema = TemplateVariablesSchema(many=True)
+        data = template_var_schema.dump(template_vars)
+        return jsonify({ 'data': data })
+    except IntegrityError as err:
+        abort(400, { 'error': 'Bad Request' })
+
+@templates.route('/settings/variables/set', methods=['POST'])
+@jwt_required
+@use_args(TemplateVariablesSchema(many=True), location='json')
+
+def setvars(args):
+    try:
+        template_vars = TemplateVariables.query.all()
+        variables = []
+        t_vars = args
+
+        for entry in t_vars:
+            template_variables = TemplateVariables(
+                variable=entry.get("variable"),
+                replacement=entry.get("replacement")
+            )
+            variables.append(template_variables)
+
+        TemplateVariables.query.delete()
+        db.session.add_all(variables)
+        db.session.commit()
+
+        template_var_schema = TemplateVariablesSchema(many=True)
+        data = template_var_schema.dump(t_vars)
+        return jsonify({'data': data})
+
     except IntegrityError as err:
         abort(400, { 'error': 'Bad Request' })

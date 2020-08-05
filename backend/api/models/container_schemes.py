@@ -9,13 +9,17 @@ from marshmallow.validate import (
 )
 from webargs import fields, validate
 
-class TemplateVariablesSchema(ma.Schema):
-    variable = ma.Str(
-        required=True
-    )
-    replacement = ma.Str(
-        required=True
-    )
+# class TemplateVariablesSchema(ma.Schema):
+#     variable = ma.Str(
+#         required=True
+#     )
+#     replacement = ma.Str(
+#         required=True
+#     )
+
+class TemplateVariablesSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TemplateVariables
 
 class TemplateItemSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

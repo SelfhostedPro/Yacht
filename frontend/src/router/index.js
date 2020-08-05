@@ -18,6 +18,7 @@ import ChangePasswordForm from "../components/userSettings/ChangePasswordForm.vu
 import UserInfo from "../components/userSettings/UserInfo.vue"
 import ServerSettings from "../views/ServerSettings.vue";
 import ServerInfo from "../components/serverSettings/ServerInfo.vue"
+import ServerVariables from "../components/serverSettings/ServerVariables.vue"
 
 Vue.use(VueRouter);
 
@@ -115,6 +116,11 @@ const routes = [
         name: "Server Info",
         path: "info",
         component: ServerInfo,
+      },
+      {
+        name: "Template Variables",
+        path: "templateVariables",
+        component: ServerVariables,
       }
     ]
   },

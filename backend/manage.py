@@ -50,20 +50,20 @@ def recreate_db():
     db.session.commit()
     variables = []
     t_vars = [
-        {"variable": "!config", "replacement": "~/yacht/AppData/Config"},
-        {"variable": "!data", "replacement": "~/yacht/AppData/Data"}, 
-        {"variable": "!media", "replacement": "~/yacht/Media/"},
-        {"variable": "!downloads", "replacement": "~/yacht/Downloads/"},
-        {"variable": "!music", "replacement": "~/yacht/Media/Music"},
-        {"variable": "!playlists", "replacement": "~/yacht/Media/Playlists"},
-        {"variable": "!podcasts", "replacement": "~/yacht/Media/Podcasts"},
-        {"variable": "!books", "replacement": "~/yacht/Media/Books"},
-        {"variable": "!comics", "replacement": "~/yacht/Media/Comics"},
-        {"variable": "!tv", "replacement": "~/yacht/Media/TV"},
-        {"variable": "!movies", "replacement": "~/yacht/Media/Movies"},
-        {"variable": "!pictures", "replacement": "~/yacht/Media/Photos"},
+        {"variable": "!config", "replacement": "/yacht/AppData/Config"},
+        {"variable": "!data", "replacement": "/yacht/AppData/Data"}, 
+        {"variable": "!media", "replacement": "/yacht/Media/"},
+        {"variable": "!downloads", "replacement": "/yacht/Downloads/"},
+        {"variable": "!music", "replacement": "/yacht/Media/Music"},
+        {"variable": "!playlists", "replacement": "/yacht/Media/Playlists"},
+        {"variable": "!podcasts", "replacement": "/yacht/Media/Podcasts"},
+        {"variable": "!books", "replacement": "/yacht/Media/Books"},
+        {"variable": "!comics", "replacement": "/yacht/Media/Comics"},
+        {"variable": "!tv", "replacement": "/yacht/Media/TV"},
+        {"variable": "!movies", "replacement": "/yacht/Media/Movies"},
+        {"variable": "!pictures", "replacement": "/yacht/Media/Photos"},
         {"variable": "!localtime", "replacement": "/etc/localtime"},
-        {"variable": "!logs", "replacement": "~/yacht/AppData/Logs"},
+        {"variable": "!logs", "replacement": "/yacht/AppData/Logs"},
         ]
     for entry in t_vars:
         template_variables = TemplateVariables(

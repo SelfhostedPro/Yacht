@@ -38,9 +38,13 @@ function createAxiosResponseInterceptor() {
           return axios(error.response.config);
         })
         .catch((error) => {
+          if (error.response.status != 401) {
+            return Promise.reject(error)
+          }else{
           store.dispatch("auth/AUTH_LOGOUT");
           this.router.push("/");
           return Promise.reject(error);
+          }
         })
         .finally(createAxiosResponseInterceptor);
     }
