@@ -7,7 +7,7 @@ Yacht is a container management UI with a focus on templates and 1-click deploym
 ## Installation:
 Currently only linux has been verified as working but we are open to the idea of supporting windows eventually as well.
 
-**Keep in mind, this is an Alpha so the risk of data loss is real and it may not be stable**
+**Keep in mind, this is a pre-alpha so the risk of data loss is real and it may not be stable**
 
 Once docker is installed you'll simply run the following commands to get started:
 ```
@@ -26,6 +26,8 @@ If you need to reset your password/username to the included defaults, you can co
 * Basic Container Management
 * Template Framework
 * Easy Template Updating
+* Centralized settings for volume management and similar QOL functionality.
+
 
 ## Planned Features:
 * Advanced Container Management (Edit/Modify)
@@ -33,7 +35,6 @@ If you need to reset your password/username to the included defaults, you can co
 * Docker-Compose Compatibility
 * Easy access to container interfaces
 * User Management
-* Centralized settings for volume management and similar QOL functionality.
 
 *If you want something that's not planned please open a feature request issue and we'll see about getting it added.*
 
@@ -44,6 +45,8 @@ We recommend starting with:
 ```
 https://raw.githubusercontent.com/SelfhostedPro/selfhosted_templates/yacht/Template/template.json
 ```
+
+In templates you are able to define variables (starting with `!`) to have them automatically replaced by whatever variable the user has set in their server settings (ie. `!config` will be replaced by `/yacht/AppData/Config` by default). 
 
 ## License
 [MIT License](LICENSE.md)
