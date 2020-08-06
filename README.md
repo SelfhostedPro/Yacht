@@ -1,3 +1,4 @@
+![logo](https://raw.githubusercontent.com/SelfhostedPro/Yacht/vue/readme_media/Yacht_logo_1_dark.png "templates")
 ## Yacht
 Yacht is a container management UI with a focus on templates and 1-click deployments.
 
