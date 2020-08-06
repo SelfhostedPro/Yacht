@@ -5,7 +5,7 @@
         class="mx-auto mt-12"
         alt="Vue logo"
         src="../../assets/logo.png"
-        width="72"
+        width="107"
         height="72"
       />
       <v-row align="center" justify="center" class="mt-12">
