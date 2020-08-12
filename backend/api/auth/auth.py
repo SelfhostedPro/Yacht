@@ -16,7 +16,7 @@ SECRET = settings.SECRET_KEY
 
 auth_backends = []
 
-cookie_authentication = CookieAuthentication(secret=SECRET, lifetime_seconds=3600)
+cookie_authentication = CookieAuthentication(secret=SECRET, lifetime_seconds=3600, cookie_secure=False)
 
 auth_backends.append(cookie_authentication)
 
