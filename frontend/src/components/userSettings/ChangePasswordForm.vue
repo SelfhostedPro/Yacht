@@ -5,7 +5,7 @@
         <v-toolbar-title>Change Password</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
-        You can also change just your username here (or both your username and
+        You can also change just your email here (or both your email and
         password).
         <v-form @keyup.native.enter="onSubmit()">
           <ValidationProvider
@@ -15,7 +15,7 @@
             v-slot="{ errors, valid }"
           >
             <v-text-field
-              label="Username"
+              label="Email"
               v-model="username"
               :error-messages="errors"
               :success="valid"

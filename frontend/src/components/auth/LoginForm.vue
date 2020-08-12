@@ -12,7 +12,7 @@
         <v-col cols="12" sm="8" md="4">
           <v-card class="elevation-12 pb-8">
             <v-toolbar color="primary" dark flat>
-              <v-toolbar-title>Login form</v-toolbar-title>
+              <v-toolbar-title>Login</v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-card-text>
@@ -23,7 +23,7 @@
                   v-slot="{ errors, valid }"
                 >
                   <v-text-field
-                    label="Username"
+                    label="Email"
                     v-model="username"
                     :error-messages="errors"
                     :success="valid"
