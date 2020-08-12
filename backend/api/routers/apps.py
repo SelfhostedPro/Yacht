@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, WebSocket
 from typing import List
 
 from sqlalchemy.orm import Session
@@ -12,6 +12,7 @@ from .. import actions
 from ..auth import get_active_user
 
 import docker
+import aiodocker
 from datetime import datetime
 import urllib.request
 import json
@@ -50,3 +51,12 @@ def container_actions(app_name,action):
 @router.post("/deploy", response_model=schemas.DeployLogs, dependencies=[Depends(get_active_user)])
 def deploy_app(template: schemas.DeployForm):
     return actions.deploy_app(template=template)
+
+@router.websocket("/{app_name}/livelogs")
+async def ws(websocket: WebSocket, app_name: str):
+    await websocket.accept()
+    async with aiodocker.Docker() as docker:
+        container: DockerContainer = await docker.containers.get(app_name)
+        logs = container.log(stdout=True, stderr=True, follow=True)
+        async for line in logs:
+            await websocket.send_text(line)

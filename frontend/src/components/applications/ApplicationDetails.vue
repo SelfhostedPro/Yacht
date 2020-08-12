@@ -21,7 +21,7 @@
                 leave-active-class="animated slideOutRight"
                 mode="out-in"
               >
-                <router-view :app="app" :processes="processes" :logs="logs" />
+                <router-view :app="app" :processes="processes" :logs="logs"/>
               </transition>
             </v-card-text>
           </v-col>
@@ -39,10 +39,12 @@ export default {
     Nav: ApplicationDetailsNav,
   },
   data() {
-    return {};
+    return {
+      logs: []
+    };
   },
   computed: {
-    ...mapState("apps", ["apps", "app", "isLoading", "processes", "logs"]),
+    ...mapState("apps", ["apps", "app", "isLoading", "processes"]),
     ...mapGetters({
       getAppByName: "apps/getAppByName",
     }),
@@ -55,7 +57,7 @@ export default {
     ...mapActions({
       readApp: "apps/readApp",
       readAppProcesses: "apps/readAppProcesses",
-      readAppLogs: "apps/readAppLogs",
+      // readAppLogs: "apps/readAppLogs",
     }),
     refresh() {
       const appName = this.$route.params.appName;
@@ -63,12 +65,27 @@ export default {
       this.readAppProcesses(appName);
       this.readAppLogs(appName);
     },
+    readAppLogs(appName) {
+    console.log("Starting connection to Websocket");
+    let connection = new WebSocket(
+      `ws://localhost:8080/api/apps/${appName}/livelogs`
+    );
+    this.logs = []
+
+    connection.onopen = function() {
+      connection.send(JSON.stringify({ type: "onopen", data: "Connected!" }));
+    };
+
+    connection.onmessage = (event) => {
+      this.logs.push(event.data);
+    };
+    }
   },
   created() {
     const appName = this.$route.params.appName;
     this.readApp(appName);
     this.readAppProcesses(appName);
-    this.readAppLogs(appName);
+    this.readAppLogs
   },
   async mounted() {
     const appName = this.$route.params.appName;

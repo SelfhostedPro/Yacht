@@ -3,16 +3,19 @@
     <v-card-title class="primary font-weight-bold">
       Logs
     </v-card-title>
-    <v-card-text v-if="app.State.Status != 'running'" class="secondary text-center px-5 py-5">
+    <v-card-text
+      v-if="app.State.Status != 'running'"
+      class="secondary text-center px-5 py-5"
+    >
       Start the app to view logs
     </v-card-text>
     <v-virtual-scroll
       v-else
       :bench="20"
-      :items="this.$props.logs"
+      :items="logs"
       height="600"
       item-height="20"
-      class="text-no-wrap"
+      class="keep-whitespace"
       id="logcontainer"
     >
       <template v-slot="{ item }">
@@ -27,9 +30,10 @@
 <script>
 // import axios from "axios";
 export default {
-  props: ["logs", "app"],
+  props: ["app", "logs"],
   data() {
-    return {};
+    return {
+    };
   },
 };
 </script>
@@ -40,5 +44,8 @@ export default {
 }
 #logcontainer {
   background-color: black;
+}
+.keep-whitespace {
+  white-space:pre
 }
 </style>
