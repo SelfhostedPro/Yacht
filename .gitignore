@@ -1,0 +1,6 @@
+.github
+.vscode
+sql_app.db
+venv
+*.db
+node_modules
