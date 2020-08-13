@@ -68,7 +68,7 @@ export default {
     readAppLogs(appName) {
     console.log("Starting connection to Websocket");
     let connection = new WebSocket(
-      `ws://localhost:8080/api/apps/${appName}/livelogs`
+      `ws://${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
     );
     this.logs = []
 
