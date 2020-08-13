@@ -14,6 +14,7 @@ gunicorn==20.0.4
 h11==0.9.0
 httptools==0.1.1
 idna==2.10
+python-jose==3.2.0
 makefun==1.9.2
 passlib==1.7.2
 pycparser==2.20
