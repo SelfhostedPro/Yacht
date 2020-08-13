@@ -1,7 +1,13 @@
 from .db import models
 from .db.database import SessionLocal
 import re
-from typing import Dict, List
+from typing import Dict, List, Optional
+
+from jose import jwt
+from fastapi import Cookie, Depends, WebSocket, status
+from fastapi.security import APIKeyCookie
+from .settings import Settings
+settings = Settings()
 
 def get_db():
     db = SessionLocal()
@@ -154,3 +160,16 @@ def conv_restart2data(data):
     else:
         restart = None
         return restart
+
+
+async def websocket_auth(
+    websocket: WebSocket
+):
+    try:
+        cookie = websocket._cookies['fastapiusersauth']
+        session = jwt.decode(cookie, settings.SECRET_KEY, audience='fastapi-users:auth')
+    except:
+        return None
+    if session is None:
+        return None
+    return cookie

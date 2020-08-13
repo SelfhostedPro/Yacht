@@ -30,7 +30,7 @@ app.include_router(
     tags=["auth"]
 )
 app.include_router(
-    fastapi_users.get_users_router(cookie_authentication),
+    fastapi_users.get_users_router(),
     prefix="/users",
     tags=["users"]
 )

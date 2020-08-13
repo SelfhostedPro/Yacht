@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, WebSocket
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, status, Cookie
 from typing import List
 
 from sqlalchemy.orm import Session
@@ -9,7 +9,8 @@ from ..db import models, schemas
 from ..db.models import containers
 from ..db.database import SessionLocal, engine
 from .. import actions
-from ..auth import get_active_user
+from ..auth import get_active_user, User
+from ..utils import websocket_auth
 
 import docker
 import aiodocker
@@ -54,9 +55,15 @@ def deploy_app(template: schemas.DeployForm):
 
 @router.websocket("/{app_name}/livelogs")
 async def ws(websocket: WebSocket, app_name: str):
-    await websocket.accept()
-    async with aiodocker.Docker() as docker:
-        container: DockerContainer = await docker.containers.get(app_name)
-        logs = container.log(stdout=True, stderr=True, follow=True)
-        async for line in logs:
-            await websocket.send_text(line)
+
+    auth_success = await websocket_auth(websocket= websocket)
+    if auth_success:
+        await websocket.accept()
+        async with aiodocker.Docker() as docker:
+            container: DockerContainer = await docker.containers.get(app_name)
+            logs = container.log(stdout=True, stderr=True, follow=True)
+            async for line in logs:
+                await websocket.send_text(line)
+    else:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+#TODO: cookie: str = Depends(websocket_auth)
