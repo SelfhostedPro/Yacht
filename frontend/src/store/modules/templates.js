@@ -54,6 +54,9 @@ const actions = {
         const templates = response.data;
         commit("setTemplates", templates);
       })
+      .catch((err) => {
+        commit('snackbar/setErr', err, { root: true })
+      })
       .finally(() => {
         commit("setLoading", false);
       });
@@ -67,6 +70,9 @@ const actions = {
         const template = response.data;
         commit("setTemplate", template);
       })
+      .catch((err) => {
+        commit('snackbar/setErr', err, { root: true })
+      })
       .finally(() => {
         commit("setLoading", false);
       });
@@ -79,6 +85,9 @@ const actions = {
       .then((response) => {
         const template = response.data;
         commit("addTemplate", template);
+      })
+      .catch((err) => {
+        commit('snackbar/setErr', err, { root: true })
       })
       .finally(() => {
         commit("setLoading", false);
@@ -94,6 +103,9 @@ const actions = {
         const template = response.data;
         commit("setTemplate", template);
       })
+      .catch((err) => {
+        commit('snackbar/setErr', err, { root: true })
+      })
       .finally(() => {
         commit("setLoading", false);
       });
@@ -106,6 +118,9 @@ const actions = {
       .then((response) => {
         const template = response.data;
         commit("removeTemplate", template);
+      })
+      .catch((err) => {
+        commit('snackbar/setErr', err, { root: true })
       })
       .finally(() => {
         commit("setLoading", false);
@@ -125,6 +140,7 @@ const actions = {
           commit("setLoading", false)
         })
         .catch(error => {
+          commit('snackbar/setErr', error, { root: true })
           reject(error);
         })
     })
@@ -152,13 +168,14 @@ const actions = {
         .then((response) => {
           const templateVariables = response.data;
           commit("setTemplateVariables", templateVariables);
+          commit('snackbar/setErr', response, { root: true })
           resolve(templateVariables);
         })
         .finally(() => {
           commit("setLoading", false);
         })
         .catch((err) => {
-          console.log(err);
+          commit('snackbar/setErr', err, { root: true })
           reject(err);
         });
     });
@@ -169,12 +186,11 @@ const actions = {
     axios
       .post(url, payload, {})
       .then((response) => {
-        console.log(response)
         const templateVariables = response.data;
         commit("setTemplateVariables", templateVariables);
       })
-      .catch((error) => {
-        console.log(error)
+      .catch((err) => {
+        commit('snackbar/setErr', err, { root: true })
       })
       .finally(() => {
         commit("setLoading", false);

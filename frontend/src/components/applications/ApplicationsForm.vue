@@ -432,7 +432,7 @@
 
 <script>
 import axios from "axios";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 export default {
@@ -487,6 +487,9 @@ export default {
     ...mapActions({
       readApp: "templates/readApp",
     }),
+    ...mapMutations({
+      setErr: "snackbar/setErr",
+    }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
     },
@@ -532,8 +535,7 @@ export default {
       console.log(payload);
       axios
         .post(url, payload)
-        .then((response) => {
-          console.log(response);
+        .then(() => {
           this.deployStep = 1;
         })
         .finally(() => {
@@ -558,6 +560,7 @@ export default {
           };
         } catch (error) {
           console.error(error, error.response);
+          this.setErr(error)
         }
       } else {
         console.log("No app selected");

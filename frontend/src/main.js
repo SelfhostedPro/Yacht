@@ -28,7 +28,6 @@ function createAxiosResponseInterceptor() {
       }
 
       axios.interceptors.response.eject(interceptor);
-
       return store
         .dispatch("auth/AUTH_LOGOUT")
         .then(() => {

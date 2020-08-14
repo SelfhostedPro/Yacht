@@ -36,7 +36,6 @@ const actions = {
           axios
             .get(url, { withCredentials: true })
             .then((resp) => {
-              console.log(resp)
               localStorage.setItem("username", resp.data.email);
               axios.defaults.withCredentials = true;
               commit(AUTH_SUCCESS, resp);
@@ -44,12 +43,14 @@ const actions = {
             })
             .catch((err) => {
               commit(AUTH_ERROR, err);
+              commit('snackbar/setErr', err, { root: true })
               localStorage.removeItem("username");
               reject(err);
             });
         })
         .catch((err) => {
           commit(AUTH_ERROR, err);
+          commit('snackbar/setErr', err, { root: true })
           localStorage.removeItem("username");
           reject(err);
         });
@@ -72,8 +73,8 @@ const actions = {
           router.push({ path: "/" });
           resolve(resp);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((err) => {
+          commit('snackbar/setErr', err, { root: true })
           commit(AUTH_CLEAR);
         });
     });
@@ -114,6 +115,7 @@ const actions = {
           router.push({ path: `/user/info` });
         })
         .catch((err) => {
+          commit('snackbar/setErr', err, { root: true })
           reject(err);
         });
     });

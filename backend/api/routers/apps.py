@@ -66,4 +66,3 @@ async def ws(websocket: WebSocket, app_name: str):
                 await websocket.send_text(line)
     else:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
-#TODO: cookie: str = Depends(websocket_auth)

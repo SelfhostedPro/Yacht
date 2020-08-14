@@ -20,10 +20,10 @@ const mutations = {
     }
   },
   setAppProcesses(state, processes) {
-    state.processes = processes
+    state.processes = processes;
   },
   setAppLogs(state, logs) {
-    state.logs = logs
+    state.logs = logs;
   },
   setLoading(state, loading) {
     state.isLoading = loading;
@@ -40,6 +40,9 @@ const actions = {
         const apps = response.data;
         commit("setApps", apps);
       })
+      .catch((err) => {
+        commit("snackbar/setErr", err, { root: true });
+      })
       .finally(() => {
         commit("setLoading", false);
       });
@@ -48,17 +51,19 @@ const actions = {
     const url = `/api/apps/${Name}`;
     commit("setLoading", true);
     return new Promise((resolve, reject) => {
-      axios.get(url)
-        .then(response => {
+      axios
+        .get(url)
+        .then((response) => {
           const app = response.data;
           commit("setLoading", false);
           commit("setApp", app);
           resolve(app);
         })
-        .catch(error => {
-          reject(error);
+        .catch((err) => {
+          commit("snackbar/setErr", err, { root: true });
+          reject(err);
         });
-    })
+    });
   },
   async readAppProcesses({ commit }, Name) {
     const url = `/api/apps/${Name}/processes`;
@@ -68,7 +73,7 @@ const actions = {
       commit("setAppProcesses", processes);
     }
   },
-  async readAppLogs({commit}, Name) {
+  async readAppLogs({ commit }, Name) {
     let url = `/api/apps/${Name}/logs`;
     axios
       .get(url)
@@ -79,11 +84,10 @@ const actions = {
         split_log.forEach((element) => {
           logs.push(element);
         });
-        commit("setAppLogs", logs)
+        commit("setAppLogs", logs);
       })
       .catch((err) => {
-        console.log(err);
-        this.logs.push(err);
+        commit("snackbar/setErr", err, { root: true });
       });
   },
   AppAction({ commit }, { Name, Action }) {
@@ -94,6 +98,9 @@ const actions = {
       .then((response) => {
         const app = response.data;
         commit("setApps", app);
+      })
+      .catch((err) => {
+        commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
