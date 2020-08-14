@@ -6,6 +6,8 @@ from typing import Dict, List, Optional
 from jose import jwt
 from fastapi import Cookie, Depends, WebSocket, status
 from fastapi.security import APIKeyCookie
+from .auth import cookie_authentication
+from .auth import user_db
 from .settings import Settings
 settings = Settings()
 
@@ -167,9 +169,8 @@ async def websocket_auth(
 ):
     try:
         cookie = websocket._cookies['fastapiusersauth']
-        session = jwt.decode(cookie, settings.SECRET_KEY, audience='fastapi-users:auth')
+        user = await cookie_authentication(cookie, user_db)
+        if user and user.is_active:
+            return user
     except:
         return None
-    if session is None:
-        return None
-    return cookie
