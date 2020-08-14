@@ -168,7 +168,6 @@ const actions = {
         .then((response) => {
           const templateVariables = response.data;
           commit("setTemplateVariables", templateVariables);
-          commit('snackbar/setErr', response, { root: true })
           resolve(templateVariables);
         })
         .finally(() => {
