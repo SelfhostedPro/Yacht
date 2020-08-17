@@ -15,10 +15,17 @@ const mutations = {
     state.visible = true
   },
   setInfo(state, info) {
-    state.content = info.statusText + ": " + info.config.data
+    state.content = info.statusText + ": " + info.data.info
     state.bottom = true;
     state.color = ""
     state.btnColor = ""
+    state.visible = true
+  },
+  setSuccess(state, info) {
+    state.content = info.statusText + ": " + info.data.success
+    state.bottom = true;
+    state.color = "primary"
+    state.btnColor = "black"
     state.visible = true
   },
   clearSnack(state) {

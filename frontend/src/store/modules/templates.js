@@ -161,7 +161,7 @@ const actions = {
   // },
   readTemplateVariables({ commit }) {
     commit("setLoading", true);
-    const url = "/api/templates/settings/variables";
+    const url = "/api/settings/variables";
     return new Promise((resolve, reject) => {
       axios
         .get(url)
@@ -181,7 +181,7 @@ const actions = {
   },
   writeTemplateVariables({ commit }, payload) {
     commit("setLoading", true);
-    const url = "/api/templates/settings/variables";
+    const url = "/api/settings/variables";
     axios
       .post(url, payload, {})
       .then((response) => {

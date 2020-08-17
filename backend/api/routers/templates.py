@@ -42,14 +42,6 @@ def add_template(template: schemas.TemplateBase, db: Session = Depends(get_db)):
 def refresh_template(id: int, db: Session = Depends(get_db)):
     return crud.refresh_template(db=db, template_id=id)
 
-@router.get("/settings/variables", response_model=List[schemas.TemplateVariables], dependencies=[Depends(get_active_user)])
-def read_template_variables(db: Session = Depends(get_db)):
-    return crud.read_template_variables(db=db)
-
-@router.post("/settings/variables", response_model=List[schemas.TemplateVariables], dependencies=[Depends(get_active_user)])
-def set_template_variables(new_variables: List[schemas.TemplateVariables],db: Session = Depends(get_db)):
-    return crud.set_template_variables(new_variables=new_variables, db=db)
-
 @router.get("/app/{id}", response_model=schemas.TemplateItem, dependencies=[Depends(get_active_user)])
 def read_app_template(id: int, db: Session = Depends(get_db)):
     return crud.read_app_template(db=db, app_id=id)

@@ -1,11 +1,11 @@
 import uvicorn
 from fastapi import Depends, FastAPI, Header, HTTPException
-from .routers import apps, templates
+from .routers import apps, templates, app_settings
 import uuid
 
 from .db import models
 from .db.database import SessionLocal
-from .routers.templates import read_template_variables, set_template_variables, SessionLocal
+from .routers.app_settings import read_template_variables, set_template_variables, SessionLocal
 from sqlalchemy.orm import Session
 
 from .settings import Settings
@@ -41,7 +41,11 @@ app.include_router(
     # dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
 )
-
+app.include_router(
+    app_settings.router,
+    prefix="/settings",
+    tags=["settings"]
+)
 @app.on_event("startup")
 async def startup():
     await database.connect()

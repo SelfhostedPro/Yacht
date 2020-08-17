@@ -1,8 +1,8 @@
 <template>
-  <v-snackbar v-model="visible" :color="color" :bottom="bottom">
+  <v-snackbar :value="visible" @input="clearSnack()" :color="color" :bottom="bottom">
     {{ content }}
     <template v-slot:action="{ attrs }">
-      <v-btn text v-bind="attrs" :color="btnColor" @click="clearSnack()">
+      <v-btn text v-bind="attrs" :color="btnColor" timeout=-1 @click="clearSnack()">
         Close
       </v-btn>
     </template>

@@ -53,4 +53,10 @@ class TemplateVariables(BaseModel):
 class ReadTemplateVariables(TemplateVariables):
     id: int
 
+### Export/Import ###
+class Import_Export(BaseModel):
+    templates: List[TemplateItems] = []
+    variables: List[ReadTemplateVariables] = []
+
+
 TemplateItems.update_forward_refs()
