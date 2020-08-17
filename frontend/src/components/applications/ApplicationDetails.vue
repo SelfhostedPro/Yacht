@@ -82,8 +82,8 @@ export default {
     },
     closeLogs() {
       this.logs = []
-      this.connection.send(JSON.stringify({ message: 'Closing Websocket' }))
-      this.connection.close()
+      this.connection.send(JSON.stringify({ message: 'Closing Websocket'}))
+      this.connection.close(1001, "Leaving log page or refreshing")
     }
   },
   created() {
