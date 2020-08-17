@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      logs: []
+      logs: [],
     };
   },
   computed: {
@@ -63,29 +63,33 @@ export default {
       const appName = this.$route.params.appName;
       this.readApp(appName);
       this.readAppProcesses(appName);
+      this.closeLogs();
       this.readAppLogs(appName);
     },
     readAppLogs(appName) {
     console.log("Starting connection to Websocket");
-    let connection = new WebSocket(
+    this.connection = new WebSocket(
       `ws://${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
     );
-    this.logs = []
-
-    connection.onopen = function() {
-      connection.send(JSON.stringify({ type: "onopen", data: "Connected!" }));
+    this.connection.onopen = () => {
+      this.connection.send(JSON.stringify({ type: "onopen", data: "Connected!" }));
     };
 
-    connection.onmessage = (event) => {
+    this.connection.onmessage = (event) => {
+      console.log(event)
       this.logs.push(event.data);
     };
+    },
+    closeLogs() {
+      this.logs = []
+      this.connection.send(JSON.stringify({ message: 'Closing Websocket' }))
+      this.connection.close()
     }
   },
   created() {
     const appName = this.$route.params.appName;
     this.readApp(appName);
     this.readAppProcesses(appName);
-    this.readAppLogs
   },
   async mounted() {
     const appName = this.$route.params.appName;
@@ -93,6 +97,9 @@ export default {
     await this.readAppProcesses(appName);
     await this.readAppLogs(appName);
   },
+  beforeDestroy() {
+    this.closeLogs()
+  }
 };
 </script>
 
