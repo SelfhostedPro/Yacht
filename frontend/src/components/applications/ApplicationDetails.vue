@@ -21,7 +21,7 @@
                 leave-active-class="animated slideOutRight"
                 mode="out-in"
               >
-                <router-view :app="app" :processes="processes" :logs="logs"/>
+                <router-view :app="app" :processes="processes" :logs="logs" :stats="stats"/>
               </transition>
             </v-card-text>
           </v-col>
@@ -41,6 +41,7 @@ export default {
   data() {
     return {
       logs: [],
+      stats: []
     };
   },
   computed: {
@@ -65,26 +66,48 @@ export default {
       this.readAppProcesses(appName);
       this.closeLogs();
       this.readAppLogs(appName);
+      this.readAppStats(appName)
     },
     readAppLogs(appName) {
-    console.log("Starting connection to Websocket");
-    this.connection = new WebSocket(
-      `ws://${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
-    );
-    this.connection.onopen = () => {
-      this.connection.send(JSON.stringify({ type: "onopen", data: "Connected!" }));
-    };
+      console.log("Starting connection to Websocket");
+      this.connection = new WebSocket(
+        `ws://${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
+      );
+      this.connection.onopen = () => {
+        this.connection.send(
+          JSON.stringify({ type: "onopen", data: "Connected!" })
+        );
+      };
 
-    this.connection.onmessage = (event) => {
-      console.log(event)
-      this.logs.push(event.data);
-    };
+      this.connection.onmessage = (event) => {
+        this.logs.push(event.data);
+      };
     },
     closeLogs() {
-      this.logs = []
-      this.connection.send(JSON.stringify({ message: 'Closing Websocket'}))
-      this.connection.close(1001, "Leaving log page or refreshing")
-    }
+      this.logs = [];
+      this.connection.send(JSON.stringify({ message: "Closing Websocket" }));
+      this.connection.close(1001, "Leaving log page or refreshing");
+    },
+    readAppStats(appName) {
+      console.log("Starting connection to Websocket");
+      this.statConnection = new WebSocket(
+        `ws://${location.hostname}:${location.port}/api/apps/${appName}/stats`
+      );
+      this.statConnection.onopen = () => {
+        this.statConnection.send(
+          JSON.stringify({ type: "onopen", data: "Connected!" })
+        );
+      };
+
+      this.statConnection.onmessage = (event) => {
+        this.stats.push(JSON.parse(event.data));
+      };
+    },
+    closeStats() {
+      this.stats = [];
+      this.statConnection.send(JSON.stringify({ message: "Closing Websocket" }));
+      this.statConnection.close(1001, "Leaving stats page or refreshing");
+    },
   },
   created() {
     const appName = this.$route.params.appName;
@@ -96,10 +119,12 @@ export default {
     await this.readApp(appName);
     await this.readAppProcesses(appName);
     await this.readAppLogs(appName);
+    await this.readAppStats(appName);
   },
   beforeDestroy() {
-    this.closeLogs()
-  }
+    this.closeLogs();
+    this.closeStats();
+  },
 };
 </script>
 

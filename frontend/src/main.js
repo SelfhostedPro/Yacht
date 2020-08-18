@@ -9,6 +9,7 @@ import axios from "axios";
 import vuetify from "./plugins/vuetify";
 // Form Validation
 import VueUtils from "./plugins/vueutils";
+import VueApexCharts from 'vue-apexcharts'
 import "./vee-validate";
 // Websockets
 // Animations
@@ -41,7 +42,7 @@ function createAxiosResponseInterceptor() {
 // Call interceptor
 createAxiosResponseInterceptor();
 Vue.use(VueUtils);
-
+Vue.component('apexchart', VueApexCharts)
 new Vue({
   router,
   store,

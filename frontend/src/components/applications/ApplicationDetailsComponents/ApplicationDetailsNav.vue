@@ -10,6 +10,9 @@
       <v-tab class="text-left" :to="{ path: 'logs' }">
         <v-icon left class="mr-1">mdi-book-open-outline</v-icon>Logs
       </v-tab>
+      <v-tab class="text-left" :to="{ path: 'stats' }">
+        <v-icon left class="mr-1">mdi-gauge</v-icon>Stats
+      </v-tab>
     </v-tabs>
     <v-fade-transition>
       <v-progress-linear
