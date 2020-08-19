@@ -1,71 +1,65 @@
 <template>
   <v-card raised>
     <v-card-title class="primary font-weight-bold">
-      Stats {{stats.cpu_percent}} {{stats.mem_percent}}
+      Stats
     </v-card-title>
     <v-card-text
       v-if="app.State.Status != 'running'"
       class="secondary text-center px-5 py-5"
     >
-      Start the app to view logs
+      Start the app to view stats
     </v-card-text>
-    <apexchart type="line" :options="options" :series="series" />
+    <v-card flat>
+      <v-card-title>
+        CPU Usage {{ stats.cpu_percent[stats.cpu_percent.length - 1] }}%
+      </v-card-title>
+      <v-card-subtitle>
+        (0-100%) <br />
+        Max: {{ Math.max.apply(Math, stats.cpu_percent) }}%
+      </v-card-subtitle>
+      <v-sparkline :fill="true" :smooth="true" :value="stats.cpu_percent">
+      </v-sparkline>
+    </v-card>
+    <v-card flat>
+      <v-card-title>
+        Memory Usage {{ stats.mem_percent[stats.mem_percent.length - 1] }}%,
+        {{ formatBytes(stats.mem_current[stats.mem_current.length - 1]) }}
+      </v-card-title>
+      <v-card-subtitle>
+        (0-100%) <br />
+        Max: {{ Math.max.apply(Math, stats.mem_percent) }}%,
+        {{ formatBytes(Math.max.apply(Math, stats.mem_current)) }}
+      </v-card-subtitle>
+      <v-sparkline :fill="true" :smooth="true" :value="stats.mem_percent">
+      </v-sparkline>
+    </v-card>
   </v-card>
 </template>
 
 <script>
-// import axios from "axios";
 export default {
   props: ["app", "stats"],
   data() {
-    return {
-      options: {
-        chart: {
-          id: 'stats_chart'
-        },
-        animations: {
-          enabled: true,
-          erasing: 'linear',
-          dynamicAction: {
-            speed: 10
-          }
-        },
-        xaxis: {
-          type: 'datetime',
-        },
-        yaxis: {
-          max: 100
-        }
-      }
-    };
+    return {};
   },
   methods: {
-    formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
+    formatBytes(bytes) {
+      if (bytes === 0) return "0 Bytes";
+      const decimals = 2;
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];      
-    }
-  },
-  computed: {
-    stat_comp() {
-      var cpu_percent = this.$props
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
     },
-    series() {
-      console.log(this.$props.stats)
-      return [
-        {
-        name: 'mem_cpu',
-        data: [this.$props.stats.cpu_percent]
-        }
-      ]
-    }
-  }
+  },
+  created: {
+    debug() {
+      console.log(this.$props.stats);
+    },
+  },
 };
 </script>
 
@@ -77,6 +71,6 @@ export default {
   background-color: black;
 }
 .keep-whitespace {
-  white-space:pre
+  white-space: pre;
 }
 </style>

@@ -10,15 +10,17 @@ from fastapi_users import FastAPIUsers
 from fastapi_users.password import get_password_hash
 
 from ..settings import Settings
-settings=Settings()
+settings = Settings()
 
 SECRET = settings.SECRET_KEY
 
 auth_backends = []
 
-cookie_authentication = CookieAuthentication(secret=SECRET, lifetime_seconds=3600, cookie_secure=False)
+cookie_authentication = CookieAuthentication(
+    secret=SECRET, lifetime_seconds=3600, cookie_secure=False)
 
 auth_backends.append(cookie_authentication)
+
 
 class User(models.BaseUser):
     pass
@@ -70,6 +72,7 @@ fastapi_users = FastAPIUsers(
 get_active_user = fastapi_users.get_current_active_user
 get_auth_router = fastapi_users.get_auth_router
 get_password_hash = get_password_hash
+
 
 async def user_create(UD):
     await fastapi_users.db.create(UD)

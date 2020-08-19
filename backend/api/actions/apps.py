@@ -7,18 +7,20 @@ from ..utils import *
 from datetime import datetime
 import docker
 
+
 def get_apps():
     apps_list = []
     dclient = docker.from_env()
     apps = dclient.containers.list(all=True)
     for app in apps:
-        attrs=app.attrs
+        attrs = app.attrs
         attrs.update(conv2dict('name', app.name))
         attrs.update(conv2dict('ports', app.ports))
         attrs.update(conv2dict('short_id', app.short_id))
         apps_list.append(attrs)
 
     return apps_list
+
 
 def get_app(app_name):
     dclient = docker.from_env()
@@ -31,6 +33,7 @@ def get_app(app_name):
 
     return attrs
 
+
 def get_app_processes(app_name):
     dclient = docker.from_env()
     app = dclient.containers.get(app_name)
@@ -40,6 +43,7 @@ def get_app_processes(app_name):
     else:
         return None
 
+
 def get_app_logs(app_name):
     dclient = docker.from_env()
     app = dclient.containers.get(app_name)
@@ -48,24 +52,26 @@ def get_app_logs(app_name):
     else:
         return None
 
+
 def deploy_app(template: schemas.DeployForm):
     try:
         launch = launch_app(
-        template.name,
-        template.image,
-        conv_restart2data(template.restart_policy),
-        conv_ports2data(template.ports),
-        conv_volumes2data(template.volumes),
-        conv_env2data(template.env),
-        conv_sysctls2data(template.sysctls),
-        conv_caps2data(template.cap_add)
+            template.name,
+            template.image,
+            conv_restart2data(template.restart_policy),
+            conv_ports2data(template.ports),
+            conv_volumes2data(template.volumes),
+            conv_env2data(template.env),
+            conv_sysctls2data(template.sysctls),
+            conv_caps2data(template.cap_add)
         )
 
-
-    except Exception as exc: raise
+    except Exception as exc:
+        raise
     print('done deploying')
 
     return schemas.DeployLogs(logs=launch.logs())
+
 
 def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
     dclient = docker.from_env()
@@ -88,6 +94,7 @@ def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
     Volumes: {volumes},
         Env: {env}''')
     return lauch
+
 
 def app_action(app_name, action):
     err = None

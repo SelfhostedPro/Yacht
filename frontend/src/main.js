@@ -9,13 +9,11 @@ import axios from "axios";
 import vuetify from "./plugins/vuetify";
 // Form Validation
 import VueUtils from "./plugins/vueutils";
-import VueApexCharts from 'vue-apexcharts'
 import "./vee-validate";
 // Websockets
 // Animations
 require("animate.css/animate.compat.css");
 
-// Socket.io
 
 Vue.config.productionTip = false;
 
@@ -42,7 +40,6 @@ function createAxiosResponseInterceptor() {
 // Call interceptor
 createAxiosResponseInterceptor();
 Vue.use(VueUtils);
-Vue.component('apexchart', VueApexCharts)
 new Vue({
   router,
   store,
