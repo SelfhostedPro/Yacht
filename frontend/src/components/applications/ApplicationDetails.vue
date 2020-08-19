@@ -50,10 +50,11 @@ export default {
         cpu_percent: [],
         mem_percent: [],
         mem_current: [],
+        mem_total: [],
         blk_read: [],
         blk_write: [],
         net_rx: [],
-        net_tx: []
+        net_tx: [],
       },
       connection: null,
       statConnection: null
@@ -121,6 +122,7 @@ export default {
         this.stats.cpu_percent.push(Math.round(statsGroup.cpu_percent));
         this.stats.mem_percent.push(Math.round(statsGroup.mem_percent));
         this.stats.mem_current.push(statsGroup.mem_current)
+        this.stats.mem_total.push(statsGroup.mem_total)
         this.stats.net_rx.push(statsGroup.net_rx);
         this.stats.net_tx.push(statsGroup.net_tx);
         this.stats.blk_write.push(statsGroup.blk_write);
@@ -136,6 +138,7 @@ export default {
       this.stats.cpu_percent = [];
       this.stats.mem_percent = [];
       this.stats.mem_current = [];
+      this.stats.mem_total= [];
       this.stats.net_rx = [];
       this.stats.net_tx = [];
       this.stats.blk_read = [];

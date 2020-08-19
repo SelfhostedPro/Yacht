@@ -23,12 +23,12 @@
     <v-card flat>
       <v-card-title>
         Memory Usage {{ stats.mem_percent[stats.mem_percent.length - 1] }}%,
-        {{ formatBytes(stats.mem_current[stats.mem_current.length - 1]) }}
+        {{ formatBytes(stats.mem_current[stats.mem_current.length - 1]) }}/{{formatBytes(stats.mem_total[stats.mem_total.length - 1])}}
       </v-card-title>
       <v-card-subtitle>
         (0-100%) <br />
         Max: {{ Math.max.apply(Math, stats.mem_percent) }}%,
-        {{ formatBytes(Math.max.apply(Math, stats.mem_current)) }}
+        {{ formatBytes(Math.max.apply(Math, stats.mem_current)) }}/{{formatBytes(stats.mem_total[stats.mem_total.length - 1])}}
       </v-card-subtitle>
       <v-sparkline :fill="true" :smooth="true" :value="stats.mem_percent">
       </v-sparkline>
