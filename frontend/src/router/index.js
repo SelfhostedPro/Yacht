@@ -9,6 +9,7 @@ import Applications from "../views/Applications.vue";
 import AppContent from "../components/applications/ApplicationDetailsComponents/AppContent.vue";
 import AppProcesses from "../components/applications/ApplicationDetailsComponents/AppProcesses.vue";
 import AppLogs from "../components/applications/ApplicationDetailsComponents/AppLogs.vue"
+import AppStats from "../components/applications/ApplicationDetailsComponents/AppStats.vue"
 import ApplicationDetails from "../components/applications/ApplicationDetails.vue";
 import ApplicationsList from "../components/applications/ApplicationsList.vue";
 import ApplicationsForm from "../components/applications/ApplicationsForm.vue";
@@ -87,6 +88,11 @@ const routes = [
             name: "Logs",
             path: "logs",
             component: AppLogs,
+          },
+          {
+            name: "Stats",
+            path: "stats",
+            component: AppStats,
           }
         ],
       },

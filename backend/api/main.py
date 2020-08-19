@@ -46,6 +46,8 @@ app.include_router(
     prefix="/settings",
     tags=["settings"]
 )
+
+
 @app.on_event("startup")
 async def startup():
     await database.connect()
@@ -54,14 +56,14 @@ async def startup():
         print("users exist")
     else:
         print("no users")
-        ### This is where I'm having trouble
+        # This is where I'm having trouble
         hashed_password = get_password_hash(settings.ADMIN_PASSWORD)
         base_user = UserDB(
-            id = uuid.uuid4(),
-            email = settings.ADMIN_EMAIL,
-            hashed_password = hashed_password,
-            is_active = True,
-            is_superuser = True
+            id=uuid.uuid4(),
+            email=settings.ADMIN_EMAIL,
+            hashed_password=hashed_password,
+            is_active=True,
+            is_superuser=True
         )
         user_created = await user_create(base_user)
     template_variables_exist = read_template_variables(SessionLocal())
@@ -78,6 +80,8 @@ async def startup():
             )
             t_var_list.append(template_variables)
         set_template_variables(new_variables=t_var_list, db=SessionLocal())
+
+
 @app.on_event("shutdown")
 async def shutdown():
     await database.disconnect()

@@ -21,7 +21,12 @@
                 leave-active-class="animated slideOutRight"
                 mode="out-in"
               >
-                <router-view :app="app" :processes="processes" :logs="logs"/>
+                <router-view
+                  :app="app"
+                  :processes="processes"
+                  :logs="logs"
+                  :stats="stats"
+                />
               </transition>
             </v-card-text>
           </v-col>
@@ -41,6 +46,17 @@ export default {
   data() {
     return {
       logs: [],
+      stats: {
+        cpu_percent: [],
+        mem_percent: [],
+        mem_current: [],
+        blk_read: [],
+        blk_write: [],
+        net_rx: [],
+        net_tx: []
+      },
+      connection: null,
+      statConnection: null
     };
   },
   computed: {
@@ -65,26 +81,70 @@ export default {
       this.readAppProcesses(appName);
       this.closeLogs();
       this.readAppLogs(appName);
+      this.readAppStats(appName);
+      this.closeStats();
     },
     readAppLogs(appName) {
-    console.log("Starting connection to Websocket");
-    this.connection = new WebSocket(
-      `ws://${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
-    );
-    this.connection.onopen = () => {
-      this.connection.send(JSON.stringify({ type: "onopen", data: "Connected!" }));
-    };
+      console.log("Starting connection to Websocket");
+      this.connection = new WebSocket(
+        `ws://${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
+      );
+      this.connection.onopen = () => {
+        this.connection.send(
+          JSON.stringify({ type: "onopen", data: "Connected!" })
+        );
+      };
 
-    this.connection.onmessage = (event) => {
-      console.log(event)
-      this.logs.push(event.data);
-    };
+      this.connection.onmessage = (event) => {
+        this.logs.push(event.data);
+      };
     },
     closeLogs() {
-      this.logs = []
-      this.connection.send(JSON.stringify({ message: 'Closing Websocket'}))
-      this.connection.close(1001, "Leaving log page or refreshing")
-    }
+      this.logs = [];
+      this.connection.send(JSON.stringify({ message: "Closing Websocket" }));
+      this.connection.close(1000, "Leaving page or refreshing");
+      // this.connection.close("Leaving page or refreshing", 1001);
+    },
+    readAppStats(appName) {
+      console.log("Starting connection to Websocket");
+      this.statConnection = new WebSocket(
+        `ws://${location.hostname}:${location.port}/api/apps/${appName}/stats`
+      );
+      this.statConnection.onopen = () => {
+        this.statConnection.send(
+          JSON.stringify({ type: "onopen", data: "Connected!" })
+        );
+      };
+
+      this.statConnection.onmessage = (event) => {
+        let statsGroup = JSON.parse(event.data);
+        this.stats.cpu_percent.push(Math.round(statsGroup.cpu_percent));
+        this.stats.mem_percent.push(Math.round(statsGroup.mem_percent));
+        this.stats.mem_current.push(statsGroup.mem_current)
+        this.stats.net_rx.push(statsGroup.net_rx);
+        this.stats.net_tx.push(statsGroup.net_tx);
+        this.stats.blk_write.push(statsGroup.blk_write);
+        this.stats.blk_read.push(statsGroup.blk_read);
+        for (let key in this.stats) {
+          if (this.stats[key].length > 300) {
+            this.stats[key].shift()
+          }
+        }
+      };
+    },
+    closeStats() {
+      this.stats.cpu_percent = [];
+      this.stats.mem_percent = [];
+      this.stats.mem_current = [];
+      this.stats.net_rx = [];
+      this.stats.net_tx = [];
+      this.stats.blk_read = [];
+      this.stats.blk_write = [];
+      this.statConnection.send(JSON.stringify({ message: "Closing Websocket" }));
+      this.statConnection.close(1000, "Leaving page or refreshing");
+      // this.statConnection.close(1001, "Leaving page or refreshing");
+
+    },
   },
   created() {
     const appName = this.$route.params.appName;
@@ -96,10 +156,12 @@ export default {
     await this.readApp(appName);
     await this.readAppProcesses(appName);
     await this.readAppLogs(appName);
+    await this.readAppStats(appName);
   },
   beforeDestroy() {
-    this.closeLogs()
-  }
+    this.closeLogs();
+    this.closeStats();
+  },
 };
 </script>
 

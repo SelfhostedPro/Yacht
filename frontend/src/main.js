@@ -14,7 +14,6 @@ import "./vee-validate";
 // Animations
 require("animate.css/animate.compat.css");
 
-// Socket.io
 
 Vue.config.productionTip = false;
 
@@ -41,7 +40,6 @@ function createAxiosResponseInterceptor() {
 // Call interceptor
 createAxiosResponseInterceptor();
 Vue.use(VueUtils);
-
 new Vue({
   router,
   store,
