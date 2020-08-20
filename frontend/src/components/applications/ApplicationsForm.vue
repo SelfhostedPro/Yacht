@@ -262,13 +262,13 @@
                 <v-row v-for="(item, index) in form.env" :key="index">
                   <v-col>
                     <ValidationProvider
-                      name="Label"
+                      name="Name"
                       rules="required"
                       v-slot="{ errors, valid }"
                     >
                       <v-text-field
-                        label="Label"
-                        v-model="item['label']"
+                        label="Name"
+                        v-model="item['name']"
                         :error-messages="errors"
                         :success="valid"
                         required

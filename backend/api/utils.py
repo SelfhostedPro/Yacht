@@ -254,3 +254,31 @@ def graceful_chain_get(d, *args, default=None):
             print("can't get %r from %s", a, t)
             return default
     return t
+
+
+async def get_app_stats(app_name):
+    async with aiodocker.Docker() as docker:
+        cpu_total = 0.0
+        cpu_system = 0.0
+        cpu_percent = 0.0
+
+        container: DockerContainer = await docker.containers.get(app_name)
+        stats = container.stats(stream=True)
+        async for line in stats:
+            mem_current = line["memory_stats"]["usage"]
+            mem_total = line["memory_stats"]["limit"]
+
+            try:
+                cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(line, cpu_total, cpu_system)
+            except KeyError as e:
+                print("error while getting new CPU stats: %r, falling back")
+                cpu_percent = await calculate_cpu_percent(line)
+
+            full_stats = {
+                "time": line['read'],
+                "cpu_percent": cpu_percent,
+                "mem_current": mem_current,
+                "mem_total": line["memory_stats"]["limit"],
+                "mem_percent": (mem_current / mem_total) * 100.0,
+            }
+            return json.dumps(full_stats)

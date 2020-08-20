@@ -17,27 +17,33 @@
         (0-100%) <br />
         Max: {{ Math.max.apply(Math, stats.cpu_percent) }}%
       </v-card-subtitle>
-      <v-sparkline :fill="true" :smooth="true" :value="stats.cpu_percent">
-      </v-sparkline>
+      <PercentLineChart :chartData="fillCPU(stats.cpu_percent, stats.time)" />
     </v-card>
     <v-card flat>
       <v-card-title>
         Memory Usage {{ stats.mem_percent[stats.mem_percent.length - 1] }}%,
-        {{ formatBytes(stats.mem_current[stats.mem_current.length - 1]) }}/{{formatBytes(stats.mem_total[stats.mem_total.length - 1])}}
+        {{ formatBytes(stats.mem_current[stats.mem_current.length - 1]) }}/{{
+          formatBytes(stats.mem_total[stats.mem_total.length - 1])
+        }}
       </v-card-title>
       <v-card-subtitle>
         (0-100%) <br />
         Max: {{ Math.max.apply(Math, stats.mem_percent) }}%,
-        {{ formatBytes(Math.max.apply(Math, stats.mem_current)) }}/{{formatBytes(stats.mem_total[stats.mem_total.length - 1])}}
+        {{ formatBytes(Math.max.apply(Math, stats.mem_current)) }}/{{
+          formatBytes(stats.mem_total[stats.mem_total.length - 1])
+        }}
       </v-card-subtitle>
-      <v-sparkline :fill="true" :smooth="true" :value="stats.mem_percent">
-      </v-sparkline>
+      <PercentLineChart :chartData="fillMem(stats.mem_percent, stats.time)" />
     </v-card>
   </v-card>
 </template>
 
 <script>
+import PercentLineChart from "../../charts/PercentLineChart";
 export default {
+  components: {
+    PercentLineChart,
+  },
   props: ["app", "stats"],
   data() {
     return {};
@@ -54,23 +60,46 @@ export default {
 
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
     },
-  },
-  created: {
-    debug() {
-      console.log(this.$props.stats);
+    fillCPU(stat, time) {
+      let datacollection = {
+        datasets: [
+          {
+            label: "CPU Usage",
+            backgroundColor: "#41b883",
+            lineTension: 0,
+            pointRadius: 0,
+            data: this.transformStat(stat, time),
+          },
+        ],
+      };
+      return datacollection;
+    },
+    fillMem(stat, time) {
+      let datacollection = {
+        datasets: [
+          {
+            label: "Memory Usage",
+            backgroundColor: "#41b883",
+            lineTension: 0,
+            pointRadius: 0,
+            data: this.transformStat(stat, time),
+          },
+        ],
+      };
+      return datacollection;
+    },
+    transformStat(stat, time) {
+      let dataArray = [];
+      time.forEach((timeEntry, index) => {
+        let entry = stat[index];
+        let dataObject = { x: timeEntry, y: entry };
+        dataArray.push(dataObject);
+      });
+      return dataArray;
     },
   },
 };
 </script>
 
 <style>
-#logtext {
-  font: 1rem Inconsolata, monospace;
-}
-#logcontainer {
-  background-color: black;
-}
-.keep-whitespace {
-  white-space: pre;
-}
 </style>

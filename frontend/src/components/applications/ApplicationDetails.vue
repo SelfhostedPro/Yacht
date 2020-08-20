@@ -47,14 +47,11 @@ export default {
     return {
       logs: [],
       stats: {
+        time: [],
         cpu_percent: [],
         mem_percent: [],
         mem_current: [],
         mem_total: [],
-        blk_read: [],
-        blk_write: [],
-        net_rx: [],
-        net_tx: [],
       },
       connection: null,
       statConnection: null
@@ -116,17 +113,14 @@ export default {
           JSON.stringify({ type: "onopen", data: "Connected!" })
         );
       };
-
       this.statConnection.onmessage = (event) => {
         let statsGroup = JSON.parse(event.data);
+        this.stats.time.push(statsGroup.time);
         this.stats.cpu_percent.push(Math.round(statsGroup.cpu_percent));
         this.stats.mem_percent.push(Math.round(statsGroup.mem_percent));
         this.stats.mem_current.push(statsGroup.mem_current)
         this.stats.mem_total.push(statsGroup.mem_total)
-        this.stats.net_rx.push(statsGroup.net_rx);
-        this.stats.net_tx.push(statsGroup.net_tx);
-        this.stats.blk_write.push(statsGroup.blk_write);
-        this.stats.blk_read.push(statsGroup.blk_read);
+        console.log(this.stats.blk_read)
         for (let key in this.stats) {
           if (this.stats[key].length > 300) {
             this.stats[key].shift()
@@ -135,18 +129,14 @@ export default {
       };
     },
     closeStats() {
+      this.stats.time = [];
       this.stats.cpu_percent = [];
       this.stats.mem_percent = [];
       this.stats.mem_current = [];
       this.stats.mem_total= [];
-      this.stats.net_rx = [];
-      this.stats.net_tx = [];
-      this.stats.blk_read = [];
-      this.stats.blk_write = [];
       this.statConnection.send(JSON.stringify({ message: "Closing Websocket" }));
       this.statConnection.close(1000, "Leaving page or refreshing");
       // this.statConnection.close(1001, "Leaving page or refreshing");
-
     },
   },
   created() {

@@ -10,8 +10,6 @@ import vuetify from "./plugins/vuetify";
 // Form Validation
 import VueUtils from "./plugins/vueutils";
 import "./vee-validate";
-// Websockets
-import VueApexCharts from 'vue-apexcharts';
 // Animations
 require("animate.css/animate.compat.css");
 
@@ -38,7 +36,7 @@ function createAxiosResponseInterceptor() {
   );
 }
 
-Vue.component('apexchart', VueApexCharts)
+// Vue.component('apexchart', VueApexCharts)
 
 // Call interceptor
 createAxiosResponseInterceptor();
