@@ -10,7 +10,7 @@ from ..db.models import containers
 from ..db.database import SessionLocal, engine
 from .. import actions
 from ..auth import get_active_user, User
-from ..utils import websocket_auth, calculate_blkio_bytes, calculate_cpu_percent, calculate_cpu_percent2, calculate_network_bytes
+from ..utils import websocket_auth, calculate_blkio_bytes, calculate_cpu_percent, calculate_cpu_percent2, calculate_network_bytes, get_app_stats
 
 import docker
 import aiodocker
@@ -93,8 +93,6 @@ async def stats(websocket: WebSocket, app_name: str):
             container: DockerContainer = await docker.containers.get(app_name)
             stats = container.stats(stream=True)
             async for line in stats:
-                blk_read, blk_write = await calculate_blkio_bytes(line)
-                net_read, net_write = await calculate_network_bytes(line)
                 mem_current = line["memory_stats"]["usage"]
                 mem_total = line["memory_stats"]["limit"]
 
@@ -105,14 +103,11 @@ async def stats(websocket: WebSocket, app_name: str):
                     cpu_percent = await calculate_cpu_percent(line)
 
                 full_stats = {
+                    "time": line['read'],
                     "cpu_percent": cpu_percent,
                     "mem_current": mem_current,
                     "mem_total": line["memory_stats"]["limit"],
                     "mem_percent": (mem_current / mem_total) * 100.0,
-                    "blk_read": blk_read,
-                    "blk_write": blk_write,
-                    "net_rx": net_read,
-                    "net_tx": net_write
                 }
                 try:
                     await websocket.send_text(json.dumps(full_stats))
