@@ -9,6 +9,8 @@ from fastapi.security import APIKeyCookie
 from .auth import cookie_authentication
 from .auth import user_db
 from .settings import Settings
+import aiodocker
+import json
 settings = Settings()
 
 
@@ -275,10 +277,11 @@ async def get_app_stats(app_name):
                 cpu_percent = await calculate_cpu_percent(line)
 
             full_stats = {
+                "name": line['name'],
                 "time": line['read'],
                 "cpu_percent": cpu_percent,
                 "mem_current": mem_current,
                 "mem_total": line["memory_stats"]["limit"],
                 "mem_percent": (mem_current / mem_total) * 100.0,
             }
-            return json.dumps(full_stats)
+            yield json.dumps(full_stats)
