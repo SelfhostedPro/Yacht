@@ -158,4 +158,7 @@ async def process_container(name, stats, websocket):
             "mem_total": line["memory_stats"]["limit"],
             "mem_percent": (mem_current / mem_total) * 100.0,
         }
-        await websocket.send_text(json.dumps(full_stats))
+        try:
+            await websocket.send_text(json.dumps(full_stats))
+        except Exception as e:
+            pass

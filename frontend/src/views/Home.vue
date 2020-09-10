@@ -6,6 +6,7 @@
       </v-card-title>
       <v-card-text class="secondary text-center px-5 py-5">
         All application stats
+        <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
       </v-card-text>
       <v-row dense class="mt-3">
         <v-col
@@ -19,11 +20,10 @@
           class="d-flex"
           style="flex-direction:column"
         >
-        <v-card class="flex-grow-1">
-          <v-card-title v-text="app.name"></v-card-title>
-          <v-card-text>CPU Usage {{ app.cpu_percent[app.cpu_percent.length - 1] }}%</v-card-text>
-          <!-- <PercentLineChart :chartData="fillCPU(app.cpu_percent, app.time)" /> -->
-        </v-card>
+          <v-card class="flex-grow-1">
+            <v-card-title v-text="app.name"></v-card-title>
+            <PercentBarChart :chartData="fillStats(app)" />
+          </v-card>
         </v-col>
       </v-row>
     </v-container>
@@ -31,10 +31,10 @@
 </template>
 
 <script>
-// import PercentLineChart from "../components/charts/PercentLineChart";
+import PercentBarChart from "../components/charts/PercentBarChart";
 export default {
   components: {
-    // PercentLineChart
+    PercentBarChart,
   },
   data() {
     return {
@@ -57,42 +57,40 @@ export default {
         if (this.stats[statsGroup.name] == null) {
           this.initStats(statsGroup);
         }
-        this.stats[statsGroup.name].time.push(statsGroup.time);
-        this.stats[statsGroup.name].cpu_percent.push(
-          Math.round(statsGroup.cpu_percent)
-        );
-        this.stats[statsGroup.name].mem_percent.push(
-          Math.round(statsGroup.mem_percent)
-        );
-        this.stats[statsGroup.name].mem_current.push(statsGroup.mem_current);
-        this.stats[statsGroup.name].mem_total.push(statsGroup.mem_total);
-        for (let key in this.stats[statsGroup.name]) {
-          if (this.stats[statsGroup.name][key].length > 300) {
-            this.stats[statsGroup.name][key].shift();
-          }
-        }
+        this.stats[statsGroup.name].name = statsGroup.name;
+        this.stats[statsGroup.name].cpu_percent.push(statsGroup.cpu_percent);
+        this.stats[statsGroup.name].mem_percent.push(statsGroup.mem_percent);
+        // let statObject = {
+        //   time: statsGroup.time,
+        //   name: statsGroup.name,
+        //   cpu_percent: [Math.round(statsGroup.cpu_percent)],
+        //   mem_percent: [Math.round(statsGroup.mem_percent)],
+        // };
+        // this.$set(this.stats, statsGroup.name, statObject)
+        // this.stats[statsGroup.name] = Object.assign(
+        //   {},
+        //   this.stats[statsGroup.name],
+        //   statObject
+        // );
+        console.log(this.stats)
       };
+    },
+    refresh() {
+      this.closeStats();
+      this.readAppStats();
     },
     initStats(statsGroup) {
       this.stats[statsGroup.name] = {};
-      this.stats[statsGroup.name].name = statsGroup.name
-      this.stats[statsGroup.name].time = [];
+      this.stats[statsGroup.name].name = "";
       this.stats[statsGroup.name].cpu_percent = [];
       this.stats[statsGroup.name].mem_percent = [];
-      this.stats[statsGroup.name].mem_current = [];
-      this.stats[statsGroup.name].mem_total = [];
     },
     closeStats() {
-      this.stats.time = [];
-      this.stats.cpu_percent = [];
-      this.stats.mem_percent = [];
-      this.stats.mem_current = [];
-      this.stats.mem_total = [];
+      this.stats = {};
       this.statConnection.send(
         JSON.stringify({ message: "Closing Websocket" })
       );
       this.statConnection.close(1000, "Leaving page or refreshing");
-      // this.statConnection.close(1001, "Leaving page or refreshing");
     },
     formatBytes(bytes) {
       if (bytes === 0) return "0 Bytes";
@@ -105,41 +103,36 @@ export default {
 
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
     },
-    fillCPU(stat, time) {
+    fillStats(app) {
+      console.log(app);
       let datacollection = {
+        labels: ["CPU Usage", "MEM Usage"],
         datasets: [
           {
             label: "CPU Usage",
             backgroundColor: "#41b883",
             lineTension: 0,
             pointRadius: 0,
-            data: time.map((t, i) => {
-              return { x: t, y: stat[i] };
-            }),
+            data: app.cpu_percent,
           },
-        ],
-      };
-      return datacollection;
-    },
-    fillMem(stat, time) {
-      let datacollection = {
-        datasets: [
           {
-            label: "Memory Usage",
-            backgroundColor: "#41b883",
+            label: "Mem Usage",
+            backgroundColor: "#FFFFFF",
             lineTension: 0,
             pointRadius: 0,
-            data: time.map((t, i) => {
-              return { x: t, y: stat[i] };
-            }),
+            data: app.mem_percent,
           },
         ],
       };
+      console.log(datacollection);
       return datacollection;
     },
   },
   async mounted() {
-    await this.readAppStats();
+    this.readAppStats();
+  },
+  beforeDestroy() {
+    this.closeStats();
   },
 };
 </script>

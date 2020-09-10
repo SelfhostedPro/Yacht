@@ -78,9 +78,9 @@ export default {
       this.readApp(appName);
       this.readAppProcesses(appName);
       this.closeLogs();
+      this.closeStats();
       this.readAppLogs(appName);
       this.readAppStats(appName);
-      this.closeStats();
     },
     readAppLogs(appName) {
       console.log("Starting connection to Websocket");
