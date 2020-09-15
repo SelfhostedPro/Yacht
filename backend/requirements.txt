@@ -22,6 +22,7 @@ pycparser==2.20
 pydantic==1.6.1
 PyJWT==1.7.1
 python-multipart==0.0.5
+PyYAML==5.3.1
 requests==2.24.0
 six==1.15.0
 SQLAlchemy==1.3.18
