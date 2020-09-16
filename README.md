@@ -13,7 +13,7 @@ Currently only linux has been verified as working but we are open to the idea of
 Once docker is installed you'll simply run the following commands to get started:
 ```
 docker volume create yacht
-docker run -d -p 8000:8000 -v /var/run/docker.sock:/var/run/docker.sock -v yacht:/config selfhostedpro/yacht
+docker run -d -p 8000:8000 -v /var/run/docker.sock:/var/run/docker.sock -v yacht:/config selfhostedpro/yacht:vue
 ```
 It will be available on port 8000.
 
