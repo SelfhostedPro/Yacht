@@ -47,9 +47,9 @@ def add_template(db: Session, template: models.containers.Template):
         _template = models.containers.Template(
             title=template.title, url=template.url)
         with urllib.request.urlopen(template.url) as file:
-            if ext in (".yml", '.yaml'):
+            if ext.rstrip() in (".yml", '.yaml'):
                 loaded_file = yaml.load(file, Loader=yaml.SafeLoader)
-            elif ext in (".json"):
+            elif ext.rstrip() in (".json", "json"):
                 loaded_file = json.load(file)
             else:
                 print('Invalid filetype')
