@@ -22,7 +22,7 @@
         >
           <v-card class="flex-grow-1">
             <v-card-title v-text="app.name"></v-card-title>
-            <PercentBarChart :chartData="fillStats(app)" />
+            <PercentBarChart :chart-id="app.name" :chartData="fillStats(app)" />
           </v-card>
         </v-col>
       </v-row>
@@ -58,24 +58,18 @@ export default {
           this.initStats(statsGroup);
         }
         this.stats[statsGroup.name].name = statsGroup.name;
-        this.stats[statsGroup.name].cpu_percent.push(statsGroup.cpu_percent);
-        this.stats[statsGroup.name].mem_percent.push(statsGroup.mem_percent);
-        // let statObject = {
-        //   time: statsGroup.time,
-        //   name: statsGroup.name,
-        //   cpu_percent: [Math.round(statsGroup.cpu_percent)],
-        //   mem_percent: [Math.round(statsGroup.mem_percent)],
-        // };
-        // this.$set(this.stats, statsGroup.name, statObject)
-        // this.stats[statsGroup.name] = Object.assign(
-        //   {},
-        //   this.stats[statsGroup.name],
-        //   statObject
-        // );
-        console.log(this.stats)
+        this.stats[statsGroup.name].cpu_percent.push(Math.round(statsGroup.cpu_percent));
+        this.stats[statsGroup.name].mem_percent.push(Math.round(statsGroup.mem_percent));
+        for (let key in this.stats[statsGroup.name]) {
+          if (this.stats[statsGroup.name][key].length > 5 && Array.isArray(this.stats[statsGroup.name][key])) {
+            this.stats[statsGroup.name][key].shift()
+          }
+        }
+        this.$forceUpdate();
       };
     },
     refresh() {
+      console.log(this.stats)
       this.closeStats();
       this.readAppStats();
     },
@@ -104,27 +98,21 @@ export default {
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
     },
     fillStats(app) {
-      console.log(app);
       let datacollection = {
-        labels: ["CPU Usage", "MEM Usage"],
+        labels: ["Resource Usage"],
         datasets: [
           {
             label: "CPU Usage",
             backgroundColor: "#41b883",
-            lineTension: 0,
-            pointRadius: 0,
             data: app.cpu_percent,
           },
           {
             label: "Mem Usage",
             backgroundColor: "#FFFFFF",
-            lineTension: 0,
-            pointRadius: 0,
             data: app.mem_percent,
           },
         ],
       };
-      console.log(datacollection);
       return datacollection;
     },
   },
