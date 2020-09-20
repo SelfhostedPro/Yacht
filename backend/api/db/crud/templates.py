@@ -7,7 +7,10 @@ from ...utils import conv_ports2dict, conv_sysctls2dict
 
 from datetime import datetime
 import urllib.request
+from urllib.parse import urlparse
 import json
+import yaml
+import os
 
 # Templates
 
@@ -38,11 +41,20 @@ def delete_template(db: Session, template_id: int):
 
 def add_template(db: Session, template: models.containers.Template):
     try:
+        _template_path = urlparse(template.url).path
+        ext = os.path.splitext(_template_path)[1]
         # Opens the JSON and iterate over the content.
         _template = models.containers.Template(
             title=template.title, url=template.url)
         with urllib.request.urlopen(template.url) as file:
-            for entry in json.load(file):
+            if ext.rstrip() in (".yml", '.yaml'):
+                loaded_file = yaml.load(file, Loader=yaml.SafeLoader)
+            elif ext.rstrip() in (".json", "json"):
+                loaded_file = json.load(file)
+            else:
+                print('Invalid filetype')
+                raise
+            for entry in loaded_file:
 
                 ports = conv_ports2dict(entry.get('ports', []))
                 sysctls = conv_sysctls2dict(entry.get('sysctls', []))
@@ -87,10 +99,20 @@ def refresh_template(db: Session, template_id: id):
     template = db.query(models.Template).filter(
         models.Template.id == template_id).first()
 
+    _template_path = urlparse(template.url).path
+    ext = os.path.splitext(_template_path)[1]
+
     items = []
     try:
         with urllib.request.urlopen(template.url) as fp:
-            for entry in json.load(fp):
+            if ext in (".yml", '.yaml'):
+                loaded_file = yaml.load(fp, Loader=yaml.SafeLoader)
+            elif ext in (".json"):
+                loaded_file = json.load(fp)
+            else:
+                print('Invalid filetype')
+                raise
+            for entry in loaded_file:
 
                 ports = conv_ports2dict(entry.get('ports', []))
                 sysctls = conv_sysctls2dict(entry.get('sysctls', []))

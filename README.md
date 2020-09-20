@@ -1,4 +1,8 @@
 ![logo](https://raw.githubusercontent.com/SelfhostedPro/Yacht/vue/readme_media/Yacht_logo_1_dark.png "templates")
+
+[![Docker Hub Pulls](https://img.shields.io/docker/pulls/selfhostedpro/yacht?color=%234518f5&label=Docker%20Pulls&logo=docker&logoColor=%23403d3d&style=for-the-badge)](https://hub.docker.com/r/selfhostedpro/yacht)
+[![Docker Image Size](https://img.shields.io/docker/image-size/selfhostedpro/yacht/vue?color=%234518f5&label=Image%20Size&logo=docker&logoColor=%23403d3d&style=for-the-badge)](https://hub.docker.com/r/selfhostedpro/yacht)
+
 ## Yacht
 Yacht is a container management UI with a focus on templates and 1-click deployments.
 
@@ -13,7 +17,7 @@ Currently only linux has been verified as working but we are open to the idea of
 Once docker is installed you'll simply run the following commands to get started:
 ```
 docker volume create yacht
-docker run -d -p 8000:8000 -v /var/run/docker.sock:/var/run/docker.sock -v yacht:/config selfhostedpro/yacht:vue
+docker run -d -p 8000:8000 -v /var/run/docker.sock:/var/run/docker.sock -v yacht:/config selfhostedpro/yacht
 ```
 It will be available on port 8000.
 
