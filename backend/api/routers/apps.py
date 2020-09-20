@@ -119,22 +119,24 @@ async def stats(websocket: WebSocket, app_name: str):
 
 @router.websocket("/stats")
 async def dashboard(websocket: WebSocket):
-    # auth_success = await websocket_auth(websocket=websocket)
-    # if auth_success:
-    await websocket.accept()
-    tasks = []
-    async with aiodocker.Docker() as docker: 
-        containers = []
-        _containers = await docker.containers.list()
-        for _app in _containers: 
-            if _app._container['State'] == 'running':
-                containers.append(_app)
-        for app in containers:
-            _name = app._container['Names'][0][1:]
-            container: DockerContainer = await docker.containers.get(_name)
-            stats = container.stats(stream=True)
-            tasks.append(process_container(_name, stats, websocket))
-        await asyncio.gather(*tasks)
+    auth_success = await websocket_auth(websocket=websocket)
+    if auth_success:
+        await websocket.accept()
+        tasks = []
+        async with aiodocker.Docker() as docker: 
+            containers = []
+            _containers = await docker.containers.list()
+            for _app in _containers: 
+                if _app._container['State'] == 'running':
+                    containers.append(_app)
+            for app in containers:
+                _name = app._container['Names'][0][1:]
+                container: DockerContainer = await docker.containers.get(_name)
+                stats = container.stats(stream=True)
+                tasks.append(process_container(_name, stats, websocket))
+            await asyncio.gather(*tasks)
+    else:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
 
 async def process_container(name, stats, websocket):
     cpu_total = 0.0

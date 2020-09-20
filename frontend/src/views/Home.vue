@@ -7,30 +7,34 @@
       <v-card-text class="secondary text-center px-5 py-5">
         All application stats
         <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
+        <v-row dense class="mt-3">
+          <v-col
+            v-for="(app, index) in stats"
+            :key="index"
+            cols="12"
+            xl="2"
+            md="3"
+            sm="4"
+            xs="12"
+            class="d-flex"
+            style="flex-direction:column"
+          >
+            <v-card class="flex-grow-1">
+              <v-card-title v-text="app.name"></v-card-title>
+              <PercentBarChart
+                :chart-id="app.name"
+                :chartData="fillStats(app)"
+              />
+            </v-card>
+          </v-col>
+        </v-row>
       </v-card-text>
-      <v-row dense class="mt-3">
-        <v-col
-          v-for="(app, index) in stats"
-          :key="index"
-          cols="12"
-          xl="2"
-          md="3"
-          sm="4"
-          xs="12"
-          class="d-flex"
-          style="flex-direction:column"
-        >
-          <v-card class="flex-grow-1">
-            <v-card-title v-text="app.name"></v-card-title>
-            <PercentBarChart :chart-id="app.name" :chartData="fillStats(app)" />
-          </v-card>
-        </v-col>
-      </v-row>
     </v-container>
   </v-card>
 </template>
 
 <script>
+import axios from "axios"
 import PercentBarChart from "../components/charts/PercentBarChart";
 export default {
   components: {
@@ -44,6 +48,14 @@ export default {
   methods: {
     readAppStats() {
       console.log("Starting connection to Websocket");
+      let url = "/api/users/me";
+      axios
+        .get(url, { withCredentials: true })
+        .catch((err) => {
+          localStorage.removeItem("username");
+          window.location.reload()
+          console.log(err);
+        })
       this.statConnection = new WebSocket(
         `ws://${location.hostname}:${location.port}/api/apps/stats`
       );
@@ -58,18 +70,25 @@ export default {
           this.initStats(statsGroup);
         }
         this.stats[statsGroup.name].name = statsGroup.name;
-        this.stats[statsGroup.name].cpu_percent.push(Math.round(statsGroup.cpu_percent));
-        this.stats[statsGroup.name].mem_percent.push(Math.round(statsGroup.mem_percent));
+        this.stats[statsGroup.name].cpu_percent.push(
+          Math.round(statsGroup.cpu_percent)
+        );
+        this.stats[statsGroup.name].mem_percent.push(
+          Math.round(statsGroup.mem_percent)
+        );
         for (let key in this.stats[statsGroup.name]) {
-          if (this.stats[statsGroup.name][key].length > 5 && Array.isArray(this.stats[statsGroup.name][key])) {
-            this.stats[statsGroup.name][key].shift()
+          if (
+            this.stats[statsGroup.name][key].length > 5 &&
+            Array.isArray(this.stats[statsGroup.name][key])
+          ) {
+            this.stats[statsGroup.name][key].shift();
           }
         }
         this.$forceUpdate();
       };
     },
     refresh() {
-      console.log(this.stats)
+      console.log(this.stats);
       this.closeStats();
       this.readAppStats();
     },

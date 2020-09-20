@@ -4,7 +4,7 @@ import re
 from typing import Dict, List, Optional
 
 from jose import jwt
-from fastapi import Cookie, Depends, WebSocket, status
+from fastapi import Cookie, Depends, WebSocket, status, HTTPException
 from fastapi.security import APIKeyCookie
 from .auth import cookie_authentication
 from .auth import user_db
@@ -193,7 +193,6 @@ async def websocket_auth(
             return user
     except:
         return None
-
 
 async def calculate_cpu_percent(d):
     cpu_count = len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])

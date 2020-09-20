@@ -16,12 +16,12 @@ require("animate.css/animate.compat.css");
 
 Vue.config.productionTip = false;
 
-// Handle Token Refresh on 401
+// Handle Token Refresh on 401 or 403
 function createAxiosResponseInterceptor() {
   const interceptor = axios.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response.status !== 401) {
+      if (error.response.status !== 401 || error.response.status !== 403) {
         return Promise.reject(error);
       }
 
