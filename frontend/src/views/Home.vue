@@ -2,15 +2,13 @@
   <v-card raised>
     <v-container fluid class="templateDetailsContainer component">
       <v-card-title class="primary font-weight-bold">
-        Stats
+        Stats <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
       </v-card-title>
-      <v-card-text class="secondary text-center px-5 py-5">
-        All application stats
-        <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
+      <v-card-text class="secondary text-center px-5 py-5">        
         <v-row dense class="mt-3">
           <v-col
-            v-for="(app, index) in stats"
-            :key="index"
+            v-for="app in sortByTitle(stats)"
+            :key="app.name"
             cols="12"
             xl="2"
             md="3"
@@ -20,7 +18,20 @@
             style="flex-direction:column"
           >
             <v-card class="flex-grow-1">
-              <v-card-title v-text="app.name"></v-card-title>
+              <v-card-title class="pb-0">
+                <div class="AppTitle">
+                  {{ app.name }}
+                </div>
+              </v-card-title>
+                  <v-card-text class="text-left pt-0">
+                    CPU Usage:
+                    {{ app.cpu_percent[app.cpu_percent.length - 1] }}%
+                    <br/>
+                    MEM Usage:
+                    {{ app.mem_percent[app.mem_percent.length - 1] }}%,
+                    {{ formatBytes(app.mem_current[app.mem_current.length - 1])
+                    }}
+                  </v-card-text>
               <PercentBarChart
                 :chart-id="app.name"
                 :chartData="fillStats(app)"
@@ -34,7 +45,7 @@
 </template>
 
 <script>
-import axios from "axios"
+import axios from "axios";
 import PercentBarChart from "../components/charts/PercentBarChart";
 export default {
   components: {
@@ -49,13 +60,11 @@ export default {
     readAppStats() {
       console.log("Starting connection to Websocket");
       let url = "/api/users/me";
-      axios
-        .get(url, { withCredentials: true })
-        .catch((err) => {
-          localStorage.removeItem("username");
-          window.location.reload()
-          console.log(err);
-        })
+      axios.get(url, { withCredentials: true }).catch((err) => {
+        localStorage.removeItem("username");
+        window.location.reload();
+        console.log(err);
+      });
       this.statConnection = new WebSocket(
         `ws://${location.hostname}:${location.port}/api/apps/stats`
       );
@@ -76,6 +85,8 @@ export default {
         this.stats[statsGroup.name].mem_percent.push(
           Math.round(statsGroup.mem_percent)
         );
+        this.stats[statsGroup.name].mem_current.push(statsGroup.mem_current);
+        this.stats[statsGroup.name].mem_total.push(statsGroup.mem_total);
         for (let key in this.stats[statsGroup.name]) {
           if (
             this.stats[statsGroup.name][key].length > 5 &&
@@ -97,6 +108,20 @@ export default {
       this.stats[statsGroup.name].name = "";
       this.stats[statsGroup.name].cpu_percent = [];
       this.stats[statsGroup.name].mem_percent = [];
+      this.stats[statsGroup.name].mem_current = [];
+      this.stats[statsGroup.name].mem_total = [];
+    },
+    sortByTitle(arr) {
+      let sorted = Object.keys(arr)
+        .sort()
+        .reduce(
+          (acc, key) => ({
+            ...acc,
+            [key]: arr[key],
+          }),
+          {}
+        );
+      return sorted;
     },
     closeStats() {
       this.stats = {};
@@ -144,4 +169,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.AppTitle {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+</style>
