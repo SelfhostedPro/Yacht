@@ -7,13 +7,17 @@ from ..utils import *
 from datetime import datetime
 import docker
 
-async def get_running_apps():
+
+def get_running_apps():
     apps_list = []
-    dclient = aiodocker.Docker()
-    apps = await dclient.containers.list()
-    for app in (await dclient.containers.list()):
-        name = app._container
-        apps_list.append(name)
+    dclient = docker.from_env()
+    apps = dclient.containers.list()
+    for app in apps:
+        attrs = app.attrs
+        attrs.update(conv2dict('name', app.name))
+        attrs.update(conv2dict('ports', app.ports))
+        attrs.update(conv2dict('short_id', app.short_id))
+        apps_list.append(attrs)
 
     return apps_list
 
