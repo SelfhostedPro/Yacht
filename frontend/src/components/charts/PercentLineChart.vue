@@ -72,7 +72,7 @@ export default {
                 autoSkip: true,
                 autoSkipPadding: 15,
                 maxRotation: 0,
-                maxTicksLimit: 8,
+                maxTicksLimit: 2,
                 padding: 10,
               },
               type: "time",

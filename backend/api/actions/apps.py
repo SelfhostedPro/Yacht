@@ -7,6 +7,7 @@ from ..utils import *
 from datetime import datetime
 import docker
 
+
 def get_running_apps():
     apps_list = []
     dclient = docker.from_env()
