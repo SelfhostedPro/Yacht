@@ -73,7 +73,7 @@ import { mapActions } from "vuex";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver,
+    ValidationObserver
   },
   props: ["currentUsername"],
   data() {
@@ -87,18 +87,16 @@ export default {
   },
   methods: {
     ...mapActions({
-      login: "auth/AUTH_CHANGE_PASS",
+      login: "auth/AUTH_CHANGE_PASS"
     }),
     onSubmit() {
       this.login({
         username: this.username,
-        password: this.password,
-      }
-    );
-    },
+        password: this.password
+      });
+    }
   }
 };
 </script>
 
-<style lang="css" scope>
-</style>
+<style lang="css" scope></style>

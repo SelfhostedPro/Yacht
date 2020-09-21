@@ -7,15 +7,15 @@ export default {
   props: {
     chartdata: {
       type: Object,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
       options: {
         responsive: true,
         animation: {
-          duration: 0,
+          duration: 0
         },
         scales: {
           yAxes: [
@@ -26,15 +26,15 @@ export default {
                 min: 0,
                 max: 100,
                 maxTicksLimit: 5
-              },
-            },
-          ],
-        },
-      },
+              }
+            }
+          ]
+        }
+      }
     };
   },
- mounted() {
+  mounted() {
     this.renderChart(this.chartData, this.options);
-  },
+  }
 };
 </script>

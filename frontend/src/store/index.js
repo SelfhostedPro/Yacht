@@ -3,10 +3,9 @@ import Vuex from "vuex";
 import auth from "./modules/auth";
 import templates from "./modules/templates.js";
 import apps from "./modules/apps.js";
-import snackbar from "./modules/snackbar.js"
+import snackbar from "./modules/snackbar.js";
 
 Vue.use(Vuex);
-
 
 export default new Vuex.Store({
   state: {

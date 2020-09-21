@@ -190,7 +190,10 @@
             ></v-list-item-content
           >
           <v-list-item-content>
-            <v-list-item-title v-for="(cap, index) in app.HostConfig.CapAdd" :key="index">
+            <v-list-item-title
+              v-for="(cap, index) in app.HostConfig.CapAdd"
+              :key="index"
+            >
               {{ cap }}
             </v-list-item-title>
           </v-list-item-content>
@@ -204,8 +207,11 @@
             ></v-list-item-content
           >
           <v-list-item-content>
-            <v-list-item-title v-for="(sysctl, index) in Object.keys(app.HostConfig.Sysctls)" :key="index">
-              {{ sysctl }} = {{app.HostConfig.Sysctls[sysctl]}},
+            <v-list-item-title
+              v-for="(sysctl, index) in Object.keys(app.HostConfig.Sysctls)"
+              :key="index"
+            >
+              {{ sysctl }} = {{ app.HostConfig.Sysctls[sysctl] }},
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -218,7 +224,7 @@
 export default {
   data() {
     return {
-      host_ip: location.hostname,
+      host_ip: location.hostname
     };
   },
   props: ["app"],
@@ -248,7 +254,7 @@ export default {
         env.push(_split_data);
       }
       return env;
-    },
-  },
+    }
+  }
 };
 </script>

@@ -13,14 +13,13 @@ import "./vee-validate";
 // Animations
 require("animate.css/animate.compat.css");
 
-
 Vue.config.productionTip = false;
 
 // Handle Token Refresh on 401 or 403
 function createAxiosResponseInterceptor() {
   const interceptor = axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
+    response => response,
+    error => {
       if (error.response.status !== 401 || error.response.status !== 403) {
         return Promise.reject(error);
       }
@@ -45,5 +44,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: (h) => h(App),
+  render: h => h(App)
 }).$mount("#app");

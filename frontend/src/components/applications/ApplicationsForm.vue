@@ -438,7 +438,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver,
+    ValidationObserver
   },
   data() {
     return {
@@ -453,7 +453,7 @@ export default {
         volumes: [],
         env: [],
         sysctls: [],
-        cap_add: [],
+        cap_add: []
       },
       isLoading: false,
       cap_options: [
@@ -479,16 +479,16 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND",
-      ],
+        "BLOCK_SUSPEND"
+      ]
     };
   },
   methods: {
     ...mapActions({
-      readApp: "templates/readApp",
+      readApp: "templates/readApp"
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr",
+      setErr: "snackbar/setErr"
     }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
@@ -556,20 +556,20 @@ export default {
             volumes: app.volumes || [],
             env: app.env || [],
             sysctls: app.sysctls || [],
-            cap_add: app.cap_add || [],
+            cap_add: app.cap_add || []
           };
         } catch (error) {
           console.error(error, error.response);
-          this.setErr(error)
+          this.setErr(error);
         }
       } else {
         console.log("No app selected");
       }
-    },
+    }
   },
   async created() {
     await this.populateForm();
-  },
+  }
 };
 </script>
 
