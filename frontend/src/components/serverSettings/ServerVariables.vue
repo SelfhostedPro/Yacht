@@ -91,20 +91,20 @@ import { mapActions } from "vuex";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver,
+    ValidationObserver
   },
   data() {
     return {
       form: {
-        templateVariables: [],
+        templateVariables: []
       },
-      saved: false,
+      saved: false
     };
   },
   methods: {
     ...mapActions({
       writeTemplateVariables: "templates/writeTemplateVariables",
-      readTemplateVariables: "templates/readTemplateVariables",
+      readTemplateVariables: "templates/readTemplateVariables"
     }),
     addTemplateVariables() {
       this.form.templateVariables.push({ variable: "", replacement: "" });
@@ -121,17 +121,17 @@ export default {
       try {
         const t_vars = await this.readTemplateVariables();
         this.form = {
-          templateVariables: t_vars || [],
+          templateVariables: t_vars || []
         };
       } catch (error) {
         console.error(error, error.response);
       }
-    },
+    }
   },
 
   async created() {
     await this.populateForm();
     this.saved = false;
-  },
+  }
 };
 </script>

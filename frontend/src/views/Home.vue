@@ -4,34 +4,54 @@
       <v-card-title class="primary font-weight-bold">
         Stats <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
       </v-card-title>
-      <v-card-text class="secondary text-center px-5 py-5">        
+      <v-card-text class="secondary text-center px-5 py-5">
         <v-row dense class="mt-3">
           <v-col
             v-for="app in sortByTitle(stats)"
             :key="app.name"
             cols="12"
             xl="2"
-            md="3"
-            sm="4"
-            xs="12"
+            md="2"
+            sm="3"
+            xs="6"
             class="d-flex"
             style="flex-direction:column"
           >
             <v-card class="flex-grow-1">
               <v-card-title class="pb-0">
-                <div class="AppTitle">
-                  {{ app.name }}
-                </div>
+                <v-tooltip top transition="scale-transition">
+                  <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on" class="AppTitle">{{
+                      app.name
+                    }}</span>
+                  </template>
+                  <span>{{ app.name }}</span>
+                </v-tooltip>
               </v-card-title>
-                  <v-card-text class="text-left pt-0">
+              <v-tooltip bottom transition="scale-transition">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-card-text
+                    v-bind="attrs"
+                    v-on="on"
+                    class="text-left pt-0 AppTitle"
+                  >
                     CPU Usage:
                     {{ app.cpu_percent[app.cpu_percent.length - 1] }}%
-                    <br/>
+                    <br />
                     MEM Usage:
                     {{ app.mem_percent[app.mem_percent.length - 1] }}%,
-                    {{ formatBytes(app.mem_current[app.mem_current.length - 1])
+                    {{
+                      formatBytes(app.mem_current[app.mem_current.length - 1])
                     }}
                   </v-card-text>
+                </template>
+                <span
+                  >CPU Usage: {{ app.cpu_percent[app.cpu_percent.length - 1] }}%
+                  <br />
+                  MEM Usage: {{ app.mem_percent[app.mem_percent.length - 1] }}%,
+                  {{ formatBytes(app.mem_current[app.mem_current.length - 1]) }}
+                </span>
+              </v-tooltip>
               <PercentBarChart
                 :chart-id="app.name"
                 :chartData="fillStats(app)"
@@ -49,18 +69,18 @@ import axios from "axios";
 import PercentBarChart from "../components/charts/PercentBarChart";
 export default {
   components: {
-    PercentBarChart,
+    PercentBarChart
   },
   data() {
     return {
-      stats: {},
+      stats: {}
     };
   },
   methods: {
     readAppStats() {
       console.log("Starting connection to Websocket");
       let url = "/api/users/me";
-      axios.get(url, { withCredentials: true }).catch((err) => {
+      axios.get(url, { withCredentials: true }).catch(err => {
         localStorage.removeItem("username");
         window.location.reload();
         console.log(err);
@@ -73,7 +93,7 @@ export default {
           JSON.stringify({ type: "onopen", data: "Connected!" })
         );
       };
-      this.statConnection.onmessage = (event) => {
+      this.statConnection.onmessage = event => {
         let statsGroup = JSON.parse(event.data);
         if (this.stats[statsGroup.name] == null) {
           this.initStats(statsGroup);
@@ -117,7 +137,7 @@ export default {
         .reduce(
           (acc, key) => ({
             ...acc,
-            [key]: arr[key],
+            [key]: arr[key]
           }),
           {}
         );
@@ -148,24 +168,24 @@ export default {
           {
             label: "CPU Usage",
             backgroundColor: "#41b883",
-            data: app.cpu_percent,
+            data: app.cpu_percent
           },
           {
             label: "Mem Usage",
             backgroundColor: "#FFFFFF",
-            data: app.mem_percent,
-          },
-        ],
+            data: app.mem_percent
+          }
+        ]
       };
       return datacollection;
-    },
+    }
   },
   async mounted() {
     this.readAppStats();
   },
   beforeDestroy() {
     this.closeStats();
-  },
+  }
 };
 </script>
 

@@ -4,7 +4,7 @@ const state = {
   apps: [],
   logs: [],
   processes: [],
-  isLoading: false,
+  isLoading: false
 };
 
 const mutations = {
@@ -12,7 +12,7 @@ const mutations = {
     state.apps = apps;
   },
   setApp(state, app) {
-    const idx = state.apps.findIndex((x) => x.Name === app.Name);
+    const idx = state.apps.findIndex(x => x.Name === app.Name);
     if (idx < 0) {
       state.apps.push(app);
     } else {
@@ -27,7 +27,7 @@ const mutations = {
   },
   setLoading(state, loading) {
     state.isLoading = loading;
-  },
+  }
 };
 
 const actions = {
@@ -36,11 +36,11 @@ const actions = {
     const url = "/api/apps/";
     axios
       .get(url)
-      .then((response) => {
+      .then(response => {
         const apps = response.data;
         commit("setApps", apps);
       })
-      .catch((err) => {
+      .catch(err => {
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
@@ -53,13 +53,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           const app = response.data;
           commit("setLoading", false);
           commit("setApp", app);
           resolve(app);
         })
-        .catch((err) => {
+        .catch(err => {
           commit("snackbar/setErr", err, { root: true });
           reject(err);
         });
@@ -77,16 +77,16 @@ const actions = {
     let url = `/api/apps/${Name}/logs`;
     axios
       .get(url)
-      .then((response) => {
+      .then(response => {
         let logs = [];
         let _log = response.data.logs;
         let split_log = _log.split("\n");
-        split_log.forEach((element) => {
+        split_log.forEach(element => {
           logs.push(element);
         });
         commit("setAppLogs", logs);
       })
-      .catch((err) => {
+      .catch(err => {
         commit("snackbar/setErr", err, { root: true });
       });
   },
@@ -95,26 +95,26 @@ const actions = {
     const url = `/api/apps/${Name}/${Action}`;
     axios
       .get(url)
-      .then((response) => {
+      .then(response => {
         const app = response.data;
         commit("setApps", app);
       })
-      .catch((err) => {
+      .catch(err => {
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
       });
-  },
+  }
 };
 
 const getters = {
   getAppByName(state) {
-    return (Name) => {
+    return Name => {
       Name = "/" + Name;
-      return state.apps.find((x) => x.Name == Name);
+      return state.apps.find(x => x.Name == Name);
     };
-  },
+  }
 };
 
 export default {
@@ -122,5 +122,5 @@ export default {
   state,
   mutations,
   getters,
-  actions,
+  actions
 };

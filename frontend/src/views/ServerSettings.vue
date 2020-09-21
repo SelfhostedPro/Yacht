@@ -31,8 +31,8 @@
 import ServerSettingsNav from "../components/serverSettings/ServerSettingsNav";
 export default {
   components: {
-    Nav: ServerSettingsNav,
-  },
+    Nav: ServerSettingsNav
+  }
 };
 </script>
 

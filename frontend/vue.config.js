@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '',
+  publicPath: "",
   transpileDependencies: ["vuetify"],
   devServer: {
     proxy: {
@@ -8,9 +8,9 @@ module.exports = {
         ws: true,
         changeOrigin: true,
         pathRewrite: {
-          '^/api': ''
+          "^/api": ""
         },
-        logLevel: 'debug'
+        logLevel: "debug"
       }
     }
   }

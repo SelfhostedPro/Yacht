@@ -41,7 +41,7 @@ import ApplicationDetailsNav from "./ApplicationDetailsComponents/ApplicationDet
 import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   components: {
-    Nav: ApplicationDetailsNav,
+    Nav: ApplicationDetailsNav
   },
   data() {
     return {
@@ -51,7 +51,7 @@ export default {
         cpu_percent: [],
         mem_percent: [],
         mem_current: [],
-        mem_total: [],
+        mem_total: []
       },
       connection: null,
       statConnection: null
@@ -60,17 +60,17 @@ export default {
   computed: {
     ...mapState("apps", ["apps", "app", "isLoading", "processes"]),
     ...mapGetters({
-      getAppByName: "apps/getAppByName",
+      getAppByName: "apps/getAppByName"
     }),
     app() {
       const appName = this.$route.params.appName;
       return this.getAppByName(appName);
-    },
+    }
   },
   methods: {
     ...mapActions({
       readApp: "apps/readApp",
-      readAppProcesses: "apps/readAppProcesses",
+      readAppProcesses: "apps/readAppProcesses"
       // readAppLogs: "apps/readAppLogs",
     }),
     refresh() {
@@ -93,7 +93,7 @@ export default {
         );
       };
 
-      this.connection.onmessage = (event) => {
+      this.connection.onmessage = event => {
         this.logs.push(event.data);
       };
     },
@@ -105,25 +105,34 @@ export default {
     },
     readAppStats(appName) {
       console.log("Starting connection to Websocket");
+      let proto = "";
+      console.log(location.protocol);
+      if (location.protocol == "http:") {
+        console.log("if working");
+        proto = "ws://";
+      } else if (location.protocol == "https:") {
+        proto = "wss://";
+      }
+      console.log(proto);
       this.statConnection = new WebSocket(
-        `ws://${location.hostname}:${location.port}/api/apps/${appName}/stats`
+        `${proto}${location.hostname}:${location.port}/api/apps/${appName}/stats`
       );
       this.statConnection.onopen = () => {
         this.statConnection.send(
           JSON.stringify({ type: "onopen", data: "Connected!" })
         );
       };
-      this.statConnection.onmessage = (event) => {
+      this.statConnection.onmessage = event => {
         let statsGroup = JSON.parse(event.data);
         this.stats.time.push(statsGroup.time);
         this.stats.cpu_percent.push(Math.round(statsGroup.cpu_percent));
         this.stats.mem_percent.push(Math.round(statsGroup.mem_percent));
-        this.stats.mem_current.push(statsGroup.mem_current)
-        this.stats.mem_total.push(statsGroup.mem_total)
-        console.log(this.stats.blk_read)
+        this.stats.mem_current.push(statsGroup.mem_current);
+        this.stats.mem_total.push(statsGroup.mem_total);
+        console.log(this.stats.blk_read);
         for (let key in this.stats) {
           if (this.stats[key].length > 300) {
-            this.stats[key].shift()
+            this.stats[key].shift();
           }
         }
       };
@@ -133,11 +142,13 @@ export default {
       this.stats.cpu_percent = [];
       this.stats.mem_percent = [];
       this.stats.mem_current = [];
-      this.stats.mem_total= [];
-      this.statConnection.send(JSON.stringify({ message: "Closing Websocket" }));
+      this.stats.mem_total = [];
+      this.statConnection.send(
+        JSON.stringify({ message: "Closing Websocket" })
+      );
       this.statConnection.close(1000, "Leaving page or refreshing");
       // this.statConnection.close(1001, "Leaving page or refreshing");
-    },
+    }
   },
   created() {
     const appName = this.$route.params.appName;
@@ -154,7 +165,7 @@ export default {
   beforeDestroy() {
     this.closeLogs();
     this.closeStats();
-  },
+  }
 };
 </script>
 
