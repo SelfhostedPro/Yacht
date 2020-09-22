@@ -71,7 +71,6 @@ export default {
     }),
     submit() {
       const data = { ...this.form };
-      console.log("submit", data);
       this.writeTemplate(data);
     }
   }

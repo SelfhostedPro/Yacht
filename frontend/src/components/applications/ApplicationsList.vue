@@ -30,16 +30,9 @@
       >
         <template v-slot:item.name="{ item }">
           <div class="namecell">
-            <span class="nametext">{{ item.name }}</span>
             <v-menu close-on-click close-on-content-click offset-y>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  icon
-                  size="small"
-                  v-bind="attrs"
-                  v-on="on"
-                  class="float-right"
-                >
+                <v-btn icon size="small" v-bind="attrs" v-on="on" class="">
                   <v-icon>mdi-chevron-down</v-icon>
                 </v-btn>
               </template>
@@ -87,6 +80,7 @@
                 </v-list-item>
               </v-list>
             </v-menu>
+            <span class="nametext ml-1">{{ item.name }}</span>
           </div>
         </template>
         <template v-slot:item.status="{ item }">
@@ -94,11 +88,34 @@
             <span>{{ item.State.Status }} </span>
           </div>
         </template>
-        <template v-slot:item.image="{ item }">
-          <span>{{ item.Config.Image }}</span>
+        <template v-slot:item.ports="{ item }">
+          <ins v-for="(port, index) in convPorts(item.ports)" :key="index">
+            <v-chip
+              class="mx-1"
+              v-if="port.hip == '0.0.0.0'"
+              color="indigo darken-2"
+              label
+              small
+              :href="'http://' + host_ip + ':' + port.hport"
+              target="_blank"
+              ><v-icon small class="mr-1">mdi-link-variant</v-icon
+              >{{ port.hport }}</v-chip
+            >
+            <v-chip
+              class="ma-1"
+              v-else
+              color="indigo darken-2"
+              label
+              small
+              :href="'http://' + port.hip + ':' + port.hport"
+              target="_blank"
+              ><v-icon small class="mr-1">mdi-link-variant</v-icon
+              >{{ port.hport }}</v-chip
+            >
+          </ins>
         </template>
-        <template v-slot:item.created_at="{ item }">
-          <span>{{ item.Created | formatDate }}</span>
+        <template v-slot:item.image="{ item }">
+          <span class="ImageName">{{ item.Config.Image }}</span>
         </template>
       </v-data-table>
     </v-card>
@@ -111,60 +128,82 @@ export default {
   data() {
     return {
       search: "",
+      expanded: [],
+      host_ip: location.hostname,
       headers: [
         {
           text: "Name",
           value: "name",
           sortable: true,
-          align: "start"
+          align: "start",
+          width: "30%",
         },
         {
           text: "Status",
           value: "status",
           sortable: true,
-          width: "20%"
+          width: "10%",
         },
         {
           text: "Image",
           value: "image",
           sortable: true,
-          width: "20%"
         },
         {
-          text: "Created At",
-          value: "created_at",
+          text: "Ports",
+          value: "ports",
           sortable: true,
-          width: "20%"
-        }
-      ]
+          width: "30%",
+        },
+      ],
     };
   },
   methods: {
     ...mapActions({
       readApps: "apps/readApps",
-      AppAction: "apps/AppAction"
+      AppAction: "apps/AppAction",
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
     },
-    debug(value) {
-      console.log(value);
+    convPorts(data) {
+      let o = [];
+      for (var k in data) {
+        if (data[k]) {
+          o = o.concat(
+            data[k].map(function(x) {
+              return { cport: k, hip: x.HostIp, hport: x.HostPort };
+            })
+          );
+        }
+      }
+      return o;
     },
     refresh() {
       this.readApps();
-    }
+    },
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading"])
+    ...mapState("apps", ["apps", "isLoading"]),
   },
   mounted() {
     this.readApps();
-  }
+  },
 };
 </script>
 
 <style>
 tr:hover {
   cursor: pointer;
+}
+.ImageName {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.namecell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>

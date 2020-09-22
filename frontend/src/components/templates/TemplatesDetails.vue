@@ -309,7 +309,6 @@ export default {
     },
     filteredTemplateItems() {
       const templ = this.template;
-      console.log(templ);
       if (!templ) {
         return [];
       }
