@@ -51,7 +51,7 @@
       <v-card-title class="subheading warning font-weight-bold"
         >Prune</v-card-title
       >
-      <v-card-text class="mt-2">Delete unused images.</v-card-text>
+      <v-card-text class="mt-2">Delete unused images, volumes, and networks.</v-card-text>
       <v-btn class="mx-5 mb-2" color="warning" @click="prune_images()">
         Prune
       </v-btn>
