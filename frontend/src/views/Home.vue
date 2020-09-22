@@ -21,7 +21,7 @@
               <v-card-title class="pb-0">
                 <v-tooltip top transition="scale-transition">
                   <template v-slot:activator="{ on, attrs }">
-                    <span v-bind="attrs" v-on="on" class="AppTitle">{{
+                    <span v-bind="attrs" v-on="on" @click="handleAppClick(app.name)" class="AppTitle">{{
                       app.name
                     }}</span>
                   </template>
@@ -142,6 +142,9 @@ export default {
           {}
         );
       return sorted;
+    },
+    handleAppClick(appName) {
+      this.$router.push({ path: `/apps/${appName}/info` });
     },
     closeStats() {
       this.stats = {};
