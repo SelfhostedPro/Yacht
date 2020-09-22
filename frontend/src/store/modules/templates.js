@@ -3,7 +3,7 @@ import router from "@/router/index";
 
 const state = {
   templates: [],
-  isLoading: false,
+  isLoading: false
 };
 
 const mutations = {
@@ -11,7 +11,7 @@ const mutations = {
     state.templates = templates;
   },
   setTemplate(state, template) {
-    const idx = state.templates.findIndex((x) => x.id === template.id);
+    const idx = state.templates.findIndex(x => x.id === template.id);
     if (idx < 0) {
       state.templates.push(template);
     } else {
@@ -22,14 +22,14 @@ const mutations = {
     state.templates.push(template);
   },
   removeTemplate(state, template) {
-    const idx = state.templates.findIndex((x) => x.id === template.id);
+    const idx = state.templates.findIndex(x => x.id === template.id);
     if (idx < 0) {
       return;
     }
     state.templates.splice(idx, 1);
   },
   setApp(state, app) {
-    const idx = state.apps.findIndex((x) => x.id === app.id);
+    const idx = state.apps.findIndex(x => x.id === app.id);
     if (idx < 0) {
       state.apps.push(app);
     } else {
@@ -41,7 +41,7 @@ const mutations = {
   },
   setTemplateVariables(state, templateVariables) {
     state.templateVariables = templateVariables;
-  },
+  }
 };
 
 const actions = {
@@ -50,12 +50,12 @@ const actions = {
     const url = "/api/templates/";
     axios
       .get(url)
-      .then((response) => {
+      .then(response => {
         const templates = response.data;
         commit("setTemplates", templates);
       })
-      .catch((err) => {
-        commit('snackbar/setErr', err, { root: true })
+      .catch(err => {
+        commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
@@ -66,12 +66,12 @@ const actions = {
     const url = `/api/templates/${id}`;
     axios
       .get(url)
-      .then((response) => {
+      .then(response => {
         const template = response.data;
         commit("setTemplate", template);
       })
-      .catch((err) => {
-        commit('snackbar/setErr', err, { root: true })
+      .catch(err => {
+        commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
@@ -82,12 +82,12 @@ const actions = {
     const url = "/api/templates/";
     axios
       .post(url, payload)
-      .then((response) => {
+      .then(response => {
         const template = response.data;
         commit("addTemplate", template);
       })
-      .catch((err) => {
-        commit('snackbar/setErr', err, { root: true })
+      .catch(err => {
+        commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
@@ -99,12 +99,12 @@ const actions = {
     const url = `/api/templates/${id}/refresh`;
     axios
       .get(url)
-      .then((response) => {
+      .then(response => {
         const template = response.data;
         commit("setTemplate", template);
       })
-      .catch((err) => {
-        commit('snackbar/setErr', err, { root: true })
+      .catch(err => {
+        commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
@@ -115,12 +115,12 @@ const actions = {
     const url = `/api/templates/${id}`;
     axios
       .delete(url)
-      .then((response) => {
+      .then(response => {
         const template = response.data;
         commit("removeTemplate", template);
       })
-      .catch((err) => {
-        commit('snackbar/setErr', err, { root: true })
+      .catch(err => {
+        commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
@@ -130,20 +130,21 @@ const actions = {
     const url = `/api/templates/app/${Name}`;
     commit("setLoading", true);
     return new Promise((resolve, reject) => {
-      axios.get(url)
+      axios
+        .get(url)
         .then(response => {
           const app = response.data;
           commit("setLoading", false);
           resolve(app);
         })
         .finally(() => {
-          commit("setLoading", false)
+          commit("setLoading", false);
         })
         .catch(error => {
-          commit('snackbar/setErr', error, { root: true })
+          commit("snackbar/setErr", error, { root: true });
           reject(error);
-        })
-    })
+        });
+    });
   },
   // readApp({ commit }, id) {
   //   commit("setLoading", true);
@@ -165,7 +166,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           const templateVariables = response.data;
           commit("setTemplateVariables", templateVariables);
           resolve(templateVariables);
@@ -173,8 +174,8 @@ const actions = {
         .finally(() => {
           commit("setLoading", false);
         })
-        .catch((err) => {
-          commit('snackbar/setErr', err, { root: true })
+        .catch(err => {
+          commit("snackbar/setErr", err, { root: true });
           reject(err);
         });
     });
@@ -184,25 +185,25 @@ const actions = {
     const url = "/api/settings/variables";
     axios
       .post(url, payload, {})
-      .then((response) => {
+      .then(response => {
         const templateVariables = response.data;
         commit("setTemplateVariables", templateVariables);
       })
-      .catch((err) => {
-        commit('snackbar/setErr', err, { root: true })
+      .catch(err => {
+        commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
       });
-  },
+  }
 };
 
 const getters = {
   getTemplateById(state) {
-    return (id) => {
-      return state.templates.find((x) => x.id == id);
+    return id => {
+      return state.templates.find(x => x.id == id);
     };
-  },
+  }
 };
 
 export default {
@@ -210,5 +211,5 @@ export default {
   state,
   mutations,
   getters,
-  actions,
+  actions
 };

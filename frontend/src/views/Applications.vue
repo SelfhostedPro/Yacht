@@ -1,6 +1,10 @@
 <template lang="html">
   <div class="apps page">
-    <transition name="slide" enter-active-class="animated slideInRight delay" leave-active-class="animated slideOutLeft">
+    <transition
+      name="slide"
+      enter-active-class="animated slideInRight delay"
+      leave-active-class="animated slideOutLeft"
+    >
       <router-view />
     </transition>
   </div>
@@ -10,5 +14,4 @@
 export default {};
 </script>
 
-<style lang="css">
-</style>
+<style lang="css"></style>

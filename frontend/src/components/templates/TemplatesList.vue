@@ -28,7 +28,10 @@
         @click:row="handleRowClick"
       >
         <template slot="no-data">
-          <div>No templates available. <a href="/#/templates/new">Add</a> one to view information and launch apps from here.</div>
+          <div>
+            No templates available. <a href="/#/templates/new">Add</a> one to
+            view information and launch apps from here.
+          </div>
         </template>
         <template v-slot:item.title="{ item }">
           <div class="namecell">
@@ -120,42 +123,42 @@ export default {
           text: "Title",
           value: "title",
           sortable: true,
-          align: "start",
+          align: "start"
         },
         {
           text: "Created At",
           value: "created_at",
           sortable: true,
-          width: "20%",
+          width: "20%"
         },
         {
           text: "Updated At",
           value: "updated_at",
           sortable: true,
-          width: "20%",
-        },
-      ],
+          width: "20%"
+        }
+      ]
     };
   },
   methods: {
     ...mapActions({
       deleteTemplate: "templates/deleteTemplate",
       readTemplates: "templates/readTemplates",
-      updateTemplate: "templates/updateTemplate",
+      updateTemplate: "templates/updateTemplate"
     }),
     handleRowClick(value) {
       this.$router.push({ path: `/templates/${value.id}` });
     },
     templateDetails(templateId) {
       this.$router.push({ path: `/templates/${templateId}` });
-    },
+    }
   },
   computed: {
-    ...mapState("templates", ["templates", "isLoading"]),
+    ...mapState("templates", ["templates", "isLoading"])
   },
   mounted() {
     this.readTemplates();
-  },
+  }
 };
 </script>
 

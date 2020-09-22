@@ -116,33 +116,33 @@ export default {
           text: "Name",
           value: "name",
           sortable: true,
-          align: "start",
+          align: "start"
         },
         {
           text: "Status",
           value: "status",
           sortable: true,
-          width: "20%",
+          width: "20%"
         },
         {
           text: "Image",
           value: "image",
           sortable: true,
-          width: "20%",
+          width: "20%"
         },
         {
           text: "Created At",
           value: "created_at",
           sortable: true,
-          width: "20%",
-        },
-      ],
+          width: "20%"
+        }
+      ]
     };
   },
   methods: {
     ...mapActions({
       readApps: "apps/readApps",
-      AppAction: "apps/AppAction",
+      AppAction: "apps/AppAction"
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
@@ -152,14 +152,14 @@ export default {
     },
     refresh() {
       this.readApps();
-    },
+    }
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading"]),
+    ...mapState("apps", ["apps", "isLoading"])
   },
   mounted() {
     this.readApps();
-  },
+  }
 };
 </script>
 

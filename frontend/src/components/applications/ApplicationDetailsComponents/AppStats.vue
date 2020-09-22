@@ -42,7 +42,7 @@
 import PercentLineChart from "../../charts/PercentLineChart";
 export default {
   components: {
-    PercentLineChart,
+    PercentLineChart
   },
   props: ["app", "stats"],
   data() {
@@ -68,9 +68,11 @@ export default {
             backgroundColor: "#41b883",
             lineTension: 0,
             pointRadius: 0,
-            data: this.transformStat(stat, time),
-          },
-        ],
+            data: time.map((t, i) => {
+              return { x: t, y: stat[i] };
+            })
+          }
+        ]
       };
       return datacollection;
     },
@@ -82,24 +84,16 @@ export default {
             backgroundColor: "#41b883",
             lineTension: 0,
             pointRadius: 0,
-            data: this.transformStat(stat, time),
-          },
-        ],
+            data: time.map((t, i) => {
+              return { x: t, y: stat[i] };
+            })
+          }
+        ]
       };
       return datacollection;
-    },
-    transformStat(stat, time) {
-      let dataArray = [];
-      time.forEach((timeEntry, index) => {
-        let entry = stat[index];
-        let dataObject = { x: timeEntry, y: entry };
-        dataArray.push(dataObject);
-      });
-      return dataArray;
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

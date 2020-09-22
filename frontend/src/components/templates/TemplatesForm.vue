@@ -13,7 +13,8 @@
         New Template
       </v-card-title>
       <v-card-text v-if="templates.length < 1">
-        Consider adding templates crafted for Yacht: <br> https://raw.githubusercontent.com/SelfhostedPro/selfhosted_templates/yacht/Template/template.json
+        Consider adding templates crafted for Yacht: <br />
+        https://raw.githubusercontent.com/SelfhostedPro/selfhosted_templates/yacht/Template/template.json
       </v-card-text>
       <v-card-text>
         <v-form ref="form" @submit.prevent="submit">
@@ -43,37 +44,37 @@ export default {
   data: () => ({
     form: {
       title: "",
-      url: "",
+      url: ""
     },
     titleRules: [
-      (value) => !!value || "Required.",
-      (value) => {
+      value => !!value || "Required.",
+      value => {
         const valid =
           (value.trim() || "").length > 1 && (value.trim() || "").length < 256;
         return valid || "Length between 2 and 255 Characters.";
-      },
+      }
     ],
     urlRules: [
-      (value) => !!value || "Required.",
-      (value) => {
+      value => !!value || "Required.",
+      value => {
         const pattern = /https?:\/\/(([a-z0-9$-_@.&+!*"'(),]+(\.[a-z0-9$-_ @.&+!*"'(),]+)*)|(\d+.\d+.\d+.\d+))(:\d+)?\/.*/i;
         return pattern.test(value) || "Invalid URL";
-      },
-    ],
+      }
+    ]
   }),
   computed: {
-    ...mapState("templates", ["templates", "isLoading"]),
+    ...mapState("templates", ["templates", "isLoading"])
   },
   methods: {
     ...mapActions({
-      writeTemplate: "templates/writeTemplate",
+      writeTemplate: "templates/writeTemplate"
     }),
     submit() {
       const data = { ...this.form };
       console.log("submit", data);
       this.writeTemplate(data);
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -39,11 +39,11 @@ import { mapActions, mapState } from "vuex";
 export default {
   methods: {
     ...mapActions({
-      logout: "auth/AUTH_LOGOUT",
-    }),
+      logout: "auth/AUTH_LOGOUT"
+    })
   },
   computed: {
-    ...mapState("auth", ["username"]),
-  },
+    ...mapState("auth", ["username"])
+  }
 };
 </script>

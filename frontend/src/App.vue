@@ -37,7 +37,7 @@ import { mapGetters } from "vuex";
 import Sidebar from "./components/nav/Sidebar";
 import Appbar from "./components/nav/Appbar";
 import LoginForm from "./components/auth/LoginForm";
-import snackbar from "./components/notifications/snackbar"
+import snackbar from "./components/notifications/snackbar";
 export default {
   name: "App",
 
@@ -45,14 +45,14 @@ export default {
     Sidebar: Sidebar,
     Appbar: Appbar,
     LoginForm: LoginForm,
-    snackbar: snackbar,
+    snackbar: snackbar
   },
   data: () => ({}),
   computed: {
     ...mapGetters({
-      isLoggedIn: "auth/isAuthenticated",
-    }),
-  },
+      isLoggedIn: "auth/isAuthenticated"
+    })
+  }
 };
 </script>
 

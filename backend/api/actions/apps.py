@@ -7,6 +7,7 @@ from ..utils import *
 from datetime import datetime
 import docker
 
+
 def get_running_apps():
     apps_list = []
     dclient = docker.from_env()
@@ -125,3 +126,16 @@ def app_action(app_name, action):
             err = exc.explination
     apps_list = get_apps()
     return apps_list
+
+def prune_images():
+    dclient = docker.from_env()
+    deleted_everything = {}
+    deleted_volumes = dclient.volumes.prune()
+    deleted_images = dclient.images.prune()
+    deleted_networks = dclient.networks.prune()
+
+    deleted_everything.update(deleted_networks)
+    deleted_everything.update(deleted_volumes)
+    deleted_everything.update(deleted_images)
+    
+    return deleted_everything

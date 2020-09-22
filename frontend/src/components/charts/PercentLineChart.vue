@@ -8,32 +8,32 @@ export default {
   props: {
     chartdata: {
       type: Object,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
       options: {
         //Chart.js options
         animation: {
-          duration: 0,
+          duration: 0
         },
         responsiveAnimationDuration: 0,
         plugins: {
           crosshair: {
             line: {
               color: "#454D55",
-              width: 1,
+              width: 1
             },
             sync: {
               enabled: false,
               group: 1,
-              suppressTooltips: false,
+              suppressTooltips: false
             },
             zoom: {
-              enabled: false,
-            },
-          },
+              enabled: false
+            }
+          }
         },
         tooltips: {
           mode: "index",
@@ -41,13 +41,13 @@ export default {
           callbacks: {
             label: function(tooltipItems) {
               return tooltipItems.yLabel + "%";
-            },
-          },
+            }
+          }
         },
         hover: {
           mode: "index",
           intersect: true,
-          animationDuration: 0,
+          animationDuration: 0
         },
         scales: {
           yAxes: [
@@ -60,9 +60,9 @@ export default {
                 maxTicksLimit: 10
               },
               gridLines: {
-                display: true,
-              },
-            },
+                display: true
+              }
+            }
           ],
           xAxes: [
             {
@@ -72,34 +72,34 @@ export default {
                 autoSkip: true,
                 autoSkipPadding: 15,
                 maxRotation: 0,
-                maxTicksLimit: 8,
-                padding: 10,
+                maxTicksLimit: 2,
+                padding: 10
               },
               type: "time",
               time: {
-                unit: 'second'
+                unit: "second"
               },
               displayFormats: {
-                second: 'h:mm:ss a'
+                second: "h:mm:ss a"
               },
               gridLines: {
-                display: false,
+                display: false
               },
-              distribution: 'series'
-            },
-          ],
+              distribution: "series"
+            }
+          ]
         },
         legend: {
-          display: true,
+          display: true
         },
         responsive: true,
-        maintainAspectRatio: false,
-      },
+        maintainAspectRatio: false
+      }
     };
   },
   mounted() {
     // this.chartData is created in the mixin
     this.renderChart(this.chartData, this.options);
-  },
+  }
 };
 </script>
