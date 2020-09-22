@@ -10,6 +10,7 @@ from ..db.models import containers
 from ..db.database import SessionLocal, engine
 from ..utils import get_db
 from ..auth import get_active_user
+from ..actions import apps
 
 containers.Base.metadata.create_all(bind=engine)
 
@@ -35,3 +36,7 @@ def export_settings(db: Session = Depends(get_db)):
 @router.post("/export", dependencies=[Depends(get_active_user)])
 def import_settings(db: Session = Depends(get_db), upload: UploadFile = File(...)):
     return crud.import_settings(db=db, upload=upload)
+
+@router.get("/prune", dependencies=[Depends(get_active_user)])
+def prune_images():
+    return apps.prune_images()
