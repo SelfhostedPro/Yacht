@@ -43,7 +43,7 @@
       <v-card-title class="font-weight-bold mt-5">
         Export:
       </v-card-title>
-      <v-btn class="mx-5 mb-2" color="primary" @click="export_settings()"
+      <v-btn class="mx-5 mb-5" color="primary" @click="export_settings()"
         >Export
       </v-btn>
     </v-card>
@@ -52,7 +52,7 @@
         >Prune</v-card-title
       >
       <v-card-text class="mt-2">Delete unused images, volumes, and networks.</v-card-text>
-      <v-btn class="mx-5 mb-2" color="warning" @click="prune_images()">
+      <v-btn class="mx-5 mb-5" color="warning" @click="prune_images()">
         Prune
       </v-btn>
     </v-card>

@@ -83,7 +83,7 @@ export default {
       this.readAppStats(appName);
     },
     readAppLogs(appName) {
-      console.log("Starting connection to Websocket");
+      console.log("Starting connection to Logs");
       this.connection = new WebSocket(
         `ws://${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
       );
@@ -104,18 +104,10 @@ export default {
       // this.connection.close("Leaving page or refreshing", 1001);
     },
     readAppStats(appName) {
-      console.log("Starting connection to Websocket");
-      let proto = "";
-      console.log(location.protocol);
-      if (location.protocol == "http:") {
-        console.log("if working");
-        proto = "ws://";
-      } else if (location.protocol == "https:") {
-        proto = "wss://";
-      }
-      console.log(proto);
+      console.log("Starting connection to Stats");
+
       this.statConnection = new WebSocket(
-        `${proto}${location.hostname}:${location.port}/api/apps/${appName}/stats`
+        `ws://${location.hostname}:${location.port}/api/apps/${appName}/stats`
       );
       this.statConnection.onopen = () => {
         this.statConnection.send(
@@ -129,7 +121,6 @@ export default {
         this.stats.mem_percent.push(Math.round(statsGroup.mem_percent));
         this.stats.mem_current.push(statsGroup.mem_current);
         this.stats.mem_total.push(statsGroup.mem_total);
-        console.log(this.stats.blk_read);
         for (let key in this.stats) {
           if (this.stats[key].length > 300) {
             this.stats[key].shift();

@@ -96,7 +96,6 @@ const actions = {
       const url = "/api/users/me";
       let password = credentials.password;
       let email = credentials.username;
-      console.log(email, password);
       axios
         .patch(url, {
           password: password,

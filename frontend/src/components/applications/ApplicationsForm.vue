@@ -532,7 +532,6 @@ export default {
       const payload = { ...this.form };
       this.isLoading = true;
       const url = `/api/apps/deploy`;
-      console.log(payload);
       axios
         .post(url, payload)
         .then(() => {
