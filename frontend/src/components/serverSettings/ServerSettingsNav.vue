@@ -5,7 +5,8 @@
         <v-icon left class="mr-1">mdi-information-outline</v-icon>Info
       </v-tab>
       <v-tab class="text-left" :to="{ path: 'templateVariables' }">
-        <v-icon left class="mr-1">mdi-view-list-outline</v-icon>Template Variables
+        <v-icon left class="mr-1">mdi-view-list-outline</v-icon>Template
+        Variables
       </v-tab>
     </v-tabs>
   </div>
@@ -15,7 +16,7 @@
 export default {
   data() {
     return {};
-  },
+  }
 };
 </script>
 

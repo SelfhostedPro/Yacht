@@ -31,11 +31,11 @@ import { mapState } from "vuex";
 import UserSettingsNav from "../components/userSettings/UserSettingsNav";
 export default {
   components: {
-    Nav: UserSettingsNav,
+    Nav: UserSettingsNav
   },
   computed: {
-    ...mapState("auth", ["username"]),
-  },
+    ...mapState("auth", ["username"])
+  }
 };
 </script>
 

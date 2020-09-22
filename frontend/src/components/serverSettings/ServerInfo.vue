@@ -7,41 +7,55 @@
     <v-card-text>
       This is where you can change settings related to your server.
     </v-card-text>
-    <v-card-title class="font-weight-bold">
-      Import:
-    </v-card-title>
-    <ValidationObserver ref="obs1" v-slot="{ invalid }">
-      <validationProvider
-        name="importFile"
-        rules="required"
-        v-slot="{ errors, valid }"
+    <v-card>
+      <v-card-title class="subheading secondary font-weight-bold"
+        >Configuration</v-card-title
       >
-        <v-file-input
-          v-model="importFile"
-          ref="importFile"
-          label="Import export.json"
-          :error-messages="errors"
-          :success="valid"
-          required
-          show-size
-          accept=".json"
+      <v-card-title class="font-weight-bold">
+        Import:
+      </v-card-title>
+      <ValidationObserver ref="obs1" v-slot="{ invalid }">
+        <validationProvider
+          name="importFile"
+          rules="required"
+          v-slot="{ errors, valid }"
+        >
+          <v-file-input
+            v-model="importFile"
+            ref="importFile"
+            label="Import export.json"
+            :error-messages="errors"
+            :success="valid"
+            required
+            show-size
+            accept=".json"
+            class="mx-5"
+          />
+        </validationProvider>
+        <v-btn
           class="mx-5"
-        />
-      </validationProvider>
-      <v-btn
-        class="mx-5"
-        color="primary"
-        :disabled="invalid"
-        @click="import_settings(importFile)"
-        >Import
+          color="primary"
+          :disabled="invalid"
+          @click="import_settings(importFile)"
+          >Import
+        </v-btn>
+      </ValidationObserver>
+      <v-card-title class="font-weight-bold mt-5">
+        Export:
+      </v-card-title>
+      <v-btn class="mx-5 mb-2" color="primary" @click="export_settings()"
+        >Export
       </v-btn>
-    </ValidationObserver>
-    <v-card-title class="font-weight-bold mt-5">
-      Export:
-    </v-card-title>
-    <v-btn class="mx-5" color="primary" @click="export_settings()"
-      >Export
-    </v-btn>
+    </v-card>
+    <v-card>
+      <v-card-title class="subheading warning font-weight-bold"
+        >Prune</v-card-title
+      >
+      <v-card-text class="mt-2">Delete unused images.</v-card-text>
+      <v-btn class="mx-5 mb-2" color="warning" @click="prune_images()">
+        Prune
+      </v-btn>
+    </v-card>
   </v-card>
 </template>
 
@@ -64,6 +78,19 @@ export default {
       setSuccess: "snackbar/setSuccess",
       setErr: "snackbar/setErr",
     }),
+    prune_images() {
+      axios({
+        url: "/api/settings/prune",
+        method: "GET",
+        responseType: "text/json",
+      })
+        .then((response) => {
+          this.setSuccess(response);
+        })
+        .catch((err) => {
+          this.setErr(err);
+        });
+    },
     export_settings() {
       axios({
         url: "/api/settings/export",

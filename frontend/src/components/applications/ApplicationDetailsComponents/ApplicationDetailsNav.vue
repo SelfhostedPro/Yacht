@@ -30,7 +30,7 @@ export default {
   data() {
     return {};
   },
-  props: ["isLoading"],
+  props: ["isLoading"]
 };
 </script>
 

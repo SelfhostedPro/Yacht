@@ -4,11 +4,13 @@ import re
 from typing import Dict, List, Optional
 
 from jose import jwt
-from fastapi import Cookie, Depends, WebSocket, status
+from fastapi import Cookie, Depends, WebSocket, status, HTTPException
 from fastapi.security import APIKeyCookie
 from .auth import cookie_authentication
 from .auth import user_db
 from .settings import Settings
+import aiodocker
+import json
 settings = Settings()
 
 
@@ -192,7 +194,6 @@ async def websocket_auth(
     except:
         return None
 
-
 async def calculate_cpu_percent(d):
     cpu_count = len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
     cpu_percent = 0.0
@@ -275,10 +276,11 @@ async def get_app_stats(app_name):
                 cpu_percent = await calculate_cpu_percent(line)
 
             full_stats = {
+                "name": line['name'],
                 "time": line['read'],
                 "cpu_percent": cpu_percent,
                 "mem_current": mem_current,
                 "mem_total": line["memory_stats"]["limit"],
                 "mem_percent": (mem_current / mem_total) * 100.0,
             }
-            return json.dumps(full_stats)
+            yield json.dumps(full_stats)

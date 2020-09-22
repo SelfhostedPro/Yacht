@@ -32,9 +32,8 @@
 export default {
   props: ["app", "logs"],
   data() {
-    return {
-    };
-  },
+    return {};
+  }
 };
 </script>
 
@@ -46,6 +45,6 @@ export default {
   background-color: black;
 }
 .keep-whitespace {
-  white-space:pre
+  white-space: pre;
 }
 </style>

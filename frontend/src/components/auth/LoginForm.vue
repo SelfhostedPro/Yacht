@@ -70,26 +70,26 @@ import { mapActions } from "vuex";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver,
+    ValidationObserver
   },
   data() {
     return {
       username: "",
       password: "",
-      show: false,
+      show: false
     };
   },
   methods: {
     ...mapActions({
-      login: "auth/AUTH_REQUEST",
+      login: "auth/AUTH_REQUEST"
     }),
     onSubmit() {
       this.login({
         username: this.username,
-        password: this.password,
+        password: this.password
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
