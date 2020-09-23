@@ -19,7 +19,7 @@ jobs:
         with:
           buildx-version: latest
       - name: login to docker hub
-        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login --username selfhostedpro --password-stdin
       - name: build the image
         run: |
           docker buildx build --push \
