@@ -15,11 +15,11 @@ jobs:
         id: buildx
         uses: crazy-max/ghaction-docker-buildx@v1
         with:
-          buildx-version: latest
+          qemu-version: latest
       - name: login to docker hub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
       - name: build the image
         run: |
           docker buildx build --push \
             --tag selfhostedpro/yacht:vue \
-            --platform linux/amd64,linux/arm64,linux/arm/v7 .
+            --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8 .
