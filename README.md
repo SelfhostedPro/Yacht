@@ -23,7 +23,7 @@ It will be available on port 8000.
 
 The default login is `admin@yacht.local` and `pass` you should change this immediately by clicking on admin in the top right and then "User" then select "Change Password" in the top menu. You can also change your username using this field.
 
-If you need to reset your password/username to the included defaults, you can connect to the container using `docker exec -it "INSERT CONTAINER ID HERE WITHOUT QUOTES" /bin/bash` then run `python3 /manage.py recreate_db`.
+If you need to reset your password/username to the included defaults, please delete your yacht volume and create a new one (you will lose all of your configurations so be sure to backup when you make changes).
 
 ## Features So Far:
 * Container Templating Compatibility (Portainer Compatible)
