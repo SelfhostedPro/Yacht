@@ -70,12 +70,16 @@ async def logs(websocket: WebSocket, app_name: str):
         await websocket.accept()
         async with aiodocker.Docker() as docker:
             container: DockerContainer = await docker.containers.get(app_name)
-            logs = container.log(stdout=True, stderr=True, follow=True)
-            async for line in logs:
-                try:
-                    await websocket.send_text(line)
-                except Exception as e:
-                    return e
+            if container._container['State']['Status'] == 'running':
+                stats = container.stats(stream=True)
+                logs = container.log(stdout=True, stderr=True, follow=True)
+                async for line in logs:
+                    try:
+                        await websocket.send_text(line)
+                    except Exception as e:
+                        return e
+            else: 
+                await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
     else:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
 
@@ -92,28 +96,32 @@ async def stats(websocket: WebSocket, app_name: str):
             cpu_percent = 0.0
 
             container: DockerContainer = await docker.containers.get(app_name)
-            stats = container.stats(stream=True)
-            async for line in stats:
-                mem_current = line["memory_stats"]["usage"]
-                mem_total = line["memory_stats"]["limit"]
+            if container._container['State']['Status'] == 'running':
+                stats = container.stats(stream=True)
 
-                try:
-                    cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(line, cpu_total, cpu_system)
-                except KeyError as e:
-                    print("error while getting new CPU stats: %r, falling back")
-                    cpu_percent = await calculate_cpu_percent(line)
+                async for line in stats:
+                    mem_current = line["memory_stats"]["usage"]
+                    mem_total = line["memory_stats"]["limit"]
 
-                full_stats = {
-                    "time": line['read'],
-                    "cpu_percent": cpu_percent,
-                    "mem_current": mem_current,
-                    "mem_total": line["memory_stats"]["limit"],
-                    "mem_percent": (mem_current / mem_total) * 100.0,
-                }
-                try:
-                    await websocket.send_text(json.dumps(full_stats))
-                except Exception as e:
-                    return e
+                    try:
+                        cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(line, cpu_total, cpu_system)
+                    except KeyError as e:
+                        print("error while getting new CPU stats: %r, falling back")
+                        cpu_percent = await calculate_cpu_percent(line)
+
+                    full_stats = {
+                        "time": line['read'],
+                        "cpu_percent": cpu_percent,
+                        "mem_current": mem_current,
+                        "mem_total": line["memory_stats"]["limit"],
+                        "mem_percent": (mem_current / mem_total) * 100.0,
+                    }
+                    try:
+                        await websocket.send_text(json.dumps(full_stats))
+                    except Exception as e:
+                        return e
+            else: 
+                await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
     else:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
 
