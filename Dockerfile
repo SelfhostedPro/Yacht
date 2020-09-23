@@ -46,7 +46,7 @@ COPY root /
 
 # Vue
 COPY --from=build-stage /app/dist /app
-COPY nginx.conf /config/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/
 
 # Expose
 VOLUME /config
