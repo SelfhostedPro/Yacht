@@ -22,4 +22,4 @@ jobs:
         run: |
           docker buildx build --push \
             --tag selfhostedpro/yacht:devel \
-            --platform linux/amd64,linux/arm64 .
+            --platform linux/amd64,linux/arm64,linux/arm/v7 .
