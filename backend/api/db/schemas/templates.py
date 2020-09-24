@@ -19,6 +19,8 @@ class TemplateItem(BaseModel):
     ports: Optional[List] = []
     volumes: Optional[List] = []
     env: Optional[List] = []
+    devices: Optional[List] = []
+    labels: Optional[List] = []
     sysctls: Optional[List] = []
     cap_add: Optional[List] = []
 

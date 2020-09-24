@@ -76,6 +76,8 @@ def deploy_app(template: schemas.DeployForm):
             conv_portlabels2data(template.ports),
             conv_volumes2data(template.volumes),
             conv_env2data(template.env),
+            conv_devices2data(template.devices),
+            conv_labels2data(template.labels),
             conv_sysctls2data(template.sysctls),
             conv_caps2data(template.cap_add)
         )
@@ -89,8 +91,9 @@ def deploy_app(template: schemas.DeployForm):
 def Merge(dict1, dict2): 
     return(dict2.update(dict1)) 
 
-def launch_app(name, image, restart_policy, ports, portlabels, volumes, env, sysctls, caps):
+def launch_app(name, image, restart_policy, ports, portlabels, volumes, env, devices, labels, sysctls, caps):
     dclient = docker.from_env()
+    Merge(portlabels, labels)
     lauch = dclient.containers.run(
         name=name,
         image=image,
@@ -99,7 +102,8 @@ def launch_app(name, image, restart_policy, ports, portlabels, volumes, env, sys
         volumes=volumes,
         environment=env,
         sysctls=sysctls,
-        labels=portlabels,
+        labels=labels,
+        devices=devices,
         cap_add=caps,
         detach=True
     )

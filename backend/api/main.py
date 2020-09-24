@@ -4,7 +4,7 @@ from .routers import apps, templates, app_settings
 import uuid
 
 from .db import models
-from .db.database import SessionLocal
+from .db.database import SessionLocal, engine
 from .routers.app_settings import read_template_variables, set_template_variables, SessionLocal
 from sqlalchemy.orm import Session
 
@@ -14,6 +14,9 @@ from .utils import get_db
 from .auth import fastapi_users, cookie_authentication, database, users, user_create, UserDB, get_password_hash
 
 app = FastAPI(root_path="/api")
+
+models.Base.metadata.create_all(bind=engine)
+
 settings = Settings()
 
 app.include_router(
@@ -53,9 +56,9 @@ async def startup():
     await database.connect()
     users_exist = await database.fetch_all(query=users.select())
     if users_exist:
-        print("users exist")
+        print("Users Exist")
     else:
-        print("no users")
+        print("No Users. Creating the default user.")
         # This is where I'm having trouble
         hashed_password = get_password_hash(settings.ADMIN_PASSWORD)
         base_user = UserDB(
@@ -68,7 +71,7 @@ async def startup():
         user_created = await user_create(base_user)
     template_variables_exist = read_template_variables(SessionLocal())
     if template_variables_exist:
-        print("template variables exist")
+        print("Template Variables Exist")
     else:
         print("No Variables yet!")
         t_vars = settings.BASE_TEMPLATE_VARIABLES

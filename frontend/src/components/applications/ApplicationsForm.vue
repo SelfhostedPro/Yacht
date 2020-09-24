@@ -353,6 +353,141 @@
         <v-expansion-panel>
           <v-expansion-panel-header color="#303030">
             <v-row no-gutters>
+              <v-col cols="2">Devices</v-col>
+              <v-col cols="4" class="text--secondary">
+                (Passthrough Devices)
+              </v-col>
+            </v-row>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content color="#303030">
+            <form>
+              <transition-group
+                name="slide"
+                enter-active-class="animated fadeInLeft fast-anim"
+                leave-active-class="animated fadeOutLeft fast-anim"
+              >
+                <v-row v-for="(item, index) in form.devices" :key="index">
+                  <v-col>
+                    <ValidationProvider
+                      name="Container"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        label="Container"
+                        v-model="item['container']"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col>
+                    <ValidationProvider
+                      name="Host"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        label="Host"
+                        v-model="item['host']"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col class="d-flex justify-end" cols="1">
+                    <v-btn
+                      icon
+                      class="align-self-center"
+                      @click="removeDevices(index)"
+                    >
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </transition-group>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addDevices">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header color="#303030">
+            <v-row no-gutters>
+              <v-col cols="2">Labels</v-col>
+              <v-col cols="4" class="text--secondary">
+                (Container Labels)
+              </v-col>
+            </v-row>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content color="#303030">
+            <form>
+              <transition-group
+                name="slide"
+                enter-active-class="animated fadeInLeft fast-anim"
+                leave-active-class="animated fadeOutLeft fast-anim"
+              >
+                <v-row v-for="(item, index) in form.labels" :key="index">
+                  <v-col>
+                    <ValidationProvider
+                      name="Label"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        label="Label"
+                        v-model="item['label']"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col>
+                    <ValidationProvider
+                      name="Value"
+                      rules=""
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        label="Value"
+                        v-model="item['value']"
+                        :error-messages="errors"
+                        :success="valid"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col class="d-flex justify-end" cols="1">
+                    <v-btn
+                      icon
+                      class="align-self-center"
+                      @click="removeLabels(index)"
+                    >
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </transition-group>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addLabels">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header color="#303030">
+            <v-row no-gutters>
               <v-col cols="2">Sysctls</v-col>
               <v-col cols="4" class="text--secondary"> (Kernel Options) </v-col>
             </v-row>
@@ -454,7 +589,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
@@ -468,8 +603,10 @@ export default {
         ports: [],
         volumes: [],
         env: [],
+        devices: [],
+        labels: [],
         sysctls: [],
-        cap_add: []
+        cap_add: [],
       },
       isLoading: false,
       cap_options: [
@@ -495,16 +632,16 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND"
-      ]
+        "BLOCK_SUSPEND",
+      ],
     };
   },
   methods: {
     ...mapActions({
-      readApp: "templates/readApp"
+      readApp: "templates/readApp",
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr"
+      setErr: "snackbar/setErr",
     }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
@@ -523,6 +660,18 @@ export default {
     },
     removeEnv(index) {
       this.form.env.splice(index, 1);
+    },
+    addDevices() {
+      this.form.devices.push({ container: "", host: "" });
+    },
+    removeDevices(index) {
+      this.form.devices.splice(index, 1);
+    },
+    addLabels() {
+      this.form.labels.push({ label: "", value: "" });
+    },
+    removeLabels(index) {
+      this.form.labels.splice(index, 1);
     },
     addSysctls() {
       this.form.sysctls.push({ name: "", value: "" });
@@ -546,6 +695,7 @@ export default {
     },
     submitFormData() {
       const payload = { ...this.form };
+      console.log(payload)
       this.isLoading = true;
       const url = `/api/apps/deploy`;
       axios
@@ -570,8 +720,10 @@ export default {
             ports: app.ports || [],
             volumes: app.volumes || [],
             env: app.env || [],
+            devices: app.devices || [],
+            labels: app.labels || [],
             sysctls: app.sysctls || [],
-            cap_add: app.cap_add || []
+            cap_add: app.cap_add || [],
           };
         } catch (error) {
           console.error(error, error.response);
@@ -580,11 +732,11 @@ export default {
       } else {
         console.log("No app selected");
       }
-    }
+    },
   },
   async created() {
     await this.populateForm();
-  }
+  },
 };
 </script>
 
