@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 
 class PortsSchema(BaseModel):
+    label: Optional[str]
     cport: str
     hport: Optional[str]
     proto: str

@@ -102,6 +102,22 @@
                 <v-row v-for="(item, index) in form.ports" :key="index">
                   <v-col>
                     <ValidationProvider
+                      name="Label"
+                      rules=""
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        type="string"
+                        label="Label"
+                        placeholder="webui"
+                        v-model="item['label']"
+                        :error-messages="errors"
+                        :success="valid"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col>
+                    <ValidationProvider
                       name="Container"
                       rules="required"
                       v-slot="{ errors, valid }"

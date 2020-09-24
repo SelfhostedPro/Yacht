@@ -54,8 +54,33 @@ def add_template(db: Session, template: models.containers.Template):
             else:
                 print('Invalid filetype')
                 raise
-            for entry in loaded_file:
+            if type(loaded_file) == list:
+                for entry in loaded_file:
+                    if entry.get('ports'):
+                        ports = conv_ports2dict(entry.get('ports', []))
+                    sysctls = conv_sysctls2dict(entry.get('sysctls', []))
 
+                    # Optional use classmethod from_dict
+                    template_content = models.containers.TemplateItem(
+                        type=int(entry['type']),
+                        title=entry['title'],
+                        platform=entry['platform'],
+                        description=entry.get('description', ''),
+                        name=entry.get('name', entry['title'].lower()),
+                        logo=entry.get('logo', ''),  # default logo here!
+                        image=entry.get('image', ''),
+                        notes=entry.get('note', ''),
+                        categories=entry.get('categories', ''),
+                        restart_policy=entry.get('restart_policy'),
+                        ports=ports,
+                        volumes=entry.get('volumes', []),
+                        env=entry.get('env', []),
+                        sysctls=sysctls,
+                        cap_add=entry.get('cap_add', [])
+                    )
+                    _template.items.append(template_content)
+            elif type(loaded_file) == dict:
+                entry = loaded_file
                 ports = conv_ports2dict(entry.get('ports', []))
                 sysctls = conv_sysctls2dict(entry.get('sysctls', []))
 
@@ -112,12 +137,38 @@ def refresh_template(db: Session, template_id: id):
             else:
                 print('Invalid filetype')
                 raise
-            for entry in loaded_file:
+            if type(loaded_file) == list:
+                for entry in loaded_file:
 
+                    if entry.get('ports'):
+                        ports = conv_ports2dict(entry.get('ports', []))
+                    sysctls = conv_sysctls2dict(entry.get('sysctls', []))
+
+                    item = models.TemplateItem(
+                        type=int(entry['type']),
+                        title=entry['title'],
+                        platform=entry['platform'],
+                        description=entry.get('description', ''),
+                        name=entry.get('name', entry['title'].lower()),
+                        logo=entry.get('logo', ''),  # default logo here!
+                        image=entry.get('image', ''),
+                        notes=entry.get('note', ''),
+                        categories=entry.get('categories', ''),
+                        restart_policy=entry.get('restart_policy'),
+                        ports=ports,
+                        volumes=entry.get('volumes', []),
+                        env=entry.get('env', []),
+                        sysctls=sysctls,
+                        cap_add=entry.get('cap_add', [])
+                    )
+                    items.append(item)
+            elif type(loaded_file) == dict:
+                entry = loaded_file
                 ports = conv_ports2dict(entry.get('ports', []))
                 sysctls = conv_sysctls2dict(entry.get('sysctls', []))
 
-                item = models.TemplateItem(
+                # Optional use classmethod from_dict
+                template_content = models.containers.TemplateItem(
                     type=int(entry['type']),
                     title=entry['title'],
                     platform=entry['platform'],
@@ -134,7 +185,7 @@ def refresh_template(db: Session, template_id: id):
                     sysctls=sysctls,
                     cap_add=entry.get('cap_add', [])
                 )
-                items.append(item)
+                items.append(template_content)
     except Exception as exc:
         print('Template update failed. ERR_001', exc)
         raise

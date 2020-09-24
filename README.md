@@ -13,7 +13,7 @@ Yacht is a container management UI with a focus on templates and 1-click deploym
 ## Installation:
 Currently only linux has been verified as working but we are open to the idea of supporting windows eventually as well.
 
-**Keep in mind, this is a pre-alpha so the risk of data loss is real and it may not be stable**
+**Keep in mind, this is an alpha so the risk of data loss is real and it may not be stable**
 
 Once docker is installed you'll simply run the following commands to get started:
 ```

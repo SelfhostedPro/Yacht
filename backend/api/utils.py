@@ -43,20 +43,38 @@ REGEXP_PORT_ASSIGN = r'^(?:(?:\d{1,5}:)?\d{1,5}|:\d{1,5})/(?:tcp|udp)$'
 
 
 def conv_ports2dict(data: List[str]) -> List[Dict[str, str]]:
-    delim = ':'
-    portlst = []
-    for port_data in data:
-        if not re.match(REGEXP_PORT_ASSIGN, port_data, flags=re.IGNORECASE):
-            raise ValueError('Malformed port assignment.')
+    if type(data[0]) == dict:
+        delim = ':'
+        portlst = []
+        for port_data in data:
+            for label, port in port_data.items():
+                if not re.match(REGEXP_PORT_ASSIGN, port, flags=re.IGNORECASE):
+                    raise ValueError('Malformed port assignment.')
 
-        hport, cport = None, port_data
-        if delim in cport:
-            hport, cport = cport.split(delim, 1)
-            if not hport:
-                hport = None
-        cport, proto = cport.split('/', 1)
-        portlst.append({'cport': cport, 'hport': hport, 'proto': proto})
-    return portlst
+                hport, cport = None, port
+                if delim in cport:
+                    hport, cport = cport.split(delim, 1)
+                    if not hport:
+                        hport = None
+                cport, proto = cport.split('/', 1)
+                portlst.append({'cport': cport, 'hport': hport, 'proto': proto, 'label': label})
+            return portlst
+
+    elif type(data) == list:
+        delim = ':'
+        portlst = []
+        for port_data in data:
+            if not re.match(REGEXP_PORT_ASSIGN, port_data, flags=re.IGNORECASE):
+                raise ValueError('Malformed port assignment.')
+
+            hport, cport = None, port_data
+            if delim in cport:
+                hport, cport = cport.split(delim, 1)
+                if not hport:
+                    hport = None
+            cport, proto = cport.split('/', 1)
+            portlst.append({'cport': cport, 'hport': hport, 'proto': proto})
+        return portlst
 
 # Input Format:
 # [
@@ -108,6 +126,16 @@ def conv_ports2data(data):
         ports.update({str(cport)+'/'+proto: hport for d in data})
     return ports
 
+def conv_portlabels2data(data):
+    labels = {}
+    for d in data:
+        if d.label and d.hport:
+            labels.update({ 'local.yacht.port.'+d.hport: d.label })
+            print(data)
+        elif d.label:
+            print("in order to have a label the hostport must be set")
+            return None
+    return labels
 # Input Format:
 # [
 #     {
