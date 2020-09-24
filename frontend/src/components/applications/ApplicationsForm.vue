@@ -283,7 +283,7 @@
                       v-slot="{ errors, valid }"
                     >
                       <v-text-field
-                        label="Name"
+                        :label="item['label']"
                         v-model="item['name']"
                         :error-messages="errors"
                         :success="valid"
