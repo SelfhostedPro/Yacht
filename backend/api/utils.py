@@ -126,6 +126,16 @@ def conv_ports2data(data):
         ports.update({str(cport)+'/'+proto: hport for d in data})
     return ports
 
+def conv_portlabels2data(data):
+    labels = {}
+    for d in data:
+        if d.label and d.hport:
+            labels.update({ 'local.yacht.port.'+d.hport: d.label })
+            print(data)
+        elif d.label:
+            print("in order to have a label the hostport must be set")
+            return None
+    return labels
 # Input Format:
 # [
 #     {

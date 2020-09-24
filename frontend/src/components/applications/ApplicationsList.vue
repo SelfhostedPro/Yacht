@@ -90,28 +90,42 @@
         </template>
         <template v-slot:item.ports="{ item }">
           <ins v-for="(port, index) in convPorts(item.ports)" :key="index">
-            <v-chip
-              class="mx-1"
-              v-if="port.hip == '0.0.0.0'"
-              color="indigo darken-2"
-              label
-              small
-              :href="'http://' + host_ip + ':' + port.hport"
-              target="_blank"
-              ><v-icon small class="mr-1">mdi-link-variant</v-icon
-              >{{ port.hport }}</v-chip
-            >
-            <v-chip
-              class="ma-1"
-              v-else
-              color="indigo darken-2"
-              label
-              small
-              :href="'http://' + port.hip + ':' + port.hport"
-              target="_blank"
-              ><v-icon small class="mr-1">mdi-link-variant</v-icon
-              >{{ port.hport }}</v-chip
-            >
+            <v-tooltip top transition="scale-transition">
+              <template v-slot:activator="{ on, attrs }">
+                <v-chip
+                  v-on="on"
+                  v-bind="attrs"
+                  class="mx-1"
+                  v-if="port.hip == '0.0.0.0'"
+                  color="indigo darken-2"
+                  label
+                  small
+                  :href="'http://' + host_ip + ':' + port.hport"
+                  target="_blank"
+                  ><v-icon small class="mr-1">mdi-link-variant</v-icon
+                  >{{
+                    item.Config.Labels[`local.yacht.port.${port.hport}`] ||
+                      port.hport
+                  }}</v-chip
+                >
+                <v-chip
+                  v-on="on"
+                  v-bind="attrs"
+                  class="ma-1"
+                  v-else
+                  color="indigo darken-2"
+                  label
+                  small
+                  :href="'http://' + port.hip + ':' + port.hport"
+                  target="_blank"
+                  ><v-icon small class="mr-1">mdi-link-variant</v-icon
+                  >{{ item.Config.Labels || port.hport }}</v-chip
+                >
+              </template>
+              <span>
+                {{ port.hport }}
+              </span>
+            </v-tooltip>
           </ins>
         </template>
         <template v-slot:item.image="{ item }">

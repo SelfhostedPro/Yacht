@@ -83,6 +83,7 @@
         <template v-slot:default>
           <thead>
             <tr>
+              <th class="text-center"> Label </th>
               <th class="text-center">Container Port</th>
               <th class="text-center">Host IP</th>
               <th class="text-center">Host Port</th>
@@ -90,6 +91,7 @@
           </thead>
           <tbody>
             <tr v-for="(port, index) in convPorts(app.ports)" :key="index">
+              <td>{{app.Config.Labels[`local.yacht.port.${port.hport}`]}}</td>
               <td>{{ port.cport }}</td>
               <td>{{ port.hip }}</td>
               <td>
