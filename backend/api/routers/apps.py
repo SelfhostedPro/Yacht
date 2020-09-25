@@ -103,6 +103,11 @@ async def stats(websocket: WebSocket, app_name: str):
                     if line["memory_stats"]:
                       mem_current = line["memory_stats"]["usage"]
                       mem_total = line["memory_stats"]["limit"]
+                      mem_percent = (mem_current / mem_total) * 100.0
+                    else:
+                        mem_current = None
+                        mem_total = None
+                        mem_percent = None
 
                     try:
                         cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(line, cpu_total, cpu_system)
@@ -114,8 +119,8 @@ async def stats(websocket: WebSocket, app_name: str):
                         "time": line['read'],
                         "cpu_percent": cpu_percent,
                         "mem_current": mem_current,
-                        "mem_total": line["memory_stats"]["limit"],
-                        "mem_percent": (mem_current / mem_total) * 100.0,
+                        "mem_total": mem_total,
+                        "mem_percent": mem_percent,
                     }
                     try:
                         await websocket.send_text(json.dumps(full_stats))
@@ -152,8 +157,14 @@ async def process_container(name, stats, websocket):
     cpu_system = 0.0
     cpu_percent = 0.0
     async for line in stats:
-        mem_current = line["memory_stats"]["usage"]
-        mem_total = line["memory_stats"]["limit"]
+        if line["memory_stats"]:
+            mem_current = line["memory_stats"]["usage"]
+            mem_total = line["memory_stats"]["limit"]
+            mem_percent = (mem_current / mem_total) * 100.0
+        else:
+            mem_current = None
+            mem_total = None
+            mem_percent = None
 
         try:
             cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(line, cpu_total, cpu_system)
@@ -166,8 +177,8 @@ async def process_container(name, stats, websocket):
             "time": line['read'],
             "cpu_percent": cpu_percent,
             "mem_current": mem_current,
-            "mem_total": line["memory_stats"]["limit"],
-            "mem_percent": (mem_current / mem_total) * 100.0,
+            "mem_total": mem_total,
+            "mem_percent": mem_percent,
         }
         try:
             await websocket.send_text(json.dumps(full_stats))
