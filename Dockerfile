@@ -30,7 +30,6 @@ RUN \
  apk add --no-cache \
 	python3 \
 	py3-pip \
-	sqlite \
 	nginx &&\
  gem install sass &&\
  echo "**** Installing Python Modules ****" && \
