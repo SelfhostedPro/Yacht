@@ -589,7 +589,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver,
+    ValidationObserver
   },
   data() {
     return {
@@ -606,7 +606,7 @@ export default {
         devices: [],
         labels: [],
         sysctls: [],
-        cap_add: [],
+        cap_add: []
       },
       isLoading: false,
       cap_options: [
@@ -632,16 +632,16 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND",
-      ],
+        "BLOCK_SUSPEND"
+      ]
     };
   },
   methods: {
     ...mapActions({
-      readApp: "templates/readApp",
+      readApp: "templates/readApp"
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr",
+      setErr: "snackbar/setErr"
     }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
@@ -703,9 +703,9 @@ export default {
           this.isLoading = false;
           this.$router.push({ name: "View Applications" });
         })
-        .catch((err) => {
+        .catch(err => {
           this.isLoading = false;
-          this.setErr(err)
+          this.setErr(err);
         });
     },
     async populateForm() {
@@ -723,7 +723,7 @@ export default {
             devices: app.devices || [],
             labels: app.labels || [],
             sysctls: app.sysctls || [],
-            cap_add: app.cap_add || [],
+            cap_add: app.cap_add || []
           };
         } catch (error) {
           console.error(error, error.response);
@@ -732,11 +732,11 @@ export default {
       } else {
         console.log("No app selected");
       }
-    },
+    }
   },
   async created() {
     await this.populateForm();
-  },
+  }
 };
 </script>
 
