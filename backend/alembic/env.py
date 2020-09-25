@@ -1,10 +1,8 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, MetaData
 from sqlalchemy import pool
-
 from alembic import context
-
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -25,8 +23,14 @@ sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 from api.db import models
 from api.settings import Settings
+from api.auth import Base
+# Combine metadata from auth and containers/templates
+combined_meta_data = MetaData()
+for declarative_base in [models.Base, Base]:
+    for (table_name, table) in declarative_base.metadata.tables.items():
+        combined_meta_data._add_table(table_name, table.schema, table)
 
-target_metadata = models.Base.metadata
+target_metadata = combined_meta_data
 config.set_main_option("sqlalchemy.url", os.environ.get('DATABASE_URL', 'sqlite:///config/data.sqlite'))
 
 # other values from the config, defined by the needs of env.py,

@@ -54,6 +54,9 @@ app.include_router(
 @app.on_event("startup")
 async def startup():
     await database.connect()
+    # Clear old db migrations
+    delete_alembic = "DROP TABLE IF EXISTS alembic_version;"
+    await database.execute(delete_alembic)
     users_exist = await database.fetch_all(query=users.select())
     if users_exist:
         print("Users Exist")

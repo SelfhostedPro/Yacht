@@ -38,7 +38,6 @@ const actions = {
       .get(url)
       .then(response => {
         const apps = response.data;
-        console.log(apps)
         commit("setApps", apps);
       })
       .catch(err => {
@@ -56,7 +55,6 @@ const actions = {
         .get(url)
         .then(response => {
           const app = response.data;
-          console.log(app)
           commit("setLoading", false);
           commit("setApp", app);
           resolve(app);
