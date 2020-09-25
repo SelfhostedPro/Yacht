@@ -38,6 +38,11 @@
         <v-divider />
       </div>
     </v-list>
+    <template v-slot:append>
+      <a :href="'https://' + 'github.com/SelfhostedPro/Yacht'">
+        <v-icon size="200%" class="pa-2">mdi-github</v-icon>
+      </a>
+    </template>
   </v-navigation-drawer>
 </template>
 
@@ -49,7 +54,7 @@ export default {
         to: "/",
         icon: "mdi-view-dashboard",
         text: "Dashboard",
-        divider: true
+        divider: true,
       },
       {
         icon: "mdi-application",
@@ -58,14 +63,14 @@ export default {
           {
             text: "View Applications",
             to: "/apps",
-            icon: "mdi-view-list"
+            icon: "mdi-view-list",
           },
           {
             text: "New Application",
             to: "/apps/deploy",
-            icon: "mdi-plus"
-          }
-        ]
+            icon: "mdi-plus",
+          },
+        ],
       },
       {
         icon: "mdi-folder",
@@ -74,22 +79,22 @@ export default {
           {
             text: "View Templates",
             to: "/templates",
-            icon: "mdi-view-list"
+            icon: "mdi-view-list",
           },
           {
             text: "New Template",
             to: "/templates/new",
-            icon: "mdi-plus"
-          }
-        ]
+            icon: "mdi-plus",
+          },
+        ],
       },
       {
         to: "/settings/info",
         icon: "mdi-cog",
-        text: "Settings"
-      }
-    ]
-  })
+        text: "Settings",
+      },
+    ],
+  }),
 };
 </script>
 
