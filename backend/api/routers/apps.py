@@ -100,11 +100,10 @@ async def stats(websocket: WebSocket, app_name: str):
                 stats = container.stats(stream=True)
 
                 async for line in stats:
-                    try:
-                        mem_current = line["memory_stats"]["usage"]
-                        mem_total = line["memory_stats"]["limit"]
-                    except Exception as e:
-                        return e
+                    if line["memory_stats"]:
+                      mem_current = line["memory_stats"]["usage"]
+                      mem_total = line["memory_stats"]["limit"]
+
                     try:
                         cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(line, cpu_total, cpu_system)
                     except KeyError as e:
