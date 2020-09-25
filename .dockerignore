@@ -7,7 +7,6 @@ backend/*.pyo
 backend/env
 backend/venv
 backend/*.env
-backend/env*
 backend/dist
 backend/*.egg
 backend/*.egg-info

@@ -70,7 +70,7 @@ def deploy_app(template: schemas.DeployForm):
     try:
         launch = launch_app(
             template.name,
-            template.image,
+            conv_image2data(template.image),
             conv_restart2data(template.restart_policy),
             conv_ports2data(template.ports),
             conv_portlabels2data(template.ports),

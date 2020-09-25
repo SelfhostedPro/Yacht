@@ -218,6 +218,16 @@ def conv_caps2data(data):
         caps = None
         return caps
 
+def conv_image2data(data):
+    if data:
+        if ':' in data:
+            return data
+        else:
+            image = data+':latest'
+            return image
+    else:
+        image = None
+        return image
 
 def conv_restart2data(data):
     if data:
