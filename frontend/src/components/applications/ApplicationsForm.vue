@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="apps-form component">
     <h1>
-      Deploy {{ form.title }}
+      Deploy {{ form.name }}
       <v-btn
         v-if="!this.$route.params.appId"
         tile
@@ -11,7 +11,7 @@
         <v-icon>mdi-plus</v-icon> From Template
       </v-btn>
     </h1>
-    <v-stepper v-model="deployStep">
+    <v-stepper v-model="deployStep" alt-labels non-linear>
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -21,19 +21,39 @@
         />
       </v-fade-transition>
       <v-stepper-header>
-        <v-stepper-step step="1" :complete="deployStep > 1">
-          Basics
+        <v-stepper-step
+          step="1"
+          editable
+          edit-icon="mdi-check"
+          :complete="deployStep > 1"
+        >
+          General
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="2" :complete="deployStep > 2">
-          Ports
+        <v-stepper-step
+          step="2"
+          editable
+          edit-icon="mdi-check"
+          :complete="deployStep > 2"
+        >
+          Networking
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="3" :complete="deployStep > 3">
+        <v-stepper-step
+          step="3"
+          editable
+          edit-icon="mdi-check"
+          :complete="deployStep > 3"
+        >
           Volumes
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="4" :complete="deployStep > 4">
+        <v-stepper-step
+          step="4"
+          editable
+          edit-icon="mdi-check"
+          :complete="deployStep > 4"
+        >
           Environment
         </v-stepper-step>
       </v-stepper-header>
@@ -85,7 +105,7 @@
                 ></v-select>
               </ValidationProvider>
             </form>
-            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid">
+            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid" class="float-right">
               Continue
             </v-btn>
           </ValidationObserver>
@@ -118,6 +138,24 @@
                   </v-col>
                   <v-col>
                     <ValidationProvider
+                      name="Host"
+                      rules=""
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        type="number"
+                        label="Host"
+                        placeholder="80"
+                        min="0"
+                        max="65535"
+                        v-model="item['hport']"
+                        :error-messages="errors"
+                        :success="valid"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col>
+                    <ValidationProvider
                       name="Container"
                       rules="required"
                       v-slot="{ errors, valid }"
@@ -132,24 +170,6 @@
                         :error-messages="errors"
                         :success="valid"
                         required
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col>
-                    <ValidationProvider
-                      name="Host"
-                      rules=""
-                      v-slot="{ errors, valid }"
-                    >
-                      <v-text-field
-                        type="number"
-                        label="Host"
-                        placeholder="80"
-                        min="0"
-                        max="65535"
-                        v-model="item['hport']"
-                        :error-messages="errors"
-                        :success="valid"
                       ></v-text-field>
                     </ValidationProvider>
                   </v-col>
@@ -189,11 +209,11 @@
                 </v-col>
               </v-row>
             </form>
-            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
-              Back
-            </v-btn>
-            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid">
+            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid" class="float-right">
               Continue
+            </v-btn>
+            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2 float-right">
+              Back
             </v-btn>
           </ValidationObserver>
         </v-stepper-content>
@@ -209,22 +229,6 @@
                 <v-row v-for="(item, index) in form.volumes" :key="index">
                   <v-col>
                     <ValidationProvider
-                      name="Container"
-                      rules="required"
-                      v-slot="{ errors, valid }"
-                    >
-                      <v-text-field
-                        label="Container"
-                        placeholder="/share"
-                        v-model="item['container']"
-                        :error-messages="errors"
-                        :success="valid"
-                        required
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col>
-                    <ValidationProvider
                       name="Host"
                       rules="required"
                       v-slot="{ errors, valid }"
@@ -233,6 +237,22 @@
                         label="Host"
                         placeholder="/yacht/image/share"
                         v-model="item['bind']"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col>
+                    <ValidationProvider
+                      name="Container"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        label="Container"
+                        placeholder="/share"
+                        v-model="item['container']"
                         :error-messages="errors"
                         :success="valid"
                         required
@@ -258,11 +278,11 @@
                 </v-col>
               </v-row>
             </form>
-            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
-              Back
-            </v-btn>
-            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid">
+            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid" class="float-right">
               Continue
+            </v-btn>
+            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2 float-right">
+              Back
             </v-btn>
           </ValidationObserver>
         </v-stepper-content>
@@ -326,10 +346,12 @@
                 </v-col>
               </v-row>
             </form>
-            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
-              Back
-            </v-btn>
-            <v-btn color="primary" @click="nextStep(4)" :disabled="invalid">
+            <v-btn
+              color="primary"
+              @click="nextStep(4)"
+              :disabled="invalid"
+              class="float-right"
+            >
               <div v-if="isLoading">
                 Deploying
                 <v-progress-circular
@@ -340,6 +362,13 @@
                 />
               </div>
               <div v-else>Deploy</div>
+            </v-btn>
+            <v-btn
+              color="secondary"
+              @click="deployStep -= 1"
+              class="mx-2 float-right"
+            >
+              Back
             </v-btn>
           </ValidationObserver>
         </v-stepper-content>
@@ -589,7 +618,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
@@ -606,7 +635,7 @@ export default {
         devices: [],
         labels: [],
         sysctls: [],
-        cap_add: []
+        cap_add: [],
       },
       isLoading: false,
       cap_options: [
@@ -632,16 +661,16 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND"
-      ]
+        "BLOCK_SUSPEND",
+      ],
     };
   },
   methods: {
     ...mapActions({
-      readApp: "templates/readApp"
+      readApp: "templates/readApp",
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr"
+      setErr: "snackbar/setErr",
     }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
@@ -703,7 +732,7 @@ export default {
           this.isLoading = false;
           this.$router.push({ name: "View Applications" });
         })
-        .catch(err => {
+        .catch((err) => {
           this.isLoading = false;
           this.setErr(err);
         });
@@ -723,7 +752,7 @@ export default {
             devices: app.devices || [],
             labels: app.labels || [],
             sysctls: app.sysctls || [],
-            cap_add: app.cap_add || []
+            cap_add: app.cap_add || [],
           };
         } catch (error) {
           console.error(error, error.response);
@@ -732,11 +761,11 @@ export default {
       } else {
         console.log("No app selected");
       }
-    }
+    },
   },
   async created() {
     await this.populateForm();
-  }
+  },
 };
 </script>
 

@@ -116,6 +116,9 @@ def launch_app(name, image, restart_policy, ports, portlabels, volumes, env, dev
             detach=True
         )
     except Exception as e:
+        if e.status_code == 500:
+            failed_app = dclient.containers.get(name)
+            failed_app.remove()
         raise e
 
     print(f'''Container started successfully.
