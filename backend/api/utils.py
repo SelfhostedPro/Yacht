@@ -194,6 +194,22 @@ def conv_sysctls2data(data):
         sysctls = None
         return sysctls
 
+def conv_devices2data(data):
+    if data:
+        devicelist = []
+        for d in data:
+            devicelist.append(d.host+':'+d.container+':rwm')
+        return devicelist
+    else:
+        devices = None
+        return devices
+
+def conv_labels2data(data):
+    if data:
+        return dict((d.label, d.value) for d in data)
+    else:
+        labels = None
+        return labels
 
 def conv_caps2data(data):
     if data:
@@ -202,6 +218,16 @@ def conv_caps2data(data):
         caps = None
         return caps
 
+def conv_image2data(data):
+    if data:
+        if ':' in data:
+            return data
+        else:
+            image = data+':latest'
+            return image
+    else:
+        image = None
+        return image
 
 def conv_restart2data(data):
     if data:

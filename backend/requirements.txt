@@ -1,5 +1,6 @@
 aiodocker==0.19.1
 aiosqlite==0.15.0
+alembic==1.4.3
 bcrypt==3.1.7
 certifi==2020.6.20
 cffi==1.14.1

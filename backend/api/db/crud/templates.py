@@ -75,6 +75,8 @@ def add_template(db: Session, template: models.containers.Template):
                         ports=ports,
                         volumes=entry.get('volumes', []),
                         env=entry.get('env', []),
+                        devices=entry.get('devices', []),
+                        labels=entry.get('labels', []),
                         sysctls=sysctls,
                         cap_add=entry.get('cap_add', [])
                     )
@@ -99,6 +101,8 @@ def add_template(db: Session, template: models.containers.Template):
                     ports=ports,
                     volumes=entry.get('volumes', []),
                     env=entry.get('env', []),
+                    devices=entry.get('devices', []),
+                    labels=entry.get('labels', []),
                     sysctls=sysctls,
                     cap_add=entry.get('cap_add', [])
                 )
@@ -158,6 +162,8 @@ def refresh_template(db: Session, template_id: id):
                         ports=ports,
                         volumes=entry.get('volumes', []),
                         env=entry.get('env', []),
+                        devices=entry.get('devices', []),
+                        labels=entry.get('labels', []),
                         sysctls=sysctls,
                         cap_add=entry.get('cap_add', [])
                     )
@@ -182,6 +188,8 @@ def refresh_template(db: Session, template_id: id):
                     ports=ports,
                     volumes=entry.get('volumes', []),
                     env=entry.get('env', []),
+                    devices=entry.get('devices', []),
+                    labels=entry.get('labels', []),
                     sysctls=sysctls,
                     cap_add=entry.get('cap_add', [])
                 )
