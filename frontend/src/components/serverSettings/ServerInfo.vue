@@ -51,7 +51,9 @@
       <v-card-title class="subheading warning font-weight-bold"
         >Prune</v-card-title
       >
-      <v-card-text class="mt-2">Delete unused images, volumes, and networks.</v-card-text>
+      <v-card-text class="mt-2"
+        >Delete unused images, volumes, and networks.</v-card-text
+      >
       <v-btn class="mx-5 mb-5" color="warning" @click="prune_images()">
         Prune
       </v-btn>
@@ -66,28 +68,28 @@ import { mapMutations } from "vuex";
 export default {
   components: {
     ValidationObserver,
-    ValidationProvider,
+    ValidationProvider
   },
   data() {
     return {
-      importFile: null,
+      importFile: null
     };
   },
   methods: {
     ...mapMutations({
       setSuccess: "snackbar/setSuccess",
-      setErr: "snackbar/setErr",
+      setErr: "snackbar/setErr"
     }),
     prune_images() {
       axios({
         url: "/api/settings/prune",
         method: "GET",
-        responseType: "text/json",
+        responseType: "text/json"
       })
-        .then((response) => {
+        .then(response => {
           this.setSuccess(response);
         })
-        .catch((err) => {
+        .catch(err => {
           this.setErr(err);
         });
     },
@@ -95,8 +97,8 @@ export default {
       axios({
         url: "/api/settings/export",
         method: "GET",
-        responseType: "blob",
-      }).then((response) => {
+        responseType: "blob"
+      }).then(response => {
         var FileURL = window.URL.createObjectURL(new Blob([response.data]));
         var fileLink = document.createElement("a");
 
@@ -112,18 +114,18 @@ export default {
       formData.append("upload", importFile);
       let axiosHeader = {
         headers: {
-          "Content-Type": "multipart/form-data",
-        },
+          "Content-Type": "multipart/form-data"
+        }
       };
       axios
         .post("/api/settings/export", formData, axiosHeader)
-        .then((response) => {
+        .then(response => {
           this.setSuccess(response);
         })
-        .catch((err) => {
+        .catch(err => {
           this.setErr(err);
         });
-    },
-  },
+    }
+  }
 };
 </script>

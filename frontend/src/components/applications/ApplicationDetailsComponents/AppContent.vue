@@ -83,7 +83,7 @@
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-center"> Label </th>
+              <th class="text-center">Label</th>
               <th class="text-center">Container Port</th>
               <th class="text-center">Host IP</th>
               <th class="text-center">Host Port</th>
@@ -91,7 +91,7 @@
           </thead>
           <tbody>
             <tr v-for="(port, index) in convPorts(app.ports)" :key="index">
-              <td>{{app.Config.Labels[`local.yacht.port.${port.hport}`]}}</td>
+              <td>{{ app.Config.Labels[`local.yacht.port.${port.hport}`] }}</td>
               <td>{{ port.cport }}</td>
               <td>{{ port.hip }}</td>
               <td>
@@ -176,7 +176,16 @@
         </template>
       </v-simple-table>
     </v-card>
-    <v-card tile raised v-if="app.HostConfig.CapAdd || app.HostConfig.Sysctls || app.HostConfig.Devices || app.Config.Labels">
+    <v-card
+      tile
+      raised
+      v-if="
+        app.HostConfig.CapAdd ||
+          app.HostConfig.Sysctls ||
+          app.HostConfig.Devices ||
+          app.Config.Labels
+      "
+    >
       <v-card-title class="subheading primary font-weight-bold">
         Advanced
       </v-card-title>
@@ -213,7 +222,13 @@
               v-for="(device, index) in app.HostConfig.Devices"
               :key="index"
             >
-              {{ device.PathOnHost + ':' + device.PathInContainer + ':' + device.CgroupPermissions }}
+              {{
+                device.PathOnHost +
+                  ":" +
+                  device.PathInContainer +
+                  ":" +
+                  device.CgroupPermissions
+              }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -229,7 +244,8 @@
               v-for="(label, index) in Object.entries(app.Config.Labels)"
               :key="index"
             >
-              <p class="float-left"> {{label[0]}}:</p> <p class="float-right"> {{label[1]}} </p>
+              <p class="float-left">{{ label[0] }}:</p>
+              <p class="float-right">{{ label[1] }}</p>
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>

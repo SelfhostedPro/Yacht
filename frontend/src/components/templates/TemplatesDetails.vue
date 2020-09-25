@@ -316,12 +316,12 @@ export default {
     return {
       appDetailsDialog: false,
       selectedApp: null,
-      search: "",
+      search: ""
     };
   },
   computed: {
     ...mapGetters({
-      getTemplateById: "templates/getTemplateById",
+      getTemplateById: "templates/getTemplateById"
     }),
     ...mapState("templates", ["isLoading"]),
     template() {
@@ -337,11 +337,11 @@ export default {
         return this.items;
       }
       return templ.items.filter(this.filterByTitle);
-    },
+    }
   },
   methods: {
     ...mapActions({
-      readTemplate: "templates/readTemplate",
+      readTemplate: "templates/readTemplate"
     }),
     sortByTitle(arr) {
       // Set slice() to avoid to generate an infinite loop!
@@ -356,12 +356,12 @@ export default {
       const regex = new RegExp(this.search, "i");
       return regex.test(item.title);
       // return item.title.includes(this.search);
-    },
+    }
   },
   created() {
     const templateId = this.$route.params.templateId;
     this.readTemplate(templateId);
-  },
+  }
 };
 </script>
 
