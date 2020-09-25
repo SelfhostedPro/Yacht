@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-
+from fastapi import HTTPException
 from ..db import models, schemas
 from ..utils import *
 
@@ -83,31 +83,41 @@ def deploy_app(template: schemas.DeployForm):
         )
 
     except Exception as exc:
-        raise
+        raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
     print('done deploying')
 
     return schemas.DeployLogs(logs=launch.logs())
 
 def Merge(dict1, dict2): 
-    return(dict2.update(dict1)) 
+    if dict1 and dict2:
+        return(dict2.update(dict1))
+    elif dict1:
+        return dict1
+    elif dict2:
+        return dict2
+    else:
+        return None
 
 def launch_app(name, image, restart_policy, ports, portlabels, volumes, env, devices, labels, sysctls, caps):
     dclient = docker.from_env()
-    Merge(portlabels, labels)
-    lauch = dclient.containers.run(
-        name=name,
-        image=image,
-        restart_policy=restart_policy,
-        ports=ports,
-        volumes=volumes,
-        environment=env,
-        sysctls=sysctls,
-        labels=labels,
-        devices=devices,
-        cap_add=caps,
-        detach=True
-    )
-    print(lauch)
+    combined_labels = Merge(portlabels, labels)
+    try:
+        lauch = dclient.containers.run(
+            name=name,
+            image=image,
+            restart_policy=restart_policy,
+            ports=ports,
+            volumes=volumes,
+            environment=env,
+            sysctls=sysctls,
+            labels=combined_labels,
+            devices=devices,
+            cap_add=caps,
+            detach=True
+        )
+    except Exception as e:
+        raise e
+
     print(f'''Container started successfully.
        Name: {name},
       Image: {image},

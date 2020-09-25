@@ -700,11 +700,12 @@ export default {
       axios
         .post(url, payload)
         .then(() => {
-          this.deployStep = 1;
-        })
-        .finally(() => {
           this.isLoading = false;
           this.$router.push({ name: "View Applications" });
+        })
+        .catch((err) => {
+          this.isLoading = false;
+          this.setErr(err)
         });
     },
     async populateForm() {
