@@ -8,6 +8,7 @@ const state = {
 
 const mutations = {
   setErr(state, err) {
+    console.log(err);
     state.content = err.response.statusText + ": " + err.response.data.detail;
     state.bottom = true;
     state.btnColor = "white";

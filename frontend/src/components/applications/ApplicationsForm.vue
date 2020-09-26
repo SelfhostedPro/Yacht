@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="apps-form component">
     <h1>
-      Deploy {{ form.title }}
+      Deploy {{ form.name }}
       <v-btn
         v-if="!this.$route.params.appId"
         tile
@@ -11,7 +11,7 @@
         <v-icon>mdi-plus</v-icon> From Template
       </v-btn>
     </h1>
-    <v-stepper v-model="deployStep">
+    <v-stepper v-model="deployStep" alt-labels non-linear>
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -21,19 +21,39 @@
         />
       </v-fade-transition>
       <v-stepper-header>
-        <v-stepper-step step="1" :complete="deployStep > 1">
-          Basics
+        <v-stepper-step
+          step="1"
+          editable
+          edit-icon="mdi-check"
+          :complete="deployStep > 1"
+        >
+          General
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="2" :complete="deployStep > 2">
-          Ports
+        <v-stepper-step
+          step="2"
+          editable
+          edit-icon="mdi-check"
+          :complete="deployStep > 2"
+        >
+          Networking
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="3" :complete="deployStep > 3">
+        <v-stepper-step
+          step="3"
+          editable
+          edit-icon="mdi-check"
+          :complete="deployStep > 3"
+        >
           Volumes
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="4" :complete="deployStep > 4">
+        <v-stepper-step
+          step="4"
+          editable
+          edit-icon="mdi-check"
+          :complete="deployStep > 4"
+        >
           Environment
         </v-stepper-step>
       </v-stepper-header>
@@ -85,7 +105,7 @@
                 ></v-select>
               </ValidationProvider>
             </form>
-            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid">
+            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid" class="float-right">
               Continue
             </v-btn>
           </ValidationObserver>
@@ -102,20 +122,17 @@
                 <v-row v-for="(item, index) in form.ports" :key="index">
                   <v-col>
                     <ValidationProvider
-                      name="Container"
-                      rules="required"
+                      name="Label"
+                      rules=""
                       v-slot="{ errors, valid }"
                     >
                       <v-text-field
-                        type="number"
-                        label="Container"
-                        placeholder="80"
-                        min="0"
-                        max="65535"
-                        v-model="item['cport']"
+                        type="string"
+                        label="Label"
+                        placeholder="webui"
+                        v-model="item['label']"
                         :error-messages="errors"
                         :success="valid"
-                        required
                       ></v-text-field>
                     </ValidationProvider>
                   </v-col>
@@ -134,6 +151,25 @@
                         v-model="item['hport']"
                         :error-messages="errors"
                         :success="valid"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col>
+                    <ValidationProvider
+                      name="Container"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        type="number"
+                        label="Container"
+                        placeholder="80"
+                        min="0"
+                        max="65535"
+                        v-model="item['cport']"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
                       ></v-text-field>
                     </ValidationProvider>
                   </v-col>
@@ -173,11 +209,11 @@
                 </v-col>
               </v-row>
             </form>
-            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
-              Back
-            </v-btn>
-            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid">
+            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid" class="float-right">
               Continue
+            </v-btn>
+            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2 float-right">
+              Back
             </v-btn>
           </ValidationObserver>
         </v-stepper-content>
@@ -193,22 +229,6 @@
                 <v-row v-for="(item, index) in form.volumes" :key="index">
                   <v-col>
                     <ValidationProvider
-                      name="Container"
-                      rules="required"
-                      v-slot="{ errors, valid }"
-                    >
-                      <v-text-field
-                        label="Container"
-                        placeholder="/share"
-                        v-model="item['container']"
-                        :error-messages="errors"
-                        :success="valid"
-                        required
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col>
-                    <ValidationProvider
                       name="Host"
                       rules="required"
                       v-slot="{ errors, valid }"
@@ -217,6 +237,22 @@
                         label="Host"
                         placeholder="/yacht/image/share"
                         v-model="item['bind']"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col>
+                    <ValidationProvider
+                      name="Container"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        label="Container"
+                        placeholder="/share"
+                        v-model="item['container']"
                         :error-messages="errors"
                         :success="valid"
                         required
@@ -242,11 +278,11 @@
                 </v-col>
               </v-row>
             </form>
-            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
-              Back
-            </v-btn>
-            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid">
+            <v-btn color="primary" @click="deployStep += 1" :disabled="invalid" class="float-right">
               Continue
+            </v-btn>
+            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2 float-right">
+              Back
             </v-btn>
           </ValidationObserver>
         </v-stepper-content>
@@ -267,7 +303,7 @@
                       v-slot="{ errors, valid }"
                     >
                       <v-text-field
-                        label="Name"
+                        :label="item['label']"
                         v-model="item['name']"
                         :error-messages="errors"
                         :success="valid"
@@ -310,10 +346,12 @@
                 </v-col>
               </v-row>
             </form>
-            <v-btn color="secondary" @click="deployStep -= 1" class="mx-2">
-              Back
-            </v-btn>
-            <v-btn color="primary" @click="nextStep(4)" :disabled="invalid">
+            <v-btn
+              color="primary"
+              @click="nextStep(4)"
+              :disabled="invalid"
+              class="float-right"
+            >
               <div v-if="isLoading">
                 Deploying
                 <v-progress-circular
@@ -325,6 +363,13 @@
               </div>
               <div v-else>Deploy</div>
             </v-btn>
+            <v-btn
+              color="secondary"
+              @click="deployStep -= 1"
+              class="mx-2 float-right"
+            >
+              Back
+            </v-btn>
           </ValidationObserver>
         </v-stepper-content>
       </v-stepper-items>
@@ -334,6 +379,141 @@
         Advanced
       </v-card-title>
       <v-expansion-panels flat accordion multiple focusable>
+        <v-expansion-panel>
+          <v-expansion-panel-header color="#303030">
+            <v-row no-gutters>
+              <v-col cols="2">Devices</v-col>
+              <v-col cols="4" class="text--secondary">
+                (Passthrough Devices)
+              </v-col>
+            </v-row>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content color="#303030">
+            <form>
+              <transition-group
+                name="slide"
+                enter-active-class="animated fadeInLeft fast-anim"
+                leave-active-class="animated fadeOutLeft fast-anim"
+              >
+                <v-row v-for="(item, index) in form.devices" :key="index">
+                  <v-col>
+                    <ValidationProvider
+                      name="Container"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        label="Container"
+                        v-model="item['container']"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col>
+                    <ValidationProvider
+                      name="Host"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        label="Host"
+                        v-model="item['host']"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col class="d-flex justify-end" cols="1">
+                    <v-btn
+                      icon
+                      class="align-self-center"
+                      @click="removeDevices(index)"
+                    >
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </transition-group>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addDevices">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header color="#303030">
+            <v-row no-gutters>
+              <v-col cols="2">Labels</v-col>
+              <v-col cols="4" class="text--secondary">
+                (Container Labels)
+              </v-col>
+            </v-row>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content color="#303030">
+            <form>
+              <transition-group
+                name="slide"
+                enter-active-class="animated fadeInLeft fast-anim"
+                leave-active-class="animated fadeOutLeft fast-anim"
+              >
+                <v-row v-for="(item, index) in form.labels" :key="index">
+                  <v-col>
+                    <ValidationProvider
+                      name="Label"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        label="Label"
+                        v-model="item['label']"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col>
+                    <ValidationProvider
+                      name="Value"
+                      rules=""
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        label="Value"
+                        v-model="item['value']"
+                        :error-messages="errors"
+                        :success="valid"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col class="d-flex justify-end" cols="1">
+                    <v-btn
+                      icon
+                      class="align-self-center"
+                      @click="removeLabels(index)"
+                    >
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </transition-group>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addLabels">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
         <v-expansion-panel>
           <v-expansion-panel-header color="#303030">
             <v-row no-gutters>
@@ -438,7 +618,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
@@ -452,8 +632,10 @@ export default {
         ports: [],
         volumes: [],
         env: [],
+        devices: [],
+        labels: [],
         sysctls: [],
-        cap_add: []
+        cap_add: [],
       },
       isLoading: false,
       cap_options: [
@@ -479,16 +661,16 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND"
-      ]
+        "BLOCK_SUSPEND",
+      ],
     };
   },
   methods: {
     ...mapActions({
-      readApp: "templates/readApp"
+      readApp: "templates/readApp",
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr"
+      setErr: "snackbar/setErr",
     }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
@@ -507,6 +689,18 @@ export default {
     },
     removeEnv(index) {
       this.form.env.splice(index, 1);
+    },
+    addDevices() {
+      this.form.devices.push({ container: "", host: "" });
+    },
+    removeDevices(index) {
+      this.form.devices.splice(index, 1);
+    },
+    addLabels() {
+      this.form.labels.push({ label: "", value: "" });
+    },
+    removeLabels(index) {
+      this.form.labels.splice(index, 1);
     },
     addSysctls() {
       this.form.sysctls.push({ name: "", value: "" });
@@ -535,11 +729,12 @@ export default {
       axios
         .post(url, payload)
         .then(() => {
-          this.deployStep = 1;
-        })
-        .finally(() => {
           this.isLoading = false;
           this.$router.push({ name: "View Applications" });
+        })
+        .catch((err) => {
+          this.isLoading = false;
+          this.setErr(err);
         });
     },
     async populateForm() {
@@ -554,8 +749,10 @@ export default {
             ports: app.ports || [],
             volumes: app.volumes || [],
             env: app.env || [],
+            devices: app.devices || [],
+            labels: app.labels || [],
             sysctls: app.sysctls || [],
-            cap_add: app.cap_add || []
+            cap_add: app.cap_add || [],
           };
         } catch (error) {
           console.error(error, error.response);
@@ -564,11 +761,11 @@ export default {
       } else {
         console.log("No app selected");
       }
-    }
+    },
   },
   async created() {
     await this.populateForm();
-  }
+  },
 };
 </script>
 

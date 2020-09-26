@@ -83,6 +83,7 @@
         <template v-slot:default>
           <thead>
             <tr>
+              <th class="text-center">Label</th>
               <th class="text-center">Container Port</th>
               <th class="text-center">Host IP</th>
               <th class="text-center">Host Port</th>
@@ -90,6 +91,7 @@
           </thead>
           <tbody>
             <tr v-for="(port, index) in convPorts(app.ports)" :key="index">
+              <td>{{ app.Config.Labels[`local.yacht.port.${port.hport}`] }}</td>
               <td>{{ port.cport }}</td>
               <td>{{ port.hip }}</td>
               <td>
@@ -174,7 +176,15 @@
         </template>
       </v-simple-table>
     </v-card>
-    <v-card tile raised v-if="app.HostConfig.CapAdd || app.HostConfig.Sysctls">
+    <v-card
+      tile
+      raised
+      v-if="
+        app.HostConfig.CapAdd ||
+          app.HostConfig.Sysctls ||
+          app.HostConfig.Devices
+      "
+    >
       <v-card-title class="subheading primary font-weight-bold">
         Advanced
       </v-card-title>
@@ -198,8 +208,31 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-divider v-if="app.HostConfig.CapAdd && app.HostConfig.Devices" />
 
-        <v-divider />
+        <v-list-item v-if="app.HostConfig.Devices">
+          <v-list-item-content
+            ><v-list-item-title class="font-weight-bold"
+              >Mapped Devices</v-list-item-title
+            ></v-list-item-content
+          >
+          <v-list-item-content>
+            <v-list-item-title
+              v-for="(device, index) in app.HostConfig.Devices"
+              :key="index"
+            >
+              {{
+                device.PathOnHost +
+                  ":" +
+                  device.PathInContainer +
+                  ":" +
+                  device.CgroupPermissions
+              }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider v-if="app.HostConfig.Sysctls && app.HostConfig.Devices" />
+
         <v-list-item v-if="app.HostConfig.Sysctls">
           <v-list-item-content
             ><v-list-item-title class="font-weight-bold"
@@ -217,6 +250,30 @@
         </v-list-item>
       </v-list>
     </v-card>
+    <v-card tile v-if="app.Config.Labels">
+      <v-card-title class="subheading teal darken-1 font-weight-bold">
+        Container Labels
+      </v-card-title>
+      <v-simple-table class="secondary px-0 text-center">
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th class="text-center" >Label</th>
+              <th class="text-center" >Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(label, index) in Object.entries(app.Config.Labels)"
+              :key="index"
+            >
+              <td>{{ label[0] }}</td>
+              <td>{{ label[1] }}</td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </v-card>
   </div>
 </template>
 
@@ -224,7 +281,7 @@
 export default {
   data() {
     return {
-      host_ip: location.hostname
+      host_ip: location.hostname,
     };
   },
   props: ["app"],
@@ -254,7 +311,15 @@ export default {
         env.push(_split_data);
       }
       return env;
-    }
-  }
+    },
+  },
 };
 </script>
+
+<style scoped>
+.AppLabel {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+</style>

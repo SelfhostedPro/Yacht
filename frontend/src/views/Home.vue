@@ -21,9 +21,13 @@
               <v-card-title class="pb-0">
                 <v-tooltip top transition="scale-transition">
                   <template v-slot:activator="{ on, attrs }">
-                    <span v-bind="attrs" v-on="on" @click="handleAppClick(app.name)" class="AppTitle">{{
-                      app.name
-                    }}</span>
+                    <span
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="handleAppClick(app.name)"
+                      class="AppTitle"
+                      >{{ app.name }}</span
+                    >
                   </template>
                   <span>{{ app.name }}</span>
                 </v-tooltip>

@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 
 class PortsSchema(BaseModel):
+    label: Optional[str]
     cport: str
     hport: Optional[str]
     proto: str
@@ -24,6 +25,13 @@ class SysctlsSchema(BaseModel):
     name: str
     value: str
 
+class DevicesSchema(BaseModel):
+    container: str
+    host: str
+
+class LabelSchema(BaseModel):
+    label: str
+    value: str
 
 class DeployForm(BaseModel):
     name: str
@@ -33,6 +41,8 @@ class DeployForm(BaseModel):
     ports: Optional[List[PortsSchema]]
     volumes: Optional[List[VolumesSchema]]
     env: Optional[List[EnvSchema]]
+    devices: Optional[List[DevicesSchema]]
+    labels: Optional[List[LabelSchema]]
     sysctls: Optional[List[SysctlsSchema]]
     cap_add: Optional[List[str]]
 # LOGS #

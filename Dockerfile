@@ -41,8 +41,9 @@ RUN \
 	/root/.cache \
 	/tmp/*
 
-COPY ./backend/api .
-COPY root /
+COPY ./backend/api ./
+COPY ./backend/alembic /alembic
+COPY root ./backend/alembic.ini /
 
 # Vue
 COPY --from=build-stage /app/dist /app

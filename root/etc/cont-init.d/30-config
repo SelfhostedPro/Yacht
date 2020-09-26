@@ -5,6 +5,8 @@ chown -R abc:abc \
 		/app
 chown -R abc:abc \
 		/config
+chown -R abc:abc \
+    /alembic
 # non-root docker
 if [ -S /var/run/docker.sock ]; then
   DOCKER_GID=$(stat -c '%g' "/var/run/docker.sock")

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-
+from fastapi import HTTPException
 from ..db import models, schemas
 from ..utils import *
 
@@ -70,36 +70,57 @@ def deploy_app(template: schemas.DeployForm):
     try:
         launch = launch_app(
             template.name,
-            template.image,
+            conv_image2data(template.image),
             conv_restart2data(template.restart_policy),
             conv_ports2data(template.ports),
+            conv_portlabels2data(template.ports),
             conv_volumes2data(template.volumes),
             conv_env2data(template.env),
+            conv_devices2data(template.devices),
+            conv_labels2data(template.labels),
             conv_sysctls2data(template.sysctls),
             conv_caps2data(template.cap_add)
         )
 
     except Exception as exc:
-        raise
+        raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
     print('done deploying')
 
     return schemas.DeployLogs(logs=launch.logs())
 
+def Merge(dict1, dict2): 
+    if dict1 and dict2:
+        return(dict2.update(dict1))
+    elif dict1:
+        return dict1
+    elif dict2:
+        return dict2
+    else:
+        return None
 
-def launch_app(name, image, restart_policy, ports, volumes, env, sysctls, caps):
+def launch_app(name, image, restart_policy, ports, portlabels, volumes, env, devices, labels, sysctls, caps):
     dclient = docker.from_env()
-    lauch = dclient.containers.run(
-        name=name,
-        image=image,
-        restart_policy=restart_policy,
-        ports=ports,
-        volumes=volumes,
-        environment=env,
-        sysctls=sysctls,
-        cap_add=caps,
-        detach=True
-    )
-    print(lauch)
+    combined_labels = Merge(portlabels, labels)
+    try:
+        lauch = dclient.containers.run(
+            name=name,
+            image=image,
+            restart_policy=restart_policy,
+            ports=ports,
+            volumes=volumes,
+            environment=env,
+            sysctls=sysctls,
+            labels=combined_labels,
+            devices=devices,
+            cap_add=caps,
+            detach=True
+        )
+    except Exception as e:
+        if e.status_code == 500:
+            failed_app = dclient.containers.get(name)
+            failed_app.remove()
+        raise e
+
     print(f'''Container started successfully.
        Name: {name},
       Image: {image},

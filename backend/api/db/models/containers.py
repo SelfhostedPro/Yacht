@@ -58,6 +58,10 @@ class TemplateItem(Base):
                      nullable=True, unique=False, index=False)
     env = Column(JSON,
                  nullable=True, unique=False, index=False)
+    devices = Column(JSON,
+                    nullable=True, unique=False, index=False)
+    labels = Column(JSON,
+                    nullable=True, unique=False, index=False)
     sysctls = Column(JSON,
                      nullable=True, unique=False, index=False)
     cap_add = Column(JSON,

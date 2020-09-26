@@ -168,6 +168,12 @@
                 <v-list-item-content
                   ><v-list-item-title
                     class="px-5 text-centered font-weight-bold"
+                    >Label</v-list-item-title
+                  ></v-list-item-content
+                >
+                <v-list-item-content
+                  ><v-list-item-title
+                    class="px-5 text-centered font-weight-bold"
                     >Host Port</v-list-item-title
                   ></v-list-item-content
                 >
@@ -179,6 +185,11 @@
               </v-list-item>
               <v-divider />
               <v-list-item v-for="port in selectedApp.ports" :key="port.hport">
+                <v-list-item-content
+                  ><v-list-item-title class="px-5 text-centered">{{
+                    port.label || "None"
+                  }}</v-list-item-title></v-list-item-content
+                >
                 <v-list-item-content
                   ><v-list-item-title class="px-5 text-centered">{{
                     port.hport
@@ -248,6 +259,12 @@
                 <v-list-item-content
                   ><v-list-item-title
                     class="px-5 text-centered font-weight-bold"
+                    >Name</v-list-item-title
+                  ></v-list-item-content
+                >
+                <v-list-item-content
+                  ><v-list-item-title
+                    class="px-5 text-centered font-weight-bold"
                     >Default</v-list-item-title
                   ></v-list-item-content
                 >
@@ -259,7 +276,11 @@
                     env.label
                   }}</v-list-item-title></v-list-item-content
                 >
-
+                <v-list-item-content
+                  ><v-list-item-title class="px-5 text-centered">{{
+                    env.name
+                  }}</v-list-item-title></v-list-item-content
+                >
                 <v-list-item-content
                   ><v-list-item-title class="px-5 text-centered">{{
                     env.default

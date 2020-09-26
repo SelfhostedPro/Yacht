@@ -5,3 +5,4 @@ venv
 *.db
 node_modules
 config
+*.pyc
