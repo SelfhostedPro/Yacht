@@ -54,5 +54,10 @@ https://raw.githubusercontent.com/SelfhostedPro/selfhosted_templates/yacht/Templ
 
 In templates you are able to define variables (starting with `!`) to have them automatically replaced by whatever variable the user has set in their server settings (ie. `!config` will be replaced by `/yacht/AppData/Config` by default). 
 
+## Notes for ARM devices
+If you're on arm and graphs aren't showing up add the following to your cmdline.txt:
+```
+cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1
+```
 ## License
 [MIT License](LICENSE.md)
