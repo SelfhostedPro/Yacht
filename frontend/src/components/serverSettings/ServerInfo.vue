@@ -47,17 +47,6 @@
         >Export
       </v-btn>
     </v-card>
-    <v-card>
-      <v-card-title class="subheading warning font-weight-bold"
-        >Prune</v-card-title
-      >
-      <v-card-text class="mt-2"
-        >Delete unused images, volumes, and networks.</v-card-text
-      >
-      <v-btn class="mx-5 mb-5" color="warning" @click="prune_images()">
-        Prune
-      </v-btn>
-    </v-card>
   </v-card>
 </template>
 
@@ -80,19 +69,6 @@ export default {
       setSuccess: "snackbar/setSuccess",
       setErr: "snackbar/setErr"
     }),
-    prune_images() {
-      axios({
-        url: "/api/settings/prune",
-        method: "GET",
-        responseType: "text/json"
-      })
-        .then(response => {
-          this.setSuccess(response);
-        })
-        .catch(err => {
-          this.setErr(err);
-        });
-    },
     export_settings() {
       axios({
         url: "/api/settings/export",
