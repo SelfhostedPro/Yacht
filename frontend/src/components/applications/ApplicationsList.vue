@@ -65,6 +65,7 @@
                 </v-list-item>
                 <v-divider />
                 <v-list-item
+                  v-if="!item.Config.Image.includes('selfhostedpro/yacht')"
                   @click="AppAction({ Name: item.name, Action: 'update' })"
                 >
                   <v-list-item-icon>
