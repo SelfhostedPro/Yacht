@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="apps-list component">
+  <div class="apps-list component" style="max-width: 90%">
     <v-card>
       <v-fade-transition>
         <v-progress-linear
@@ -21,6 +21,8 @@
         ></v-text-field>
       </v-card-title>
       <v-data-table
+        style="width: 99%"
+        class="mx-auto"
         :headers="headers"
         :items="apps"
         :items-per-page="10"
@@ -60,6 +62,15 @@
                     <v-icon>mdi-refresh</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title>Restart</v-list-item-title>
+                </v-list-item>
+                <v-divider />
+                <v-list-item
+                  @click="AppAction({ Name: item.name, Action: 'update' })"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-update</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>Update</v-list-item-title>
                 </v-list-item>
                 <v-divider />
                 <v-list-item
@@ -119,7 +130,7 @@
                   :href="'http://' + port.hip + ':' + port.hport"
                   target="_blank"
                   ><v-icon small class="mr-1">mdi-link-variant</v-icon
-                  >{{ item.Config.Labels || port.hport }}</v-chip
+                  >{{ item.Config.Labels[`local.yacht.port.${port.hport}`] || port.hport }}</v-chip
                 >
               </template>
               <span>
@@ -130,6 +141,9 @@
         </template>
         <template v-slot:item.image="{ item }">
           <span class="ImageName">{{ item.Config.Image }}</span>
+        </template>
+        <template v-slot:item.created="{item}">
+          <span class="CreatedAt"> {{ item.Created | formatDate }} </span>
         </template>
       </v-data-table>
     </v-card>
@@ -150,32 +164,36 @@ export default {
           value: "name",
           sortable: true,
           align: "start",
-          width: "30%"
+          width: "30%",
         },
         {
           text: "Status",
           value: "status",
           sortable: true,
-          width: "10%"
+          width: "10%",
         },
         {
           text: "Image",
           value: "image",
-          sortable: true
+          sortable: true,
         },
         {
           text: "Ports",
           value: "ports",
           sortable: true,
-          width: "30%"
+        },
+        {
+          text: "Created At",
+          value: "created",
+          sortable: true,
         }
-      ]
+      ],
     };
   },
   methods: {
     ...mapActions({
       readApps: "apps/readApps",
-      AppAction: "apps/AppAction"
+      AppAction: "apps/AppAction",
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
@@ -195,14 +213,14 @@ export default {
     },
     refresh() {
       this.readApps();
-    }
+    },
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading"])
+    ...mapState("apps", ["apps", "isLoading"]),
   },
   mounted() {
     this.readApps();
-  }
+  },
 };
 </script>
 
@@ -211,6 +229,11 @@ tr:hover {
   cursor: pointer;
 }
 .ImageName {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.CreatedAt{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

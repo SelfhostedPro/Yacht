@@ -51,6 +51,9 @@ def get_container_processes(app_name):
 def get_container_logs(app_name):
     return actions.get_app_logs(app_name=app_name)
 
+@router.get("/{app_name}/update", dependencies=[Depends(get_active_user)])
+def update_container(app_name):
+    return actions.app_update(app_name)
 
 @router.get("/{app_name}/{action}", dependencies=[Depends(get_active_user)])
 def container_actions(app_name, action):

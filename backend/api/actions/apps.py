@@ -148,6 +148,34 @@ def app_action(app_name, action):
     apps_list = get_apps()
     return apps_list
 
+def app_update(app_name):
+    dclient = docker.from_env()
+    old = dclient.containers.get(app_name)
+    properties = {
+        'name': old.name,
+        'hostname': old.attrs['Config']['Hostname'],
+        'user': old.attrs['Config']['User'],
+        'detach': True,
+        'domainname': old.attrs['Config']['Domainname'],
+        'tty': old.attrs['Config']['Tty'],
+        'ports': None if not old.attrs['Config'].get('ExposedPorts') else {
+            k:v if v else None  for k,v in old.attrs['Config']['ExposedPorts'].items()
+        }, 
+        'volumes': None if not old.attrs['Config'].get('Volumes') else [
+            v for v in old.attrs['Config']['Volumes'].keys()
+        ],
+        'working_dir': old.attrs['Config']['WorkingDir'],
+        'labels': old.attrs['Config']['Labels'],
+        'entrypoint': old.attrs['Config']['Entrypoint'],
+        'environment': old.attrs['Config']['Env'],
+        'healthcheck': old.attrs['Config'].get('Healthcheck', None)
+    }
+    dclient.images.pull(old.image.tags[0])
+    old.stop()
+    old.remove()
+    dclient.containers.run(old.image.tags[0], old.attrs['Config']['Cmd'], **properties)
+    return get_apps()
+
 def prune_images():
     dclient = docker.from_env()
     deleted_everything = {}
