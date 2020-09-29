@@ -160,3 +160,8 @@ def prune_images():
     deleted_everything.update(deleted_images)
     
     return deleted_everything
+def prune_resources(resource):
+    dclient = docker.from_env()
+    action = getattr(dclient, resource)
+    deleted_resource = action.prune()
+    return deleted_resource

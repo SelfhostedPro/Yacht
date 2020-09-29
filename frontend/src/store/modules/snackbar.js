@@ -29,6 +29,13 @@ const mutations = {
     state.btnColor = "black";
     state.visible = true;
   },
+  setMessage(state, message) {
+    state.content = message;
+    state.bottom = true;
+    state.color = "primary";
+    state.btnColor = "black";
+    state.visible = true;
+  },
   clearSnack(state) {
     state.content = "";
     (state.bottom = false), (state.btnColor = "");
