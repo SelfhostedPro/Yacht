@@ -20,6 +20,7 @@ import UserInfo from "../components/userSettings/UserInfo.vue";
 import ServerSettings from "../views/ServerSettings.vue";
 import ServerInfo from "../components/serverSettings/ServerInfo.vue";
 import ServerVariables from "../components/serverSettings/ServerVariables.vue";
+import Prune from "../components/serverSettings/Prune.vue";
 
 Vue.use(VueRouter);
 
@@ -127,6 +128,11 @@ const routes = [
         name: "Template Variables",
         path: "templateVariables",
         component: ServerVariables
+      },
+      {
+        name: "Prune",
+        path: "prune",
+        component: Prune
       }
     ]
   },

@@ -37,6 +37,6 @@ def export_settings(db: Session = Depends(get_db)):
 def import_settings(db: Session = Depends(get_db), upload: UploadFile = File(...)):
     return crud.import_settings(db=db, upload=upload)
 
-@router.get("/prune", dependencies=[Depends(get_active_user)])
-def prune_images():
-    return apps.prune_images()
+@router.get("/prune/{resource}", dependencies=[Depends(get_active_user)])
+def prune_resources(resource: str):
+    return apps.prune_resources(resource)
