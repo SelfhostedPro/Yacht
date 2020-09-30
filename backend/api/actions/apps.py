@@ -152,38 +152,24 @@ def app_action(app_name, action):
 def app_update(app_name):
     dclient = docker.from_env()
     old = dclient.containers.get(app_name)
-    properties = {
-        'name': old.name,
-        'hostname': old.attrs['Config']['Hostname'],
-        'user': old.attrs['Config']['User'],
-        'detach': True,
-        'domainname': old.attrs['Config']['Domainname'],
-        'tty': old.attrs['Config']['Tty'],
-        'ports': get_update_ports(old.ports), 
-        'volumes': None if not old.attrs['Config'].get('Volumes') else [
-            v for v in old.attrs['Config']['Volumes'].keys()
-        ],
-        'working_dir': old.attrs['Config']['WorkingDir'],
-        'labels': old.attrs['Config']['Labels'],
-        'entrypoint': old.attrs['Config']['Entrypoint'],
-        'environment': old.attrs['Config']['Env'],
-        'healthcheck': old.attrs['Config'].get('Healthcheck', None)
-    }
-    dclient.images.pull(old.image.tags[0])
-    old.stop()
-    old.remove()
-    dclient.containers.run(old.image.tags[0], old.attrs['Config']['Cmd'], **properties)
+    volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
+    dclient.containers.run(
+        image='containrrr/watchtower:latest',
+        command='--run-once '+old.name,
+        remove=True,
+        volumes=volumes
+    )
     return get_apps()
 
 def update_self():
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
-    yacht_id = subprocess.check_output(['bash','-c', bash_command]).decode('UTF-8')
-    print(yacht_id)
+    yacht_id = subprocess.check_output(['bash','-c', bash_command]).decode('UTF-8').strip()
+    yacht = dclient.containers.get(yacht_id)
     volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
     dclient.containers.run(
         image='containrrr/watchtower:latest',
-        command='--run-once '+yacht_id,
+        command='--run-once '+yacht.name,
         remove=True,
         volumes=volumes
     )
