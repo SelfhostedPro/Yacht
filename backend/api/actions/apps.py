@@ -159,9 +159,7 @@ def app_update(app_name):
         'detach': True,
         'domainname': old.attrs['Config']['Domainname'],
         'tty': old.attrs['Config']['Tty'],
-        'ports': None if not old.attrs['Config'].get('ExposedPorts') else {
-            k:v if v else None  for k,v in old.attrs['Config']['ExposedPorts'].items()
-        }, 
+        'ports': get_update_ports(old.ports), 
         'volumes': None if not old.attrs['Config'].get('Volumes') else [
             v for v in old.attrs['Config']['Volumes'].keys()
         ],
