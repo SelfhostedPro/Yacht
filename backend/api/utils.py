@@ -337,3 +337,13 @@ async def get_app_stats(app_name):
                 "mem_percent": (mem_current / mem_total) * 100.0,
             }
             yield json.dumps(full_stats)
+
+def get_update_ports(ports):
+    if ports:
+        portdir={}
+        for hport in ports:
+            for d in ports[hport]:
+                portdir.update({str(hport): d.get('HostPort') })
+        return portdir
+    else:
+        return None
