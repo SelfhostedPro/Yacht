@@ -5,6 +5,7 @@ from ..db import models, schemas
 from ..utils import *
 
 from datetime import datetime
+import time
 import subprocess
 import docker
 
@@ -153,14 +154,17 @@ def app_update(app_name):
     dclient = docker.from_env()
     old = dclient.containers.get(app_name)
     volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
-    dclient.containers.run(
+    updater = dclient.containers.run(
         image='containrrr/watchtower:latest',
         command='--run-once '+old.name,
-        detach=False,
-        stream=True,
         remove=True,
+        detach=True,
         volumes=volumes
     )
+    print('**** Updating '+old.name+'****')    
+    result = updater.wait(timeout=120)
+    print(result)
+    time.sleep(1)
     return get_apps()
 
 def update_self():
@@ -169,14 +173,17 @@ def update_self():
     yacht_id = subprocess.check_output(['bash','-c', bash_command]).decode('UTF-8').strip()
     yacht = dclient.containers.get(yacht_id)
     volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
-    dclient.containers.run(
+    print('**** Updating '+yacht.name+'****')
+    updater = dclient.containers.run(
         image='containrrr/watchtower:latest',
         command='--run-once '+yacht.name,
-        detach=False,
-        stream=True,
         remove=True,
+        detach=True,
         volumes=volumes
     )
+    result = updater.wait(timeout=120)
+    print(result)
+    time.sleep(1)
     return get_apps()
 
 def prune_images():
