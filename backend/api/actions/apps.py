@@ -157,6 +157,7 @@ def app_update(app_name):
         image='containrrr/watchtower:latest',
         command='--run-once '+old.name,
         detach=False,
+        stream=True,
         remove=True,
         volumes=volumes
     )
@@ -172,6 +173,7 @@ def update_self():
         image='containrrr/watchtower:latest',
         command='--run-once '+yacht.name,
         detach=False,
+        stream=True,
         remove=True,
         volumes=volumes
     )
