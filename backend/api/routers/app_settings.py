@@ -40,3 +40,7 @@ def import_settings(db: Session = Depends(get_db), upload: UploadFile = File(...
 @router.get("/prune/{resource}", dependencies=[Depends(get_active_user)])
 def prune_resources(resource: str):
     return apps.prune_resources(resource)
+
+@router.get('/update', dependencies=[Depends(get_active_user)])
+def update_self():
+    return apps.update_self()
