@@ -156,6 +156,7 @@ def app_update(app_name):
     dclient.containers.run(
         image='containrrr/watchtower:latest',
         command='--run-once '+old.name,
+        detach=False,
         remove=True,
         volumes=volumes
     )
@@ -170,6 +171,7 @@ def update_self():
     dclient.containers.run(
         image='containrrr/watchtower:latest',
         command='--run-once '+yacht.name,
+        detach=False,
         remove=True,
         volumes=volumes
     )

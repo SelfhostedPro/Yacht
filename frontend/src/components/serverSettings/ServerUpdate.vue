@@ -1,10 +1,10 @@
 <template>
   <v-card>
     <v-card-title class="subheading primary font-weight-bold"
-      >Prune</v-card-title
+      >Update</v-card-title
     >
     <v-card-text class="mt-2"
-      >Update Yacht to the latest version. <br/> Note: This will kill the running version of Yacht, Pull the latest version of the current tag, and run that with the same settings that are currently set.</v-card-text
+      >Update Yacht to the latest version. <br/> Note: This will spin up a run-once watchtower instance and update Yacht. In the process Yacht will be restarted.</v-card-text
     >
     <v-btn
       class="mx-5 mb-5"
