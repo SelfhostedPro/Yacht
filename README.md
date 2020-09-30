@@ -27,7 +27,6 @@ The default login is `admin@yacht.local` and `pass` you should change this immed
 If you need to reset your password/username to the included defaults, please delete your yacht volume and create a new one (you will lose all of your configurations so be sure to backup when you make changes).
 
 ## Features So Far:
-* Container Templating Compatibility (Portainer Compatible)
 * Vuetify UI Framework
 * Basic Container Management
 * Template Framework
