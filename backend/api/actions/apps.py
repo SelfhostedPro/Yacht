@@ -180,12 +180,11 @@ def update_self():
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
     yacht_id = subprocess.check_output(['bash','-c', bash_command]).decode('UTF-8')
     print(yacht_id)
-    env = ['CONTAINER_ID='+yacht_id]
     volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
     dclient.containers.run(
-        image='selfhostedpro/docker-updater:latest',
+        image='containrrr/watchtower:latest',
+        command='--run-once '+yacht_id,
         remove=True,
-        environment=env,
         volumes=volumes
     )
     return get_apps()
