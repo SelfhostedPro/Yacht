@@ -12,6 +12,10 @@
         <v-icon left class="mr-1">mdi-trash-can-outline</v-icon>
         Prune
       </v-tab>
+      <v-tab class="text-left" :to="{ path: 'update' }">
+        <v-icon left class="mr-1">mdi-update</v-icon>
+        Update
+      </v-tab>
     </v-tabs>
   </div>
 </template>

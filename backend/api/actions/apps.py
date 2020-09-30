@@ -5,6 +5,7 @@ from ..db import models, schemas
 from ..utils import *
 
 from datetime import datetime
+import subprocess
 import docker
 
 
@@ -174,6 +175,21 @@ def app_update(app_name):
     old.stop()
     old.remove()
     dclient.containers.run(old.image.tags[0], old.attrs['Config']['Cmd'], **properties)
+    return get_apps()
+
+def update_self():
+    dclient = docker.from_env()
+    bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
+    yacht_id = subprocess.check_output(['bash','-c', bash_command]).decode('UTF-8')
+    print(yacht_id)
+    env = ['CONTAINER_ID='+yacht_id]
+    volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
+    dclient.containers.run(
+        image='selfhostedpro/docker-updater:latest',
+        remove=True,
+        environment=env,
+        volumes=volumes
+    )
     return get_apps()
 
 def prune_images():

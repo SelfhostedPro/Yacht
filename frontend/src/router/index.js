@@ -21,6 +21,7 @@ import ServerSettings from "../views/ServerSettings.vue";
 import ServerInfo from "../components/serverSettings/ServerInfo.vue";
 import ServerVariables from "../components/serverSettings/ServerVariables.vue";
 import Prune from "../components/serverSettings/Prune.vue";
+import ServerUpdate from "../components/serverSettings/ServerUpdate.vue";
 
 Vue.use(VueRouter);
 
@@ -133,6 +134,11 @@ const routes = [
         name: "Prune",
         path: "prune",
         component: Prune
+      },
+      {
+        name: "Update Yacht",
+        path: "update",
+        component: ServerUpdate
       }
     ]
   },
