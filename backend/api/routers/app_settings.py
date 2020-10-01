@@ -44,3 +44,7 @@ def prune_resources(resource: str):
 @router.get('/update', dependencies=[Depends(get_active_user)])
 def update_self():
     return apps.update_self()
+
+@router.get('/check/update', dependencies=[Depends(get_active_user)])
+def check_self_update():
+    return apps.check_self_update()

@@ -4,7 +4,8 @@ const state = {
   apps: [],
   logs: [],
   processes: [],
-  isLoading: false
+  isLoading: false,
+  action: ''
 };
 
 const mutations = {
@@ -27,27 +28,60 @@ const mutations = {
   },
   setLoading(state, loading) {
     state.isLoading = loading;
+  },
+  setAction(state, action) {
+    state.action = action
   }
 };
 
 const actions = {
   readApps({ commit }) {
     commit("setLoading", true);
+    commit("setAction", 'Getting Apps ...')
     const url = "/api/apps/";
     axios
       .get(url)
       .then(response => {
         console.log(response)
-        const apps = response.data;
+        var apps = response.data;
         commit("setApps", apps);
+        const update_url = "/api/apps/updates"
+        commit("setAction", 'Checking for updates ...')
+        axios
+          .get(update_url)
+          .then(response => {
+            apps = response.data
+            commit("setApps", apps);
+          })
+          .catch(err => {
+            commit("snackbar/setErr", err, { root: true });
+          })
+          .finally(() => {
+            commit("setLoading", false);
+            commit("setAction", '')
+          })
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
       })
-      .finally(() => {
-        commit("setLoading", false);
-      });
   },
+  // checkAppsUpdates({ commit }) {
+  //   commit("setLoading", true);
+  //   const url = "/api/apps/updates";
+  //   axios
+  //     .get(url)
+  //     .then(response => {
+  //       console.log(response)
+  //       const apps = response.data;
+  //       commit("setApps", apps);
+  //     })
+  //     .catch(err => {
+  //       commit("snackbar/setErr", err, { root: true })
+  //     })
+  //     .finally(() => {
+  //       commit("setLoading", false)
+  //     })
+  // },
   readApp({ commit }, Name) {
     const url = `/api/apps/${Name}`;
     commit("setLoading", true);

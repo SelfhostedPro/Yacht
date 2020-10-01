@@ -10,7 +10,20 @@
         />
       </v-fade-transition>
       <v-card-title>
-        Apps <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
+        Apps
+        <v-menu close-on-click close-on-content-click offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon size="small" v-bind="attrs" v-on="on">
+              <v-icon>mdi-chevron-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item @click="refresh()">
+              <v-list-item-icon><v-icon>mdi-refresh</v-icon></v-list-item-icon>
+              <v-list-item-title>Refresh Apps</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -20,6 +33,7 @@
           hide-details
         ></v-text-field>
       </v-card-title>
+      <v-card-subtitle v-if="action">{{ action }} </v-card-subtitle>
       <v-data-table
         style="width: 99%"
         class="mx-auto"
@@ -63,9 +77,17 @@
                   </v-list-item-icon>
                   <v-list-item-title>Restart</v-list-item-title>
                 </v-list-item>
-                <v-divider />
+                <v-divider
+                  v-if="
+                    !item.Config.Image.includes('selfhostedpro/yacht') &&
+                      item.updatable
+                  "
+                />
                 <v-list-item
-                  v-if="!item.Config.Image.includes('selfhostedpro/yacht')"
+                  v-if="
+                    !item.Config.Image.includes('selfhostedpro/yacht') &&
+                      item.updatable
+                  "
                   @click="AppAction({ Name: item.name, Action: 'update' })"
                 >
                   <v-list-item-icon>
@@ -93,6 +115,12 @@
               </v-list>
             </v-menu>
             <span class="nametext ml-1">{{ item.name }}</span>
+            <v-tooltip right v-if="item.updatable" color="primary" class="mb-2">
+              <template v-slot:activator="{ on, attrs }">
+                  <v-avatar class="ml-1" v-bind="attrs" v-on="on" color="primary" size="6"></v-avatar>
+              </template>
+              <span>Update Available</span>
+            </v-tooltip>
           </div>
         </template>
         <template v-slot:item.status="{ item }">
@@ -131,7 +159,10 @@
                   :href="'http://' + port.hip + ':' + port.hport"
                   target="_blank"
                   ><v-icon small class="mr-1">mdi-link-variant</v-icon
-                  >{{ item.Config.Labels[`local.yacht.port.${port.hport}`] || port.hport }}</v-chip
+                  >{{
+                    item.Config.Labels[`local.yacht.port.${port.hport}`] ||
+                      port.hport
+                  }}</v-chip
                 >
               </template>
               <span>
@@ -143,7 +174,7 @@
         <template v-slot:item.image="{ item }">
           <span class="ImageName">{{ item.Config.Image }}</span>
         </template>
-        <template v-slot:item.created="{item}">
+        <template v-slot:item.created="{ item }">
           <span class="CreatedAt"> {{ item.Created | formatDate }} </span>
         </template>
       </v-data-table>
@@ -187,7 +218,7 @@ export default {
           text: "Created At",
           value: "created",
           sortable: true,
-        }
+        },
       ],
     };
   },
@@ -195,6 +226,7 @@ export default {
     ...mapActions({
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
+      checkUpdates: "apps/checkAppsUpdates",
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
@@ -214,13 +246,15 @@ export default {
     },
     refresh() {
       this.readApps();
+      this.checkUpdates();
     },
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading"]),
+    ...mapState("apps", ["apps", "isLoading", "action"]),
   },
   mounted() {
     this.readApps();
+    this.checkUpdates();
   },
 };
 </script>
@@ -234,7 +268,7 @@ tr:hover {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.CreatedAt{
+.CreatedAt {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
