@@ -1,5 +1,13 @@
 <template>
   <v-card>
+    <v-fade-transition>
+      <v-progress-linear
+        indeterminate
+        v-if="isLoading"
+        color="primary"
+        bottom
+      />
+    </v-fade-transition>
     <v-card-title class="subheading warning font-weight-bold"
       >Prune</v-card-title
     >
@@ -65,6 +73,7 @@ export default {
   data() {
     return {
       containerDialog: false,
+      isLoading: false,
     };
   },
   methods: {
@@ -84,6 +93,7 @@ export default {
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
     },
     prune(resource) {
+      this.isLoading = true;
       axios({
         url: "/api/settings/prune/" + resource,
         method: "GET",
@@ -91,13 +101,13 @@ export default {
       })
         .then((response) => {
           console.log(response.data);
-          let action = Object.keys(response.data)[0]
-          console.log(action)
+          let action = Object.keys(response.data)[0];
+          console.log(action);
           if (response.data[action] != null) {
-            console.log(response.data[action].length)
-              var deletedNumber = response.data[action].length
+            console.log(response.data[action].length);
+            var deletedNumber = response.data[action].length;
           } else {
-              deletedNumber = '0'
+            deletedNumber = "0";
           }
           this.setMessage(
             deletedNumber +
@@ -106,9 +116,11 @@ export default {
               ". Space Reclaimed: " +
               this.formatBytes(response.data.SpaceReclaimed)
           );
+          this.isLoading = false;
         })
         .catch((err) => {
           this.setErr(err);
+          this.isLoading = false;
         });
     },
   },

@@ -1,5 +1,13 @@
 <template>
   <v-card>
+    <v-fade-transition>
+        <v-progress-linear
+          indeterminate
+          v-if="isLoading"
+          color="primary"
+          bottom
+        />
+      </v-fade-transition>
     <v-card-title class="subheading primary font-weight-bold"
       >Update</v-card-title
     >
@@ -23,6 +31,7 @@ export default {
   data() {
     return {
       containerDialog: false,
+      isLoading: false,
     };
   },
   methods: {
@@ -30,30 +39,22 @@ export default {
       setMessage: "snackbar/setMessage",
       setErr: "snackbar/setErr",
     }),
-    formatBytes(bytes) {
-      if (bytes === 0) return "0 Bytes";
-      const decimals = 2;
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-    },
     update() {
+      this.isLoading = true
       axios({
         url: "/api/settings/update",
         method: "GET",
         responseType: "text/json",
       })
         .then((response) => {
+          this.isLoading = false
           console.log(response.data);
           this.setMessage(
             "Yacht is updating now"
           );
         })
         .catch((err) => {
+          this.isLoading = false
           this.setErr(err);
         });
     },
