@@ -183,6 +183,14 @@ def conv_volumes2data(data):
 def conv_env2data(data):
     # Set is depracated. Name is the actual value. Label is the name of the field.
     # Label is the label of the label field.
+    db = SessionLocal()
+    t_variables = db.query(models.TemplateVariables).all()
+
+    for i,variable in enumerate(data):
+        for t_var in t_variables:
+            if t_var.variable in variable.default:
+                new_var = data[i].default.replace(t_var.variable, t_var.replacement)
+                variable.default = new_var
     delim = '='
     return [delim.join((d.name, d.default)) for d in data]
 
