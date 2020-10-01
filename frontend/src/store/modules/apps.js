@@ -37,6 +37,7 @@ const actions = {
     axios
       .get(url)
       .then(response => {
+        console.log(response)
         const apps = response.data;
         commit("setApps", apps);
       })
