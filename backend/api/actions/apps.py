@@ -152,15 +152,28 @@ def app_action(app_name, action):
 
 def app_update(app_name):
     dclient = docker.from_env()
-    old = dclient.containers.get(app_name)
+    try:
+        old = dclient.containers.get(app_name)
+    except Exception as exc:
+        print(exc)
+        if exc.response.status_code == 404:
+            raise HTTPException(status_code=exc.response.status_code, detail="Unable to get container ID")
+        else:
+            raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+
     volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
-    updater = dclient.containers.run(
-        image='containrrr/watchtower:latest',
-        command='--run-once '+old.name,
-        remove=True,
-        detach=True,
-        volumes=volumes
-    )
+    try:
+        updater = dclient.containers.run(
+            image='containrrr/watchtower:latest',
+            command='--run-once '+old.name,
+            remove=True,
+            detach=True,
+            volumes=volumes
+        )
+    except Exception as exc:
+        print(exc)
+        raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+    
     print('**** Updating '+old.name+'****')    
     result = updater.wait(timeout=120)
     print(result)
