@@ -10,6 +10,7 @@ from .auth import cookie_authentication
 from .auth import user_db
 from .settings import Settings
 import aiodocker
+import docker
 import json
 settings = Settings()
 
@@ -347,3 +348,16 @@ def get_update_ports(ports):
         return portdir
     else:
         return None
+
+def check_updates(tag):
+    if tag:
+        dclient = docker.from_env()
+        current = dclient.images.get(tag)
+        new = dclient.images.get_registry_data(tag)
+        if new.attrs['Descriptor']['digest'] in current.attrs['RepoDigests'][0]:
+            return False
+        else:
+            return True
+
+    else:
+        return False

@@ -36,6 +36,9 @@ def get_db():
 def index():
     return actions.get_apps()
 
+@router.get('/updates', dependencies=[Depends(get_active_user)])
+def check_updates():
+    return actions.check_app_updates()
 
 @router.get("/{app_name}", dependencies=[Depends(get_active_user)])
 def get_container_details(app_name):
