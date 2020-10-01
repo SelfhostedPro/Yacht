@@ -171,7 +171,15 @@ def update_self():
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
     yacht_id = subprocess.check_output(['bash','-c', bash_command]).decode('UTF-8').strip()
-    yacht = dclient.containers.get(yacht_id)
+    try:
+        yacht = dclient.containers.get(yacht_id)
+    except Exception as exc:
+        print(exc)
+        if exc.response.status_code == 404:
+            raise HTTPException(status_code=exc.response.status_code, detail="Unable to get Yacht container ID")
+        else:
+            raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+
     volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
     print('**** Updating '+yacht.name+'****')
     updater = dclient.containers.run(
@@ -184,7 +192,7 @@ def update_self():
     result = updater.wait(timeout=120)
     print(result)
     time.sleep(1)
-    return get_apps()
+    return result
 
 def prune_images():
     dclient = docker.from_env()
