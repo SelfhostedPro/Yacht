@@ -7,6 +7,56 @@
           <v-col class="flex-grow-1 flex-shrink-0">
             <v-card-title>
               {{ app.name }}
+              <v-menu close-on-click close-on-content-click offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon size="small" v-bind="attrs" v-on="on" class="">
+                    <v-icon>mdi-chevron-down</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense>
+                  <v-list-item
+                    @click="AppAction({ Name: app.name, Action: 'start' })"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-play</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Start</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    @click="AppAction({ Name: app.name, Action: 'stop' })"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-stop</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Stop</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    @click="AppAction({ Name: app.name, Action: 'restart' })"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-refresh</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Restart</v-list-item-title>
+                  </v-list-item>
+                  <v-divider/>
+                  <v-list-item
+                    @click="AppAction({ Name: app.name, Action: 'kill' })"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-fire</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Kill</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    @click="AppAction({ Name: app.name, Action: 'remove' })"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-delete</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Remove</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </v-card-title>
             <v-card-subtitle>
               View and Manage {{ app.name }}
@@ -41,7 +91,7 @@ import ApplicationDetailsNav from "./ApplicationDetailsComponents/ApplicationDet
 import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   components: {
-    Nav: ApplicationDetailsNav
+    Nav: ApplicationDetailsNav,
   },
   data() {
     return {
@@ -51,27 +101,27 @@ export default {
         cpu_percent: [],
         mem_percent: [],
         mem_current: [],
-        mem_total: []
+        mem_total: [],
       },
       connection: null,
-      statConnection: null
+      statConnection: null,
     };
   },
   computed: {
     ...mapState("apps", ["apps", "app", "isLoading", "processes"]),
     ...mapGetters({
-      getAppByName: "apps/getAppByName"
+      getAppByName: "apps/getAppByName",
     }),
     app() {
       const appName = this.$route.params.appName;
       return this.getAppByName(appName);
-    }
+    },
   },
   methods: {
     ...mapActions({
       readApp: "apps/readApp",
-      readAppProcesses: "apps/readAppProcesses"
-      // readAppLogs: "apps/readAppLogs",
+      readAppProcesses: "apps/readAppProcesses",
+      AppAction: "apps/AppAction",
     }),
     refresh() {
       const appName = this.$route.params.appName;
@@ -93,7 +143,7 @@ export default {
         );
       };
 
-      this.connection.onmessage = event => {
+      this.connection.onmessage = (event) => {
         this.logs.push(event.data);
       };
     },
@@ -114,7 +164,7 @@ export default {
           JSON.stringify({ type: "onopen", data: "Connected!" })
         );
       };
-      this.statConnection.onmessage = event => {
+      this.statConnection.onmessage = (event) => {
         let statsGroup = JSON.parse(event.data);
         this.stats.time.push(statsGroup.time);
         this.stats.cpu_percent.push(Math.round(statsGroup.cpu_percent));
@@ -139,7 +189,7 @@ export default {
       );
       this.statConnection.close(1000, "Leaving page or refreshing");
       // this.statConnection.close(1001, "Leaving page or refreshing");
-    }
+    },
   },
   created() {
     const appName = this.$route.params.appName;
@@ -156,7 +206,7 @@ export default {
   beforeDestroy() {
     this.closeLogs();
     this.closeStats();
-  }
+  },
 };
 </script>
 
