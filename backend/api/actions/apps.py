@@ -28,13 +28,8 @@ def check_app_updates():
     dclient = docker.from_env()
     apps = dclient.containers.list(all=True)
     for app in apps:
-        attrs = app.attrs
-
-        attrs.update(check_updates(app.image.tags[0]))
-        attrs.update(conv2dict('name', app.name))
-        attrs.update(conv2dict('ports', app.ports))
-        attrs.update(conv2dict('short_id', app.short_id))
-        apps_list.append(attrs)
+        if check_updates(app.image.tags[0]):
+            apps_list.append(app.name)
     return apps_list
 
 def get_apps():

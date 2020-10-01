@@ -22,6 +22,10 @@
               <v-list-item-icon><v-icon>mdi-refresh</v-icon></v-list-item-icon>
               <v-list-item-title>Refresh Apps</v-list-item-title>
             </v-list-item>
+            <v-list-item @click="checkUpdates()">
+              <v-list-item-icon><v-icon>mdi-update</v-icon></v-list-item-icon>
+              <v-list-item-title>Check for updates</v-list-item-title>
+            </v-list-item>
           </v-list>
         </v-menu>
         <v-spacer></v-spacer>
@@ -80,13 +84,13 @@
                 <v-divider
                   v-if="
                     !item.Config.Image.includes('selfhostedpro/yacht') &&
-                      item.updatable
+                      updatable.includes(item.name)
                   "
                 />
                 <v-list-item
                   v-if="
                     !item.Config.Image.includes('selfhostedpro/yacht') &&
-                      item.updatable
+                      updatable.includes(item.name)
                   "
                   @click="AppAction({ Name: item.name, Action: 'update' })"
                 >
@@ -115,7 +119,7 @@
               </v-list>
             </v-menu>
             <span class="nametext ml-1">{{ item.name }}</span>
-            <v-tooltip right v-if="item.updatable" color="primary" class="mb-2">
+            <v-tooltip right v-if="updatable.includes(item.name)" color="primary" class="mb-2">
               <template v-slot:activator="{ on, attrs }">
                   <v-avatar class="ml-1" v-bind="attrs" v-on="on" color="primary" size="6"></v-avatar>
               </template>
@@ -246,15 +250,13 @@ export default {
     },
     refresh() {
       this.readApps();
-      this.checkUpdates();
     },
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading", "action"]),
+    ...mapState("apps", ["apps", "isLoading", "action", "updatable"]),
   },
   mounted() {
     this.readApps();
-    this.checkUpdates();
   },
 };
 </script>

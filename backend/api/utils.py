@@ -355,9 +355,9 @@ def check_updates(tag):
         current = dclient.images.get(tag)
         new = dclient.images.get_registry_data(tag)
         if new.attrs['Descriptor']['digest'] in current.attrs['RepoDigests'][0]:
-            return conv2dict('updatable', False)
+            return False
         else:
-            return conv2dict('updatable', True)
+            return True
 
     else:
-        return conv2dict('updatable', False)
+        return False
