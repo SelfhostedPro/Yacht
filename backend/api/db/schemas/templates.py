@@ -42,6 +42,8 @@ class TemplateRead(TemplateBase):
     updated_at: datetime
     created_at: datetime
 
+class TemplateReadAll(TemplateBase):
+    items: List[TemplateItem] = []
 
 class TemplateItems(TemplateRead):
     items: List[TemplateItem] = []

@@ -5,7 +5,9 @@
       enter-active-class="animated slideInRight delay"
       leave-active-class="animated slideOutLeft"
     >
+    
       <router-view />
+    
     </transition>
   </div>
 </template>
