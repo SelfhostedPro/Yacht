@@ -258,8 +258,8 @@
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-center" >Label</th>
-              <th class="text-center" >Value</th>
+              <th class="text-center">Label</th>
+              <th class="text-center">Value</th>
             </tr>
           </thead>
           <tbody>
@@ -281,7 +281,7 @@
 export default {
   data() {
     return {
-      host_ip: location.hostname,
+      host_ip: location.hostname
     };
   },
   props: ["app"],
@@ -311,8 +311,8 @@ export default {
         env.push(_split_data);
       }
       return env;
-    },
-  },
+    }
+  }
 };
 </script>
 

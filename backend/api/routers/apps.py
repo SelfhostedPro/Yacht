@@ -122,7 +122,6 @@ async def stats(websocket: WebSocket, app_name: str):
                         cpu_percent = await calculate_cpu_percent(line)
 
                     full_stats = {
-                        "time": line['read'],
                         "cpu_percent": cpu_percent,
                         "mem_current": mem_current,
                         "mem_total": mem_total,
@@ -180,7 +179,6 @@ async def process_container(name, stats, websocket):
 
         full_stats = {
             "name": name,
-            "time": line['read'],
             "cpu_percent": cpu_percent,
             "mem_current": mem_current,
             "mem_total": mem_total,

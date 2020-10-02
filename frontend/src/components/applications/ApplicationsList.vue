@@ -119,9 +119,20 @@
               </v-list>
             </v-menu>
             <span class="nametext ml-1">{{ item.name }}</span>
-            <v-tooltip right v-if="updatable.includes(item.name)" color="primary" class="mb-2">
+            <v-tooltip
+              right
+              v-if="updatable.includes(item.name)"
+              color="primary"
+              class="mb-2"
+            >
               <template v-slot:activator="{ on, attrs }">
-                  <v-avatar class="ml-1" v-bind="attrs" v-on="on" color="primary" size="6"></v-avatar>
+                <v-avatar
+                  class="ml-1"
+                  v-bind="attrs"
+                  v-on="on"
+                  color="primary"
+                  size="6"
+                ></v-avatar>
               </template>
               <span>Update Available</span>
             </v-tooltip>
@@ -200,37 +211,37 @@ export default {
           value: "name",
           sortable: true,
           align: "start",
-          width: "30%",
+          width: "30%"
         },
         {
           text: "Status",
           value: "status",
           sortable: true,
-          width: "10%",
+          width: "10%"
         },
         {
           text: "Image",
           value: "image",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Ports",
           value: "ports",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Created At",
           value: "created",
-          sortable: true,
-        },
-      ],
+          sortable: true
+        }
+      ]
     };
   },
   methods: {
     ...mapActions({
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
-      checkUpdates: "apps/checkAppsUpdates",
+      checkUpdates: "apps/checkAppsUpdates"
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
@@ -250,14 +261,14 @@ export default {
     },
     refresh() {
       this.readApps();
-    },
+    }
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading", "action", "updatable"]),
+    ...mapState("apps", ["apps", "isLoading", "action", "updatable"])
   },
   mounted() {
     this.readApps();
-  },
+  }
 };
 </script>
 
