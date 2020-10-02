@@ -56,8 +56,8 @@ export default {
       })
         .then((response) => {
           this.isLoading = false
-          console.log(response.data)
-          this.updatable = response.data.updatable
+          console.log(response)
+          this.updatable = response.data
         })
         .catch((err) => {
           this.isLoading = false
