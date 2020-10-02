@@ -68,7 +68,6 @@ const actions = {
       .get(url)
       .then(response => {
         const templates = response.data;
-
         templates.forEach(function(template) {
           let temp_url = `/api/templates/${template.id}`;
           axios
