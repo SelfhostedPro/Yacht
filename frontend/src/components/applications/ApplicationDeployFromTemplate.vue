@@ -3,13 +3,20 @@
     <v-card-title>
       Select a template to deploy from
     </v-card-title>
-    <v-tabs v-model="tab" grow>
+    <v-card v-if="templates.length <1 || templates == undefined">
+      <v-card-title>No Templates Found!</v-card-title>
+      <v-card-text
+        > No templates available. <a href="/#/templates/new">Add</a> one to view
+        information and launch apps from here.</v-card-text
+      >
+    </v-card>
+    <v-tabs v-model="tab" grow v-else>
       <v-tab v-for="template in templates" :key="template.id">
         {{ template.title }}
         <small v-if="template.items">({{ template.items.length }})</small>
       </v-tab>
     </v-tabs>
-    <v-tabs-items v-model="tab">
+    <v-tabs-items v-model="tab" v-if="templates">
       <v-tab-item v-for="template in templates" :key="template.id">
         <div class="d-flex templates-details page">
           <v-container
@@ -353,15 +360,15 @@ export default {
       appDetailsDialog: false,
       selectedApp: null,
       search: "",
-      tab: null
+      tab: null,
     };
   },
   computed: {
-    ...mapState("templates", ["templates", "isLoading"])
+    ...mapState("templates", ["templates", "isLoading"]),
   },
   methods: {
     ...mapActions({
-      readTemplates: "templates/readTemplatesAndItems"
+      readTemplates: "templates/readTemplatesAndItems",
     }),
     filterItems(items) {
       if (!items) {
@@ -371,7 +378,7 @@ export default {
         return items;
       }
       let regex = new RegExp(this.search, "i");
-      return items.filter(item => {
+      return items.filter((item) => {
         return regex.test(item.title);
       });
     },
@@ -380,11 +387,11 @@ export default {
       return [...result].sort((a, b) => {
         return a.title.localeCompare(b.title);
       });
-    }
+    },
   },
   mounted() {
     this.readTemplates();
-  }
+  },
 };
 </script>
 
