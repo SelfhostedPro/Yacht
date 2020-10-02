@@ -120,7 +120,7 @@ export default {
         this.stats[statsGroup.name].mem_total.push(statsGroup.mem_total);
         for (let key in this.stats[statsGroup.name]) {
           if (
-            this.stats[statsGroup.name][key].length > 5 &&
+            this.stats[statsGroup.name][key].length > 3 &&
             Array.isArray(this.stats[statsGroup.name][key])
           ) {
             this.stats[statsGroup.name][key].shift();
