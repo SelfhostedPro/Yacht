@@ -89,13 +89,13 @@ export default {
         window.location.reload();
         console.log(err);
       });
-      var proto = ''
-      if (location.protocol == 'http:') {
-        proto = 'ws://'
+      var proto = "";
+      if (location.protocol == "http:") {
+        proto = "ws://";
       } else {
-        proto = 'wss://'
+        proto = "wss://";
       }
-      console.log(location.protocol)
+      console.log(location.protocol);
       this.statConnection = new WebSocket(
         `${proto}${location.hostname}:${location.port}/api/apps/stats`
       );

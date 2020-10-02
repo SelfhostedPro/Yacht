@@ -5,7 +5,8 @@
     </v-card-title>
     <v-tabs v-model="tab" grow>
       <v-tab v-for="template in templates" :key="template.id">
-        {{ template.title }} <small v-if="template.items">({{ template.items.length }})</small>
+        {{ template.title }}
+        <small v-if="template.items">({{ template.items.length }})</small>
       </v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
@@ -352,15 +353,15 @@ export default {
       appDetailsDialog: false,
       selectedApp: null,
       search: "",
-      tab: null,
+      tab: null
     };
   },
   computed: {
-    ...mapState("templates", ["templates", "isLoading"]),
+    ...mapState("templates", ["templates", "isLoading"])
   },
   methods: {
     ...mapActions({
-      readTemplates: "templates/readTemplatesAndItems",
+      readTemplates: "templates/readTemplatesAndItems"
     }),
     filterItems(items) {
       if (!items) {
@@ -370,7 +371,7 @@ export default {
         return items;
       }
       let regex = new RegExp(this.search, "i");
-      return items.filter((item) => {
+      return items.filter(item => {
         return regex.test(item.title);
       });
     },
@@ -379,11 +380,11 @@ export default {
       return [...result].sort((a, b) => {
         return a.title.localeCompare(b.title);
       });
-    },
+    }
   },
   mounted() {
     this.readTemplates();
-  },
+  }
 };
 </script>
 

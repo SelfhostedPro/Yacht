@@ -73,13 +73,13 @@ export default {
   data() {
     return {
       containerDialog: false,
-      isLoading: false,
+      isLoading: false
     };
   },
   methods: {
     ...mapMutations({
       setMessage: "snackbar/setMessage",
-      setErr: "snackbar/setErr",
+      setErr: "snackbar/setErr"
     }),
     formatBytes(bytes) {
       if (bytes === 0) return "0 Bytes";
@@ -97,9 +97,9 @@ export default {
       axios({
         url: "/api/settings/prune/" + resource,
         method: "GET",
-        responseType: "text/json",
+        responseType: "text/json"
       })
-        .then((response) => {
+        .then(response => {
           console.log(response.data);
           let action = Object.keys(response.data)[0];
           console.log(action);
@@ -118,11 +118,11 @@ export default {
           );
           this.isLoading = false;
         })
-        .catch((err) => {
+        .catch(err => {
           this.setErr(err);
           this.isLoading = false;
         });
-    },
-  },
+    }
+  }
 };
 </script>

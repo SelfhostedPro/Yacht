@@ -6,7 +6,7 @@ const state = {
   logs: [],
   processes: [],
   isLoading: false,
-  action: ''
+  action: ""
 };
 
 const mutations = {
@@ -31,13 +31,13 @@ const mutations = {
     state.isLoading = loading;
   },
   setAction(state, action) {
-    state.action = action
+    state.action = action;
   },
   setUpdatable(state, updatable) {
-    state.updatable = updatable
+    state.updatable = updatable;
   },
   setUpdated(state, updated) {
-    let index = state.updatable.indexOf(updated)
+    let index = state.updatable.indexOf(updated);
     state.updatable.splice(index, 1);
   }
 };
@@ -45,7 +45,7 @@ const mutations = {
 const actions = {
   readApps({ commit }) {
     commit("setLoading", true);
-    commit("setAction", 'Getting Apps ...')
+    commit("setAction", "Getting Apps ...");
     const url = "/api/apps/";
     axios
       .get(url)
@@ -58,27 +58,27 @@ const actions = {
       })
       .finally(() => {
         commit("setLoading", false);
-        commit("setAction", '')
-      })
+        commit("setAction", "");
+      });
   },
   checkAppsUpdates({ commit }) {
     commit("setLoading", true);
-    commit("setAction", 'Checking for updates...')
+    commit("setAction", "Checking for updates...");
     const url = "/api/apps/updates";
     axios
       .get(url)
       .then(response => {
-        console.log(response)
+        console.log(response);
         const apps = response.data;
         commit("setUpdatable", apps);
       })
       .catch(err => {
-        commit("snackbar/setErr", err, { root: true })
+        commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
-        commit("setLoading", false)
-        commit("setAction", '')
-      })
+        commit("setLoading", false);
+        commit("setAction", "");
+      });
   },
   readApp({ commit }, Name) {
     const url = `/api/apps/${Name}`;
@@ -125,7 +125,7 @@ const actions = {
   },
   AppAction({ commit }, { Name, Action }) {
     commit("setLoading", true);
-    commit("setAction", Action + ' ' + Name + ' ...')
+    commit("setAction", Action + " " + Name + " ...");
     const url = `/api/apps/${Name}/${Action}`;
     axios
       .get(url)
@@ -137,11 +137,11 @@ const actions = {
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
-        if (Action == 'update') {
-          commit("setUpdated", Name)
+        if (Action == "update") {
+          commit("setUpdated", Name);
         }
         commit("setLoading", false);
-        commit("setAction", '')
+        commit("setAction", "");
       });
   }
 };
