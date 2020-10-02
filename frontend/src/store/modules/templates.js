@@ -51,6 +51,7 @@ const actions = {
     axios
       .get(url)
       .then(response => {
+        console.log(response)
         const templates = response.data;
         commit("setTemplates", templates);
       })
@@ -60,6 +61,39 @@ const actions = {
       .finally(() => {
         commit("setLoading", false);
       });
+  },
+  readTemplatesAndItems({ commit }) {
+    commit("setLoading", true);
+    const url = "/api/templates/";
+    axios
+      .get(url)
+      .then(response => {
+        console.log(response)
+        const templates = response.data;
+        
+        console.log(templates)
+        templates.forEach(function(template, i) {
+          console.log(template)
+          console.log(i)
+          let temp_url = `/api/templates/${template.id}`
+          axios
+            .get(temp_url)
+            .then(response => {
+              console.log(response)
+              commit("setTemplate", response.data);
+            })
+            .catch(err => {
+              commit("snackbar/setErr", err, { root: true })
+            })
+        })
+        commit("setTemplates", templates)
+      })
+      .catch(err => {
+        commit("snackbar/setErr", err, { root: true });
+      })
+      .finally(() => {
+        commit("setLoading", false)
+      })
   },
   readTemplate({ commit }, id) {
     commit("setLoading", true);

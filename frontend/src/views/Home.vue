@@ -89,8 +89,15 @@ export default {
         window.location.reload();
         console.log(err);
       });
+      var proto = ''
+      if (location.protocol == 'http:') {
+        proto = 'ws://'
+      } else {
+        proto = 'wss://'
+      }
+      console.log(location.protocol)
       this.statConnection = new WebSocket(
-        `ws://${location.hostname}:${location.port}/api/apps/stats`
+        `${proto}${location.hostname}:${location.port}/api/apps/stats`
       );
       this.statConnection.onopen = () => {
         this.statConnection.send(

@@ -13,6 +13,7 @@ import AppStats from "../components/applications/ApplicationDetailsComponents/Ap
 import ApplicationDetails from "../components/applications/ApplicationDetails.vue";
 import ApplicationsList from "../components/applications/ApplicationsList.vue";
 import ApplicationsForm from "../components/applications/ApplicationsForm.vue";
+import ApplicationDeployFromTemplate from "../components/applications/ApplicationDeployFromTemplate.vue";
 import Container from "../views/Container.vue";
 import UserSettings from "../views/UserSettings.vue";
 import ChangePasswordForm from "../components/userSettings/ChangePasswordForm.vue";
@@ -61,6 +62,11 @@ const routes = [
         name: "Deploy",
         path: "deploy/:appId",
         component: ApplicationsForm
+      },
+      {
+        name: "Deploy from Template",
+        path: "templates",
+        component: ApplicationDeployFromTemplate
       },
       {
         name: "View Applications",

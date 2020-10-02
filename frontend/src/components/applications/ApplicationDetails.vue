@@ -134,8 +134,14 @@ export default {
     },
     readAppLogs(appName) {
       console.log("Starting connection to Logs");
+      var proto = ''
+      if (location.protocol == 'http:') {
+        proto = 'ws://'
+      } else {
+        proto = 'wss://'
+      }
       this.connection = new WebSocket(
-        `ws://${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
+        `${proto}${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
       );
       this.connection.onopen = () => {
         this.connection.send(
@@ -155,9 +161,15 @@ export default {
     },
     readAppStats(appName) {
       console.log("Starting connection to Stats");
+      var sproto = ''
+      if (location.protocol == 'http:') {
+        sproto = 'ws://'
+      } else {
+        sproto = 'wss://'
+      }
 
       this.statConnection = new WebSocket(
-        `ws://${location.hostname}:${location.port}/api/apps/${appName}/stats`
+        `${sproto}${location.hostname}:${location.port}/api/apps/${appName}/stats`
       );
       this.statConnection.onopen = () => {
         this.statConnection.send(

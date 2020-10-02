@@ -5,7 +5,7 @@
       <v-btn
         v-if="!this.$route.params.appId"
         tile
-        :to="{ name: 'View Templates' }"
+        :to="{ name: 'Deploy from Template' }"
         class="primary float-right"
       >
         <v-icon>mdi-plus</v-icon> From Template
