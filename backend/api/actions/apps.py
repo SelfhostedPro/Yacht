@@ -28,8 +28,9 @@ def check_app_updates():
     dclient = docker.from_env()
     apps = dclient.containers.list(all=True)
     for app in apps:
-        if check_updates(app.image.tags[0]):
-            apps_list.append(app.name)
+        if app.attrs['Config']['Image']:
+            if check_updates(app.attrs['Config']['Image']):
+                apps_list.append(app.name)
     return apps_list
 
 def get_apps():
