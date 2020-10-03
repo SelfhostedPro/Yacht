@@ -89,8 +89,15 @@ export default {
         window.location.reload();
         console.log(err);
       });
+      var proto = "";
+      if (location.protocol == "http:") {
+        proto = "ws://";
+      } else {
+        proto = "wss://";
+      }
+      console.log(location.protocol);
       this.statConnection = new WebSocket(
-        `ws://${location.hostname}:${location.port}/api/apps/stats`
+        `${proto}${location.hostname}:${location.port}/api/apps/stats`
       );
       this.statConnection.onopen = () => {
         this.statConnection.send(
@@ -113,7 +120,7 @@ export default {
         this.stats[statsGroup.name].mem_total.push(statsGroup.mem_total);
         for (let key in this.stats[statsGroup.name]) {
           if (
-            this.stats[statsGroup.name][key].length > 5 &&
+            this.stats[statsGroup.name][key].length > 3 &&
             Array.isArray(this.stats[statsGroup.name][key])
           ) {
             this.stats[statsGroup.name][key].shift();

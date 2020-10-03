@@ -10,6 +10,7 @@ from .auth import cookie_authentication
 from .auth import user_db
 from .settings import Settings
 import aiodocker
+import docker
 import json
 settings = Settings()
 
@@ -49,7 +50,7 @@ def conv_ports2dict(data: List[str]) -> List[Dict[str, str]]:
         for port_data in data:
             for label, port in port_data.items():
                 if not re.match(REGEXP_PORT_ASSIGN, port, flags=re.IGNORECASE):
-                    raise ValueError('Malformed port assignment.')
+                    raise HTTPException(status_code=500, detail='Malformed port assignment.'+port_data)
 
                 hport, cport = None, port
                 if delim in cport:
@@ -65,7 +66,7 @@ def conv_ports2dict(data: List[str]) -> List[Dict[str, str]]:
         portlst = []
         for port_data in data:
             if not re.match(REGEXP_PORT_ASSIGN, port_data, flags=re.IGNORECASE):
-                raise ValueError('Malformed port assignment.')
+                raise HTTPException(status_code=500, detail='Malformed port assignment.'+port_data)
 
             hport, cport = None, port_data
             if delim in cport:
@@ -182,6 +183,14 @@ def conv_volumes2data(data):
 def conv_env2data(data):
     # Set is depracated. Name is the actual value. Label is the name of the field.
     # Label is the label of the label field.
+    db = SessionLocal()
+    t_variables = db.query(models.TemplateVariables).all()
+
+    for i,variable in enumerate(data):
+        for t_var in t_variables:
+            if t_var.variable in variable.default:
+                new_var = data[i].default.replace(t_var.variable, t_var.replacement)
+                variable.default = new_var
     delim = '='
     return [delim.join((d.name, d.default)) for d in data]
 
@@ -337,3 +346,26 @@ async def get_app_stats(app_name):
                 "mem_percent": (mem_current / mem_total) * 100.0,
             }
             yield json.dumps(full_stats)
+
+def get_update_ports(ports):
+    if ports:
+        portdir={}
+        for hport in ports:
+            for d in ports[hport]:
+                portdir.update({str(hport): d.get('HostPort') })
+        return portdir
+    else:
+        return None
+
+def check_updates(tag):
+    if tag:
+        dclient = docker.from_env()
+        current = dclient.images.get(tag)
+        new = dclient.images.get_registry_data(tag)
+        if new.attrs['Descriptor']['digest'] in current.attrs['RepoDigests'][0]:
+            return False
+        else:
+            return True
+
+    else:
+        return False

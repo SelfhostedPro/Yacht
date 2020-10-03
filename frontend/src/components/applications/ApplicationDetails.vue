@@ -7,6 +7,56 @@
           <v-col class="flex-grow-1 flex-shrink-0">
             <v-card-title>
               {{ app.name }}
+              <v-menu close-on-click close-on-content-click offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon size="small" v-bind="attrs" v-on="on" class="">
+                    <v-icon>mdi-chevron-down</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense>
+                  <v-list-item
+                    @click="AppAction({ Name: app.name, Action: 'start' })"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-play</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Start</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    @click="AppAction({ Name: app.name, Action: 'stop' })"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-stop</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Stop</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    @click="AppAction({ Name: app.name, Action: 'restart' })"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-refresh</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Restart</v-list-item-title>
+                  </v-list-item>
+                  <v-divider />
+                  <v-list-item
+                    @click="AppAction({ Name: app.name, Action: 'kill' })"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-fire</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Kill</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    @click="AppAction({ Name: app.name, Action: 'remove' })"
+                  >
+                    <v-list-item-icon>
+                      <v-icon>mdi-delete</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Remove</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </v-card-title>
             <v-card-subtitle>
               View and Manage {{ app.name }}
@@ -70,8 +120,8 @@ export default {
   methods: {
     ...mapActions({
       readApp: "apps/readApp",
-      readAppProcesses: "apps/readAppProcesses"
-      // readAppLogs: "apps/readAppLogs",
+      readAppProcesses: "apps/readAppProcesses",
+      AppAction: "apps/AppAction"
     }),
     refresh() {
       const appName = this.$route.params.appName;
@@ -84,8 +134,14 @@ export default {
     },
     readAppLogs(appName) {
       console.log("Starting connection to Logs");
+      var proto = "";
+      if (location.protocol == "http:") {
+        proto = "ws://";
+      } else {
+        proto = "wss://";
+      }
       this.connection = new WebSocket(
-        `ws://${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
+        `${proto}${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
       );
       this.connection.onopen = () => {
         this.connection.send(
@@ -105,9 +161,15 @@ export default {
     },
     readAppStats(appName) {
       console.log("Starting connection to Stats");
+      var sproto = "";
+      if (location.protocol == "http:") {
+        sproto = "ws://";
+      } else {
+        sproto = "wss://";
+      }
 
       this.statConnection = new WebSocket(
-        `ws://${location.hostname}:${location.port}/api/apps/${appName}/stats`
+        `${sproto}${location.hostname}:${location.port}/api/apps/${appName}/stats`
       );
       this.statConnection.onopen = () => {
         this.statConnection.send(

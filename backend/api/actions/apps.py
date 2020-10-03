@@ -5,6 +5,8 @@ from ..db import models, schemas
 from ..utils import *
 
 from datetime import datetime
+import time
+import subprocess
 import docker
 
 
@@ -21,12 +23,22 @@ def get_running_apps():
 
     return apps_list
 
+def check_app_updates():
+    apps_list = []
+    dclient = docker.from_env()
+    apps = dclient.containers.list(all=True)
+    for app in apps:
+        if check_updates(app.image.tags[0]):
+            apps_list.append(app.name)
+    return apps_list
+
 def get_apps():
     apps_list = []
     dclient = docker.from_env()
     apps = dclient.containers.list(all=True)
     for app in apps:
         attrs = app.attrs
+
         attrs.update(conv2dict('name', app.name))
         attrs.update(conv2dict('ports', app.ports))
         attrs.update(conv2dict('short_id', app.short_id))
@@ -39,7 +51,7 @@ def get_app(app_name):
     dclient = docker.from_env()
     app = dclient.containers.get(app_name)
     attrs = app.attrs
-
+    
     attrs.update(conv2dict('ports', app.ports))
     attrs.update(conv2dict('short_id', app.short_id))
     attrs.update(conv2dict('name', app.name))
@@ -148,6 +160,63 @@ def app_action(app_name, action):
     apps_list = get_apps()
     return apps_list
 
+def app_update(app_name):
+    dclient = docker.from_env()
+    try:
+        old = dclient.containers.get(app_name)
+    except Exception as exc:
+        print(exc)
+        if exc.response.status_code == 404:
+            raise HTTPException(status_code=exc.response.status_code, detail="Unable to get container ID")
+        else:
+            raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+
+    volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
+    try:
+        updater = dclient.containers.run(
+            image='containrrr/watchtower:latest',
+            command='--run-once '+old.name,
+            remove=True,
+            detach=True,
+            volumes=volumes
+        )
+    except Exception as exc:
+        print(exc)
+        raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+
+    print('**** Updating '+old.name+'****')    
+    result = updater.wait(timeout=120)
+    print(result)
+    time.sleep(1)
+    return get_apps()
+
+def update_self():
+    dclient = docker.from_env()
+    bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
+    yacht_id = subprocess.check_output(['bash','-c', bash_command]).decode('UTF-8').strip()
+    try:
+        yacht = dclient.containers.get(yacht_id)
+    except Exception as exc:
+        print(exc)
+        if exc.response.status_code == 404:
+            raise HTTPException(status_code=exc.response.status_code, detail="Unable to get Yacht container ID")
+        else:
+            raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+
+    volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
+    print('**** Updating '+yacht.name+'****')
+    updater = dclient.containers.run(
+        image='containrrr/watchtower:latest',
+        command='--run-once '+yacht.name,
+        remove=True,
+        detach=True,
+        volumes=volumes
+    )
+    result = updater.wait(timeout=120)
+    print(result)
+    time.sleep(1)
+    return result
+
 def prune_images():
     dclient = docker.from_env()
     deleted_everything = {}
@@ -160,3 +229,24 @@ def prune_images():
     deleted_everything.update(deleted_images)
     
     return deleted_everything
+def prune_resources(resource):
+    dclient = docker.from_env()
+    action = getattr(dclient, resource)
+    deleted_resource = action.prune()
+    return deleted_resource
+
+
+def check_self_update():
+    dclient = docker.from_env()
+    bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
+    yacht_id = subprocess.check_output(['bash','-c', bash_command]).decode('UTF-8').strip()
+    try:
+        yacht = dclient.containers.get(yacht_id)
+    except Exception as exc:
+        print(exc)
+        if exc.response.status_code == 404:
+            raise HTTPException(status_code=exc.response.status_code, detail="Unable to get Yacht container ID")
+        else:
+            raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+
+    return check_updates(yacht.image.tags[0])

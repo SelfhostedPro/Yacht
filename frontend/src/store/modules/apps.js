@@ -2,9 +2,11 @@ import axios from "axios";
 
 const state = {
   apps: [],
+  updatable: [],
   logs: [],
   processes: [],
-  isLoading: false
+  isLoading: false,
+  action: ""
 };
 
 const mutations = {
@@ -27,17 +29,28 @@ const mutations = {
   },
   setLoading(state, loading) {
     state.isLoading = loading;
+  },
+  setAction(state, action) {
+    state.action = action;
+  },
+  setUpdatable(state, updatable) {
+    state.updatable = updatable;
+  },
+  setUpdated(state, updated) {
+    let index = state.updatable.indexOf(updated);
+    state.updatable.splice(index, 1);
   }
 };
 
 const actions = {
   readApps({ commit }) {
     commit("setLoading", true);
+    commit("setAction", "Getting Apps ...");
     const url = "/api/apps/";
     axios
       .get(url)
       .then(response => {
-        const apps = response.data;
+        var apps = response.data;
         commit("setApps", apps);
       })
       .catch(err => {
@@ -45,6 +58,26 @@ const actions = {
       })
       .finally(() => {
         commit("setLoading", false);
+        commit("setAction", "");
+      });
+  },
+  checkAppsUpdates({ commit }) {
+    commit("setLoading", true);
+    commit("setAction", "Checking for updates...");
+    const url = "/api/apps/updates";
+    axios
+      .get(url)
+      .then(response => {
+        console.log(response);
+        const apps = response.data;
+        commit("setUpdatable", apps);
+      })
+      .catch(err => {
+        commit("snackbar/setErr", err, { root: true });
+      })
+      .finally(() => {
+        commit("setLoading", false);
+        commit("setAction", "");
       });
   },
   readApp({ commit }, Name) {
@@ -92,6 +125,7 @@ const actions = {
   },
   AppAction({ commit }, { Name, Action }) {
     commit("setLoading", true);
+    commit("setAction", Action + " " + Name + " ...");
     const url = `/api/apps/${Name}/${Action}`;
     axios
       .get(url)
@@ -103,7 +137,11 @@ const actions = {
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
+        if (Action == "update") {
+          commit("setUpdated", Name);
+        }
         commit("setLoading", false);
+        commit("setAction", "");
       });
   }
 };

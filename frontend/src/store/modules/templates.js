@@ -61,6 +61,33 @@ const actions = {
         commit("setLoading", false);
       });
   },
+  readTemplatesAndItems({ commit }) {
+    commit("setLoading", true);
+    const url = "/api/templates/";
+    axios
+      .get(url)
+      .then(response => {
+        const templates = response.data;
+        templates.forEach(function(template) {
+          let temp_url = `/api/templates/${template.id}`;
+          axios
+            .get(temp_url)
+            .then(response => {
+              commit("setTemplate", response.data);
+            })
+            .catch(err => {
+              commit("snackbar/setErr", err, { root: true });
+            });
+        });
+        commit("setTemplates", templates);
+      })
+      .catch(err => {
+        commit("snackbar/setErr", err, { root: true });
+      })
+      .finally(() => {
+        commit("setLoading", false);
+      });
+  },
   readTemplate({ commit }, id) {
     commit("setLoading", true);
     const url = `/api/templates/${id}`;
