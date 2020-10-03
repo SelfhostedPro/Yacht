@@ -11,6 +11,7 @@ from .auth import user_db
 from .settings import Settings
 import aiodocker
 import docker
+from docker.errors import APIError
 import json
 settings = Settings()
 
@@ -361,7 +362,10 @@ def check_updates(tag):
     if tag:
         dclient = docker.from_env()
         current = dclient.images.get(tag)
-        new = dclient.images.get_registry_data(tag)
+        try:
+            new = dclient.images.get_registry_data(tag)
+        except APIError as err:
+            return False
         if new.attrs['Descriptor']['digest'] in current.attrs['RepoDigests'][0]:
             return False
         else:
