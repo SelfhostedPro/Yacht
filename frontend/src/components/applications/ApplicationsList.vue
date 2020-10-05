@@ -36,12 +36,34 @@
           single-line
           hide-details
         ></v-text-field>
+        <v-menu :close-on-content-click='false' bottom offset-y color="secondary">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-bind="attrs" v-on="on" class="ml-2">
+            Columns
+          </v-btn>
+        </template>
+        <v-list>
+        <v-list-item
+          color="primary"
+          v-for="(item, index) in headers"
+          :key="index"
+        >
+          <v-checkbox
+            v-model="selectedHeaders"
+            :label="item.text"
+            :value="item"
+            multiple
+          >
+          </v-checkbox>
+        </v-list-item>
+        </v-list>
+      </v-menu>
       </v-card-title>
       <v-card-subtitle v-if="action">{{ action }} </v-card-subtitle>
       <v-data-table
         style="width: 99%"
         class="mx-auto"
-        :headers="headers"
+        :headers="selectedHeaders"
         :items="apps"
         :items-per-page="10"
         :search="search"
@@ -138,6 +160,13 @@
             </v-tooltip>
           </div>
         </template>
+        <template v-slot:item.project="{ item }">
+          <div class="projectcell">
+            <span
+              >{{ item.Config.Labels["com.docker.compose.project"] || "-" }}
+            </span>
+          </div>
+        </template>
         <template v-slot:item.status="{ item }">
           <div class="statuscell">
             <span>{{ item.State.Status }} </span>
@@ -205,43 +234,50 @@ export default {
       search: "",
       expanded: [],
       host_ip: location.hostname,
-      headers: [
-        {
+      headers: [],
+      headersMap: {
+        name: {
           text: "Name",
           value: "name",
           sortable: true,
           align: "start",
-          width: "30%"
+          // width: "30%",
         },
-        {
+        project: {
+          text: "Project",
+          value: "project",
+          sortable: true,
+        },
+        status: {
           text: "Status",
           value: "status",
           sortable: true,
-          width: "10%"
+          // width: "10%",
         },
-        {
+        image: {
           text: "Image",
           value: "image",
-          sortable: true
+          sortable: true,
         },
-        {
+        ports: {
           text: "Ports",
           value: "ports",
-          sortable: true
+          sortable: true,
         },
-        {
+        created: {
           text: "Created At",
           value: "created",
-          sortable: true
-        }
-      ]
+          sortable: true,
+        },
+      },
+      selectedHeaders: [],
     };
   },
   methods: {
     ...mapActions({
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
-      checkUpdates: "apps/checkAppsUpdates"
+      checkUpdates: "apps/checkAppsUpdates",
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
@@ -261,14 +297,22 @@ export default {
     },
     refresh() {
       this.readApps();
-    }
+    },
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading", "action", "updatable"])
+    ...mapState("apps", ["apps", "isLoading", "action", "updatable"]),
+    showHeaders() {
+      return this.headers.filter((s) => this.selectedHeaders.includes(s));
+    },
+  },
+  created() {
+    console.log(this.headersMap);
+    this.headers = Object.values(this.headersMap);
+    this.selectedHeaders = this.headers;
   },
   mounted() {
     this.readApps();
-  }
+  },
 };
 </script>
 
