@@ -11,6 +11,10 @@
         <v-icon>mdi-plus</v-icon> From Template
       </v-btn>
     </h1>
+    <v-card v-if="notes" color="blue-grey darken-2" class="mb-2">
+      <v-card-title>Note:</v-card-title>
+      <v-card-text v-html="notes"></v-card-text>
+    </v-card>
     <v-stepper v-model="deployStep" alt-labels non-linear>
       <v-fade-transition>
         <v-progress-linear
@@ -641,13 +645,13 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
       deployStep: 1,
       deploySteps: 4,
-
+      notes: "",
       form: {
         name: "",
         image: "",
@@ -658,7 +662,7 @@ export default {
         devices: [],
         labels: [],
         sysctls: [],
-        cap_add: []
+        cap_add: [],
       },
       isLoading: false,
       cap_options: [
@@ -684,16 +688,16 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND"
-      ]
+        "BLOCK_SUSPEND",
+      ],
     };
   },
   methods: {
     ...mapActions({
-      readApp: "templates/readApp"
+      readApp: "templates/readApp",
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr"
+      setErr: "snackbar/setErr",
     }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
@@ -755,7 +759,7 @@ export default {
           this.isLoading = false;
           this.$router.push({ name: "View Applications" });
         })
-        .catch(err => {
+        .catch((err) => {
           this.isLoading = false;
           this.setErr(err);
         });
@@ -775,8 +779,9 @@ export default {
             devices: app.devices || [],
             labels: app.labels || [],
             sysctls: app.sysctls || [],
-            cap_add: app.cap_add || []
+            cap_add: app.cap_add || [],
           };
+          this.notes = app.notes || null;
         } catch (error) {
           console.error(error, error.response);
           this.setErr(error);
@@ -784,11 +789,11 @@ export default {
       } else {
         console.log("No app selected");
       }
-    }
+    },
   },
   async created() {
     await this.populateForm();
-  }
+  },
 };
 </script>
 
