@@ -15,19 +15,11 @@ Currently only linux has been verified as working but we are open to the idea of
 
 **Keep in mind, this is an alpha so the risk of data loss is real and it may not be stable**
 
-Once docker is installed you'll simply run the following commands to get started:
-```
-docker volume create yacht
-docker run -d -p 8000:8000 -v /var/run/docker.sock:/var/run/docker.sock -v yacht:/config selfhostedpro/yacht
-```
-It will be available on port 8000.
+Installation documentation can be found [here](https://ycht.tech/Installation/yacht/).
 
-The default login is `admin@yacht.local` and `pass` you should change this immediately by clicking on admin in the top right and then "User" then select "Change Password" in the top menu. You can also change your username using this field.
-
-If you need to reset your password/username to the included defaults, please delete your yacht volume and create a new one (you will lose all of your configurations so be sure to backup when you make changes).
+Check out the getting started guide if this is the first time you've used Yacht: https://ycht.tech/Installation/gettingstarted/
 
 ## Features So Far:
-* Container Templating Compatibility (Portainer Compatible)
 * Vuetify UI Framework
 * Basic Container Management
 * Template Framework
@@ -54,5 +46,10 @@ https://raw.githubusercontent.com/SelfhostedPro/selfhosted_templates/yacht/Templ
 
 In templates you are able to define variables (starting with `!`) to have them automatically replaced by whatever variable the user has set in their server settings (ie. `!config` will be replaced by `/yacht/AppData/Config` by default). 
 
+## Notes for ARM devices
+If you're on arm and graphs aren't showing up add the following to your cmdline.txt:
+```
+cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1
+```
 ## License
 [MIT License](LICENSE.md)

@@ -18,7 +18,7 @@ httptools==0.1.1
 idna==2.10
 python-jose==3.2.0
 makefun==1.9.2
-passlib==1.7.2
+passlib==1.7.3
 pycparser==2.20
 pydantic==1.6.1
 PyJWT==1.7.1
