@@ -20,9 +20,7 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-card-subtitle>
-        Note: Image list will not update after an update or delete (WIP).
-        </v-card-subtitle>
+
       <v-data-table
         style="max-width: 99%;"
         class="mx-auto image-datatable"
@@ -66,7 +64,7 @@
                   </v-list-item-icon>
                   <v-list-item-title>View</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="updateImage(item.Id)">
+                <v-list-item v-if="item.RepoTags[0]" @click="updateImage(item.Id)">
                   <v-list-item-icon>
                     <v-icon>mdi-update</v-icon>
                   </v-list-item-icon>

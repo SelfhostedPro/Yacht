@@ -97,7 +97,7 @@
           <v-list-item-content style="max-width:20%">
             Entrypoint
           </v-list-item-content>
-          <v-list-item-content>
+          <v-list-item-content v-if="image.ContainerConfig.Entrypoint">
             {{ image.ContainerConfig.Entrypoint[0] }}
           </v-list-item-content>
         </v-list-item>

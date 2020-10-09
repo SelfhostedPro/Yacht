@@ -22,7 +22,7 @@ const mutations = {
     state.images.push(image);
   },
   removeImage(state, image) {
-    const idx = state.images.findIndex(x => x.id === image.id);
+    const idx = state.images.findIndex(x => x.Id === image.Id);
     if (idx < 0) {
       return;
     }
