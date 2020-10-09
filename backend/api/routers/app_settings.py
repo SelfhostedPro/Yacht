@@ -11,6 +11,7 @@ from ..db.database import SessionLocal, engine
 from ..utils import get_db
 from ..auth import get_active_user
 from ..actions import apps
+from ..actions import resources
 
 containers.Base.metadata.create_all(bind=engine)
 
@@ -39,7 +40,7 @@ def import_settings(db: Session = Depends(get_db), upload: UploadFile = File(...
 
 @router.get("/prune/{resource}", dependencies=[Depends(get_active_user)])
 def prune_resources(resource: str):
-    return apps.prune_resources(resource)
+    return resources.prune_resources(resource)
 
 @router.get('/update', dependencies=[Depends(get_active_user)])
 def update_self():

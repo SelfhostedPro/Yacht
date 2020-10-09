@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRES = os.environ.get('REFRESH_TOKEN_EXPIRES', 1)
     SAME_SITE_COOKIES = os.environ.get('SAME_SITE_COOKIES', True)
     
+    
     BASE_TEMPLATE_VARIABLES = [
         {"variable": "!config", "replacement": "/yacht/AppData/Config"},
         {"variable": "!data", "replacement": "/yacht/AppData/Data"},

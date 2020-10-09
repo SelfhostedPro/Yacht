@@ -218,23 +218,7 @@ def update_self():
     time.sleep(1)
     return result
 
-def prune_images():
-    dclient = docker.from_env()
-    deleted_everything = {}
-    deleted_volumes = dclient.volumes.prune()
-    deleted_images = dclient.images.prune()
-    deleted_networks = dclient.networks.prune()
 
-    deleted_everything.update(deleted_networks)
-    deleted_everything.update(deleted_volumes)
-    deleted_everything.update(deleted_images)
-    
-    return deleted_everything
-def prune_resources(resource):
-    dclient = docker.from_env()
-    action = getattr(dclient, resource)
-    deleted_resource = action.prune()
-    return deleted_resource
 
 
 def check_self_update():

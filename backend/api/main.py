@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import Depends, FastAPI, Header, HTTPException
-from .routers import apps, templates, app_settings
+from .routers import apps, templates, app_settings, resources
 import uuid
 
 from .db import models
@@ -26,7 +26,11 @@ app.include_router(
     # dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
 )
-
+app.include_router(
+    resources.router,
+    prefix="/resources",
+    tags=["resources"],
+)
 app.include_router(
     fastapi_users.get_auth_router(cookie_authentication),
     prefix="/auth",

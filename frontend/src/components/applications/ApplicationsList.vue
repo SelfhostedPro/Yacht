@@ -36,28 +36,33 @@
           single-line
           hide-details
         ></v-text-field>
-        <v-menu :close-on-content-click='false' bottom offset-y color="secondary">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" class="ml-2">
-            Columns
-          </v-btn>
-        </template>
-        <v-list>
-        <v-list-item
-          color="primary"
-          v-for="(item, index) in headers"
-          :key="index"
+        <v-menu
+          :close-on-content-click="false"
+          bottom
+          offset-y
+          color="secondary"
         >
-          <v-checkbox
-            v-model="selectedHeaders"
-            :label="item.text"
-            :value="item"
-            multiple
-          >
-          </v-checkbox>
-        </v-list-item>
-        </v-list>
-      </v-menu>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on" class="ml-2">
+              Columns
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              color="primary"
+              v-for="(item, index) in headers"
+              :key="index"
+            >
+              <v-checkbox
+                v-model="selectedHeaders"
+                :label="item.text"
+                :value="item"
+                multiple
+              >
+              </v-checkbox>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-card-title>
       <v-card-subtitle v-if="action">{{ action }} </v-card-subtitle>
       <v-data-table
@@ -72,7 +77,7 @@
       >
         <template v-slot:item.name="{ item }">
           <div class="namecell">
-            <v-menu close-on-click close-on-content-click offset-y>
+            <v-menu :close-on-click="true" :close-on-content-click="true" offset-y>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon size="small" v-bind="attrs" v-on="on" class="">
                   <v-icon>mdi-chevron-down</v-icon>
@@ -130,14 +135,14 @@
                   </v-list-item-icon>
                   <v-list-item-title>Kill</v-list-item-title>
                 </v-list-item>
-                <v-list-item
-                  @click="AppAction({ Name: item.name, Action: 'remove' })"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-delete</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Remove</v-list-item-title>
-                </v-list-item>
+                
+                    <v-list-item @click="AppAction({ Name: item.name, Action: 'remove' })">
+                      <v-list-item-icon>
+                        <v-icon>mdi-delete</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Remove</v-list-item-title>
+                    </v-list-item>
+                  
               </v-list>
             </v-menu>
             <span class="nametext ml-1">{{ item.name }}</span>
@@ -233,6 +238,7 @@ export default {
     return {
       search: "",
       expanded: [],
+      removeDialog: false,
       host_ip: location.hostname,
       headers: [],
       headersMap: {
