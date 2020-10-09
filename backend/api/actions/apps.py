@@ -218,14 +218,7 @@ def update_self():
     time.sleep(1)
     return result
 
-def prune_resources(resource):
-    dclient = docker.from_env()
-    action = getattr(dclient, resource)
-    if resource == 'images':
-        deleted_resource = action.prune(filters={'dangling': False})
-    else:
-        deleted_resource = action.prune()
-    return deleted_resource
+
 
 
 def check_self_update():
