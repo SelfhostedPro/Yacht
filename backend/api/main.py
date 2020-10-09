@@ -31,16 +31,22 @@ app.include_router(
     prefix="/resources",
     tags=["resources"],
 )
-app.include_router(
-    fastapi_users.get_auth_router(cookie_authentication),
-    prefix="/auth",
-    tags=["auth"]
-)
-app.include_router(
-    fastapi_users.get_users_router(),
-    prefix="/users",
-    tags=["users"]
-)
+if settings.DISABLE_AUTH == "True":
+    pass
+else:
+    app.include_router(
+        fastapi_users.get_auth_router(cookie_authentication),
+        prefix="/auth",
+        tags=["auth"]
+    )
+if settings.DISABLE_AUTH == "True":
+    pass
+else:
+    app.include_router(
+        fastapi_users.get_users_router(),
+        prefix="/users",
+        tags=["users"]
+    )
 app.include_router(
     templates.router,
     prefix="/templates",

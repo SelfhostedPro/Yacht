@@ -255,7 +255,10 @@ async def websocket_auth(
         if user and user.is_active:
             return user
     except:
-        return None
+        if settings.DISABLE_AUTH == "True":
+            return True
+        else:
+            return None
 
 async def calculate_cpu_percent(d):
     cpu_count = len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
