@@ -254,6 +254,8 @@ async def websocket_auth(
         user = await cookie_authentication(cookie, user_db)
         if user and user.is_active:
             return user
+        elif settings.DISABLE_AUTH == "True":
+            return True
     except:
         if settings.DISABLE_AUTH == "True":
             return True

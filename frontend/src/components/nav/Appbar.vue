@@ -5,7 +5,7 @@
     <v-toolbar-title class="mx-auto font-weight-bold">
       {{ $route.name }}
     </v-toolbar-title>
-    <v-menu bottom offset-y>
+    <v-menu bottom offset-y v-if="!authDisabled">
       <template v-slot:activator="{ on, attrs }">
         <v-btn color="primary" v-bind="attrs" v-on="on" class="pr-2">
           {{ username }}
@@ -43,7 +43,7 @@ export default {
     })
   },
   computed: {
-    ...mapState("auth", ["username"])
+    ...mapState("auth", ["username", "authDisabled"])
   }
 };
 </script>

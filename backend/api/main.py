@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import Depends, FastAPI, Header, HTTPException
-from .routers import apps, templates, app_settings, resources
+from .routers import apps, templates, app_settings, resources, auth, user
 import uuid
 
 from .db import models
@@ -19,6 +19,8 @@ models.Base.metadata.create_all(bind=engine)
 
 settings = Settings()
 
+print(settings.DISABLE_AUTH)
+
 app.include_router(
     apps.router,
     prefix="/apps",
@@ -32,7 +34,11 @@ app.include_router(
     tags=["resources"],
 )
 if settings.DISABLE_AUTH == "True":
-    pass
+    app.include_router(
+        auth.router,
+        prefix="/auth",
+        tags=["auth"]
+    )
 else:
     app.include_router(
         fastapi_users.get_auth_router(cookie_authentication),
@@ -40,7 +46,11 @@ else:
         tags=["auth"]
     )
 if settings.DISABLE_AUTH == "True":
-    pass
+    app.include_router(
+        user.router,
+        prefix="/users",
+        tags=["users"]
+    )
 else:
     app.include_router(
         fastapi_users.get_users_router(),
@@ -51,7 +61,6 @@ app.include_router(
     templates.router,
     prefix="/templates",
     tags=["templates"],
-    # dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
 )
 app.include_router(
