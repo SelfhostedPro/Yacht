@@ -1,10 +1,15 @@
+// Base
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+
+// Templates
 import Templates from "../views/Templates.vue";
 import TemplatesShow from "../components/templates/TemplatesDetails.vue";
 import TemplatesForm from "../components/templates/TemplatesForm.vue";
 import TemplatesList from "../components/templates/TemplatesList.vue";
+
+// Apps
 import Applications from "../views/Applications.vue";
 import AppContent from "../components/applications/ApplicationDetailsComponents/AppContent.vue";
 import AppProcesses from "../components/applications/ApplicationDetailsComponents/AppProcesses.vue";
@@ -14,15 +19,24 @@ import ApplicationDetails from "../components/applications/ApplicationDetails.vu
 import ApplicationsList from "../components/applications/ApplicationsList.vue";
 import ApplicationsForm from "../components/applications/ApplicationsForm.vue";
 import ApplicationDeployFromTemplate from "../components/applications/ApplicationDeployFromTemplate.vue";
-import Container from "../views/Container.vue";
+
+// Images
+import Images from "../views/Images.vue";
+import ImageList from "../components/images/ImageList.vue"
+import ImageDetails from "../components/images/ImageDetails.vue"
+
+// User Settings
 import UserSettings from "../views/UserSettings.vue";
 import ChangePasswordForm from "../components/userSettings/ChangePasswordForm.vue";
 import UserInfo from "../components/userSettings/UserInfo.vue";
+
+// Server Settings
 import ServerSettings from "../views/ServerSettings.vue";
 import ServerInfo from "../components/serverSettings/ServerInfo.vue";
 import ServerVariables from "../components/serverSettings/ServerVariables.vue";
 import Prune from "../components/serverSettings/Prune.vue";
 import ServerUpdate from "../components/serverSettings/ServerUpdate.vue";
+// import { component } from "vue/types/umd";
 
 Vue.use(VueRouter);
 
@@ -150,8 +164,19 @@ const routes = [
   },
   {
     path: "/images",
-    name: "Images",
-    component: Container
+    component: Images,
+    children: [
+      {
+        name: "Image List",
+        path: "/",
+        component: ImageList
+      },
+      {
+        path: ":imageid",
+        name: "Image Details",
+        component: ImageDetails
+      }
+    ]
   }
 ];
 

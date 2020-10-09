@@ -89,6 +89,17 @@ export default {
         ]
       },
       {
+        icon: "mdi-disc",
+        text: "Images",
+        subLinks: [
+          {
+            text: "View Images",
+            to: "/images",
+            icon: "mdi-view-list"
+          }
+        ]
+      },
+      {
         to: "/settings/info",
         icon: "mdi-cog",
         text: "Settings"
