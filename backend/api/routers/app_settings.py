@@ -12,9 +12,11 @@ from ..utils import get_db
 from ..auth import get_active_user
 from ..actions import apps
 from ..actions import resources
+from ..settings import Settings
 
 containers.Base.metadata.create_all(bind=engine)
 
+settings=Settings()
 
 router = APIRouter()
 
@@ -49,3 +51,7 @@ def update_self():
 @router.get('/check/update', dependencies=[Depends(get_active_user)])
 def check_self_update():
     return apps.check_self_update()
+
+# @router.get('/auth', dependencies=[Depends(get_active_user)])
+# async def check_auth():
+#     return await get_active_user()

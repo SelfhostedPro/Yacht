@@ -81,13 +81,17 @@ export default {
   },
   methods: {
     ...mapActions({
-      login: "auth/AUTH_REQUEST"
+      login: "auth/AUTH_REQUEST",
+      authCheck: "auth/AUTH_CHECK"
     }),
     onSubmit() {
       this.login({
         username: this.username,
         password: this.password
       });
+    },
+    mounted() {
+      this.authCheck()
     }
   }
 };

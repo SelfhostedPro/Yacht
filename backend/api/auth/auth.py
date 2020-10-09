@@ -69,16 +69,20 @@ fastapi_users = FastAPIUsers(
     UserDB,
 )
 
+async def fake_get_active_user():
+    DISABLE_AUTH = settings.DISABLE_AUTH
+    if DISABLE_AUTH == "True":
+        return True
+    else:
+        await fastapi_users.get_current_active_user()
+
+if settings.DISABLE_AUTH != "True":
+    get_active_user = fastapi_users.get_current_active_user
+else:
+    get_active_user = fake_get_active_user
 # get_active_user = fastapi_users.get_current_active_user
 get_auth_router = fastapi_users.get_auth_router
 get_password_hash = get_password_hash
-
-async def get_active_user():
-    DISABLE_AUTH = settings.DISABLE_AUTH
-    if DISABLE_AUTH == True:
-        return
-    else:
-        await fastapi_users.get_current_active_user()
 
 async def user_create(UD):
     await fastapi_users.db.create(UD)
