@@ -70,30 +70,33 @@ import { mapActions } from "vuex";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
       username: "",
       password: "",
-      show: false
+      show: false,
     };
   },
   methods: {
     ...mapActions({
       login: "auth/AUTH_REQUEST",
-      authCheck: "auth/AUTH_CHECK"
+      authCheck: "auth/AUTH_CHECK",
     }),
     onSubmit() {
       this.login({
         username: this.username,
-        password: this.password
+        password: this.password,
       });
     },
     mounted() {
-      this.authCheck()
-    }
-  }
+      this.authCheck();
+    },
+    created() {
+      this.authCheck();
+    },
+  },
 };
 </script>
 
