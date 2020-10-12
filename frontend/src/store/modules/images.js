@@ -69,18 +69,20 @@ const actions = {
   writeImage({ commit }, payload) {
     commit("setLoading", true);
     const url = "/api/resources/images/";
+    console.log("store")
+    console.log(payload)
     axios
       .post(url, payload)
       .then(response => {
-        const image = response.data;
-        commit("addImage", image);
+        const images = response.data;
+        commit("setImages", images);
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
-        router.push({ name: "View Images" });
+        router.push({ name: "Image List" });
       });
   },
   updateImage({ commit }, id) {

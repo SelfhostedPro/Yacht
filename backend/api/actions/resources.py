@@ -21,6 +21,18 @@ def get_images():
         image_list.append(attrs)
     return image_list
 
+def write_image(image_tag):
+    delim = ":"
+    dclient = docker.from_env()
+    repo, tag = None, image_tag
+    if delim in image_tag:
+                repo, tag = tag.split(delim, 1)
+    else:
+        repo = image_tag
+        tag = "latest"
+    image = dclient.images.pull(repo, tag)
+    return get_images()
+
 def get_image(image_id):
     dclient = docker.from_env()
     containers = dclient.containers.list(all=True)

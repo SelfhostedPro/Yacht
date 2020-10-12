@@ -11,7 +11,55 @@
       </v-fade-transition>
       <v-card-title>
         Images
-        <v-spacer></v-spacer>
+        <v-dialog v-model="pullDialog" max-width="290">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              fab
+              x-small
+              class="ml-2"
+              color="primary"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline" style="word-break: break-all;">
+              Pull Image
+            </v-card-title>
+            <v-card-text>
+              Pull an image.
+            </v-card-text>
+            <form ref="form" @submit.prevent="submit">
+              <v-text-field
+                label="Image"
+                class="mx-5"
+                placeholder="selfhostedpro/yacht:latest"
+                required
+                v-model="form.image"
+              >
+              </v-text-field>
+            </form>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn text @click="pullDialog = false">
+                Cancel
+              </v-btn>
+              <v-btn
+                text
+                color="primary"
+                @click="
+                  submit();
+                  pullDialog = false;
+                "
+              >
+                Pull
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-spacer />
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -37,12 +85,20 @@
         </template>
         <template v-slot:item.RepoTags="{ item }">
           <div class="d-flex">
-            <span v-if="item.RepoTags[0]" class="align-streatch text-truncate nametext mt-2">{{
-              item.RepoTags[0]
-            }}</span>
+            <span
+              v-if="item.RepoTags[0]"
+              class="align-streatch text-truncate nametext mt-2"
+              >{{ item.RepoTags[0] }}</span
+            >
             <v-spacer />
 
-            <v-chip outlined small color="orange lighten-1" class="align-center mt-1" label v-if="item.inUse == false"
+            <v-chip
+              outlined
+              small
+              color="orange lighten-1"
+              class="align-center mt-1"
+              label
+              v-if="item.inUse == false"
               >Unused</v-chip
             >
             <v-menu close-on-click close-on-content-click offset-y>
@@ -64,7 +120,10 @@
                   </v-list-item-icon>
                   <v-list-item-title>View</v-list-item-title>
                 </v-list-item>
-                <v-list-item v-if="item.RepoTags[0]" @click="updateImage(item.Id)">
+                <v-list-item
+                  v-if="item.RepoTags[0]"
+                  @click="updateImage(item.Id)"
+                >
                   <v-list-item-icon>
                     <v-icon>mdi-update</v-icon>
                   </v-list-item-icon>
@@ -139,6 +198,10 @@ export default {
     return {
       selectedImage: null,
       deleteDialog: false,
+      form: {
+        image: "",
+        },
+      pullDialog: false,
       search: "",
       headers: [
         {
@@ -163,13 +226,20 @@ export default {
     ...mapActions({
       readImages: "images/readImages",
       updateImage: "images/updateImage",
-      deleteImage: "images/deleteImage"
+      deleteImage: "images/deleteImage",
+      writeImage: "images/writeImage",
     }),
     handleRowClick(item) {
       this.$router.push({ path: `/images/${item.Id}` });
     },
     imageDetails(imageid) {
       this.$router.push({ path: `/images/${imageid}` });
+    },
+    submit() {
+      const data = this.form;
+      console.log("methods")
+      console.log(data)
+      this.writeImage(data);
     },
   },
   computed: {

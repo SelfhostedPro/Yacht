@@ -3,12 +3,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from ..auth import get_active_user
 from ..actions import resources
+from ..db.schemas.resources import ImageWrite
 
 router = APIRouter()
 
 @router.get("/images/", dependencies=[Depends(get_active_user)])
 def get_images():
     return resources.get_images()
+
+@router.post("/images/", dependencies=[Depends(get_active_user)])
+def write_image(image: ImageWrite):
+    return resources.write_image(image.image)
 
 @router.get("/images/{image_id}", dependencies=[Depends(get_active_user)])
 def get_image(image_id):
