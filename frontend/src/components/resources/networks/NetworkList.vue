@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="images-list component" style="max-width: 90%">
+  <div class="networks-list component" style="max-width: 90%">
     <v-card>
       <v-fade-transition>
         <v-progress-linear
@@ -10,8 +10,8 @@
         />
       </v-fade-transition>
       <v-card-title>
-        Images
-        <v-dialog v-model="pullDialog" max-width="290">
+        Networks
+        <!-- <v-dialog v-model="createDialog" max-width="290">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               fab
@@ -26,24 +26,24 @@
           </template>
           <v-card>
             <v-card-title class="headline" style="word-break: break-all;">
-              Pull Image
+              Create Network
             </v-card-title>
             <v-card-text>
-              Pull an image.
+              Create a Network.
             </v-card-text>
             <form ref="form" @submit.prevent="submit">
               <v-text-field
-                label="Image"
+                label="Network"
                 class="mx-5"
-                placeholder="selfhostedpro/yacht:latest"
+                placeholder="yacht_data"
                 required
-                v-model="form.image"
+                v-model="form.name"
               >
               </v-text-field>
             </form>
             <v-card-actions>
               <v-spacer />
-              <v-btn text @click="pullDialog = false">
+              <v-btn text @click="createDialog = false">
                 Cancel
               </v-btn>
               <v-btn
@@ -51,14 +51,14 @@
                 color="primary"
                 @click="
                   submit();
-                  pullDialog = false;
+                  createDialog = false;
                 "
               >
-                Pull
+                Create
               </v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog>
+        </v-dialog> -->
         <v-spacer />
         <v-text-field
           v-model="search"
@@ -71,24 +71,23 @@
 
       <v-data-table
         style="max-width: 99%;"
-        class="mx-auto image-datatable"
+        class="mx-auto network-datatable"
         :headers="headers"
-        :items="images"
+        :items="networks"
         :items-per-page="10"
         :search="search"
         @click:row="handleRowClick"
       >
         <template slot="no-data">
           <div>
-            No Images available.
+            No Networks available.
           </div>
         </template>
-        <template v-slot:item.RepoTags="{ item }">
+        <template v-slot:item.Name="{ item }">
           <div class="d-flex">
             <span
-              v-if="item.RepoTags[0]"
               class="align-streatch text-truncate nametext mt-2"
-              >{{ item.RepoTags[0] }}</span
+              >{{ item.Name }}</span
             >
             <v-spacer />
 
@@ -114,25 +113,16 @@
                 </v-btn>
               </template>
               <v-list dense>
-                <v-list-item @click="imageDetails(item.Id)">
+                <v-list-item @click="networkDetails(item.Id)">
                   <v-list-item-icon>
                     <v-icon>mdi-eye</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title>View</v-list-item-title>
                 </v-list-item>
-                <v-list-item
-                  v-if="item.RepoTags[0]"
-                  @click="updateImage(item.Id)"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-update</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Pull</v-list-item-title>
-                </v-list-item>
                 <v-divider />
                 <v-list-item
                   @click="
-                    selectedImage = item;
+                    selectedNetwork = item;
                     deleteDialog = true;
                   "
                 >
@@ -145,10 +135,24 @@
             </v-menu>
           </div>
         </template>
-        <template v-slot:item.Id="{ item }" class="idcell">
+        <template v-slot:item.Project="{ item }">
+          <div class="projectcell">
+            <span class="d-inline-block text-truncate idtext" v-if="item.Labels">
+              {{ item.Labels['com.docker.compose.project'] || "-" }}
+            </span>
+          </div>
+        </template>
+                <template v-slot:item.Id="{ item }" class="idcell">
           <div class="idcell">
             <span class="d-inline-block text-truncate idtext">
               {{ item.Id }}
+            </span>
+          </div>
+        </template>
+        <template v-slot:item.Driver="{ item }" class="idcell">
+          <div class="idcell">
+            <span class="d-inline-block text-truncate idtext">
+              {{ item.Driver }}
             </span>
           </div>
         </template>
@@ -161,13 +165,13 @@
       </v-data-table>
     </v-card>
 
-    <v-dialog v-if="selectedImage" v-model="deleteDialog" max-width="290">
+    <v-dialog v-if="selectedNetwork" v-model="deleteDialog" max-width="290">
       <v-card>
         <v-card-title class="headline" style="word-break: break-all;">
-          Delete the image?
+          Delete the network?
         </v-card-title>
         <v-card-text>
-          Are you sure you want to permanently delete the image?<br />
+          Are you sure you want to permanently delete the network?<br />
           This action cannot be revoked.
         </v-card-text>
         <v-card-actions>
@@ -179,7 +183,7 @@
             text
             color="error"
             @click="
-              deleteImage(selectedImage.Id);
+              deleteNetwork(selectedNetwork.Id);
               deleteDialog = false;
             "
           >
@@ -196,22 +200,32 @@ import { mapActions, mapState } from "vuex";
 export default {
   data() {
     return {
-      selectedImage: null,
+      selectedNetwork: null,
       deleteDialog: false,
       form: {
-        image: "",
+        name: "",
         },
-      pullDialog: false,
+      createDialog: false,
       search: "",
       headers: [
         {
-          text: "Tag",
-          value: "RepoTags",
+          text: "Name",
+          value: "Name",
           sortable: true,
+        },
+        {
+          text: "Project",
+          value: "Project",
+          sortable: true
         },
         {
           text: "ID",
           value: "Id",
+          sortable: true
+        },
+        {
+          text: "Driver",
+          value: "Driver",
           sortable: true,
         },
         {
@@ -224,29 +238,26 @@ export default {
   },
   methods: {
     ...mapActions({
-      readImages: "images/readImages",
-      updateImage: "images/updateImage",
-      deleteImage: "images/deleteImage",
-      writeImage: "images/writeImage",
+      readNetworks: "networks/readNetworks",
+      deleteNetwork: "networks/deleteNetwork",
+      writeNetwork: "networks/writeNetwork",
     }),
     handleRowClick(item) {
-      this.$router.push({ path: `/resources/images/${item.Id}` });
+      this.$router.push({ path: `/resources/networks/${item.Id}` });
     },
-    imageDetails(imageid) {
-      this.$router.push({ path: `/resources/images/${imageid}` });
+    networkDetails(networkid) {
+      this.$router.push({ path: `/resources/networks/${networkid}` });
     },
     submit() {
       const data = this.form;
-      console.log("methods")
-      console.log(data)
-      this.writeImage(data);
+      this.writeNetwork(data);
     },
   },
   computed: {
-    ...mapState("images", ["images", "isLoading"]),
+    ...mapState("networks", ["networks", "isLoading"]),
   },
   mounted() {
-    this.readImages();
+    this.readNetworks();
   },
 };
 </script>
@@ -258,7 +269,7 @@ export default {
 .idtext {
   max-width: 30vw;
 }
-.image-datatable {
+.network-datatable {
   overflow-x: hidden;
 }
 </style>

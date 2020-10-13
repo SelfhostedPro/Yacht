@@ -17,60 +17,88 @@
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item v-if="image.RepoTags[0]" @click="updateImage(image.Id)">
-              <v-list-item-icon><v-icon>mdi-update</v-icon></v-list-item-icon>
-              <v-list-item-title>Pull Image</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="deleteImage(image.Id)">
-              <v-list-item-icon><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon>
-              <v-list-item-title>Delete Image</v-list-item-title>
+            <v-list-item @click="deleteNetwork(network.Name)">
+              <v-list-item-icon
+                ><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon
+              >
+              <v-list-item-title>Delete Network</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
-        {{ image.Id }}
+        {{ network.Name }}
       </v-card-title>
       <v-card-subtitle>
-        <v-chip outlined small color="orange lighten-1" class="align-center mt-1" label v-if="image.inUse == false"
-              >Unused</v-chip
-            >
-        {{ image.RepoTags[0] || image.RepoDigests[0] }}
+        <v-chip
+          outlined
+          small
+          color="orange lighten-1"
+          class="align-center mt-1"
+          label
+          v-if="network.inUse == false"
+          >Unused</v-chip
+        >
+        {{ network.Id }}
       </v-card-subtitle>
     </v-card>
     <v-card class="mt-2">
       <v-card-title>
-        Image Details
+        Network Information
       </v-card-title>
       <v-list dense>
         <v-list-item>
           <v-list-item-content>
-            Tag
+            Name
           </v-list-item-content>
           <v-list-item-content>
-            {{ image.RepoTags[0] }}
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            Architecture
-          </v-list-item-content>
-          <v-list-item-content>
-            {{ image.Architecture }}
+            {{ network.Name }}
           </v-list-item-content>
         </v-list-item>
         <v-list-item>
           <v-list-item-content>
-            Platform
+            ID
           </v-list-item-content>
           <v-list-item-content>
-            {{ image.Os }}
+            {{ network.Id }}
           </v-list-item-content>
         </v-list-item>
         <v-list-item>
           <v-list-item-content>
-            Architecture
+            Driver
           </v-list-item-content>
           <v-list-item-content>
-            {{ image.Architecture }}
+            {{ network.Driver }}
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            Scope
+          </v-list-item-content>
+          <v-list-item-content>
+            {{ network.Scope }}
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            Attachable
+          </v-list-item-content>
+          <v-list-item-content>
+            {{ network.Attachable }}
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            Internal
+          </v-list-item-content>
+          <v-list-item-content>
+            {{ network.Internal }}
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            IPV6 Enabled
+          </v-list-item-content>
+          <v-list-item-content>
+            {{ network.EnableIPv6 }}
           </v-list-item-content>
         </v-list-item>
         <v-list-item>
@@ -78,23 +106,34 @@
             Created
           </v-list-item-content>
           <v-list-item-content>
-            {{ image.Created | formatDate }}
+            {{ network.Created | formatDate }}
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
+        <v-list-item v-if="Object.keys(network.Labels).length > 1">
           <v-list-item-content>
-            Size
+            Labels
           </v-list-item-content>
           <v-list-item-content>
-            {{ formatBytes(image.Size) }}
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            VirtualSize
-          </v-list-item-content>
-          <v-list-item-content>
-            {{ formatBytes(image.VirtualSize) }}
+            <v-card outlined tile>
+              <v-simple-table dense>
+                <tbody>
+                  <tr
+                    v-for="(value, key, index) in network.Labels"
+                    :key="index"
+                  >
+                    <td style="min-width:20%;" class="align-self-center">
+                      {{ key }}
+                    </td>
+                    <td
+                      class="text-truncate align-self-center"
+                      style="width:100%"
+                    >
+                      {{ value }}
+                    </td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
+            </v-card>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -102,67 +141,128 @@
 
     <v-card class="mt-2">
       <v-card-title>
-        Container Details
+        Network Details
       </v-card-title>
       <v-list dense>
-        <v-list-item v-if="getCMD(image.ContainerConfig.Cmd)">
-          <v-list-item-content style="max-width:20%">
-            Command
+        <v-list-item>
+          <v-list-item-content style="max-width: 30%">
+            IPV4 Subnet
+          </v-list-item-content>
+          <v-list-item-content v-if="network.IPAM.Config[0]">
+            {{ network.IPAM.Config[0].Subnet || "-" }}
+          </v-list-item-content>
+          <v-list-item-content v-else>
+            -
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content style="max-width: 30%">
+            IPV4 Gateway
+          </v-list-item-content>
+          <v-list-item-content v-if="network.IPAM.Config[0]">
+            {{ network.IPAM.Config[0].Gateway || "-" }}
+          </v-list-item-content>
+          <v-list-item-content v-else>
+            -
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content style="max-width: 30%">
+            IPV6 Subnet
           </v-list-item-content>
           <v-list-item-content>
-            {{ getCMD(image.ContainerConfig.Cmd) }}
+            -
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="image.ContainerConfig.Entrypoint">
-          <v-list-item-content style="max-width:20%">
-            Entrypoint
+        <v-list-item>
+          <v-list-item-content style="max-width: 30%">
+            IPv6 Gateway
           </v-list-item-content>
           <v-list-item-content>
-            {{ image.ContainerConfig.Entrypoint[0] }}
+            -
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="image.ContainerConfig.ExposedPorts">
-          <v-list-item-content style="max-width:20%">
-            Ports
-          </v-list-item-content>
-          <v-list-item-content v-for="(port, index) in Object.keys(image.ContainerConfig.ExposedPorts)" :key="index">
-            {{ port }}
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="image.ContainerConfig.Labels">
-          <v-list-item-content style="max-width:20%">
-            Labels
-          </v-list-item-content>
-          <v-list-item-content>
-            <v-card outlined tile>
-            <v-simple-table dense>
-              <tbody>
-                <tr v-for="(value, key, index) in image.ContainerConfig.Labels" :key="index">
-                  <td style="min-width:20%;" class="align-self-center"> {{key}} </td>
-                  <td class="text-truncate align-self-center" style="width:100%"> {{value}} </td>
-                </tr>
-              </tbody>
-            </v-simple-table>
-            </v-card>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="image.ContainerConfig.Env">
-          <v-list-item-content style="max-width:20%">
-            ENV
+        <v-list-item v-if="Object.keys(network.Options).length > 1">
+          <v-list-item-content style="max-width: 30%">
+            Options
           </v-list-item-content>
           <v-list-item-content>
             <v-card outlined tile>
-            <v-simple-table>
-              <tbody>
-                <tr v-for="(key, index) in image.ContainerConfig.Env" :key="index">
-                  <td style="width:100%;" class="align-self-center text-truncate"> {{key}} </td>
-                </tr>
-              </tbody>
-            </v-simple-table>
+              <v-simple-table dense>
+                <tbody>
+                  <tr
+                    v-for="(value, key, index) in network.Options"
+                    :key="index"
+                  >
+                    <td style="min-width:20%;" class="align-self-center">
+                      {{ key }}
+                    </td>
+                    <td
+                      class="text-truncate align-self-center"
+                      style="width:100%"
+                    >
+                      {{ value }}
+                    </td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
             </v-card>
           </v-list-item-content>
         </v-list-item>
       </v-list>
+    </v-card>
+
+    <v-card class="mt-2">
+      <v-card-title>
+        Attached Containers
+      </v-card-title>
+      <v-data-table
+        style="max-width: 99%;"
+        class="mx-auto network-datatable"
+        :headers="headers"
+        :items="conv2array(network.Containers)"
+        @click:row="handleRowClick"
+      >
+        <template slot="no-data">
+          <div>
+            No Networks available.
+          </div>
+        </template>
+        <template v-slot:item.Name="{ item }">
+          <div class="d-flex">
+            <span class="align-streatch text-truncate nametext mt-2">
+              {{ item.Name }}</span
+            >
+          </div>
+        </template>
+        <template v-slot:item.ipv4="{ item }">
+          <div class="projectcell">
+            <span class="d-inline-block text-truncate idtext">
+              {{ item.IPv4Address || "-" }}
+            </span>
+          </div>
+        </template>
+        <template v-slot:item.ipv6="{ item }" class="idcell">
+          <div class="idcell">
+            <span class="d-inline-block text-truncate idtext">
+              {{ item.IPv6Address || "-" }}
+            </span>
+          </div>
+        </template>
+        <template v-slot:item.macaddress="{ item }" class="idcell">
+          <div class="idcell">
+            <span class="d-inline-block text-truncate idtext">
+              {{ item.MacAddress }}
+            </span>
+          </div>
+        </template>
+        <template v-slot:item.ID="{ item }">
+          <span
+            class="d-inline-block text-truncate flex-grow-1 flex-shrink-0"
+            >{{ item.EndpointID }}</span
+          >
+        </template>
+      </v-data-table>
     </v-card>
   </div>
 </template>
@@ -172,48 +272,63 @@ import { mapActions, mapGetters, mapState } from "vuex";
 
 export default {
   data() {
-    return {};
+    return {
+      headers: [
+        {
+          text: "Name",
+          value: "Name",
+          sortable: true,
+        },
+        {
+          text: "IPv4",
+          value: "ipv4",
+          sortable: true,
+        },
+        {
+          text: "IPv6",
+          value: "ipv6",
+          sortable: true,
+        },
+        {
+          text: "MacAddress",
+          value: "macaddress",
+          sortable: true,
+        },
+        {
+          text: "ID",
+          value: "ID",
+          sortable: true,
+        },
+      ],
+    };
   },
   computed: {
-    ...mapState("images", ["image", "images", "isLoading"]),
+    ...mapState("networks", ["network", "network", "isLoading"]),
     ...mapGetters({
-      getImageById: "images/getImageById",
+      getNetworkById: "networks/getNetworkById",
     }),
-    image() {
-      const imageid = this.$route.params.imageid;
-      return this.getImageById(imageid);
+    network() {
+      const networkid = this.$route.params.networkid;
+      return this.getNetworkById(networkid);
     },
   },
   methods: {
     ...mapActions({
-      readImage: "images/readImage",
-      updateImage: "images/updateImage",
-      deleteImage: "images/deleteImage"
+      readNetwork: "networks/readNetwork",
+      deleteNetwork: "networks/deleteNetwork",
     }),
-    formatBytes(bytes) {
-      if (bytes === 0) return "0 Bytes";
-      const decimals = 2;
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    conv2array(containers) {
+      var container_list = Object.values(containers);
 
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+      return container_list;
     },
-    getCMD(cmd) {
-      for (var entry in cmd) {
-        if (cmd[entry].includes("CMD")) {
-          return cmd[entry];
-        }
-        else return null
-      }
-    },
+    handleRowClick(app) {
+      this.$router.push({ path: `/apps/${app.Name}/info` });
+    }
   },
   created() {
-    const imageid = this.$route.params.imageid;
-    this.readImage(imageid);
-    console.log(this.image)
+    const networkid = this.$route.params.networkid;
+    this.readNetwork(networkid);
   },
 };
 </script>
