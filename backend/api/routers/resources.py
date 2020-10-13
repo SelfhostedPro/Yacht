@@ -43,3 +43,20 @@ def get_volume(volume_name):
 @router.delete("/volumes/{volume_name}", dependencies=[Depends(get_active_user)])
 def delete_volume(volume_name):
     return resources.delete_volume(volume_name)
+
+### Volumes ###
+@router.get("/networks/", dependencies=[Depends(get_active_user)])
+def get_networks():
+    return resources.get_networks()
+
+@router.post("/networks/", dependencies=[Depends(get_active_user)])
+def write_network(name: VolumeWrite):
+    return resources.write_network(name.name)
+
+@router.get("/networks/{network_name}", dependencies=[Depends(get_active_user)])
+def get_network(network_name):
+    return resources.get_network(network_name)
+
+@router.delete("/networks/{network_name}", dependencies=[Depends(get_active_user)])
+def delete_network(network_name):
+    return resources.delete_network(network_name)

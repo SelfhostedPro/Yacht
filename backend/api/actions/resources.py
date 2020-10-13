@@ -113,27 +113,61 @@ def get_volume(volume_id):
         attrs.update({'inUse': False})
     return attrs
 
-# def update_volume(volume_id):
-#     dclient = docker.from_env()
-#     if type(volume_id) == str:
-#         volume = dclient.volumes.get(volume_id)
-#         new_volume = dclient.volumes.get_registry_data(volume.tags[0])
-#         new_volume.pull()
-#         return get_volume(volume_id)
-#     if type(volume_id) == list:
-#         updated_list = []
-#         for _id in volume_id:
-#             volume = dclient.volumes.get(volume_id)
-#             new_volume = dclient.volumes.get_registry_data(volume.tags[0])
-#             new_volume.pull()
-#             updated_list.append(new_volume)
-#         return updated_list()
-
 def delete_volume(volume_id):
     dclient = docker.from_env()
     volume = dclient.volumes.get(volume_id)
     volume.remove(force=True)
     return volume.attrs
+
+### Networks ###
+def get_networks():
+    dclient = docker.from_env()
+    containers = dclient.containers.list(all=True)
+    networks = dclient.networks.list()
+    network_list = []
+    for network in networks:
+        attrs = network.attrs
+        for container in containers:
+            try:
+                if any(d['NetworkID'] == network.attrs['Id'] for d in container.attrs['NetworkSettings']['Networks'].values()):
+                    attrs.update({'inUse': True})
+                    break
+            except Exception as exc:
+                print(exc)
+                if exc.status_code == 404:
+                    pass
+        if attrs.get('inUse') == None:
+            attrs.update({'inUse': False})
+        network_list.append(attrs)
+    return network_list
+
+def write_network(network_name):
+    dclient = docker.from_env()
+    network = dclient.networks.create(name=network_name)
+    return get_networks()
+
+def get_network(network_id):
+    dclient = docker.from_env()
+    containers = dclient.containers.list(all=True)
+    network = dclient.networks.get(network_id)
+    attrs=network.attrs
+    for container in containers:
+        try:
+            if any(d['NetworkID'] == network.attrs['Id'] for d in container.attrs['NetworkSettings']['Networks'].values()):
+                    attrs.update({'inUse': True})
+                    break
+        except Exception as exc:
+            if exc.status_code == 404:
+                pass
+    if attrs.get('inUse') == None:
+        attrs.update({'inUse': False})
+    return attrs
+
+def delete_network(network_id):
+    dclient = docker.from_env()
+    network = dclient.networks.get(network_id)
+    network.remove()
+    return network.attrs
 
 def prune_resources(resource):
     dclient = docker.from_env()
