@@ -4,7 +4,8 @@ import auth from "./modules/auth";
 import templates from "./modules/templates.js";
 import apps from "./modules/apps.js";
 import snackbar from "./modules/snackbar.js";
-import images from './modules/images.js'
+import images from './modules/images.js';
+import volumes from './modules/volumes.js';
 
 Vue.use(Vuex);
 
@@ -41,6 +42,7 @@ export default new Vuex.Store({
     templates,
     apps,
     images,
+    volumes,
     auth,
     snackbar
   }

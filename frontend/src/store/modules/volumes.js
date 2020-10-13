@@ -2,31 +2,31 @@ import axios from "axios";
 import router from "@/router/index";
 
 const state = {
-  images: [],
+  volumes: [],
   isLoading: false
 };
 
 const mutations = {
-  setImages(state, images) {
-    state.images = images;
+  setVolumes(state, volumes) {
+    state.volumes = volumes;
   },
-  setImage(state, image) {
-    const idx = state.images.findIndex(x => x.Id === image.Id);
+  setVolume(state, volume) {
+    const idx = state.volumes.findIndex(x => x.Name === volume.Name);
     if (idx < 0) {
-      state.images.push(image);
+      state.volumes.push(volume);
     } else {
-      state.images.splice(idx, 1, image);
+      state.volumes.splice(idx, 1, volume);
     }
   },
-  addImage(state, image) {
-    state.images.push(image);
+  addVolume(state, volume) {
+    state.volumes.push(volume);
   },
-  removeImage(state, image) {
-    const idx = state.images.findIndex(x => x.Id === image.Id);
+  removeVolume(state, volume) {
+    const idx = state.volumes.findIndex(x => x.Name === volume.Name);
     if (idx < 0) {
       return;
     }
-    state.images.splice(idx, 1);
+    state.volumes.splice(idx, 1);
   },
   setLoading(state, loading) {
     state.isLoading = loading;
@@ -34,14 +34,14 @@ const mutations = {
 };
 
 const actions = {
-  readImages({ commit }) {
+  readVolumes({ commit }) {
     commit("setLoading", true);
-    const url = "/api/resources/images/";
+    const url = "/api/resources/volumes/";
     axios
       .get(url)
       .then(response => {
-        const images = response.data;
-        commit("setImages", images);
+        const volumes = response.data;
+        commit("setVolumes", volumes);
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
@@ -50,14 +50,15 @@ const actions = {
         commit("setLoading", false);
       });
   },
-  readImage({ commit }, id) {
+  readVolume({ commit }, id) {
     commit("setLoading", true);
-    const url = `/api/resources/images/${id}`;
+    const url = `/api/resources/volumes/${id}`;
     axios
       .get(url)
       .then(response => {
-        const image = response.data;
-        commit("setImage", image);
+        const volume = response.data;
+        console.log(volume)
+        commit("setVolume", volume);
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
@@ -66,34 +67,34 @@ const actions = {
         commit("setLoading", false);
       });
   },
-  writeImage({ commit }, payload) {
+  writeVolume({ commit }, payload) {
     commit("setLoading", true);
-    const url = "/api/resources/images/";
+    const url = "/api/resources/volumes/";
     console.log("store")
     console.log(payload)
     axios
       .post(url, payload)
       .then(response => {
-        const images = response.data;
-        commit("setImages", images);
+        const volumes = response.data;
+        commit("setVolumes", volumes);
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
-        router.push({ name: "Image List" });
+        router.push({ name: "Volumes" });
       });
   },
-  updateImage({ commit }, id) {
+  updateVolume({ commit }, id) {
     commit("setLoading", true);
-    const url = `/api/resources/images/${id}/pull`;
+    const url = `/api/resources/volumes/${id}/pull`;
     axios
       .get(url)
       .then(response => {
-        const image = response.data;
+        const volume = response.data;
         console.log(response.data)
-        commit("setImage", image);
+        commit("setVolume", volume);
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
@@ -102,14 +103,14 @@ const actions = {
         commit("setLoading", false);
       });
   },
-  deleteImage({ commit }, id) {
+  deleteVolume({ commit }, id) {
     commit("setLoading", true);
-    const url = `/api/resources/images/${id}`;
+    const url = `/api/resources/volumes/${id}`;
     axios
       .delete(url)
       .then(response => {
-        const image = response.data;
-        commit("removeImage", image);
+        const volume = response.data;
+        commit("removeVolume", volume);
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
@@ -121,9 +122,9 @@ const actions = {
 };
 
 const getters = {
-  getImageById(state) {
-    return Id => {
-      return state.images.find(x => x.Id == Id);
+  getVolumeByName(state) {
+    return Name => {
+      return state.volumes.find(x => x.Name == Name);
     };
   }
 };

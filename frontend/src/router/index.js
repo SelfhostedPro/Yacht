@@ -20,10 +20,17 @@ import ApplicationsList from "../components/applications/ApplicationsList.vue";
 import ApplicationsForm from "../components/applications/ApplicationsForm.vue";
 import ApplicationDeployFromTemplate from "../components/applications/ApplicationDeployFromTemplate.vue";
 
+// Resources
+import Resources from "../views/Resources.vue";
 // Images
-import Images from "../views/Images.vue";
-import ImageList from "../components/images/ImageList.vue"
-import ImageDetails from "../components/images/ImageDetails.vue"
+import ImageList from "../components/resources/images/ImageList.vue"
+import ImageDetails from "../components/resources/images/ImageDetails.vue"
+// Volumes
+import VolumeList from "../components/resources/volumes/VolumeList.vue"
+import VolumeDetails from "../components/resources/volumes/VolumeDetails.vue"
+// Networks
+import NetworkList from "../components/resources/networks/NetworkList.vue"
+import NetworkDetails from "../components/resources/networks/NetworkDetails.vue"
 
 // User Settings
 import UserSettings from "../views/UserSettings.vue";
@@ -163,18 +170,38 @@ const routes = [
     ]
   },
   {
-    path: "/images",
-    component: Images,
+    path: "/resources",
+    component: Resources,
     children: [
       {
-        name: "Image List",
-        path: "/",
+        name: "Images",
+        path: "images",
         component: ImageList
       },
       {
-        path: ":imageid",
+        path: "images/:imageid",
         name: "Image Details",
         component: ImageDetails
+      },
+      {
+        name: "Volumes",
+        path: "volumes",
+        component: VolumeList
+      },
+      {
+        path: "volumes/:volumeName",
+        name: "Volume Details",
+        component: VolumeDetails
+      },
+      {
+        name: "Networks",
+        path: "networks",
+        component: NetworkList
+      },
+      {
+        path: "networks/:networkid",
+        name: "Network Details",
+        component: NetworkDetails
       }
     ]
   }
