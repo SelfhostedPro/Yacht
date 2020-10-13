@@ -3,10 +3,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from ..auth import get_active_user
 from ..actions import resources
-from ..db.schemas.resources import ImageWrite
+from ..db.schemas.resources import ImageWrite, VolumeWrite
 
 router = APIRouter()
-
+### Images ###
 @router.get("/images/", dependencies=[Depends(get_active_user)])
 def get_images():
     return resources.get_images()
@@ -26,3 +26,20 @@ def pull_image(image_id):
 @router.delete("/images/{image_id}", dependencies=[Depends(get_active_user)])
 def delete_image(image_id):
     return resources.delete_image(image_id)
+
+### Volumes ###
+@router.get("/volumes/", dependencies=[Depends(get_active_user)])
+def get_volumes():
+    return resources.get_volumes()
+
+@router.post("/volumes/", dependencies=[Depends(get_active_user)])
+def write_volume(name: VolumeWrite):
+    return resources.write_volume(name.name)
+
+@router.get("/volumes/{volume_name}", dependencies=[Depends(get_active_user)])
+def get_volume(volume_name):
+    return resources.get_volume(volume_name)
+
+@router.delete("/volumes/{volume_name}", dependencies=[Depends(get_active_user)])
+def delete_volume(volume_name):
+    return resources.delete_volume(volume_name)

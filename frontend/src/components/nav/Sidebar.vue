@@ -89,13 +89,23 @@ export default {
         ]
       },
       {
-        icon: "mdi-disc",
-        text: "Images",
+        icon: "mdi-cube-outline",
+        text: "Resources",
         subLinks: [
           {
-            text: "View Images",
-            to: "/images",
-            icon: "mdi-view-list"
+            text: "Images",
+            to: "/resources/images",
+            icon: "mdi-disc"
+          },
+          {
+            text: "Volumes",
+            to: "/resources/volumes",
+            icon: "mdi-database"
+          },
+          {  
+            text: "Networks",
+            to: "/resources/networks",
+            icon: "mdi-network"
           }
         ]
       },
