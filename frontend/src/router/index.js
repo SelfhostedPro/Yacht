@@ -31,6 +31,7 @@ import VolumeDetails from "../components/resources/volumes/VolumeDetails.vue"
 // Networks
 import NetworkList from "../components/resources/networks/NetworkList.vue"
 import NetworkDetails from "../components/resources/networks/NetworkDetails.vue"
+import NetworkForm from "../components/resources/networks/NetworkForm.vue"
 
 // User Settings
 import UserSettings from "../views/UserSettings.vue";
@@ -199,10 +200,15 @@ const routes = [
         component: NetworkList
       },
       {
+        path: "networks/new",
+        name: "New Network",
+        component: NetworkForm
+      },
+      {
         path: "networks/:networkid",
         name: "Network Details",
         component: NetworkDetails
-      }
+      },
     ]
   }
 ];
