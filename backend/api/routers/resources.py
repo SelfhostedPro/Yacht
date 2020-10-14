@@ -4,7 +4,6 @@ from typing import List
 from ..auth import get_active_user
 from ..actions import resources
 from ..db.schemas.resources import ImageWrite, VolumeWrite, NetworkWrite
-import netifaces
 
 
 router = APIRouter()
