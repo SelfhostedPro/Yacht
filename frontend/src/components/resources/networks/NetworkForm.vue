@@ -93,7 +93,7 @@
                   v-slot="{ errors, valid }"
                 > -->
                 <v-text-field
-                  label="Subnet *"
+                  label="Subnet"
                   placeholder="10.0.200.0/24"
                   v-model="form.ipv4subnet"
                 />
@@ -105,7 +105,7 @@
                   v-slot="{ errors, valid }"
                 > -->
                 <v-text-field
-                  label="Gateway *"
+                  label="Gateway"
                   placeholder="10.0.200.1"
                   v-model="form.ipv4gateway"
                 />
