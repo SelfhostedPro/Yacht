@@ -127,7 +127,7 @@ const actions = {
         commit(AUTH_SUCCESS, resp);
       })
       .catch(err => {
-        console.log(err)
+        commit("snackbar/setErr", err, { root: true });
       })
   }
 };
@@ -137,7 +137,6 @@ const mutations = {
     state.status = "loading";
   },
   [AUTH_SUCCESS]: (state, resp) => {
-    console.log(resp)
     state.status = "success";
     state.username = resp.data.email;
     if (resp.data.authDisabled) {

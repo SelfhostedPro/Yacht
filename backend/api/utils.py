@@ -125,7 +125,9 @@ def conv2dict(name, value):
 # {
 #     '53/tcp': ('0.0.0.0', 53),
 # }
-def conv_ports2data(data):
+def conv_ports2data(data, network, network_mode):
+    if network == 'host' or network_mode =='host':
+        return None
     ports = {}
     for d in data:
         cport = d.cport

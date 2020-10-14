@@ -34,6 +34,27 @@ const mutations = {
 };
 
 const actions = {
+  _readVolumes({ commit }) {
+    const url = "/api/resources/volumes/";
+    commit("setLoading", true);
+    return new Promise((resolve, reject) => {
+      axios
+        .get(url)
+        .then(response => {
+          const volumes = response.data;
+          commit("setLoading", false);
+          commit("setVolumes", volumes);
+          resolve(volumes);
+        })
+        .finally(() => {
+          commit("setLoading", false);
+        })
+        .catch(error => {
+          commit("snackbar/setErr", error, { root: true });
+          reject(error);
+        });
+    });
+  },
   readVolumes({ commit }) {
     commit("setLoading", true);
     const url = "/api/resources/volumes/";

@@ -123,7 +123,16 @@
         <v-stepper-content step="2">
           <ValidationObserver ref="obs2" v-slot="{ invalid }">
             <form>
+              <v-row>
+                <v-col>
+              <v-select :items="networks" label="Network" clearable v-model="form.network" :disabled="form.network_mode !== undefined"/>
+              </v-col>
+              <v-col>
+                <v-select :items="network_modes" label="Network Mode" clearable v-model="form.network_mode" :disabled="form.network !== undefined"/>
+                </v-col>
+                </v-row>
               <transition-group
+                v-if="form.network_mode !== 'host' && form.network !=='host'"
                 name="slide"
                 enter-active-class="animated fadeInLeft fast-anim"
                 leave-active-class="animated fadeOutLeft fast-anim"
@@ -212,7 +221,7 @@
               </transition-group>
               <v-row>
                 <v-col cols="12" class="d-flex justify-end">
-                  <v-btn icon class="align-self-center" @click="addPort">
+                  <v-btn v-if="form.network_mode !== 'host' && form.network !=='host'" icon class="align-self-center" @click="addPort">
                     <v-icon>mdi-plus</v-icon>
                   </v-btn>
                 </v-col>
@@ -251,14 +260,15 @@
                       rules="required"
                       v-slot="{ errors, valid }"
                     >
-                      <v-text-field
+                      <v-combobox
                         label="Host"
                         placeholder="/yacht/image/share"
                         v-model="item['bind']"
+                        :items="volumes"
                         :error-messages="errors"
                         :success="valid"
                         required
-                      ></v-text-field>
+                      />
                     </ValidationProvider>
                   </v-col>
                   <v-col>
@@ -639,7 +649,7 @@
 
 <script>
 import axios from "axios";
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 export default {
@@ -652,10 +662,14 @@ export default {
       deployStep: 1,
       deploySteps: 4,
       notes: "",
+      networks: [],
+      volumes: [],
       form: {
         name: "",
         image: "",
         restart_policy: "",
+        network: undefined,
+        network_mode: undefined,
         ports: [],
         volumes: [],
         env: [],
@@ -664,6 +678,11 @@ export default {
         sysctls: [],
         cap_add: [],
       },
+      network_modes: [
+        "bridge",
+        "none",
+        "host"
+      ],
       isLoading: false,
       cap_options: [
         "SYS_MODULE",
@@ -692,9 +711,15 @@ export default {
       ],
     };
   },
+  calculated: {
+    ...mapState("networks", ['networks']),
+    ...mapState("volumes", ['volumes'])
+  },
   methods: {
     ...mapActions({
       readApp: "templates/readApp",
+      readNetworks: "networks/_readNetworks",
+      readVolumes: "volumes/_readVolumes"
     }),
     ...mapMutations({
       setErr: "snackbar/setErr",
@@ -764,6 +789,19 @@ export default {
           this.setErr(err);
         });
     },
+    async populateNetworks() {
+      const networks = await this.readNetworks()
+      for (var network in networks){
+        this.networks.push(networks[network]['Name'])
+      }
+    },
+    async populateVolumes() {
+      const volumes = await this.readVolumes()
+      console.log(volumes)
+      for (var volume in volumes){
+        this.volumes.push(volumes[volume]['Name'])
+      }
+    },
     async populateForm() {
       const appId = this.$route.params.appId;
       if (appId != null) {
@@ -793,6 +831,8 @@ export default {
   },
   async created() {
     await this.populateForm();
+    await this.populateVolumes();
+    await this.populateNetworks();
   },
 };
 </script>
