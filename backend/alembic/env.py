@@ -3,6 +3,7 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, MetaData
 from sqlalchemy import pool
 from alembic import context
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -18,12 +19,14 @@ fileConfig(config.config_file_name)
 import os
 import sys
 from os.path import abspath, dirname
+
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 
 from api.db import models
 from api.settings import Settings
 from api.auth import Base
+
 # Combine metadata from auth and containers/templates
 combined_meta_data = MetaData()
 for declarative_base in [models.Base, Base]:
@@ -31,7 +34,9 @@ for declarative_base in [models.Base, Base]:
         combined_meta_data._add_table(table_name, table.schema, table)
 
 target_metadata = combined_meta_data
-config.set_main_option("sqlalchemy.url", os.environ.get('DATABASE_URL', 'sqlite:///config/data.sqlite'))
+config.set_main_option(
+    "sqlalchemy.url", os.environ.get("DATABASE_URL", "sqlite:///config/data.sqlite")
+)
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -77,9 +82,7 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

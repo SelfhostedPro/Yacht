@@ -108,13 +108,12 @@ const actions = {
       .then(response => {
         const network = response.data;
         commit("removeNetwork", network);
+        commit("setLoading", false)
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
+        commit("setLoading", false)
       })
-      .finally(() => {
-        commit("setLoading", false);
-      });
   },
 };
 

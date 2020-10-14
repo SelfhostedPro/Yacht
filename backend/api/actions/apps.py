@@ -16,22 +16,24 @@ def get_running_apps():
     apps = dclient.containers.list()
     for app in apps:
         attrs = app.attrs
-        attrs.update(conv2dict('name', app.name))
-        attrs.update(conv2dict('ports', app.ports))
-        attrs.update(conv2dict('short_id', app.short_id))
+        attrs.update(conv2dict("name", app.name))
+        attrs.update(conv2dict("ports", app.ports))
+        attrs.update(conv2dict("short_id", app.short_id))
         apps_list.append(attrs)
 
     return apps_list
+
 
 def check_app_updates():
     apps_list = []
     dclient = docker.from_env()
     apps = dclient.containers.list(all=True)
     for app in apps:
-        if app.attrs['Config']['Image']:
-            if check_updates(app.attrs['Config']['Image']):
+        if app.attrs["Config"]["Image"]:
+            if check_updates(app.attrs["Config"]["Image"]):
                 apps_list.append(app.name)
     return apps_list
+
 
 def get_apps():
     apps_list = []
@@ -40,9 +42,9 @@ def get_apps():
     for app in apps:
         attrs = app.attrs
 
-        attrs.update(conv2dict('name', app.name))
-        attrs.update(conv2dict('ports', app.ports))
-        attrs.update(conv2dict('short_id', app.short_id))
+        attrs.update(conv2dict("name", app.name))
+        attrs.update(conv2dict("ports", app.ports))
+        attrs.update(conv2dict("short_id", app.short_id))
         apps_list.append(attrs)
 
     return apps_list
@@ -52,10 +54,10 @@ def get_app(app_name):
     dclient = docker.from_env()
     app = dclient.containers.get(app_name)
     attrs = app.attrs
-    
-    attrs.update(conv2dict('ports', app.ports))
-    attrs.update(conv2dict('short_id', app.short_id))
-    attrs.update(conv2dict('name', app.name))
+
+    attrs.update(conv2dict("ports", app.ports))
+    attrs.update(conv2dict("short_id", app.short_id))
+    attrs.update(conv2dict("name", app.name))
 
     return attrs
 
@@ -63,9 +65,11 @@ def get_app(app_name):
 def get_app_processes(app_name):
     dclient = docker.from_env()
     app = dclient.containers.get(app_name)
-    if app.status == 'running':
+    if app.status == "running":
         processes = app.top()
-        return schemas.Processes(Processes=processes['Processes'], Titles=processes['Titles'])
+        return schemas.Processes(
+            Processes=processes["Processes"], Titles=processes["Titles"]
+        )
     else:
         return None
 
@@ -73,7 +77,7 @@ def get_app_processes(app_name):
 def get_app_logs(app_name):
     dclient = docker.from_env()
     app = dclient.containers.get(app_name)
-    if app.status == 'running':
+    if app.status == "running":
         return schemas.AppLogs(logs=app.logs())
     else:
         return None
@@ -92,18 +96,21 @@ def deploy_app(template: schemas.DeployForm):
             conv_devices2data(template.devices),
             conv_labels2data(template.labels),
             conv_sysctls2data(template.sysctls),
-            conv_caps2data(template.cap_add)
+            conv_caps2data(template.cap_add),
         )
 
     except Exception as exc:
-        raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
-    print('done deploying')
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
+    print("done deploying")
 
     return schemas.DeployLogs(logs=launch.logs())
 
-def Merge(dict1, dict2): 
+
+def Merge(dict1, dict2):
     if dict1 and dict2:
-        return(dict2.update(dict1))
+        return dict2.update(dict1)
     elif dict1:
         return dict1
     elif dict2:
@@ -111,7 +118,20 @@ def Merge(dict1, dict2):
     else:
         return None
 
-def launch_app(name, image, restart_policy, ports, portlabels, volumes, env, devices, labels, sysctls, caps):
+
+def launch_app(
+    name,
+    image,
+    restart_policy,
+    ports,
+    portlabels,
+    volumes,
+    env,
+    devices,
+    labels,
+    sysctls,
+    caps,
+):
     dclient = docker.from_env()
     combined_labels = Merge(portlabels, labels)
     try:
@@ -126,7 +146,7 @@ def launch_app(name, image, restart_policy, ports, portlabels, volumes, env, dev
             labels=combined_labels,
             devices=devices,
             cap_add=caps,
-            detach=True
+            detach=True,
         )
     except Exception as e:
         if e.status_code == 500:
@@ -134,12 +154,14 @@ def launch_app(name, image, restart_policy, ports, portlabels, volumes, env, dev
             failed_app.remove()
         raise e
 
-    print(f'''Container started successfully.
+    print(
+        f"""Container started successfully.
        Name: {name},
       Image: {image},
       Ports: {ports},
     Volumes: {volumes},
-        Env: {env}''')
+        Env: {env}"""
+    )
     return lauch
 
 
@@ -148,7 +170,7 @@ def app_action(app_name, action):
     dclient = docker.from_env()
     app = dclient.containers.get(app_name)
     _action = getattr(app, action)
-    if action == 'remove':
+    if action == "remove":
         try:
             _action(force=True)
         except Exception as exc:
@@ -161,6 +183,7 @@ def app_action(app_name, action):
     apps_list = get_apps()
     return apps_list
 
+
 def app_update(app_name):
     dclient = docker.from_env()
     try:
@@ -168,50 +191,65 @@ def app_update(app_name):
     except Exception as exc:
         print(exc)
         if exc.response.status_code == 404:
-            raise HTTPException(status_code=exc.response.status_code, detail="Unable to get container ID")
+            raise HTTPException(
+                status_code=exc.response.status_code,
+                detail="Unable to get container ID",
+            )
         else:
-            raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+            raise HTTPException(
+                status_code=exc.response.status_code, detail=exc.explanation
+            )
 
-    volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
+    volumes = {"/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
     try:
         updater = dclient.containers.run(
-            image='containrrr/watchtower:latest',
-            command='--run-once '+old.name,
+            image="containrrr/watchtower:latest",
+            command="--run-once " + old.name,
             remove=True,
             detach=True,
-            volumes=volumes
+            volumes=volumes,
         )
     except Exception as exc:
         print(exc)
-        raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
 
-    print('**** Updating '+old.name+'****')    
+    print("**** Updating " + old.name + "****")
     result = updater.wait(timeout=120)
     print(result)
     time.sleep(1)
     return get_apps()
 
+
 def update_self():
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
-    yacht_id = subprocess.check_output(['bash','-c', bash_command]).decode('UTF-8').strip()
+    yacht_id = (
+        subprocess.check_output(["bash", "-c", bash_command]).decode("UTF-8").strip()
+    )
     try:
         yacht = dclient.containers.get(yacht_id)
     except Exception as exc:
         print(exc)
         if exc.response.status_code == 404:
-            raise HTTPException(status_code=exc.response.status_code, detail="Unable to get Yacht container ID")
+            raise HTTPException(
+                status_code=exc.response.status_code,
+                detail="Unable to get Yacht container ID",
+            )
         else:
-            raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+            raise HTTPException(
+                status_code=exc.response.status_code, detail=exc.explanation
+            )
 
-    volumes ={'/var/run/docker.sock': {'bind':'/var/run/docker.sock', 'mode': 'rw'}}
-    print('**** Updating '+yacht.name+'****')
+    volumes = {"/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
+    print("**** Updating " + yacht.name + "****")
     updater = dclient.containers.run(
-        image='containrrr/watchtower:latest',
-        command='--run-once '+yacht.name,
+        image="containrrr/watchtower:latest",
+        command="--run-once " + yacht.name,
         remove=True,
         detach=True,
-        volumes=volumes
+        volumes=volumes,
     )
     result = updater.wait(timeout=120)
     print(result)
@@ -219,19 +257,24 @@ def update_self():
     return result
 
 
-
-
 def check_self_update():
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
-    yacht_id = subprocess.check_output(['bash','-c', bash_command]).decode('UTF-8').strip()
+    yacht_id = (
+        subprocess.check_output(["bash", "-c", bash_command]).decode("UTF-8").strip()
+    )
     try:
         yacht = dclient.containers.get(yacht_id)
     except Exception as exc:
         print(exc)
         if exc.response.status_code == 404:
-            raise HTTPException(status_code=exc.response.status_code, detail="Unable to get Yacht container ID")
+            raise HTTPException(
+                status_code=exc.response.status_code,
+                detail="Unable to get Yacht container ID",
+            )
         else:
-            raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+            raise HTTPException(
+                status_code=exc.response.status_code, detail=exc.explanation
+            )
 
     return check_updates(yacht.image.tags[0])

@@ -13,43 +13,46 @@ def get_images():
         for container in containers:
             try:
                 if container.image.id in image.id:
-                    attrs.update({'inUse': True})
+                    attrs.update({"inUse": True})
             except Exception as exc:
                 if exc.status_code == 404:
                     pass
-        if attrs.get('inUse') == None:
-            attrs.update({'inUse': False})
+        if attrs.get("inUse") == None:
+            attrs.update({"inUse": False})
 
         image_list.append(attrs)
     return image_list
+
 
 def write_image(image_tag):
     delim = ":"
     dclient = docker.from_env()
     repo, tag = None, image_tag
     if delim in image_tag:
-                repo, tag = tag.split(delim, 1)
+        repo, tag = tag.split(delim, 1)
     else:
         repo = image_tag
         tag = "latest"
     image = dclient.images.pull(repo, tag)
     return get_images()
 
+
 def get_image(image_id):
     dclient = docker.from_env()
     containers = dclient.containers.list(all=True)
     image = dclient.images.get(image_id)
-    attrs=image.attrs
+    attrs = image.attrs
     for container in containers:
         try:
             if container.image.id in image.id:
-                attrs.update({'inUse': True})
+                attrs.update({"inUse": True})
         except Exception as exc:
             if exc.status_code == 404:
                 pass
-    if attrs.get('inUse') == None:
-        attrs.update({'inUse': False})
+    if attrs.get("inUse") == None:
+        attrs.update({"inUse": False})
     return attrs
+
 
 def update_image(image_id):
     dclient = docker.from_env()
@@ -67,11 +70,13 @@ def update_image(image_id):
             updated_list.append(new_image)
         return updated_list()
 
+
 def delete_image(image_id):
     dclient = docker.from_env()
     image = dclient.images.get(image_id)
     dclient.images.remove(image_id, force=True)
     return image.attrs
+
 
 ### Volumes ###
 def get_volumes():
@@ -83,42 +88,52 @@ def get_volumes():
         attrs = volume.attrs
         for container in containers:
             try:
-                if any(d['Source'] == volume.attrs['Mountpoint'] for d in container.attrs['Mounts']):
-                    attrs.update({'inUse': True})
+                if any(
+                    d["Source"] == volume.attrs["Mountpoint"]
+                    for d in container.attrs["Mounts"]
+                ):
+                    attrs.update({"inUse": True})
             except Exception as exc:
                 if exc.status_code == 404:
                     pass
-        if attrs.get('inUse') == None:
-            attrs.update({'inUse': False})
+        if attrs.get("inUse") == None:
+            attrs.update({"inUse": False})
         volume_list.append(attrs)
     return volume_list
+
 
 def write_volume(volume_name):
     dclient = docker.from_env()
     volume = dclient.volumes.create(name=volume_name)
     return get_volumes()
 
+
 def get_volume(volume_id):
     dclient = docker.from_env()
     containers = dclient.containers.list(all=True)
     volume = dclient.volumes.get(volume_id)
-    attrs=volume.attrs
+    attrs = volume.attrs
     for container in containers:
         try:
-            if any(d['Source'] == volume.attrs['Mountpoint'] for d in container.attrs['Mounts']):
-                attrs.update({'inUse': True})
+            if any(
+                d["Source"] == volume.attrs["Mountpoint"]
+                for d in container.attrs["Mounts"]
+            ):
+                attrs.update({"inUse": True})
         except Exception as exc:
             if exc.status_code == 404:
                 pass
-    if attrs.get('inUse') == None:
-        attrs.update({'inUse': False})
+    if attrs.get("inUse") == None:
+        attrs.update({"inUse": False})
     return attrs
+
 
 def delete_volume(volume_id):
     dclient = docker.from_env()
     volume = dclient.volumes.get(volume_id)
     volume.remove(force=True)
     return volume.attrs
+
 
 ### Networks ###
 def get_networks():
@@ -130,17 +145,21 @@ def get_networks():
         attrs = network.attrs
         for container in containers:
             try:
-                if any(d['NetworkID'] == network.attrs['Id'] for d in container.attrs['NetworkSettings']['Networks'].values()):
-                    attrs.update({'inUse': True})
+                if any(
+                    d["NetworkID"] == network.attrs["Id"]
+                    for d in container.attrs["NetworkSettings"]["Networks"].values()
+                ):
+                    attrs.update({"inUse": True})
                     break
             except Exception as exc:
                 print(exc)
                 if exc.status_code == 404:
                     pass
-        if attrs.get('inUse') == None:
-            attrs.update({'inUse': False})
+        if attrs.get("inUse") == None:
+            attrs.update({"inUse": False})
         network_list.append(attrs)
     return network_list
+
 
 def write_network(network_form):
     dclient = docker.from_env()
@@ -150,71 +169,92 @@ def write_network(network_form):
         ipv4_pool = docker.types.IPAMPool(
             subnet=network_form.ipv4subnet,
             gateway=network_form.ipv4gateway,
-            iprange=network_form.ipv4range
+            iprange=network_form.ipv4range,
         )
-    if network_form.ipv6_enabled:
+    if network_form.ipv6_enabled and network_form.ipv6subnet:
         ipv6_pool = docker.types.IPAMPool(
             subnet=network_form.ipv6subnet,
             gateway=network_form.ipv6gateway,
-            iprange=network_form.ipv6range
+            iprange=network_form.ipv6range,
         )
-    if 'ipv6_pool' in locals() and 'ipv4_pool' in locals():
-        ipam_config = docker.types.IPAMConfig(
-            pool_configs=[ipv4_pool, ipv6_pool]
-        )
-    elif 'ipv4_pool' in locals():
-        ipam_config = docker.types.IPAMConfig(
-            pool_configs=[ipv4_pool]
-        )
+    if "ipv6_pool" in locals() and "ipv4_pool" in locals():
+        ipam_config = docker.types.IPAMConfig(pool_configs=[ipv4_pool, ipv6_pool])
+    elif "ipv4_pool" in locals():
+        ipam_config = docker.types.IPAMConfig(pool_configs=[ipv4_pool])
     else:
         ipam_config = None
-    
+
     ### Check for parent device (macvlan only) ###
     if network_form.network_devices:
-        network_options = {'parent': network_form.network_devices}
-    else: 
+        network_options = {"parent": network_form.network_devices}
+    else:
         network_options = None
     try:
         dclient.networks.create(
             network_form.name,
-            driver = network_form.networkDriver,
-            ipam = ipam_config,
-            options = network_options
+            driver=network_form.networkDriver,
+            ipam=ipam_config,
+            options=network_options,
+            internal=network_form.internal,
+            enable_ipv6=network_form.ipv6_enabled,
+            attachable=network_form.attachable,
         )
     except Exception as exc:
-        raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
 
     return get_networks()
+
 
 def get_network(network_id):
     dclient = docker.from_env()
     containers = dclient.containers.list(all=True)
-    network = dclient.networks.get(network_id)
-    attrs=network.attrs
+
+    try:
+        network = dclient.networks.get(network_id)
+
+    except Exception as exc:
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
+
+    attrs = network.attrs
     for container in containers:
         try:
-            if any(d['NetworkID'] == network.attrs['Id'] for d in container.attrs['NetworkSettings']['Networks'].values()):
-                    attrs.update({'inUse': True})
-                    break
+            if any(
+                d["NetworkID"] == network.attrs["Id"]
+                for d in container.attrs["NetworkSettings"]["Networks"].values()
+            ):
+                attrs.update({"inUse": True})
+                break
         except Exception as exc:
             if exc.status_code == 404:
                 pass
-    if attrs.get('inUse') == None:
-        attrs.update({'inUse': False})
+    if attrs.get("inUse") == None:
+        attrs.update({"inUse": False})
     return attrs
 
 
 def delete_network(network_id):
     dclient = docker.from_env()
     network = dclient.networks.get(network_id)
-    network.remove()
+    try:
+        network.remove()
+
+    except Exception as exc:
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
+
     return network.attrs
+
 
 def prune_resources(resource):
     dclient = docker.from_env()
     action = getattr(dclient, resource)
-    if resource == 'images':
-        deleted_resource = action.prune(filters={'dangling': False})
+    if resource == "images":
+        deleted_resource = action.prune(filters={"dangling": False})
     else:
         deleted_resource = action.prune()
     return deleted_resource

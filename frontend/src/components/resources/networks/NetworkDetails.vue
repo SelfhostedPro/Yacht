@@ -17,7 +17,7 @@
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item @click="deleteNetwork(network.Name)">
+            <v-list-item @click="deleteNetwork(network.Name); router.push({ name: 'Networks' })">
               <v-list-item-icon
                 ><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon
               >
@@ -182,7 +182,7 @@
             -
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="Object.keys(network.Options).length > 1">
+        <v-list-item v-if="Object.keys(network.Options).length > 0">
           <v-list-item-content style="max-width: 30%">
             Options
           </v-list-item-content>
