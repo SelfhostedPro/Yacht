@@ -11,54 +11,15 @@
       </v-fade-transition>
       <v-card-title>
         Networks
-        <!-- <v-dialog v-model="createDialog" max-width="290">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              fab
-              x-small
-              class="ml-2"
-              color="primary"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title class="headline" style="word-break: break-all;">
-              Create Network
-            </v-card-title>
-            <v-card-text>
-              Create a Network.
-            </v-card-text>
-            <form ref="form" @submit.prevent="submit">
-              <v-text-field
-                label="Network"
-                class="mx-5"
-                placeholder="yacht_data"
-                required
-                v-model="form.name"
-              >
-              </v-text-field>
-            </form>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn text @click="createDialog = false">
-                Cancel
-              </v-btn>
-              <v-btn
-                text
-                color="primary"
-                @click="
-                  submit();
-                  createDialog = false;
-                "
-              >
-                Create
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog> -->
+        <v-btn
+          fab
+          x-small
+          class="ml-2"
+          color="primary"
+          :to="({ path: `/resources/networks/new` })"
+        >
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
         <v-spacer />
         <v-text-field
           v-model="search"
@@ -85,10 +46,9 @@
         </template>
         <template v-slot:item.Name="{ item }">
           <div class="d-flex">
-            <span
-              class="align-streatch text-truncate nametext mt-2"
-              >{{ item.Name }}</span
-            >
+            <span class="align-streatch text-truncate nametext mt-2">{{
+              item.Name
+            }}</span>
             <v-spacer />
 
             <v-chip
@@ -137,12 +97,15 @@
         </template>
         <template v-slot:item.Project="{ item }">
           <div class="projectcell">
-            <span class="d-inline-block text-truncate idtext" v-if="item.Labels">
-              {{ item.Labels['com.docker.compose.project'] || "-" }}
+            <span
+              class="d-inline-block text-truncate idtext"
+              v-if="item.Labels"
+            >
+              {{ item.Labels["com.docker.compose.project"] || "-" }}
             </span>
           </div>
         </template>
-                <template v-slot:item.Id="{ item }" class="idcell">
+        <template v-slot:item.Id="{ item }" class="idcell">
           <div class="idcell">
             <span class="d-inline-block text-truncate idtext">
               {{ item.Id }}
@@ -202,10 +165,6 @@ export default {
     return {
       selectedNetwork: null,
       deleteDialog: false,
-      form: {
-        name: "",
-        },
-      createDialog: false,
       search: "",
       headers: [
         {
@@ -216,12 +175,12 @@ export default {
         {
           text: "Project",
           value: "Project",
-          sortable: true
+          sortable: true,
         },
         {
           text: "ID",
           value: "Id",
-          sortable: true
+          sortable: true,
         },
         {
           text: "Driver",
@@ -247,10 +206,6 @@ export default {
     },
     networkDetails(networkid) {
       this.$router.push({ path: `/resources/networks/${networkid}` });
-    },
-    submit() {
-      const data = this.form;
-      this.writeNetwork(data);
     },
   },
   computed: {

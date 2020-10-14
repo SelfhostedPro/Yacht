@@ -3,7 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from ..auth import get_active_user
 from ..actions import resources
-from ..db.schemas.resources import ImageWrite, VolumeWrite
+from ..db.schemas.resources import ImageWrite, VolumeWrite, NetworkWrite
+import netifaces
+
 
 router = APIRouter()
 ### Images ###
@@ -44,14 +46,14 @@ def get_volume(volume_name):
 def delete_volume(volume_name):
     return resources.delete_volume(volume_name)
 
-### Volumes ###
+### Networks ###
 @router.get("/networks/", dependencies=[Depends(get_active_user)])
 def get_networks():
     return resources.get_networks()
 
 @router.post("/networks/", dependencies=[Depends(get_active_user)])
-def write_network(name: VolumeWrite):
-    return resources.write_network(name.name)
+def write_network(form: NetworkWrite):
+    return resources.write_network(form)
 
 @router.get("/networks/{network_name}", dependencies=[Depends(get_active_user)])
 def get_network(network_name):

@@ -1,5 +1,6 @@
 import docker
 import json
+from fastapi import HTTPException
 
 ### IMAGES ###
 def get_images():
@@ -141,9 +142,48 @@ def get_networks():
         network_list.append(attrs)
     return network_list
 
-def write_network(network_name):
+def write_network(network_form):
     dclient = docker.from_env()
-    network = dclient.networks.create(name=network_name)
+
+    ### Check for IP addresses ###
+    if network_form.ipv4subnet:
+        ipv4_pool = docker.types.IPAMPool(
+            subnet=network_form.ipv4subnet,
+            gateway=network_form.ipv4gateway,
+            iprange=network_form.ipv4range
+        )
+    if network_form.ipv6_enabled:
+        ipv6_pool = docker.types.IPAMPool(
+            subnet=network_form.ipv6subnet,
+            gateway=network_form.ipv6gateway,
+            iprange=network_form.ipv6range
+        )
+    if 'ipv6_pool' in locals() and 'ipv4_pool' in locals():
+        ipam_config = docker.types.IPAMConfig(
+            pool_configs=[ipv4_pool, ipv6_pool]
+        )
+    elif 'ipv4_pool' in locals():
+        ipam_config = docker.types.IPAMConfig(
+            pool_configs=[ipv4_pool]
+        )
+    else:
+        ipam_config = None
+    
+    ### Check for parent device (macvlan only) ###
+    if network_form.network_devices:
+        network_options = {'parent': network_form.network_devices}
+    else: 
+        network_options = None
+    try:
+        dclient.networks.create(
+            network_form.name,
+            driver = network_form.networkDriver,
+            ipam = ipam_config,
+            options = network_options
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=exc.response.status_code, detail=exc.explanation)
+
     return get_networks()
 
 def get_network(network_id):
@@ -162,6 +202,7 @@ def get_network(network_id):
     if attrs.get('inUse') == None:
         attrs.update({'inUse': False})
     return attrs
+
 
 def delete_network(network_id):
     dclient = docker.from_env()
