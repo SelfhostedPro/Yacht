@@ -34,6 +34,27 @@ const mutations = {
 };
 
 const actions = {
+  _readNetworks({ commit }) {
+    const url = "/api/resources/networks/";
+    commit("setLoading", true);
+    return new Promise((resolve, reject) => {
+      axios
+        .get(url)
+        .then(response => {
+          const networks = response.data;
+          commit("setLoading", false);
+          commit("setNetworks", networks);
+          resolve(networks);
+        })
+        .finally(() => {
+          commit("setLoading", false);
+        })
+        .catch(error => {
+          commit("snackbar/setErr", error, { root: true });
+          reject(error);
+        });
+    });
+  },
   readNetworks({ commit }) {
     commit("setLoading", true);
     const url = "/api/resources/networks/";
