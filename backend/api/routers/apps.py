@@ -10,7 +10,14 @@ from ..db.models import containers
 from ..db.database import SessionLocal, engine
 from .. import actions
 from ..auth import get_active_user, User
-from ..utils import websocket_auth, calculate_blkio_bytes, calculate_cpu_percent, calculate_cpu_percent2, calculate_network_bytes, get_app_stats
+from ..utils import (
+    websocket_auth,
+    calculate_blkio_bytes,
+    calculate_cpu_percent,
+    calculate_cpu_percent2,
+    calculate_network_bytes,
+    get_app_stats,
+)
 
 import docker as sdocker
 import aiodocker
@@ -36,34 +43,50 @@ def get_db():
 def index():
     return actions.get_apps()
 
-@router.get('/updates', dependencies=[Depends(get_active_user)])
+
+@router.get("/updates", dependencies=[Depends(get_active_user)])
 def check_updates():
     return actions.check_app_updates()
+
 
 @router.get("/{app_name}", dependencies=[Depends(get_active_user)])
 def get_container_details(app_name):
     return actions.get_app(app_name=app_name)
 
 
-@router.get("/{app_name}/processes", response_model=schemas.Processes, dependencies=[Depends(get_active_user)])
+@router.get(
+    "/{app_name}/processes",
+    response_model=schemas.Processes,
+    dependencies=[Depends(get_active_user)],
+)
 def get_container_processes(app_name):
     return actions.get_app_processes(app_name=app_name)
 
 
-@router.get("/{app_name}/logs", response_model=schemas.AppLogs, dependencies=[Depends(get_active_user)])
+@router.get(
+    "/{app_name}/logs",
+    response_model=schemas.AppLogs,
+    dependencies=[Depends(get_active_user)],
+)
 def get_container_logs(app_name):
     return actions.get_app_logs(app_name=app_name)
+
 
 @router.get("/{app_name}/update", dependencies=[Depends(get_active_user)])
 def update_container(app_name):
     return actions.app_update(app_name)
+
 
 @router.get("/{app_name}/{action}", dependencies=[Depends(get_active_user)])
 def container_actions(app_name, action):
     return actions.app_action(app_name, action)
 
 
-@router.post("/deploy", response_model=schemas.DeployLogs, dependencies=[Depends(get_active_user)])
+@router.post(
+    "/deploy",
+    response_model=schemas.DeployLogs,
+    dependencies=[Depends(get_active_user)],
+)
 def deploy_app(template: schemas.DeployForm):
     return actions.deploy_app(template=template)
 
@@ -76,7 +99,7 @@ async def logs(websocket: WebSocket, app_name: str):
         await websocket.accept()
         async with aiodocker.Docker() as docker:
             container: DockerContainer = await docker.containers.get(app_name)
-            if container._container['State']['Status'] == 'running':
+            if container._container["State"]["Status"] == "running":
                 stats = container.stats(stream=True)
                 logs = container.log(stdout=True, stderr=True, follow=True)
                 async for line in logs:
@@ -84,7 +107,7 @@ async def logs(websocket: WebSocket, app_name: str):
                         await websocket.send_text(line)
                     except Exception as e:
                         return e
-            else: 
+            else:
                 await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
     else:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
@@ -102,21 +125,25 @@ async def stats(websocket: WebSocket, app_name: str):
             cpu_percent = 0.0
 
             container: DockerContainer = await docker.containers.get(app_name)
-            if container._container['State']['Status'] == 'running':
+            if container._container["State"]["Status"] == "running":
                 stats = container.stats(stream=True)
 
                 async for line in stats:
                     if line["memory_stats"]:
-                      mem_current = line["memory_stats"]["usage"]
-                      mem_total = line["memory_stats"]["limit"]
-                      mem_percent = (mem_current / mem_total) * 100.0
+                        mem_current = line["memory_stats"]["usage"]
+                        mem_total = line["memory_stats"]["limit"]
+                        mem_percent = (mem_current / mem_total) * 100.0
                     else:
                         mem_current = None
                         mem_total = None
                         mem_percent = None
 
                     try:
-                        cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(line, cpu_total, cpu_system)
+                        (
+                            cpu_percent,
+                            cpu_system,
+                            cpu_total,
+                        ) = await calculate_cpu_percent2(line, cpu_total, cpu_system)
                     except KeyError as e:
                         print("error while getting new CPU stats: %r, falling back")
                         cpu_percent = await calculate_cpu_percent(line)
@@ -131,10 +158,11 @@ async def stats(websocket: WebSocket, app_name: str):
                         await websocket.send_text(json.dumps(full_stats))
                     except Exception as e:
                         return e
-            else: 
+            else:
                 await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
     else:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+
 
 @router.websocket("/stats")
 async def dashboard(websocket: WebSocket):
@@ -142,20 +170,21 @@ async def dashboard(websocket: WebSocket):
     if auth_success:
         await websocket.accept()
         tasks = []
-        async with aiodocker.Docker() as docker: 
+        async with aiodocker.Docker() as docker:
             containers = []
             _containers = await docker.containers.list()
-            for _app in _containers: 
-                if _app._container['State'] == 'running':
+            for _app in _containers:
+                if _app._container["State"] == "running":
                     containers.append(_app)
             for app in containers:
-                _name = app._container['Names'][0][1:]
+                _name = app._container["Names"][0][1:]
                 container: DockerContainer = await docker.containers.get(_name)
                 stats = container.stats(stream=True)
                 tasks.append(process_container(_name, stats, websocket))
             await asyncio.gather(*tasks)
     else:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+
 
 async def process_container(name, stats, websocket):
     cpu_total = 0.0
@@ -172,7 +201,9 @@ async def process_container(name, stats, websocket):
             mem_percent = None
 
         try:
-            cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(line, cpu_total, cpu_system)
+            cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(
+                line, cpu_total, cpu_system
+            )
         except KeyError as e:
             print("error while getting new CPU stats: %r, falling back")
             cpu_percent = await calculate_cpu_percent(line)

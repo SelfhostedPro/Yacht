@@ -10,6 +10,7 @@ from fastapi_users import FastAPIUsers
 from fastapi_users.password import get_password_hash
 
 from ..settings import Settings
+
 settings = Settings()
 
 SECRET = settings.SECRET_KEY
@@ -17,7 +18,8 @@ SECRET = settings.SECRET_KEY
 auth_backends = []
 
 cookie_authentication = CookieAuthentication(
-    secret=SECRET, lifetime_seconds=3600, cookie_secure=False)
+    secret=SECRET, lifetime_seconds=3600, cookie_secure=False
+)
 
 auth_backends.append(cookie_authentication)
 
@@ -69,12 +71,14 @@ fastapi_users = FastAPIUsers(
     UserDB,
 )
 
+
 async def fake_get_active_user():
     DISABLE_AUTH = settings.DISABLE_AUTH
     if DISABLE_AUTH == "True":
         return True
     else:
         await fastapi_users.get_current_active_user()
+
 
 if settings.DISABLE_AUTH != "True":
     get_active_user = fastapi_users.get_current_active_user
@@ -83,6 +87,7 @@ else:
 # get_active_user = fastapi_users.get_current_active_user
 get_auth_router = fastapi_users.get_auth_router
 get_password_hash = get_password_hash
+
 
 async def user_create(UD):
     await fastapi_users.db.create(UD)
