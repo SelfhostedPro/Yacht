@@ -126,7 +126,7 @@ def conv2dict(name, value):
 #     '53/tcp': ('0.0.0.0', 53),
 # }
 def conv_ports2data(data, network, network_mode):
-    if network == 'host' or network_mode =='host':
+    if network == "host" or network_mode == "host":
         return None
     ports = {}
     for d in data:
@@ -387,7 +387,15 @@ def get_update_ports(ports):
 def check_updates(tag):
     if tag:
         dclient = docker.from_env()
-        current = dclient.images.get(tag)
+        try:
+            current = dclient.images.get(tag)
+        except APIError as err:
+            if err.status_code == 404:
+                return False
+            else:
+                raise HTTPException(
+                    status_code=err.response.status_code, detail=err.explanation
+                )
         try:
             new = dclient.images.get_registry_data(tag)
         except APIError as err:
