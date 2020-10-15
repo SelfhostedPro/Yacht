@@ -29,6 +29,8 @@ class Settings(BaseSettings):
         {"variable": "!pictures", "replacement": "/yacht/Media/Photos"},
         {"variable": "!localtime", "replacement": "/etc/localtime"},
         {"variable": "!logs", "replacement": "/yacht/AppData/Logs"},
+        {"variable": "!PUID", "replacement": "1000"},
+        {"variable": "!GUID", "replacement": "100"},
     ]
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL", "sqlite:///config/data.sqlite"
