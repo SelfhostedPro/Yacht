@@ -119,16 +119,20 @@ const actions = {
   },
   [AUTH_CHECK]: ({ commit }) => {
     commit(AUTH_REQUEST);
-    const url = "/api/auth/login"
+    const url = "/api/auth/login";
     axios
       .post(url)
-      .then((resp) => {
+      .then(resp => {
         localStorage.setItem("username", resp.data.email);
         commit(AUTH_SUCCESS, resp);
       })
       .catch(err => {
-        commit("snackbar/setErr", err, { root: true });
-      })
+        if (err.status_code == 422) {
+          console.log("Auth is enabled");
+        } else {
+          console.log(err);
+        }
+      });
   }
 };
 
@@ -141,7 +145,7 @@ const mutations = {
     state.username = resp.data.email;
     if (resp.data.authDisabled) {
       state.authDisabled = true;
-    };
+    }
   },
   [AUTH_ERROR]: state => {
     state.status = "error";

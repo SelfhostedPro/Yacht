@@ -18,7 +18,9 @@
           </template>
           <v-list dense>
             <v-list-item @click="deleteVolume(volume.Name)">
-              <v-list-item-icon><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon>
+              <v-list-item-icon
+                ><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon
+              >
               <v-list-item-title>Delete Volume</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -26,9 +28,15 @@
         {{ volume.Name }}
       </v-card-title>
       <v-card-subtitle>
-        <v-chip outlined small color="orange lighten-1" class="align-center mt-1" label v-if="volume.inUse == false"
-              >Unused</v-chip
-            >
+        <v-chip
+          outlined
+          small
+          color="orange lighten-1"
+          class="align-center mt-1"
+          label
+          v-if="volume.inUse == false"
+          >Unused</v-chip
+        >
       </v-card-subtitle>
     </v-card>
     <v-card class="mt-2">
@@ -82,14 +90,21 @@
           </v-list-item-content>
           <v-list-item-content>
             <v-card outlined tile>
-            <v-simple-table dense>
-              <tbody>
-                <tr v-for="(value, key, index) in volume.Labels" :key="index">
-                  <td style="min-width:20%;" class="align-self-center"> {{key}} </td>
-                  <td class="text-truncate align-self-center" style="width:100%"> {{value}} </td>
-                </tr>
-              </tbody>
-            </v-simple-table>
+              <v-simple-table dense>
+                <tbody>
+                  <tr v-for="(value, key, index) in volume.Labels" :key="index">
+                    <td style="min-width:20%;" class="align-self-center">
+                      {{ key }}
+                    </td>
+                    <td
+                      class="text-truncate align-self-center"
+                      style="width:100%"
+                    >
+                      {{ value }}
+                    </td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
             </v-card>
           </v-list-item-content>
         </v-list-item>
@@ -108,23 +123,23 @@ export default {
   computed: {
     ...mapState("volumes", ["volume", "volumes", "isLoading"]),
     ...mapGetters({
-      getVolumeByName: "volumes/getVolumeByName",
+      getVolumeByName: "volumes/getVolumeByName"
     }),
     volume() {
       const volumeName = this.$route.params.volumeName;
       return this.getVolumeByName(volumeName);
-    },
+    }
   },
   methods: {
     ...mapActions({
       readVolume: "volumes/readVolume",
       deleteVolume: "volumes/deleteVolume"
-    }),
+    })
   },
   created() {
     const volumeName = this.$route.params.volumeName;
     this.readVolume(volumeName);
-  },
+  }
 };
 </script>
 

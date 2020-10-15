@@ -17,12 +17,17 @@
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item v-if="image.RepoTags[0]" @click="updateImage(image.Id)">
+            <v-list-item
+              v-if="image.RepoTags[0]"
+              @click="updateImage(image.Id)"
+            >
               <v-list-item-icon><v-icon>mdi-update</v-icon></v-list-item-icon>
               <v-list-item-title>Pull Image</v-list-item-title>
             </v-list-item>
             <v-list-item @click="deleteImage(image.Id)">
-              <v-list-item-icon><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon>
+              <v-list-item-icon
+                ><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon
+              >
               <v-list-item-title>Delete Image</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -30,9 +35,15 @@
         {{ image.Id }}
       </v-card-title>
       <v-card-subtitle>
-        <v-chip outlined small color="orange lighten-1" class="align-center mt-1" label v-if="image.inUse == false"
-              >Unused</v-chip
-            >
+        <v-chip
+          outlined
+          small
+          color="orange lighten-1"
+          class="align-center mt-1"
+          label
+          v-if="image.inUse == false"
+          >Unused</v-chip
+        >
         {{ image.RepoTags[0] || image.RepoDigests[0] }}
       </v-card-subtitle>
     </v-card>
@@ -125,7 +136,12 @@
           <v-list-item-content style="max-width:20%">
             Ports
           </v-list-item-content>
-          <v-list-item-content v-for="(port, index) in Object.keys(image.ContainerConfig.ExposedPorts)" :key="index">
+          <v-list-item-content
+            v-for="(port, index) in Object.keys(
+              image.ContainerConfig.ExposedPorts
+            )"
+            :key="index"
+          >
             {{ port }}
           </v-list-item-content>
         </v-list-item>
@@ -135,14 +151,24 @@
           </v-list-item-content>
           <v-list-item-content>
             <v-card outlined tile>
-            <v-simple-table dense>
-              <tbody>
-                <tr v-for="(value, key, index) in image.ContainerConfig.Labels" :key="index">
-                  <td style="min-width:20%;" class="align-self-center"> {{key}} </td>
-                  <td class="text-truncate align-self-center" style="width:100%"> {{value}} </td>
-                </tr>
-              </tbody>
-            </v-simple-table>
+              <v-simple-table dense>
+                <tbody>
+                  <tr
+                    v-for="(value, key, index) in image.ContainerConfig.Labels"
+                    :key="index"
+                  >
+                    <td style="min-width:20%;" class="align-self-center">
+                      {{ key }}
+                    </td>
+                    <td
+                      class="text-truncate align-self-center"
+                      style="width:100%"
+                    >
+                      {{ value }}
+                    </td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
             </v-card>
           </v-list-item-content>
         </v-list-item>
@@ -152,13 +178,21 @@
           </v-list-item-content>
           <v-list-item-content>
             <v-card outlined tile>
-            <v-simple-table>
-              <tbody>
-                <tr v-for="(key, index) in image.ContainerConfig.Env" :key="index">
-                  <td style="width:100%;" class="align-self-center text-truncate"> {{key}} </td>
-                </tr>
-              </tbody>
-            </v-simple-table>
+              <v-simple-table>
+                <tbody>
+                  <tr
+                    v-for="(key, index) in image.ContainerConfig.Env"
+                    :key="index"
+                  >
+                    <td
+                      style="width:100%;"
+                      class="align-self-center text-truncate"
+                    >
+                      {{ key }}
+                    </td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
             </v-card>
           </v-list-item-content>
         </v-list-item>
@@ -177,12 +211,12 @@ export default {
   computed: {
     ...mapState("images", ["image", "images", "isLoading"]),
     ...mapGetters({
-      getImageById: "images/getImageById",
+      getImageById: "images/getImageById"
     }),
     image() {
       const imageid = this.$route.params.imageid;
       return this.getImageById(imageid);
-    },
+    }
   },
   methods: {
     ...mapActions({
@@ -205,16 +239,15 @@ export default {
       for (var entry in cmd) {
         if (cmd[entry].includes("CMD")) {
           return cmd[entry];
-        }
-        else return null
+        } else return null;
       }
-    },
+    }
   },
   created() {
     const imageid = this.$route.params.imageid;
     this.readImage(imageid);
-    console.log(this.image)
-  },
+    console.log(this.image);
+  }
 };
 </script>
 

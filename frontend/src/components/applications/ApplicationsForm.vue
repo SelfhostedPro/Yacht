@@ -674,7 +674,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver,
+    ValidationObserver
   },
   data() {
     return {
@@ -695,7 +695,7 @@ export default {
         devices: [],
         labels: [],
         sysctls: [],
-        cap_add: [],
+        cap_add: []
       },
       network_modes: ["bridge", "none", "host"],
       isLoading: false,
@@ -722,21 +722,21 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND",
-      ],
+        "BLOCK_SUSPEND"
+      ]
     };
   },
   calculated: {
     ...mapState("networks", ["networks"]),
-    ...mapState("volumes", ["volumes"]),
+    ...mapState("volumes", ["volumes"])
   },
   methods: {
     ...mapActions({
       readApp: "templates/readApp",
-      readNetworks: "networks/_readNetworks",
+      readNetworks: "networks/_readNetworks"
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr",
+      setErr: "snackbar/setErr"
     }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
@@ -798,7 +798,7 @@ export default {
           this.isLoading = false;
           this.$router.push({ name: "View Applications" });
         })
-        .catch((err) => {
+        .catch(err => {
           this.isLoading = false;
           this.setErr(err);
         });
@@ -824,7 +824,7 @@ export default {
             devices: app.devices || [],
             labels: app.labels || [],
             sysctls: app.sysctls || [],
-            cap_add: app.cap_add || [],
+            cap_add: app.cap_add || []
           };
           this.notes = app.notes || null;
         } catch (error) {
@@ -834,12 +834,12 @@ export default {
       } else {
         console.log("No app selected");
       }
-    },
+    }
   },
   async created() {
     await this.populateForm();
     await this.populateNetworks();
-  },
+  }
 };
 </script>
 

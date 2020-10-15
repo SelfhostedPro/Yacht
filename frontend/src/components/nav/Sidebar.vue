@@ -102,7 +102,7 @@ export default {
             to: "/resources/volumes",
             icon: "mdi-database"
           },
-          {  
+          {
             text: "Networks",
             to: "/resources/networks",
             icon: "mdi-network"

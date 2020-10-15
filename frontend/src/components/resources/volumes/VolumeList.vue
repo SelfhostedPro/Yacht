@@ -85,10 +85,9 @@
         </template>
         <template v-slot:item.Name="{ item }">
           <div class="d-flex">
-            <span
-              class="align-streatch text-truncate nametext mt-2"
-              >{{ item.Name }}</span
-            >
+            <span class="align-streatch text-truncate nametext mt-2">{{
+              item.Name
+            }}</span>
             <v-spacer />
 
             <v-chip
@@ -137,8 +136,11 @@
         </template>
         <template v-slot:item.Project="{ item }">
           <div class="projectcell">
-            <span class="d-inline-block text-truncate idtext" v-if="item.Labels">
-              {{ item.Labels['com.docker.compose.project'] || "-" }}
+            <span
+              class="d-inline-block text-truncate idtext"
+              v-if="item.Labels"
+            >
+              {{ item.Labels["com.docker.compose.project"] || "-" }}
             </span>
           </div>
         </template>
@@ -196,15 +198,15 @@ export default {
       selectedVolume: null,
       deleteDialog: false,
       form: {
-        name: "",
-        },
+        name: ""
+      },
       createDialog: false,
       search: "",
       headers: [
         {
           text: "Name",
           value: "Name",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Project",
@@ -214,21 +216,21 @@ export default {
         {
           text: "Driver",
           value: "Driver",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Created",
           value: "CreatedAt",
-          sortable: true,
-        },
-      ],
+          sortable: true
+        }
+      ]
     };
   },
   methods: {
     ...mapActions({
       readVolumes: "volumes/readVolumes",
       deleteVolume: "volumes/deleteVolume",
-      writeVolume: "volumes/writeVolume",
+      writeVolume: "volumes/writeVolume"
     }),
     handleRowClick(item) {
       this.$router.push({ path: `/resources/volumes/${item.Name}` });
@@ -238,17 +240,17 @@ export default {
     },
     submit() {
       const data = this.form;
-      console.log("methods")
-      console.log(data)
+      console.log("methods");
+      console.log(data);
       this.writeVolume(data);
-    },
+    }
   },
   computed: {
-    ...mapState("volumes", ["volumes", "isLoading"]),
+    ...mapState("volumes", ["volumes", "isLoading"])
   },
   mounted() {
     this.readVolumes();
-  },
+  }
 };
 </script>
 

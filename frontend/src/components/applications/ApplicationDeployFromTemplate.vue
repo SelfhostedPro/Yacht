@@ -3,10 +3,10 @@
     <v-card-title>
       Select a template to deploy from
     </v-card-title>
-    <v-card v-if="templates.length <1 || templates == undefined">
+    <v-card v-if="templates.length < 1 || templates == undefined">
       <v-card-title>No Templates Found!</v-card-title>
-      <v-card-text
-        > No templates available. <a href="/#/templates/new">Add</a> one to view
+      <v-card-text>
+        No templates available. <a href="/#/templates/new">Add</a> one to view
         information and launch apps from here.</v-card-text
       >
     </v-card>
@@ -360,15 +360,15 @@ export default {
       appDetailsDialog: false,
       selectedApp: null,
       search: "",
-      tab: null,
+      tab: null
     };
   },
   computed: {
-    ...mapState("templates", ["templates", "isLoading"]),
+    ...mapState("templates", ["templates", "isLoading"])
   },
   methods: {
     ...mapActions({
-      readTemplates: "templates/readTemplatesAndItems",
+      readTemplates: "templates/readTemplatesAndItems"
     }),
     filterItems(items) {
       if (!items) {
@@ -378,7 +378,7 @@ export default {
         return items;
       }
       let regex = new RegExp(this.search, "i");
-      return items.filter((item) => {
+      return items.filter(item => {
         return regex.test(item.title);
       });
     },
@@ -387,11 +387,11 @@ export default {
       return [...result].sort((a, b) => {
         return a.title.localeCompare(b.title);
       });
-    },
+    }
   },
   mounted() {
     this.readTemplates();
-  },
+  }
 };
 </script>
 

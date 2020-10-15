@@ -60,7 +60,7 @@ export default {
     })
   },
   created() {
-    this.authCheck()
+    this.authCheck();
   }
 };
 </script>

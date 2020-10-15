@@ -23,15 +23,15 @@ import ApplicationDeployFromTemplate from "../components/applications/Applicatio
 // Resources
 import Resources from "../views/Resources.vue";
 // Images
-import ImageList from "../components/resources/images/ImageList.vue"
-import ImageDetails from "../components/resources/images/ImageDetails.vue"
+import ImageList from "../components/resources/images/ImageList.vue";
+import ImageDetails from "../components/resources/images/ImageDetails.vue";
 // Volumes
-import VolumeList from "../components/resources/volumes/VolumeList.vue"
-import VolumeDetails from "../components/resources/volumes/VolumeDetails.vue"
+import VolumeList from "../components/resources/volumes/VolumeList.vue";
+import VolumeDetails from "../components/resources/volumes/VolumeDetails.vue";
 // Networks
-import NetworkList from "../components/resources/networks/NetworkList.vue"
-import NetworkDetails from "../components/resources/networks/NetworkDetails.vue"
-import NetworkForm from "../components/resources/networks/NetworkForm.vue"
+import NetworkList from "../components/resources/networks/NetworkList.vue";
+import NetworkDetails from "../components/resources/networks/NetworkDetails.vue";
+import NetworkForm from "../components/resources/networks/NetworkForm.vue";
 
 // User Settings
 import UserSettings from "../views/UserSettings.vue";
@@ -208,7 +208,7 @@ const routes = [
         path: "networks/:networkid",
         name: "Network Details",
         component: NetworkDetails
-      },
+      }
     ]
   }
 ];

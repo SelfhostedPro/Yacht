@@ -16,7 +16,7 @@
           x-small
           class="ml-2"
           color="primary"
-          :to="({ path: `/resources/networks/new` })"
+          :to="{ path: `/resources/networks/new` }"
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -170,50 +170,50 @@ export default {
         {
           text: "Name",
           value: "Name",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Project",
           value: "Project",
-          sortable: true,
+          sortable: true
         },
         {
           text: "ID",
           value: "Id",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Driver",
           value: "Driver",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Created",
           value: "Created",
-          sortable: true,
-        },
-      ],
+          sortable: true
+        }
+      ]
     };
   },
   methods: {
     ...mapActions({
       readNetworks: "networks/readNetworks",
       deleteNetwork: "networks/deleteNetwork",
-      writeNetwork: "networks/writeNetwork",
+      writeNetwork: "networks/writeNetwork"
     }),
     handleRowClick(item) {
       this.$router.push({ path: `/resources/networks/${item.Id}` });
     },
     networkDetails(networkid) {
       this.$router.push({ path: `/resources/networks/${networkid}` });
-    },
+    }
   },
   computed: {
-    ...mapState("networks", ["networks", "isLoading"]),
+    ...mapState("networks", ["networks", "isLoading"])
   },
   mounted() {
     this.readNetworks();
-  },
+  }
 };
 </script>
 

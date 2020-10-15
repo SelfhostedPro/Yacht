@@ -199,27 +199,27 @@ export default {
       selectedImage: null,
       deleteDialog: false,
       form: {
-        image: "",
-        },
+        image: ""
+      },
       pullDialog: false,
       search: "",
       headers: [
         {
           text: "Tag",
           value: "RepoTags",
-          sortable: true,
+          sortable: true
         },
         {
           text: "ID",
           value: "Id",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Created",
           value: "Created",
-          sortable: true,
-        },
-      ],
+          sortable: true
+        }
+      ]
     };
   },
   methods: {
@@ -227,7 +227,7 @@ export default {
       readImages: "images/readImages",
       updateImage: "images/updateImage",
       deleteImage: "images/deleteImage",
-      writeImage: "images/writeImage",
+      writeImage: "images/writeImage"
     }),
     handleRowClick(item) {
       this.$router.push({ path: `/resources/images/${item.Id}` });
@@ -237,17 +237,17 @@ export default {
     },
     submit() {
       const data = this.form;
-      console.log("methods")
-      console.log(data)
+      console.log("methods");
+      console.log(data);
       this.writeImage(data);
-    },
+    }
   },
   computed: {
-    ...mapState("images", ["images", "isLoading"]),
+    ...mapState("images", ["images", "isLoading"])
   },
   mounted() {
     this.readImages();
-  },
+  }
 };
 </script>
 

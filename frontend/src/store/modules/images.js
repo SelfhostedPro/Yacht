@@ -30,7 +30,7 @@ const mutations = {
   },
   setLoading(state, loading) {
     state.isLoading = loading;
-  },
+  }
 };
 
 const actions = {
@@ -69,8 +69,8 @@ const actions = {
   writeImage({ commit }, payload) {
     commit("setLoading", true);
     const url = "/api/resources/images/";
-    console.log("store")
-    console.log(payload)
+    console.log("store");
+    console.log(payload);
     axios
       .post(url, payload)
       .then(response => {
@@ -92,7 +92,7 @@ const actions = {
       .get(url)
       .then(response => {
         const image = response.data;
-        console.log(response.data)
+        console.log(response.data);
         commit("setImage", image);
       })
       .catch(err => {
@@ -117,7 +117,7 @@ const actions = {
       .finally(() => {
         commit("setLoading", false);
       });
-  },
+  }
 };
 
 const getters = {

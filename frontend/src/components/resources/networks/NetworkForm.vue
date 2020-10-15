@@ -207,7 +207,7 @@ import { mapMutations } from "vuex";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver,
+    ValidationObserver
   },
   data() {
     return {
@@ -225,7 +225,7 @@ export default {
         ipv6subnet: "",
         ipv6gateway: "",
         ipv6range: "",
-        ipv6_enabled: false,
+        ipv6_enabled: false
       },
       createDialog: false,
       search: "",
@@ -236,34 +236,34 @@ export default {
         {
           text: "Name",
           value: "Name",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Project",
           value: "Project",
-          sortable: true,
+          sortable: true
         },
         {
           text: "ID",
           value: "Id",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Driver",
           value: "Driver",
-          sortable: true,
+          sortable: true
         },
         {
           text: "Created",
           value: "Created",
-          sortable: true,
-        },
-      ],
+          sortable: true
+        }
+      ]
     };
   },
   methods: {
     ...mapMutations({
-      setErr: "snackbar/setErr",
+      setErr: "snackbar/setErr"
     }),
     submit() {
       const payload = { ...this.form };
@@ -275,12 +275,12 @@ export default {
           this.isLoading = false;
           this.$router.push({ name: "Networks" });
         })
-        .catch((err) => {
+        .catch(err => {
           this.isLoading = false;
           this.setErr(err);
         });
-    },
-  },
+    }
+  }
 };
 </script>
 

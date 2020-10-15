@@ -17,7 +17,12 @@
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item @click="deleteNetwork(network.Name); router.push({ name: 'Networks' })">
+            <v-list-item
+              @click="
+                deleteNetwork(network.Name);
+                router.push({ name: 'Networks' });
+              "
+            >
               <v-list-item-icon
                 ><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon
               >
@@ -277,45 +282,45 @@ export default {
         {
           text: "Name",
           value: "Name",
-          sortable: true,
+          sortable: true
         },
         {
           text: "IPv4",
           value: "ipv4",
-          sortable: true,
+          sortable: true
         },
         {
           text: "IPv6",
           value: "ipv6",
-          sortable: true,
+          sortable: true
         },
         {
           text: "MacAddress",
           value: "macaddress",
-          sortable: true,
+          sortable: true
         },
         {
           text: "ID",
           value: "ID",
-          sortable: true,
-        },
-      ],
+          sortable: true
+        }
+      ]
     };
   },
   computed: {
     ...mapState("networks", ["network", "network", "isLoading"]),
     ...mapGetters({
-      getNetworkById: "networks/getNetworkById",
+      getNetworkById: "networks/getNetworkById"
     }),
     network() {
       const networkid = this.$route.params.networkid;
       return this.getNetworkById(networkid);
-    },
+    }
   },
   methods: {
     ...mapActions({
       readNetwork: "networks/readNetwork",
-      deleteNetwork: "networks/deleteNetwork",
+      deleteNetwork: "networks/deleteNetwork"
     }),
     conv2array(containers) {
       var container_list = Object.values(containers);
@@ -329,7 +334,7 @@ export default {
   created() {
     const networkid = this.$route.params.networkid;
     this.readNetwork(networkid);
-  },
+  }
 };
 </script>
 
