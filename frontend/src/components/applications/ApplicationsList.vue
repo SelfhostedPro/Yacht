@@ -77,7 +77,11 @@
       >
         <template v-slot:item.name="{ item }">
           <div class="namecell">
-            <v-menu :close-on-click="true" :close-on-content-click="true" offset-y>
+            <v-menu
+              :close-on-click="true"
+              :close-on-content-click="true"
+              offset-y
+            >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon size="small" v-bind="attrs" v-on="on" class="">
                   <v-icon>mdi-chevron-down</v-icon>
@@ -135,14 +139,15 @@
                   </v-list-item-icon>
                   <v-list-item-title>Kill</v-list-item-title>
                 </v-list-item>
-                
-                    <v-list-item @click="AppAction({ Name: item.name, Action: 'remove' })">
-                      <v-list-item-icon>
-                        <v-icon>mdi-delete</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-title>Remove</v-list-item-title>
-                    </v-list-item>
-                  
+
+                <v-list-item
+                  @click="AppAction({ Name: item.name, Action: 'remove' })"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-delete</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>Remove</v-list-item-title>
+                </v-list-item>
               </v-list>
             </v-menu>
             <span class="nametext ml-1">{{ item.name }}</span>
@@ -246,44 +251,44 @@ export default {
           text: "Name",
           value: "name",
           sortable: true,
-          align: "start",
+          align: "start"
           // width: "30%",
         },
         project: {
           text: "Project",
           value: "project",
-          sortable: true,
+          sortable: true
         },
         status: {
           text: "Status",
           value: "status",
-          sortable: true,
+          sortable: true
           // width: "10%",
         },
         image: {
           text: "Image",
           value: "image",
-          sortable: true,
+          sortable: true
         },
         ports: {
           text: "Ports",
           value: "ports",
-          sortable: true,
+          sortable: true
         },
         created: {
           text: "Created At",
           value: "created",
-          sortable: true,
-        },
+          sortable: true
+        }
       },
-      selectedHeaders: [],
+      selectedHeaders: []
     };
   },
   methods: {
     ...mapActions({
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
-      checkUpdates: "apps/checkAppsUpdates",
+      checkUpdates: "apps/checkAppsUpdates"
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
@@ -303,13 +308,13 @@ export default {
     },
     refresh() {
       this.readApps();
-    },
+    }
   },
   computed: {
     ...mapState("apps", ["apps", "isLoading", "action", "updatable"]),
     showHeaders() {
-      return this.headers.filter((s) => this.selectedHeaders.includes(s));
-    },
+      return this.headers.filter(s => this.selectedHeaders.includes(s));
+    }
   },
   created() {
     console.log(this.headersMap);
@@ -318,7 +323,7 @@ export default {
   },
   mounted() {
     this.readApps();
-  },
+  }
 };
 </script>
 

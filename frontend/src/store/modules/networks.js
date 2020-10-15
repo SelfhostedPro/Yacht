@@ -30,7 +30,7 @@ const mutations = {
   },
   setLoading(state, loading) {
     state.isLoading = loading;
-  },
+  }
 };
 
 const actions = {
@@ -78,7 +78,7 @@ const actions = {
       .get(url)
       .then(response => {
         const network = response.data;
-        console.log(network)
+        console.log(network);
         commit("setNetwork", network);
       })
       .catch(err => {
@@ -105,22 +105,22 @@ const actions = {
         router.push({ name: "Networks" });
       });
   },
-//   updateNetwork({ commit }, id) {
-//     commit("setLoading", true);
-//     const url = `/api/resources/networks/${id}/pull`;
-//     axios
-//       .get(url)
-//       .then(response => {
-//         const network = response.data;
-//         commit("setNetwork", network);
-//       })
-//       .catch(err => {
-//         commit("snackbar/setErr", err, { root: true });
-//       })
-//       .finally(() => {
-//         commit("setLoading", false);
-//       });
-//   },
+  //   updateNetwork({ commit }, id) {
+  //     commit("setLoading", true);
+  //     const url = `/api/resources/networks/${id}/pull`;
+  //     axios
+  //       .get(url)
+  //       .then(response => {
+  //         const network = response.data;
+  //         commit("setNetwork", network);
+  //       })
+  //       .catch(err => {
+  //         commit("snackbar/setErr", err, { root: true });
+  //       })
+  //       .finally(() => {
+  //         commit("setLoading", false);
+  //       });
+  //   },
   deleteNetwork({ commit }, id) {
     commit("setLoading", true);
     const url = `/api/resources/networks/${id}`;
@@ -129,13 +129,13 @@ const actions = {
       .then(response => {
         const network = response.data;
         commit("removeNetwork", network);
-        commit("setLoading", false)
+        commit("setLoading", false);
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
-        commit("setLoading", false)
-      })
-  },
+        commit("setLoading", false);
+      });
+  }
 };
 
 const getters = {
