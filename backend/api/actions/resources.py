@@ -59,22 +59,24 @@ def update_image(image_id):
     if type(image_id) == str:
         image = dclient.images.get(image_id)
         new_image = dclient.images.get_registry_data(image.tags[0])
-        new_image.pull()
-        return get_image(image_id)
-    if type(image_id) == list:
-        updated_list = []
-        for _id in image_id:
-            image = dclient.images.get(image_id)
-            new_image = dclient.images.get_registry_data(image.tags[0])
+        try:
             new_image.pull()
-            updated_list.append(new_image)
-        return updated_list()
+        except Exception as exc:
+            raise HTTPException(
+                status_code=exc.response.status_code, detail=exc.explanation
+            )
+        return get_image(image_id)
 
 
 def delete_image(image_id):
     dclient = docker.from_env()
     image = dclient.images.get(image_id)
-    dclient.images.remove(image_id, force=True)
+    try:
+        dclient.images.remove(image_id, force=True)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
     return image.attrs
 
 
@@ -104,7 +106,12 @@ def get_volumes():
 
 def write_volume(volume_name):
     dclient = docker.from_env()
-    volume = dclient.volumes.create(name=volume_name)
+    try:
+        volume = dclient.volumes.create(name=volume_name)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
     return get_volumes()
 
 
@@ -123,6 +130,10 @@ def get_volume(volume_id):
         except Exception as exc:
             if exc.status_code == 404:
                 pass
+            else:
+                raise HTTPException(
+                    status_code=exc.response.status_code, detail=exc.explanation
+                )
     if attrs.get("inUse") == None:
         attrs.update({"inUse": False})
     return attrs
@@ -131,7 +142,12 @@ def get_volume(volume_id):
 def delete_volume(volume_id):
     dclient = docker.from_env()
     volume = dclient.volumes.get(volume_id)
-    volume.remove(force=True)
+    try:
+        volume.remove(force=True)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
     return volume.attrs
 
 
@@ -155,6 +171,10 @@ def get_networks():
                 print(exc)
                 if exc.status_code == 404:
                     pass
+                else:
+                    raise HTTPException(
+                        status_code=exc.response.status_code, detail=exc.explanation
+                    )
         if attrs.get("inUse") == None:
             attrs.update({"inUse": False})
         network_list.append(attrs)
@@ -231,6 +251,10 @@ def get_network(network_id):
         except Exception as exc:
             if exc.status_code == 404:
                 pass
+            else:
+                raise HTTPException(
+                    status_code=exc.response.status_code, detail=exc.explanation
+                )
     if attrs.get("inUse") == None:
         attrs.update({"inUse": False})
     return attrs
