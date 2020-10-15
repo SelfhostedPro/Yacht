@@ -125,14 +125,28 @@
             <form>
               <v-row>
                 <v-col>
-              <v-select :items="networks" label="Network" clearable v-model="form.network" :disabled="form.network_mode !== undefined"/>
-              </v-col>
-              <v-col>
-                <v-select :items="network_modes" label="Network Mode" clearable v-model="form.network_mode" :disabled="form.network !== undefined"/>
+                  <v-select
+                    :items="networks"
+                    label="Network"
+                    clearable
+                    v-model="form.network"
+                    :disabled="form.network_mode !== undefined"
+                  />
                 </v-col>
-                </v-row>
+                <v-col>
+                  <v-select
+                    :items="network_modes"
+                    label="Network Mode"
+                    clearable
+                    v-model="form.network_mode"
+                    :disabled="form.network !== undefined"
+                  />
+                </v-col>
+              </v-row>
               <transition-group
-                v-if="form.network_mode !== 'bridge' && form.network !== 'bridge'"
+                v-if="
+                  form.network_mode !== 'bridge' && form.network !== 'bridge'
+                "
                 name="slide"
                 enter-active-class="animated fadeInLeft fast-anim"
                 leave-active-class="animated fadeOutLeft fast-anim"
@@ -221,7 +235,14 @@
               </transition-group>
               <v-row>
                 <v-col cols="12" class="d-flex justify-end">
-                  <v-btn v-if="form.network_mode !== 'host' && form.network !=='host'" icon class="align-self-center" @click="addPort">
+                  <v-btn
+                    v-if="
+                      form.network_mode !== 'host' && form.network !== 'host'
+                    "
+                    icon
+                    class="align-self-center"
+                    @click="addPort"
+                  >
                     <v-icon>mdi-plus</v-icon>
                   </v-btn>
                 </v-col>
@@ -260,15 +281,14 @@
                       rules="required"
                       v-slot="{ errors, valid }"
                     >
-                      <v-combobox
+                      <v-text-field
                         label="Host"
                         placeholder="/yacht/image/share"
                         v-model="item['bind']"
-                        :items="volumes"
                         :error-messages="errors"
                         :success="valid"
                         required
-                      />
+                      ></v-text-field>
                     </ValidationProvider>
                   </v-col>
                   <v-col>
@@ -628,14 +648,13 @@
           >
           <v-expansion-panel-content color="#303030">
             <form>
-              <v-combobox
+              <v-select
                 v-model="form['cap_add']"
                 :items="cap_options"
                 label="Add Capabilities"
                 multiple
                 hide-selected
                 clearable
-                auto-select-first
                 chips
                 deletable-chips
               />
@@ -678,11 +697,7 @@ export default {
         sysctls: [],
         cap_add: [],
       },
-      network_modes: [
-        "bridge",
-        "none",
-        "host"
-      ],
+      network_modes: ["bridge", "none", "host"],
       isLoading: false,
       cap_options: [
         "SYS_MODULE",
@@ -712,14 +727,13 @@ export default {
     };
   },
   calculated: {
-    ...mapState("networks", ['networks']),
-    ...mapState("volumes", ['volumes'])
+    ...mapState("networks", ["networks"]),
+    ...mapState("volumes", ["volumes"]),
   },
   methods: {
     ...mapActions({
       readApp: "templates/readApp",
       readNetworks: "networks/_readNetworks",
-      readVolumes: "volumes/_readVolumes"
     }),
     ...mapMutations({
       setErr: "snackbar/setErr",
@@ -790,16 +804,9 @@ export default {
         });
     },
     async populateNetworks() {
-      const networks = await this.readNetworks()
-      for (var network in networks){
-        this.networks.push(networks[network]['Name'])
-      }
-    },
-    async populateVolumes() {
-      const volumes = await this.readVolumes()
-      console.log(volumes)
-      for (var volume in volumes){
-        this.volumes.push(volumes[volume]['Name'])
+      const networks = await this.readNetworks();
+      for (var network in networks) {
+        this.networks.push(networks[network]["Name"]);
       }
     },
     async populateForm() {
@@ -831,7 +838,6 @@ export default {
   },
   async created() {
     await this.populateForm();
-    await this.populateVolumes();
     await this.populateNetworks();
   },
 };
