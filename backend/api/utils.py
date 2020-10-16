@@ -278,7 +278,10 @@ async def websocket_auth(websocket: WebSocket):
 
 
 async def calculate_cpu_percent(d):
-    cpu_count = len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
+    try:
+        cpu_count = len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
+    except KeyError as exc:
+        pass
     cpu_percent = 0.0
     cpu_delta = float(d["cpu_stats"]["cpu_usage"]["total_usage"]) - float(
         d["precpu_stats"]["cpu_usage"]["total_usage"]

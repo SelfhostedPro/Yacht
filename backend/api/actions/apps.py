@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from ..db import models, schemas
 from ..utils import *
+from ..utils import check_updates as _update_check
 
 from datetime import datetime
 import time
@@ -30,7 +31,7 @@ def check_app_updates():
     apps = dclient.containers.list(all=True)
     for app in apps:
         if app.attrs["Config"]["Image"]:
-            if check_updates(app.attrs["Config"]["Image"]):
+            if _update_check(app.attrs["Config"]["Image"]):
                 apps_list.append(app.name)
     return apps_list
 
