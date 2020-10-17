@@ -11,6 +11,10 @@
         <v-icon>mdi-plus</v-icon> From Template
       </v-btn>
     </h1>
+    <v-card v-if="notes" color="blue-grey darken-2" class="mb-2">
+      <v-card-title>Note:</v-card-title>
+      <v-card-text v-html="notes"></v-card-text>
+    </v-card>
     <v-stepper v-model="deployStep" alt-labels non-linear>
       <v-fade-transition>
         <v-progress-linear
@@ -119,7 +123,30 @@
         <v-stepper-content step="2">
           <ValidationObserver ref="obs2" v-slot="{ invalid }">
             <form>
+              <v-row>
+                <v-col>
+                  <v-select
+                    :items="networks"
+                    label="Network"
+                    clearable
+                    v-model="form.network"
+                    :disabled="form.network_mode !== undefined"
+                  />
+                </v-col>
+                <v-col>
+                  <v-select
+                    :items="network_modes"
+                    label="Network Mode"
+                    clearable
+                    v-model="form.network_mode"
+                    :disabled="form.network !== undefined"
+                  />
+                </v-col>
+              </v-row>
               <transition-group
+                v-if="
+                  form.network_mode !== 'bridge' && form.network !== 'bridge'
+                "
                 name="slide"
                 enter-active-class="animated fadeInLeft fast-anim"
                 leave-active-class="animated fadeOutLeft fast-anim"
@@ -208,7 +235,14 @@
               </transition-group>
               <v-row>
                 <v-col cols="12" class="d-flex justify-end">
-                  <v-btn icon class="align-self-center" @click="addPort">
+                  <v-btn
+                    v-if="
+                      form.network_mode !== 'host' && form.network !== 'host'
+                    "
+                    icon
+                    class="align-self-center"
+                    @click="addPort"
+                  >
                     <v-icon>mdi-plus</v-icon>
                   </v-btn>
                 </v-col>
@@ -614,14 +648,13 @@
           >
           <v-expansion-panel-content color="#303030">
             <form>
-              <v-combobox
+              <v-select
                 v-model="form['cap_add']"
                 :items="cap_options"
                 label="Add Capabilities"
                 multiple
                 hide-selected
                 clearable
-                auto-select-first
                 chips
                 deletable-chips
               />
@@ -635,7 +668,7 @@
 
 <script>
 import axios from "axios";
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 export default {
@@ -647,11 +680,15 @@ export default {
     return {
       deployStep: 1,
       deploySteps: 4,
-
+      notes: "",
+      networks: [],
+      volumes: [],
       form: {
         name: "",
         image: "",
         restart_policy: "",
+        network: undefined,
+        network_mode: undefined,
         ports: [],
         volumes: [],
         env: [],
@@ -660,6 +697,7 @@ export default {
         sysctls: [],
         cap_add: []
       },
+      network_modes: ["bridge", "none", "host"],
       isLoading: false,
       cap_options: [
         "SYS_MODULE",
@@ -688,9 +726,14 @@ export default {
       ]
     };
   },
+  calculated: {
+    ...mapState("networks", ["networks"]),
+    ...mapState("volumes", ["volumes"])
+  },
   methods: {
     ...mapActions({
-      readApp: "templates/readApp"
+      readApp: "templates/readApp",
+      readNetworks: "networks/_readNetworks"
     }),
     ...mapMutations({
       setErr: "snackbar/setErr"
@@ -760,6 +803,12 @@ export default {
           this.setErr(err);
         });
     },
+    async populateNetworks() {
+      const networks = await this.readNetworks();
+      for (var network in networks) {
+        this.networks.push(networks[network]["Name"]);
+      }
+    },
     async populateForm() {
       const appId = this.$route.params.appId;
       if (appId != null) {
@@ -777,6 +826,7 @@ export default {
             sysctls: app.sysctls || [],
             cap_add: app.cap_add || []
           };
+          this.notes = app.notes || null;
         } catch (error) {
           console.error(error, error.response);
           this.setErr(error);
@@ -788,6 +838,7 @@ export default {
   },
   async created() {
     await this.populateForm();
+    await this.populateNetworks();
   }
 };
 </script>

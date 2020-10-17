@@ -13,6 +13,7 @@ import aiodocker
 import docker
 from docker.errors import APIError
 import json
+
 settings = Settings()
 
 
@@ -25,7 +26,7 @@ def get_db():
 
 
 # For Templates
-REGEXP_PORT_ASSIGN = r'^(?:(?:\d{1,5}:)?\d{1,5}|:\d{1,5})/(?:tcp|udp)$'
+REGEXP_PORT_ASSIGN = r"^(?:(?:\d{1,5}:)?\d{1,5}|:\d{1,5})/(?:tcp|udp)$"
 
 # Input Format:
 # [
@@ -46,37 +47,44 @@ REGEXP_PORT_ASSIGN = r'^(?:(?:\d{1,5}:)?\d{1,5}|:\d{1,5})/(?:tcp|udp)$'
 
 def conv_ports2dict(data: List[str]) -> List[Dict[str, str]]:
     if type(data[0]) == dict:
-        delim = ':'
+        delim = ":"
         portlst = []
         for port_data in data:
             for label, port in port_data.items():
                 if not re.match(REGEXP_PORT_ASSIGN, port, flags=re.IGNORECASE):
-                    raise HTTPException(status_code=500, detail='Malformed port assignment.'+port_data)
+                    raise HTTPException(
+                        status_code=500, detail="Malformed port assignment." + port_data
+                    )
 
                 hport, cport = None, port
                 if delim in cport:
                     hport, cport = cport.split(delim, 1)
                     if not hport:
                         hport = None
-                cport, proto = cport.split('/', 1)
-                portlst.append({'cport': cport, 'hport': hport, 'proto': proto, 'label': label})
+                cport, proto = cport.split("/", 1)
+                portlst.append(
+                    {"cport": cport, "hport": hport, "proto": proto, "label": label}
+                )
             return portlst
 
     elif type(data) == list:
-        delim = ':'
+        delim = ":"
         portlst = []
         for port_data in data:
             if not re.match(REGEXP_PORT_ASSIGN, port_data, flags=re.IGNORECASE):
-                raise HTTPException(status_code=500, detail='Malformed port assignment.'+port_data)
+                raise HTTPException(
+                    status_code=500, detail="Malformed port assignment." + port_data
+                )
 
             hport, cport = None, port_data
             if delim in cport:
                 hport, cport = cport.split(delim, 1)
                 if not hport:
                     hport = None
-            cport, proto = cport.split('/', 1)
-            portlst.append({'cport': cport, 'hport': hport, 'proto': proto})
+            cport, proto = cport.split("/", 1)
+            portlst.append({"cport": cport, "hport": hport, "proto": proto})
         return portlst
+
 
 # Input Format:
 # [
@@ -94,7 +102,7 @@ def conv_ports2dict(data: List[str]) -> List[Dict[str, str]]:
 
 
 def conv_sysctls2dict(data: List[Dict[str, str]]) -> List[Dict[str, str]]:
-    return [{'name': k, 'value': v} for item in data for k, v in item.items()]
+    return [{"name": k, "value": v} for item in data for k, v in item.items()]
 
 
 def conv2dict(name, value):
@@ -117,7 +125,9 @@ def conv2dict(name, value):
 # {
 #     '53/tcp': ('0.0.0.0', 53),
 # }
-def conv_ports2data(data):
+def conv_ports2data(data, network, network_mode):
+    if network == "host" or network_mode == "host":
+        return None
     ports = {}
     for d in data:
         cport = d.cport
@@ -125,18 +135,21 @@ def conv_ports2data(data):
         proto = d.proto
         if not hport:
             hport = None
-        ports.update({str(cport)+'/'+proto: hport for d in data})
+        ports.update({str(cport) + "/" + proto: hport for d in data})
     return ports
+
 
 def conv_portlabels2data(data):
     labels = {}
     for d in data:
         if d.label and d.hport:
-            labels.update({ 'local.yacht.port.'+d.hport: d.label })
+            labels.update({"local.yacht.port." + d.hport: d.label})
         elif d.label:
             print("in order to have a label the hostport must be set")
             return None
     return labels
+
+
 # Input Format:
 # [
 #     {
@@ -160,11 +173,9 @@ def conv_volumes2data(data):
         if volume.bind:
             for t_var in t_variables:
                 if t_var.variable in volume.bind:
-                    new_path = volume.bind.replace(
-                        t_var.variable, t_var.replacement)
+                    new_path = volume.bind.replace(t_var.variable, t_var.replacement)
                     volume.bind = new_path
-    volume_data = dict(
-        (d.bind, {'bind': d.container, 'mode': 'rw'}) for d in data)
+    volume_data = dict((d.bind, {"bind": d.container, "mode": "rw"}) for d in data)
 
     return volume_data
 
@@ -187,12 +198,12 @@ def conv_env2data(data):
     db = SessionLocal()
     t_variables = db.query(models.TemplateVariables).all()
 
-    for i,variable in enumerate(data):
+    for i, variable in enumerate(data):
         for t_var in t_variables:
             if t_var.variable in variable.default:
                 new_var = data[i].default.replace(t_var.variable, t_var.replacement)
                 variable.default = new_var
-    delim = '='
+    delim = "="
     return [delim.join((d.name, d.default)) for d in data]
 
 
@@ -203,15 +214,17 @@ def conv_sysctls2data(data):
         sysctls = None
         return sysctls
 
+
 def conv_devices2data(data):
     if data:
         devicelist = []
         for d in data:
-            devicelist.append(d.host+':'+d.container+':rwm')
+            devicelist.append(d.host + ":" + d.container + ":rwm")
         return devicelist
     else:
         devices = None
         return devices
+
 
 def conv_labels2data(data):
     if data:
@@ -220,6 +233,7 @@ def conv_labels2data(data):
         labels = {}
         return labels
 
+
 def conv_caps2data(data):
     if data:
         return data
@@ -227,43 +241,54 @@ def conv_caps2data(data):
         caps = None
         return caps
 
+
 def conv_image2data(data):
     if data:
-        if ':' in data:
+        if ":" in data:
             return data
         else:
-            image = data+':latest'
+            image = data + ":latest"
             return image
     else:
         image = None
         return image
 
+
 def conv_restart2data(data):
     if data:
-        return {'name': data}
+        return {"name": data}
     else:
         restart = None
         return restart
 
 
-async def websocket_auth(
-    websocket: WebSocket
-):
+async def websocket_auth(websocket: WebSocket):
     try:
-        cookie = websocket._cookies['fastapiusersauth']
+        cookie = websocket._cookies["fastapiusersauth"]
         user = await cookie_authentication(cookie, user_db)
         if user and user.is_active:
             return user
+        elif settings.DISABLE_AUTH == "True":
+            return True
     except:
-        return None
+        if settings.DISABLE_AUTH == "True":
+            return True
+        else:
+            return None
+
 
 async def calculate_cpu_percent(d):
-    cpu_count = len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
+    try:
+        cpu_count = len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
+    except KeyError as exc:
+        pass
     cpu_percent = 0.0
-    cpu_delta = float(d["cpu_stats"]["cpu_usage"]["total_usage"]) - \
-        float(d["precpu_stats"]["cpu_usage"]["total_usage"])
-    system_delta = float(d["cpu_stats"]["system_cpu_usage"]) - \
-        float(d["precpu_stats"]["system_cpu_usage"])
+    cpu_delta = float(d["cpu_stats"]["cpu_usage"]["total_usage"]) - float(
+        d["precpu_stats"]["cpu_usage"]["total_usage"]
+    )
+    system_delta = float(d["cpu_stats"]["system_cpu_usage"]) - float(
+        d["precpu_stats"]["system_cpu_usage"]
+    )
     if system_delta > 0.0:
         cpu_percent = cpu_delta / system_delta * 100.0 * cpu_count
     return cpu_percent
@@ -275,16 +300,16 @@ async def calculate_cpu_percent2(d, previous_cpu, previous_system):
     cpu_delta = cpu_total - previous_cpu
     cpu_system = float(d["cpu_stats"]["system_cpu_usage"])
     system_delta = cpu_system - previous_system
-    online_cpus = d["cpu_stats"].get("online_cpus", len(
-        d["cpu_stats"]["cpu_usage"]["percpu_usage"]))
+    online_cpus = d["cpu_stats"].get(
+        "online_cpus", len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
+    )
     if system_delta > 0.0:
         cpu_percent = (cpu_delta / system_delta) * online_cpus * 100.0
     return cpu_percent, cpu_system, cpu_total
 
 
 async def calculate_blkio_bytes(d):
-    bytes_stats = graceful_chain_get(
-        d, "blkio_stats", "io_service_bytes_recursive")
+    bytes_stats = graceful_chain_get(d, "blkio_stats", "io_service_bytes_recursive")
     if not bytes_stats:
         return 0, 0
     r = 0
@@ -333,14 +358,16 @@ async def get_app_stats(app_name):
             mem_total = line["memory_stats"]["limit"]
 
             try:
-                cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(line, cpu_total, cpu_system)
+                cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(
+                    line, cpu_total, cpu_system
+                )
             except KeyError as e:
                 print("error while getting new CPU stats: %r, falling back")
                 cpu_percent = await calculate_cpu_percent(line)
 
             full_stats = {
-                "name": line['name'],
-                "time": line['read'],
+                "name": line["name"],
+                "time": line["read"],
                 "cpu_percent": cpu_percent,
                 "mem_current": mem_current,
                 "mem_total": line["memory_stats"]["limit"],
@@ -348,25 +375,35 @@ async def get_app_stats(app_name):
             }
             yield json.dumps(full_stats)
 
+
 def get_update_ports(ports):
     if ports:
-        portdir={}
+        portdir = {}
         for hport in ports:
             for d in ports[hport]:
-                portdir.update({str(hport): d.get('HostPort') })
+                portdir.update({str(hport): d.get("HostPort")})
         return portdir
     else:
         return None
 
+
 def check_updates(tag):
     if tag:
         dclient = docker.from_env()
-        current = dclient.images.get(tag)
+        try:
+            current = dclient.images.get(tag)
+        except APIError as err:
+            if err.status_code == 404:
+                return False
+            else:
+                raise HTTPException(
+                    status_code=err.response.status_code, detail=err.explanation
+                )
         try:
             new = dclient.images.get_registry_data(tag)
         except APIError as err:
             return False
-        if new.attrs['Descriptor']['digest'] in current.attrs['RepoDigests'][0]:
+        if new.attrs["Descriptor"]["digest"] in current.attrs["RepoDigests"][0]:
             return False
         else:
             return True

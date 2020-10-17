@@ -45,6 +45,8 @@ class DeployForm(BaseModel):
     labels: Optional[List[LabelSchema]]
     sysctls: Optional[List[SysctlsSchema]]
     cap_add: Optional[List[str]]
+    network_mode: Optional[str]
+    network: Optional[str]
 # LOGS #
 
 

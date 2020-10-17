@@ -36,12 +36,39 @@
           single-line
           hide-details
         ></v-text-field>
+        <v-menu
+          :close-on-content-click="false"
+          bottom
+          offset-y
+          color="secondary"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on" class="ml-2">
+              Columns
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              color="primary"
+              v-for="(item, index) in headers"
+              :key="index"
+            >
+              <v-checkbox
+                v-model="selectedHeaders"
+                :label="item.text"
+                :value="item"
+                multiple
+              >
+              </v-checkbox>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-card-title>
       <v-card-subtitle v-if="action">{{ action }} </v-card-subtitle>
       <v-data-table
         style="width: 99%"
         class="mx-auto"
-        :headers="headers"
+        :headers="selectedHeaders"
         :items="apps"
         :items-per-page="10"
         :search="search"
@@ -50,7 +77,11 @@
       >
         <template v-slot:item.name="{ item }">
           <div class="namecell">
-            <v-menu close-on-click close-on-content-click offset-y>
+            <v-menu
+              :close-on-click="true"
+              :close-on-content-click="true"
+              offset-y
+            >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon size="small" v-bind="attrs" v-on="on" class="">
                   <v-icon>mdi-chevron-down</v-icon>
@@ -108,6 +139,7 @@
                   </v-list-item-icon>
                   <v-list-item-title>Kill</v-list-item-title>
                 </v-list-item>
+
                 <v-list-item
                   @click="AppAction({ Name: item.name, Action: 'remove' })"
                 >
@@ -136,6 +168,13 @@
               </template>
               <span>Update Available</span>
             </v-tooltip>
+          </div>
+        </template>
+        <template v-slot:item.project="{ item }">
+          <div class="projectcell">
+            <span
+              >{{ item.Config.Labels["com.docker.compose.project"] || "-" }}
+            </span>
           </div>
         </template>
         <template v-slot:item.status="{ item }">
@@ -204,37 +243,45 @@ export default {
     return {
       search: "",
       expanded: [],
+      removeDialog: false,
       host_ip: location.hostname,
-      headers: [
-        {
+      headers: [],
+      headersMap: {
+        name: {
           text: "Name",
           value: "name",
           sortable: true,
-          align: "start",
-          width: "30%"
+          align: "start"
+          // width: "30%",
         },
-        {
+        project: {
+          text: "Project",
+          value: "project",
+          sortable: true
+        },
+        status: {
           text: "Status",
           value: "status",
-          sortable: true,
-          width: "10%"
+          sortable: true
+          // width: "10%",
         },
-        {
+        image: {
           text: "Image",
           value: "image",
           sortable: true
         },
-        {
+        ports: {
           text: "Ports",
           value: "ports",
           sortable: true
         },
-        {
+        created: {
           text: "Created At",
           value: "created",
           sortable: true
         }
-      ]
+      },
+      selectedHeaders: []
     };
   },
   methods: {
@@ -264,7 +311,15 @@ export default {
     }
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading", "action", "updatable"])
+    ...mapState("apps", ["apps", "isLoading", "action", "updatable"]),
+    showHeaders() {
+      return this.headers.filter(s => this.selectedHeaders.includes(s));
+    }
+  },
+  created() {
+    console.log(this.headersMap);
+    this.headers = Object.values(this.headersMap);
+    this.selectedHeaders = this.headers;
   },
   mounted() {
     this.readApps();

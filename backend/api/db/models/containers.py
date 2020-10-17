@@ -54,6 +54,8 @@ class TemplateItem(Base):
                             nullable=True, unique=False, index=False)
     ports = Column(JSON,
                    nullable=True, unique=False, index=False)
+    network_mode = Column(JSON,
+                     nullable=True, unique=False, index=False)
     volumes = Column(JSON,
                      nullable=True, unique=False, index=False)
     env = Column(JSON,

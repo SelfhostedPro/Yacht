@@ -9,11 +9,11 @@
           <v-col
             v-for="app in sortByTitle(stats)"
             :key="app.name"
-            cols="12"
+            cols="36"
             xl="2"
-            md="2"
-            sm="3"
-            xs="6"
+            md="4"
+            sm="4"
+            xs="12"
             class="d-flex"
             style="flex-direction:column"
           >

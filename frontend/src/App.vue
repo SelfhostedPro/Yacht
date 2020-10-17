@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import Sidebar from "./components/nav/Sidebar";
 import Appbar from "./components/nav/Appbar";
 import LoginForm from "./components/auth/LoginForm";
@@ -50,8 +50,17 @@ export default {
   data: () => ({}),
   computed: {
     ...mapGetters({
-      isLoggedIn: "auth/isAuthenticated"
+      isLoggedIn: "auth/isAuthenticated",
+      authDisabled: "auth/authDisabled"
     })
+  },
+  methods: {
+    ...mapActions({
+      authCheck: "auth/AUTH_CHECK"
+    })
+  },
+  created() {
+    this.authCheck();
   }
 };
 </script>

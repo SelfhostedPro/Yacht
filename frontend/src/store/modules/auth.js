@@ -5,14 +5,16 @@ import {
   AUTH_LOGOUT,
   // AUTH_REFRESH,
   AUTH_CLEAR,
-  AUTH_CHANGE_PASS
+  AUTH_CHANGE_PASS,
+  AUTH_CHECK
 } from "../actions/auth";
 import axios from "axios";
 import router from "@/router/index";
 
 const state = {
   status: "",
-  username: localStorage.getItem("username") || ""
+  username: localStorage.getItem("username") || "",
+  authDisabled: null
 };
 
 const getters = {
@@ -114,6 +116,23 @@ const actions = {
           reject(err);
         });
     });
+  },
+  [AUTH_CHECK]: ({ commit }) => {
+    commit(AUTH_REQUEST);
+    const url = "/api/auth/login";
+    axios
+      .post(url)
+      .then(resp => {
+        localStorage.setItem("username", resp.data.email);
+        commit(AUTH_SUCCESS, resp);
+      })
+      .catch(err => {
+        if (err.status_code == 422) {
+          console.log("Auth is enabled");
+        } else {
+          console.log(err);
+        }
+      });
   }
 };
 
@@ -124,6 +143,9 @@ const mutations = {
   [AUTH_SUCCESS]: (state, resp) => {
     state.status = "success";
     state.username = resp.data.email;
+    if (resp.data.authDisabled) {
+      state.authDisabled = true;
+    }
   },
   [AUTH_ERROR]: state => {
     state.status = "error";
@@ -132,6 +154,10 @@ const mutations = {
     state.accessToken = "";
     state.refreshToken = "";
     state.username = "";
+  },
+  [AUTH_CHECK]: (state, resp) => {
+    state.authDisabled = resp.data.authDisabled;
+    state.username = resp.data.email;
   }
 };
 
