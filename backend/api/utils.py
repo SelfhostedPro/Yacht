@@ -84,6 +84,8 @@ def conv_ports2dict(data: List[str]) -> List[Dict[str, str]]:
             cport, proto = cport.split("/", 1)
             portlst.append({"cport": cport, "hport": hport, "proto": proto})
         return portlst
+    else:
+        return None
 
 
 # Input Format:
