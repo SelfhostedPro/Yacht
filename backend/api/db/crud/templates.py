@@ -267,8 +267,9 @@ def set_template_variables(db: Session, new_variables: models.TemplateVariables)
         return new_template_variables
 
     except IntegrityError as exc:
+        print(exc)
         raise HTTPException(
-            status_code=exc.response.status_code, detail=exc.explanation
+            status_code=exc.status_code, detail=exc.explanation
             )
 
 
