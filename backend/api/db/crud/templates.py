@@ -118,7 +118,9 @@ def add_template(db: Session, template: models.containers.Template):
     except (OSError, TypeError, ValueError) as err:
         # Optional handle KeyError here too.
         print('data request failed', err)
-        raise
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+            )
 
     try:
         db.add(_template)
@@ -206,7 +208,9 @@ def refresh_template(db: Session, template_id: id):
                 items.append(template_content)
     except Exception as exc:
         print('Template update failed. ERR_001', exc)
-        raise
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+            )
     else:
         # db.delete(template)
         # make_transient(template)
@@ -222,7 +226,9 @@ def refresh_template(db: Session, template_id: id):
         except Exception as exc:
             db.rollback()
             print('Template update failed. ERR_002', exc)
-            raise
+            raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+            )
 
     return template
 
@@ -233,8 +239,9 @@ def read_app_template(db, app_id):
             models.TemplateItem.id == app_id).first()
         return template_item
     except Exception as exc:
-        print('App template not found')
-        raise
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+            )
 
 
 def set_template_variables(db: Session, new_variables: models.TemplateVariables):
@@ -260,7 +267,9 @@ def set_template_variables(db: Session, new_variables: models.TemplateVariables)
         return new_template_variables
 
     except IntegrityError as err:
-        abort(400, {'error': 'Bad Request'})
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+            )
 
 
 def read_template_variables(db: Session):
