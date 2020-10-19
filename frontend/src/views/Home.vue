@@ -186,7 +186,7 @@ export default {
           },
           {
             label: "Mem Usage",
-            backgroundColor: "#FFFFFF",
+            backgroundColor: "#008bcf",
             data: app.mem_percent
           }
         ]

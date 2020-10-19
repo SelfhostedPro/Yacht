@@ -1,6 +1,6 @@
 <template>
-<html :style="{background: $vuetify.theme.themes[theme].background}">
-  <v-app id="yacht">
+<!-- <html :style="{background: $vuetify.theme.themes[theme].background}"> -->
+  <v-app id="yacht" :style="{background: $vuetify.theme.themes[theme].background}">
     <div v-if="isLoggedIn">
       <Sidebar />
       <Appbar />
@@ -31,7 +31,7 @@
     </div>
     <snackbar />
   </v-app>
-</html>
+<!-- </html> -->
 </template>
 
 <script>
@@ -71,6 +71,13 @@ export default {
 </script>
 
 <style>
+.v-application{
+  background-color: var(--v-background-base) !important;
+}
+html {
+  background-color: var(--v-background-base) !important;
+  overflow-y: auto;
+}
 .animated {
   --animate-duration: 0.3s;
 }

@@ -18,6 +18,7 @@ function theme() {
         },
       },
       dark: true,
+      options: { customProperties: true }
     },
   };
   var DigitalOcean = {
@@ -30,6 +31,7 @@ function theme() {
         },
       },
       light: true,
+      options: { customProperties: true }
     },
   };
   if (!process.env.VUE_APP_THEME || process.env.VUE_APP_THEME == "Default") {

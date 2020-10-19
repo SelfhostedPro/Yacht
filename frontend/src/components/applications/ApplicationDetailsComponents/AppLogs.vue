@@ -42,7 +42,7 @@ export default {
   font: 1rem Inconsolata, monospace;
 }
 #logcontainer {
-  background-color: black;
+  background-color: var(--v-background-base) !important;
 }
 .keep-whitespace {
   white-space: pre;
