@@ -4,7 +4,7 @@
       <img
         class="mx-auto mt-12"
         alt="Vue logo"
-        src="../../assets/logo.png"
+        :src="themeLogo()"
         width="107"
         height="72"
       />
@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import lightLogo from "@/assets/logo-light.svg";
+import darkLogo from "@/assets/logo.svg";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { mapActions } from "vuex";
 export default {
@@ -95,8 +97,18 @@ export default {
     },
     created() {
       this.authCheck();
-    }
-  }
+    },
+    themeLogo() {
+      if (
+        !process.env.VUE_APP_THEME ||
+        process.env.VUE_APP_THEME == "Default"
+      ) {
+        return darkLogo
+      } else if (process.env.VUE_APP_THEME == "DigitalOcean") {
+        return lightLogo
+      }
+    },
+  },
 };
 </script>
 

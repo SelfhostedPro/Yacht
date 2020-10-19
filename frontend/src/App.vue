@@ -1,5 +1,6 @@
 <template>
-  <v-app id="yacht">
+<!-- <html :style="{background: $vuetify.theme.themes[theme].background}"> -->
+  <v-app id="yacht" :style="{background: $vuetify.theme.themes[theme].background}">
     <div v-if="isLoggedIn">
       <Sidebar />
       <Appbar />
@@ -30,6 +31,7 @@
     </div>
     <snackbar />
   </v-app>
+<!-- </html> -->
 </template>
 
 <script>
@@ -52,7 +54,10 @@ export default {
     ...mapGetters({
       isLoggedIn: "auth/isAuthenticated",
       authDisabled: "auth/authDisabled"
-    })
+    }),
+    theme(){
+      return (this.$vuetify.theme.dark) ? 'dark' : 'light'
+    }
   },
   methods: {
     ...mapActions({
@@ -66,9 +71,12 @@ export default {
 </script>
 
 <style>
+.v-application{
+  background-color: var(--v-background-base) !important;
+}
 html {
+  background-color: var(--v-background-base) !important;
   overflow-y: auto;
-  background-color: black;
 }
 .animated {
   --animate-duration: 0.3s;
