@@ -1,4 +1,5 @@
 <template>
+<html :style="{background: $vuetify.theme.themes[theme].background}">
   <v-app id="yacht">
     <div v-if="isLoggedIn">
       <Sidebar />
@@ -30,6 +31,7 @@
     </div>
     <snackbar />
   </v-app>
+</html>
 </template>
 
 <script>
@@ -52,7 +54,10 @@ export default {
     ...mapGetters({
       isLoggedIn: "auth/isAuthenticated",
       authDisabled: "auth/authDisabled"
-    })
+    }),
+    theme(){
+      return (this.$vuetify.theme.dark) ? 'dark' : 'light'
+    }
   },
   methods: {
     ...mapActions({
@@ -66,10 +71,6 @@ export default {
 </script>
 
 <style>
-html {
-  overflow-y: auto;
-  background-color: black;
-}
 .animated {
   --animate-duration: 0.3s;
 }

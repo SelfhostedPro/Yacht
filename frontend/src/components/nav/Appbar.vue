@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app clipped-left>
-    <img src="@/assets/logo.png" width="47" height="32" />
+    <img :src="themeLogo()" width="47" height="32" />
     <v-toolbar-title class="ml-2">Yacht</v-toolbar-title>
     <v-toolbar-title class="mx-auto font-weight-bold">
       {{ $route.name }}
@@ -36,14 +36,27 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import lightLogo from "@/assets/logo-light.svg";
+import darkLogo from "@/assets/logo.svg";
+
 export default {
   methods: {
     ...mapActions({
-      logout: "auth/AUTH_LOGOUT"
-    })
+      logout: "auth/AUTH_LOGOUT",
+    }),
+    themeLogo() {
+      if (
+        !process.env.VUE_APP_THEME ||
+        process.env.VUE_APP_THEME == "Default"
+      ) {
+        return darkLogo
+      } else if (process.env.VUE_APP_THEME == "DigitalOcean") {
+        return lightLogo
+      }
+    },
   },
   computed: {
-    ...mapState("auth", ["username", "authDisabled"])
-  }
+    ...mapState("auth", ["username", "authDisabled"]),
+  },
 };
 </script>
