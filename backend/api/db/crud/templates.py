@@ -144,13 +144,15 @@ def refresh_template(db: Session, template_id: id):
     items = []
     try:
         with urllib.request.urlopen(template.url) as fp:
-            if ext in (".yml", '.yaml'):
+            if ext.rstrip() in (".yml", '.yaml'):
                 loaded_file = yaml.load(fp, Loader=yaml.SafeLoader)
-            elif ext in (".json"):
+            elif ext.rstrip() in (".json"):
                 loaded_file = json.load(fp)
             else:
                 print('Invalid filetype')
-                raise
+                raise HTTPException(
+                status_code=422, detail="Invalid filetype"
+                )
             if type(loaded_file) == list:
                 for entry in loaded_file:
 
@@ -209,7 +211,7 @@ def refresh_template(db: Session, template_id: id):
     except Exception as exc:
         print('Template update failed. ERR_001', exc)
         raise HTTPException(
-            status_code=exc.response.status_code, detail=exc.explanation
+            status_code=exc.status_code, detail=exc.explanation
             )
     else:
         # db.delete(template)
