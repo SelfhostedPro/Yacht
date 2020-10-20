@@ -24,17 +24,16 @@ def get_running_apps():
 
     return apps_list
 
-
-def check_app_updates():
-    apps_list = []
+def check_app_update(app_name):
     dclient = docker.from_env()
-    apps = dclient.containers.list(all=True)
-    for app in apps:
-        if app.attrs["Config"]["Image"]:
-            if _update_check(app.attrs["Config"]["Image"]):
-                apps_list.append(app.name)
-    return apps_list
-
+    app = dclient.containers.get(app_name)
+    if app.attrs["Config"]["Image"]:
+        if _update_check(app.attrs["Config"]["Image"]):
+            app.attrs.update(conv2dict("isUpdatable", True))
+    app.attrs.update(conv2dict("name", app.name))
+    app.attrs.update(conv2dict("ports", app.ports))
+    app.attrs.update(conv2dict("short_id", app.short_id))
+    return app.attrs
 
 def get_apps():
     apps_list = []
