@@ -59,7 +59,6 @@ export default {
       })
         .then(response => {
           this.isLoading = false;
-          console.log(response);
           this.updatable = response.data;
         })
         .catch(err => {

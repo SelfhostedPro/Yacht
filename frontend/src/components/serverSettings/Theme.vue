@@ -57,11 +57,7 @@ export default {
     }
   },
   methods: {
-    backgroundColor(dark) {
-      console.log(dark);
-    },
     setTheme(){
-        console.log(this.$vuetify.theme.themes)
         localStorage.setItem("dark_theme", this.$vuetify.theme.dark.toString());
         localStorage.setItem("theme", JSON.stringify(this.$vuetify.theme.themes))
     },

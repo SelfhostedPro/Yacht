@@ -173,20 +173,6 @@ const actions = {
         });
     });
   },
-  // readApp({ commit }, id) {
-  //   commit("setLoading", true);
-  //   const url = `/api/templates/app/${id}`;
-  //   axios
-  //     .get(url)
-  //     .then((response) => {
-  //       const app = response.data;
-  //       console.log(response)
-  //       commit("setApp", app);
-  //     })
-  //     .finally(() => {
-  //       commit("setLoading", false);
-  //     });
-  // },
   readTemplateVariables({ commit }) {
     commit("setLoading", true);
     const url = "/api/settings/variables";

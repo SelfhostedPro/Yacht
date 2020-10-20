@@ -240,8 +240,6 @@ export default {
     },
     submit() {
       const data = this.form;
-      console.log("methods");
-      console.log(data);
       this.writeVolume(data);
     }
   },
