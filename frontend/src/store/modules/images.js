@@ -82,7 +82,7 @@ const actions = {
       })
       .finally(() => {
         commit("setLoading", false);
-        router.push({ name: "Image List" });
+        router.push({ name: "Images" });
       });
   },
   updateImage({ commit }, id) {
