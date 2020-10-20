@@ -4,7 +4,7 @@
       <v-toolbar-title>Server Template Variables</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <ValidationObserver>
+      <ValidationObserver v-slot="{ invalid }">
         <form>
           <transition-group
             name="slide"

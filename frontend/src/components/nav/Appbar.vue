@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app clipped-left>
+  <v-app-bar app clipped-left color="secondary">
     <img :src="themeLogo()" width="47" height="32" />
     <v-toolbar-title class="ml-2">Yacht</v-toolbar-title>
     <v-toolbar-title class="mx-auto font-weight-bold">
@@ -45,12 +45,9 @@ export default {
       logout: "auth/AUTH_LOGOUT",
     }),
     themeLogo() {
-      if (
-        !process.env.VUE_APP_THEME ||
-        process.env.VUE_APP_THEME == "Default"
-      ) {
+      if (this.$vuetify.theme.dark == true ) {
         return darkLogo
-      } else if (process.env.VUE_APP_THEME == "DigitalOcean") {
+      } else if (this.$vuetify.theme.dark == false) {
         return lightLogo
       }
     },

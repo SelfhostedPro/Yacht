@@ -3,42 +3,52 @@ import Vuetify from "vuetify/lib";
 
 Vue.use(Vuetify);
 
-// function is_dark() {
-//   if (process.env.VUE_APP_IS_DARK) {
-//     return process.env.VUE_APP_IS_DARK
-//   }
-// }
 function theme() {
-  var Default = {
-    theme: {
-      themes: {
-        dark: {
-          primary: "#41b883",
-          background: "#000"
+  var presetThemes = {
+    Default: {
+      theme: {
+        themes: {
+          dark: {
+            primary: "#41b883",
+            secondary: "#424242",
+            background: "#000000"
+          },
+          light: {
+            primary: "#41b883",
+            secondary: "#c4c4c4",
+            background: "#FFFFFF"
+          }
         },
+        dark: true,
+        options: {
+          customProperties: true,
+        }
       },
-      dark: true,
-      options: { customProperties: true }
     },
-  };
-  var DigitalOcean = {
-    theme: {
-      themes: {
-        light: {
-          primary: "#008bcf",
-          secondary: "#F3F5F9",
-          background: "#FFF"
+    DigitalOcean: {
+      theme: {
+        themes: {
+          light: {
+            primary: "#008bcf",
+            secondary: "#F3F5F9",
+            background: "#FFFFFF"
+          },
+          dark: {
+            primary: "#008bcf",
+            secondary: "#424242",
+            background: "#000000"
+          }
         },
+        dark: false,
+        options: {
+          customProperties: true,
+        }
       },
-      light: true,
-      options: { customProperties: true }
     },
-  };
-  if (!process.env.VUE_APP_THEME || process.env.VUE_APP_THEME == "Default") {
-    return Default;
-  } else if (process.env.VUE_APP_THEME == "DigitalOcean") {
-    return DigitalOcean;
   }
+  console.log(presetThemes)
+  console.log(process)
+  return presetThemes[process.env.VUE_APP_THEME || 'Default']
 }
 
 export default new Vuetify(theme());

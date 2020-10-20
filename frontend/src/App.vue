@@ -1,6 +1,5 @@
 <template>
-<!-- <html :style="{background: $vuetify.theme.themes[theme].background}"> -->
-  <v-app id="yacht" :style="{background: $vuetify.theme.themes[theme].background}">
+  <v-app id="yacht">
     <div v-if="isLoggedIn">
       <Sidebar />
       <Appbar />
@@ -31,7 +30,6 @@
     </div>
     <snackbar />
   </v-app>
-<!-- </html> -->
 </template>
 
 <script>
@@ -66,6 +64,21 @@ export default {
   },
   created() {
     this.authCheck();
+    
+  },
+  mounted(){
+    const dark_theme = localStorage.getItem("dark_theme");
+    const theme = JSON.parse(localStorage.getItem("theme"));
+
+    if (dark_theme == "false") {
+      this.$vuetify.theme.dark = false;
+    } else {
+      this.$vuetify.theme.dark = true;
+    }
+    if (theme) {
+      this.$vuetify.theme.themes = theme
+
+    }
   }
 };
 </script>
