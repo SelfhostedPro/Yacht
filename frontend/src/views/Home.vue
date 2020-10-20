@@ -82,7 +82,6 @@ export default {
   },
   methods: {
     readAppStats() {
-      console.log("Starting connection to Websocket");
       let url = "/api/users/me";
       axios.get(url, { withCredentials: true }).catch(err => {
         localStorage.removeItem("username");
@@ -95,7 +94,6 @@ export default {
       } else {
         proto = "wss://";
       }
-      console.log(location.protocol);
       this.statConnection = new WebSocket(
         `${proto}${location.hostname}:${location.port}/api/apps/stats`
       );
@@ -130,7 +128,6 @@ export default {
       };
     },
     refresh() {
-      console.log(this.stats);
       this.closeStats();
       this.readAppStats();
     },

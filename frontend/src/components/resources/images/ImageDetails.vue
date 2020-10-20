@@ -246,7 +246,6 @@ export default {
   created() {
     const imageid = this.$route.params.imageid;
     this.readImage(imageid);
-    console.log(this.image);
   }
 };
 </script>

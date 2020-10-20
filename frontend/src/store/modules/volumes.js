@@ -78,7 +78,6 @@ const actions = {
       .get(url)
       .then(response => {
         const volume = response.data;
-        console.log(volume);
         commit("setVolume", volume);
       })
       .catch(err => {
@@ -91,8 +90,6 @@ const actions = {
   writeVolume({ commit }, payload) {
     commit("setLoading", true);
     const url = "/api/resources/volumes/";
-    console.log("store");
-    console.log(payload);
     axios
       .post(url, payload)
       .then(response => {
@@ -114,7 +111,6 @@ const actions = {
       .get(url)
       .then(response => {
         const volume = response.data;
-        console.log(response.data);
         commit("setVolume", volume);
       })
       .catch(err => {

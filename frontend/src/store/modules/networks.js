@@ -78,7 +78,6 @@ const actions = {
       .get(url)
       .then(response => {
         const network = response.data;
-        console.log(network);
         commit("setNetwork", network);
       })
       .catch(err => {

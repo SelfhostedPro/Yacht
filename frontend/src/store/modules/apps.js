@@ -84,7 +84,6 @@ const actions = {
       commit("setAction", "");
     });
   },
-
   readApp({ commit }, Name) {
     const url = `/api/apps/${Name}`;
     commit("setLoading", true);

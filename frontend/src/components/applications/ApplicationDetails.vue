@@ -133,7 +133,6 @@ export default {
       this.readAppStats(appName);
     },
     readAppLogs(appName) {
-      console.log("Starting connection to Logs");
       var proto = "";
       if (location.protocol == "http:") {
         proto = "ws://";
@@ -160,7 +159,6 @@ export default {
       // this.connection.close("Leaving page or refreshing", 1001);
     },
     readAppStats(appName) {
-      console.log("Starting connection to Stats");
       var sproto = "";
       if (location.protocol == "http:") {
         sproto = "ws://";
