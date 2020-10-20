@@ -21,6 +21,6 @@ jobs:
       - name: build the image
         run: |
           docker buildx build --push \
-            --tag selfhostedpro/yacht:latest \
+            --tag selfhostedpro/yacht:do \
             --build-arg VUE_APP_THEME=DigitalOcean \
             --platform linux/amd64,linux/arm,linux/arm64 .
