@@ -10,16 +10,18 @@ function theme() {
         themes: {
           dark: {
             primary: "#41b883",
-            background: "#000"
+            secondary: "#424242",
+            background: "#000000"
           },
+          light: {
+            primary: "#41b883",
+            secondary: "#c4c4c4",
+            background: "#FFFFFF"
+          }
         },
         dark: true,
         options: {
           customProperties: true,
-          themeCache: {
-            get: key => localStorage.getItem(key),
-            set: (key, value) => localStorage.setItem(key, value)
-          }
         }
       },
     },
@@ -33,20 +35,19 @@ function theme() {
           },
           dark: {
             primary: "#008bcf",
+            secondary: "#424242",
             background: "#000000"
           }
         },
-        light: true,
+        dark: false,
         options: {
           customProperties: true,
-          themeCache: {
-            get: key => localStorage.getItem(key),
-            set: (key, value) => localStorage.setItem(key, value)
-          }
         }
       },
     },
   }
+  console.log(presetThemes)
+  console.log(process)
   return presetThemes[process.env.VUE_APP_THEME || 'Default']
 }
 

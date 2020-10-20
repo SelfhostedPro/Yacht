@@ -2,27 +2,26 @@
   <div>
     <v-card>
       <v-card-title>
-        Color Settings
+        Theme Settings
       </v-card-title>
       <v-card-text>
+          <h2>Colors:</h2> <br>
         <v-btn-toggle v-model="color_toggle">
           <v-btn :color="$vuetify.theme.themes[theme].primary" class="secondary--text">Primary</v-btn>
           <v-btn :color="$vuetify.theme.themes[theme].secondary" class="primary--text">Secondary</v-btn>
           <v-btn :color="$vuetify.theme.themes[theme].background" class="primary--text">Background</v-btn>
         </v-btn-toggle>
         <v-color-picker v-if="color_toggle !== undefined" v-model="picker" class="mt-2 ml-2" mode="hexa" :value="picker"/>
-      </v-card-text>
-    </v-card>
-    <v-card>
-      <v-card-title>
-        Logo Settings
-      </v-card-title>
-      <v-card-text>
+        <br>
+        <h2 class="mt-2">Logo:</h2>
         <v-switch
+          @change="setDarkmode"
           v-model="$vuetify.theme.dark"
           :label="`Dark Theme: ${$vuetify.theme.dark.toString()}`"
         />
       </v-card-text>
+      <v-btn class="ml-2 mb-2" @click="setTheme" color="primary">set</v-btn>
+      <v-btn class="ml-2 mb-2" @click="resetTheme" color="secondary">reset</v-btn>
     </v-card>
   </div>
 </template>
@@ -46,9 +45,6 @@ export default {
             else return null
         },
         set(v) {
-            console.log('v= ' + v)
-            console.log(this.$vuetify.theme.themes[this.theme])
-            console.log('theme_color= ' + this.$vuetify.theme.themes[this.theme].primary)
             if (this.color_toggle == 0) {this.$vuetify.theme.themes[this.theme].primary = v}
             else if (this.color_toggle == 1) {this.$vuetify.theme.themes[this.theme].secondary = v }
             else if (this.color_toggle == 2) {this.$vuetify.theme.themes[this.theme].background = v}
@@ -64,6 +60,18 @@ export default {
     backgroundColor(dark) {
       console.log(dark);
     },
+    setTheme(){
+        console.log(this.$vuetify.theme.themes)
+        localStorage.setItem("dark_theme", this.$vuetify.theme.dark.toString());
+        localStorage.setItem("theme", JSON.stringify(this.$vuetify.theme.themes))
+    },
+    setDarkmode(){
+        localStorage.setItem("dark_theme", this.$vuetify.theme.dark.toString());
+    },
+    resetTheme(){
+        localStorage.removeItem("theme")
+        window.location.reload()
+    }
   },
 };
 </script>
