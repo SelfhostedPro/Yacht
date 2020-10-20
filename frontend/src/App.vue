@@ -1,6 +1,5 @@
 <template>
-<!-- <html :style="{background: $vuetify.theme.themes[theme].background}"> -->
-  <v-app id="yacht" :style="{background: $vuetify.theme.themes[theme].background}">
+  <v-app id="yacht">
     <div v-if="isLoggedIn">
       <Sidebar />
       <Appbar />
@@ -31,7 +30,6 @@
     </div>
     <snackbar />
   </v-app>
-<!-- </html> -->
 </template>
 
 <script>

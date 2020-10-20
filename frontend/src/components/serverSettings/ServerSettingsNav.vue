@@ -4,6 +4,9 @@
       <v-tab class="text-left" :to="{ path: 'info' }">
         <v-icon left class="mr-1">mdi-information-outline</v-icon>Info
       </v-tab>
+      <v-tab class="text-left" :to="{ path: 'theme' }">
+        <v-icon left class="mr-1">mdi-format-color-fill</v-icon>Theme
+      </v-tab>
       <v-tab class="text-left" :to="{ path: 'templateVariables' }">
         <v-icon left class="mr-1">mdi-view-list-outline</v-icon>Template
         Variables

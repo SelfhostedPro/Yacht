@@ -45,12 +45,9 @@ export default {
       logout: "auth/AUTH_LOGOUT",
     }),
     themeLogo() {
-      if (
-        !process.env.VUE_APP_THEME ||
-        process.env.VUE_APP_THEME == "Default"
-      ) {
+      if (this.$vuetify.theme.dark == true ) {
         return darkLogo
-      } else if (process.env.VUE_APP_THEME == "DigitalOcean") {
+      } else if (this.$vuetify.theme.dark == false) {
         return lightLogo
       }
     },
