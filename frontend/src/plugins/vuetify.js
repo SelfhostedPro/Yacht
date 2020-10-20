@@ -46,8 +46,6 @@ function theme() {
       },
     },
   }
-  console.log(presetThemes)
-  console.log(process)
   return presetThemes[process.env.VUE_APP_THEME || 'Default']
 }
 

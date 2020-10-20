@@ -4,7 +4,13 @@
       <v-fade-transition>
         <v-progress-linear
           indeterminate
-          v-if="isLoading"
+          v-if="isLoading && isLoadingValue == null"
+          color="primary"
+          bottom
+        />
+        <v-progress-linear
+          v-model="isLoadingValue"
+          v-if="isLoading && isLoadingValue"
           color="primary"
           bottom
         />
@@ -22,7 +28,7 @@
               <v-list-item-icon><v-icon>mdi-refresh</v-icon></v-list-item-icon>
               <v-list-item-title>Refresh Apps</v-list-item-title>
             </v-list-item>
-            <v-list-item @click="checkUpdates()">
+            <v-list-item @click="checkUpdate(apps)">
               <v-list-item-icon><v-icon>mdi-update</v-icon></v-list-item-icon>
               <v-list-item-title>Check for updates</v-list-item-title>
             </v-list-item>
@@ -115,13 +121,13 @@
                 <v-divider
                   v-if="
                     !item.Config.Image.includes('selfhostedpro/yacht') &&
-                      updatable.includes(item.name)
+                      item.isUpdatable
                   "
                 />
                 <v-list-item
                   v-if="
                     !item.Config.Image.includes('selfhostedpro/yacht') &&
-                      updatable.includes(item.name)
+                      item.isUpdatable
                   "
                   @click="AppAction({ Name: item.name, Action: 'update' })"
                 >
@@ -153,7 +159,7 @@
             <span class="nametext ml-1">{{ item.name }}</span>
             <v-tooltip
               right
-              v-if="updatable.includes(item.name)"
+              v-if="item.isUpdatable"
               color="primary"
               class="mb-2"
             >
@@ -288,7 +294,8 @@ export default {
     ...mapActions({
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
-      checkUpdates: "apps/checkAppsUpdates"
+      checkUpdates: "apps/checkAppsUpdates",
+      checkUpdate: "apps/checkAppUpdate"
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
@@ -311,13 +318,12 @@ export default {
     }
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading", "action", "updatable"]),
+    ...mapState("apps", ["apps", "isLoading", "isLoadingValue", "action", "updatable"]),
     showHeaders() {
       return this.headers.filter(s => this.selectedHeaders.includes(s));
     }
   },
   created() {
-    console.log(this.headersMap);
     this.headers = Object.values(this.headersMap);
     this.selectedHeaders = this.headers;
   },
