@@ -47,6 +47,10 @@ def index():
 def check_app_updates(app_name):
     return actions.check_app_update(app_name)
 
+@router.get("/{app_name}/update", dependencies=[Depends(get_active_user)])
+def update_container(app_name):
+    return actions.app_update(app_name)
+
 @router.get("/{app_name}", dependencies=[Depends(get_active_user)])
 def get_container_details(app_name):
     return actions.get_app(app_name=app_name)
@@ -68,11 +72,6 @@ def get_container_processes(app_name):
 )
 def get_container_logs(app_name):
     return actions.get_app_logs(app_name=app_name)
-
-
-@router.get("/{app_name}/update", dependencies=[Depends(get_active_user)])
-def update_container(app_name):
-    return actions.app_update(app_name)
 
 
 @router.get("/actions/{app_name}/{action}", dependencies=[Depends(get_active_user)])
@@ -147,6 +146,7 @@ async def stats(websocket: WebSocket, app_name: str):
                         cpu_percent = await calculate_cpu_percent(line)
 
                     full_stats = {
+                        "time": line['read'],
                         "cpu_percent": cpu_percent,
                         "mem_current": mem_current,
                         "mem_total": mem_total,
