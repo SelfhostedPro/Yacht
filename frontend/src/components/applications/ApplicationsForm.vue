@@ -100,7 +100,7 @@
                 v-slot="{ errors, valid }"
               >
                 <v-select
-                  :items="['always', 'on-failure', 'unless-stopped']"
+                  :items="['always', 'on-failure', 'unless-stopped', 'none']"
                   label="Restart Policy"
                   v-model="form['restart_policy']"
                   :error-messages="errors"
