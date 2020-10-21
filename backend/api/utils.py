@@ -255,7 +255,7 @@ def conv_image2data(data):
 
 
 def conv_restart2data(data):
-    if data:
+    if data and data != 'none':
         return {"name": data}
     else:
         restart = None
