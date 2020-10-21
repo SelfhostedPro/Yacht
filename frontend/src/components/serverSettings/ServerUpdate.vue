@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card color="foreground">
     <v-fade-transition>
       <v-progress-linear
         indeterminate

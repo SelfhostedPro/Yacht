@@ -1,8 +1,8 @@
 <template lang="html">
-  <v-card class="d-flex mx-auto page">
+  <v-card color="foreground" class="d-flex mx-auto page">
     <v-container fluid class="component">
       <Nav />
-      <v-card tile>
+      <v-card color="foreground" tile>
         <v-row>
           <v-col class="flex-grow-1 flex-shrink-0">
             <v-card-title>

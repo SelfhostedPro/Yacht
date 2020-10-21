@@ -12,7 +12,7 @@
           <v-icon> mdi-chevron-down </v-icon>
         </v-btn>
       </template>
-      <v-list>
+      <v-list color="foreground">
         <v-list-item :to="{ path: `/user/info` }">
           <v-list-item-icon>
             <v-icon>mdi-account-settings-outline</v-icon>

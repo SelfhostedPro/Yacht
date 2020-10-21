@@ -1,20 +1,20 @@
 <template>
-  <v-card raised>
+  <v-card color="foreground" raised>
     <v-card-title class="primary font-weight-bold">
       Processes
     </v-card-title>
     <v-card-text
       v-if="app.State.Status != 'running'"
-      class="secondary text-center px-5 py-5"
+      class="text-center px-5 py-5"
     >
       Start the app to view processes
     </v-card-text>
-    <v-simple-table v-else-if="processes">
+    <v-simple-table class="foreground" v-else-if="processes">
       <template v-slot:default>
         <thead>
           <tr>
             <th
-              class="secondary"
+              class="foreground"
               v-for="(title, index) in processes.Titles"
               :key="index"
             >
@@ -22,7 +22,7 @@
             </th>
           </tr>
         </thead>
-        <tbody class="secondary">
+        <tbody class="foreground">
           <tr v-for="(item, index) in processes.Processes" :key="index">
             <td v-for="(field, index) in item" :key="index">{{ field }}</td>
           </tr>

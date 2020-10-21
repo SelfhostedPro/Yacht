@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="networks-list component" style="max-width: 90%">
-    <v-card>
+    <v-card color='foreground'>
       <ValidationObserver ref="general" v-slot="{ invalid }">
         <v-fade-transition>
           <v-progress-linear

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="elevation-12 pb-8">
+  <v-card color="foreground" class="elevation-12 pb-8">
     <v-toolbar color="primary" dark flat>
       <v-toolbar-title>User Settings</v-toolbar-title>
       <v-spacer></v-spacer>

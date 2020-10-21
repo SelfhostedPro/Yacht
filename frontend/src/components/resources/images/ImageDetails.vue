@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <v-card>
+    <v-card color='foreground'>
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -16,7 +16,7 @@
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
-          <v-list dense>
+          <v-list color='foreground' dense>
             <v-list-item
               v-if="image.RepoTags[0]"
               @click="updateImage(image.Id)"
@@ -47,11 +47,11 @@
         {{ image.RepoTags[0] || image.RepoDigests[0] }}
       </v-card-subtitle>
     </v-card>
-    <v-card class="mt-2">
+    <v-card color='foreground' class="mt-2">
       <v-card-title>
         Image Details
       </v-card-title>
-      <v-list dense>
+      <v-list color='foreground' dense>
         <v-list-item>
           <v-list-item-content>
             Tag
@@ -111,11 +111,11 @@
       </v-list>
     </v-card>
 
-    <v-card class="mt-2">
+    <v-card class="mt-2" color='foreground'>
       <v-card-title>
         Container Details
       </v-card-title>
-      <v-list dense>
+      <v-list dense color='foreground'>
         <v-list-item v-if="getCMD(image.ContainerConfig.Cmd)">
           <v-list-item-content style="max-width:20%">
             Command

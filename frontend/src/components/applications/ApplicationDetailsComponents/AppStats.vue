@@ -1,5 +1,5 @@
 <template>
-  <v-card raised>
+  <v-card color="foreground" raised>
     <v-card-title class="primary font-weight-bold">
       Stats
     </v-card-title>
@@ -10,7 +10,7 @@
       Start the app to view stats
     </v-card-text>
     <div v-else>
-      <v-card flat>
+      <v-card color="foreground" flat>
         <v-card-title>
           CPU Usage {{ stats.cpu_percent[stats.cpu_percent.length - 1] }}%
         </v-card-title>
@@ -20,7 +20,7 @@
         </v-card-subtitle>
         <PercentLineChart :chartData="fillCPU(stats.cpu_percent, stats.time)" />
       </v-card>
-      <v-card flat>
+      <v-card color="foreground" flat>
         <v-card-title>
           Memory Usage {{ stats.mem_percent[stats.mem_percent.length - 1] }}%,
           {{ formatBytes(stats.mem_current[stats.mem_current.length - 1]) }}/{{

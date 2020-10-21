@@ -10,7 +10,7 @@
       />
       <v-row align="center" justify="center" class="mt-12">
         <v-col cols="12" sm="8" md="4">
-          <v-card class="elevation-12 pb-8">
+          <v-card color="foreground" class="elevation-12 pb-8">
             <v-toolbar color="primary" dark flat>
               <v-toolbar-title>Login</v-toolbar-title>
               <v-spacer></v-spacer>
@@ -72,24 +72,25 @@ import { mapActions } from "vuex";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
       username: "",
       password: "",
-      show: false
+      show: false,
     };
   },
   methods: {
     ...mapActions({
       login: "auth/AUTH_REQUEST",
-      authCheck: "auth/AUTH_CHECK"
+      authCheck: "auth/AUTH_CHECK",
     }),
+
     onSubmit() {
       this.login({
         username: this.username,
-        password: this.password
+        password: this.password,
       });
     },
     mounted() {
@@ -99,13 +100,10 @@ export default {
       this.authCheck();
     },
     themeLogo() {
-      if (
-        !process.env.VUE_APP_THEME ||
-        process.env.VUE_APP_THEME == "Default"
-      ) {
-        return darkLogo
-      } else if (process.env.VUE_APP_THEME == "DigitalOcean") {
-        return lightLogo
+      if (this.$vuetify.theme.dark == true) {
+        return darkLogo;
+      } else if (this.$vuetify.theme.dark == false) {
+        return lightLogo;
       }
     },
   },

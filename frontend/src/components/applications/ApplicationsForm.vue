@@ -15,7 +15,7 @@
       <v-card-title>Note:</v-card-title>
       <v-card-text v-html="notes"></v-card-text>
     </v-card>
-    <v-stepper v-model="deployStep" alt-labels non-linear>
+    <v-stepper class="foreground" v-model="deployStep" alt-labels non-linear>
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -437,7 +437,7 @@
       </v-card-title>
       <v-expansion-panels flat accordion multiple focusable>
         <v-expansion-panel>
-          <v-expansion-panel-header color="secondary">
+          <v-expansion-panel-header color='foreground'>
             <v-row no-gutters>
               <v-col cols="2">Devices</v-col>
               <v-col cols="4" class="text--secondary">
@@ -445,7 +445,7 @@
               </v-col>
             </v-row>
           </v-expansion-panel-header>
-          <v-expansion-panel-content color="secondary">
+          <v-expansion-panel-content color='foreground'>
             <form>
               <transition-group
                 name="slide"
@@ -505,7 +505,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header color="secondary">
+          <v-expansion-panel-header color='foreground'>
             <v-row no-gutters>
               <v-col cols="2">Labels</v-col>
               <v-col cols="4" class="text--secondary">
@@ -513,7 +513,7 @@
               </v-col>
             </v-row>
           </v-expansion-panel-header>
-          <v-expansion-panel-content color="secondary">
+          <v-expansion-panel-content color='foreground'>
             <form>
               <transition-group
                 name="slide"
@@ -572,13 +572,13 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header color="secondary">
+          <v-expansion-panel-header color='foreground'>
             <v-row no-gutters>
               <v-col cols="2">Sysctls</v-col>
               <v-col cols="4" class="text--secondary"> (Kernel Options) </v-col>
             </v-row>
           </v-expansion-panel-header>
-          <v-expansion-panel-content color="secondary">
+          <v-expansion-panel-content color='foreground'>
             <form>
               <transition-group
                 name="slide"
@@ -638,7 +638,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header color="secondary">
+          <v-expansion-panel-header color='foreground'>
             <v-row no-gutters>
               <v-col cols="2">Capabilities</v-col>
               <v-col cols="4" class="text--secondary">
@@ -646,7 +646,7 @@
               </v-col>
             </v-row></v-expansion-panel-header
           >
-          <v-expansion-panel-content color="secondary">
+          <v-expansion-panel-content color='foreground'>
             <form>
               <v-select
                 v-model="form['cap_add']"
