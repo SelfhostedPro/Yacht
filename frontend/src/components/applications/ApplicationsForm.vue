@@ -145,7 +145,7 @@
               </v-row>
               <transition-group
                 v-if="
-                  form.network_mode !== 'bridge' && form.network !== 'bridge'
+                  form.network_mode !== 'host' && form.network !== 'host'
                 "
                 name="slide"
                 enter-active-class="animated fadeInLeft fast-anim"

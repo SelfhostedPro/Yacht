@@ -26,7 +26,13 @@ def get_running_apps():
 
 def check_app_update(app_name):
     dclient = docker.from_env()
-    app = dclient.containers.get(app_name)
+    try:
+        app = dclient.containers.get(app_name)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
+        
     if app.attrs["Config"]["Image"]:
         if _update_check(app.attrs["Config"]["Image"]):
             app.attrs.update(conv2dict("isUpdatable", True))
@@ -52,7 +58,12 @@ def get_apps():
 
 def get_app(app_name):
     dclient = docker.from_env()
-    app = dclient.containers.get(app_name)
+    try:
+        app = dclient.containers.get(app_name)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
     attrs = app.attrs
 
     attrs.update(conv2dict("ports", app.ports))
