@@ -3,21 +3,67 @@
     <v-container fluid class="templateDetailsContainer component">
       <v-card-title class="primary font-weight-bold">
         Stats <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
+        <!-- <v-menu min-width="20vw" :close-on-content-click="false" offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon size="small" v-bind="attrs" v-on="on">
+              <v-icon>mdi-chevron-down</v-icon>
+            </v-btn>
+          </template>
+
+          <v-card>
+            <v-card-title>
+              Chart Settings
+            </v-card-title>
+            <v-list>
+              <v-list-item>
+                <v-slider
+                  thumb-label
+                  thumb-size="20"
+                  label="Width"
+                  min="1"
+                  max="500"
+                />
+              </v-list-item>
+              <v-list-item>
+                <v-slider
+                  thumb-label
+                  thumb-size="20"
+                  label="Height"
+                  min="1vh"
+                  max="100vh"
+                />
+              </v-list-item>
+              <v-list-item>
+                <v-slider
+                  thumb-label
+                  thumb-size="20"
+                  label="Row"
+                  min="1"
+                  max="12"
+                />
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-menu> -->
       </v-card-title>
       <v-card-text class="secondary text-center px-5 py-5">
         <v-row dense class="mt-3">
           <v-col
             v-for="app in sortByTitle(stats)"
             :key="app.name"
-            cols="36"
+            cols="12"
             xl="2"
-            md="4"
-            sm="4"
-            xs="12"
+            lg="2"
+            md="3"
+            sm="3"
             class="d-flex"
             style="flex-direction:column"
           >
-            <v-card class="flex-grow-1">
+            <v-card
+              :width="chartWidth"
+              :height="chartHeight"
+              class="flex-grow-1"
+            >
               <v-card-title class="pb-0">
                 <v-tooltip top transition="scale-transition">
                   <template v-slot:activator="{ on, attrs }">
@@ -73,17 +119,17 @@ import axios from "axios";
 import PercentBarChart from "../components/charts/PercentBarChart";
 export default {
   components: {
-    PercentBarChart
+    PercentBarChart,
   },
   data() {
     return {
-      stats: {}
+      stats: {},
     };
   },
   methods: {
     readAppStats() {
       let url = "/api/users/me";
-      axios.get(url, { withCredentials: true }).catch(err => {
+      axios.get(url, { withCredentials: true }).catch((err) => {
         localStorage.removeItem("username");
         window.location.reload();
         console.log(err);
@@ -102,7 +148,7 @@ export default {
           JSON.stringify({ type: "onopen", data: "Connected!" })
         );
       };
-      this.statConnection.onmessage = event => {
+      this.statConnection.onmessage = (event) => {
         let statsGroup = JSON.parse(event.data);
         if (this.stats[statsGroup.name] == null) {
           this.initStats(statsGroup);
@@ -145,7 +191,7 @@ export default {
         .reduce(
           (acc, key) => ({
             ...acc,
-            [key]: arr[key]
+            [key]: arr[key],
           }),
           {}
         );
@@ -179,24 +225,24 @@ export default {
           {
             label: "CPU Usage",
             backgroundColor: "#41b883",
-            data: app.cpu_percent
+            data: app.cpu_percent,
           },
           {
             label: "Mem Usage",
             backgroundColor: "#008bcf",
-            data: app.mem_percent
-          }
-        ]
+            data: app.mem_percent,
+          },
+        ],
       };
       return datacollection;
-    }
+    },
   },
   async mounted() {
     this.readAppStats();
   },
   beforeDestroy() {
     this.closeStats();
-  }
+  },
 };
 </script>
 
