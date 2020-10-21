@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="apps-list component" style="max-width: 90%">
-    <v-card>
+    <v-card color='foreground'>
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -23,7 +23,7 @@
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
-          <v-list dense>
+          <v-list color='foreground' dense>
             <v-list-item @click="refresh()">
               <v-list-item-icon><v-icon>mdi-refresh</v-icon></v-list-item-icon>
               <v-list-item-title>Refresh Apps</v-list-item-title>
@@ -49,11 +49,11 @@
           color="secondary"
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" class="ml-2">
+            <v-btn color="secondary" v-bind="attrs" v-on="on" class="ml-2">
               Columns
             </v-btn>
           </template>
-          <v-list>
+          <v-list color='foreground'>
             <v-list-item
               color="primary"
               v-for="(item, index) in headers"
@@ -73,7 +73,7 @@
       <v-card-subtitle v-if="action">{{ action }} </v-card-subtitle>
       <v-data-table
         style="width: 99%"
-        class="mx-auto"
+        class="mx-auto foreground"
         :headers="selectedHeaders"
         :items="apps"
         :items-per-page="10"
@@ -93,7 +93,7 @@
                   <v-icon>mdi-chevron-down</v-icon>
                 </v-btn>
               </template>
-              <v-list dense>
+              <v-list color='foreground' dense>
                 <v-list-item
                   @click="AppAction({ Name: item.name, Action: 'start' })"
                 >

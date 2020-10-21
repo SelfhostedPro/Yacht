@@ -1,5 +1,5 @@
 <template>
-  <v-card raised>
+  <v-card color="foreground" raised>
     <v-card-title class="primary font-weight-bold">
       Logs
     </v-card-title>

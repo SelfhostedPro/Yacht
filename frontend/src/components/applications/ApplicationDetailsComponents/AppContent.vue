@@ -8,7 +8,7 @@
               General container information
             </v-card-subtitle> -->
       <v-divider />
-      <v-list class="secondary px-5">
+      <v-list class="foreground px-5">
         <v-list-item>
           <v-list-item-content
             ><v-list-item-title class="font-weight-bold"
@@ -88,11 +88,11 @@
       <v-divider />
       <v-card-text
         v-if="app.State.Status != 'running'"
-        class="secondary text-center px-5 py-5"
+        class="foreground text-center px-5 py-5"
       >
         Start the app to view ports
       </v-card-text>
-      <v-simple-table v-else class="secondary px-0 text-center">
+      <v-simple-table v-else class="foreground px-0 text-center">
         <template v-slot:default>
           <thead>
             <tr>
@@ -142,7 +142,7 @@
       >
         Start the app to view volumes
       </v-card-text>
-      <v-simple-table v-else class="secondary px-0 text-center">
+      <v-simple-table v-else class="foreground px-0 text-center">
         <template v-slot:default>
           <thead>
             <tr>
@@ -172,7 +172,7 @@
       >
         Start the app to view volumes
       </v-card-text>
-      <v-simple-table v-else class="secondary px-0 text-center">
+      <v-simple-table v-else class="foreground px-0 text-center">
         <template v-slot:default>
           <thead>
             <tr>
@@ -205,7 +205,7 @@
               General container information
             </v-card-subtitle> -->
       <v-divider />
-      <v-list class="secondary px-5">
+      <v-list class="foreground px-5">
         <v-list-item v-if="app.HostConfig.CapAdd">
           <v-list-item-content
             ><v-list-item-title class="font-weight-bold"
@@ -267,7 +267,7 @@
       <v-card-title class="subheading teal darken-1 font-weight-bold">
         Container Labels
       </v-card-title>
-      <v-simple-table class="secondary px-0 text-center">
+      <v-simple-table class="foreground px-0 text-center">
         <template v-slot:default>
           <thead>
             <tr>

@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <v-card>
+    <v-card color='foreground'>
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -16,7 +16,7 @@
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
-          <v-list dense>
+          <v-list color='foreground' dense>
             <v-list-item
               @click="
                 deleteNetwork(network.Name);
@@ -45,11 +45,11 @@
         {{ network.Id }}
       </v-card-subtitle>
     </v-card>
-    <v-card class="mt-2">
+    <v-card color='foreground' class="mt-2">
       <v-card-title>
         Network Information
       </v-card-title>
-      <v-list dense>
+      <v-list color='foreground' dense>
         <v-list-item>
           <v-list-item-content>
             Name
@@ -120,7 +120,7 @@
           </v-list-item-content>
           <v-list-item-content>
             <v-card outlined tile>
-              <v-simple-table dense>
+              <v-simple-table class='foreground' dense>
                 <tbody>
                   <tr
                     v-for="(value, key, index) in network.Labels"
@@ -144,11 +144,11 @@
       </v-list>
     </v-card>
 
-    <v-card class="mt-2">
+    <v-card color='foreground' class="mt-2">
       <v-card-title>
         Network Details
       </v-card-title>
-      <v-list dense>
+      <v-list color='foreground' dense>
         <v-list-item>
           <v-list-item-content style="max-width: 30%">
             IPV4 Subnet
@@ -217,13 +217,13 @@
       </v-list>
     </v-card>
 
-    <v-card class="mt-2">
+    <v-card color='foreground' class="mt-2">
       <v-card-title>
         Attached Containers
       </v-card-title>
       <v-data-table
         style="max-width: 99%;"
-        class="mx-auto network-datatable"
+        class="mx-auto network-datatable foreground"
         :headers="headers"
         :items="conv2array(network.Containers)"
         @click:row="handleRowClick"

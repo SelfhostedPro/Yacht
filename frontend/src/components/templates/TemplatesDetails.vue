@@ -5,7 +5,7 @@
       v-if="template"
       class="templateDetailsContainer component"
     >
-      <v-card>
+      <v-card color='foreground'>
         <v-fade-transition>
           <v-progress-linear
             indeterminate
@@ -34,7 +34,7 @@
           class="d-flex"
           style="flex-direction:column"
         >
-          <v-card class="flex-grow-1">
+          <v-card color='foreground' class="flex-grow-1">
             <v-img
               :src="item.logo"
               contain
@@ -85,7 +85,7 @@
       max-width="90%"
       v-if="selectedApp"
     >
-      <v-card raised shaped>
+      <v-card color='foreground' raised shaped>
         <v-fade-transition>
           <v-progress-linear
             indeterminate

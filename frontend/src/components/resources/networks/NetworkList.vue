@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="networks-list component" style="max-width: 90%">
-    <v-card>
+    <v-card color='foreground'>
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -32,7 +32,7 @@
 
       <v-data-table
         style="max-width: 99%;"
-        class="mx-auto network-datatable"
+        class="mx-auto network-datatable foreground"
         :headers="headers"
         :items="networks"
         :items-per-page="10"
@@ -72,7 +72,7 @@
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
-              <v-list dense>
+              <v-list color='foreground' dense>
                 <v-list-item @click="networkDetails(item.Id)">
                   <v-list-item-icon>
                     <v-icon>mdi-eye</v-icon>

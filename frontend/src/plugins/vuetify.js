@@ -11,12 +11,16 @@ function theme() {
           dark: {
             primary: "#41b883",
             secondary: "#424242",
-            background: "#000000"
+            background: "#000000",
+            tabs: "#1E1E1E",
+            foreground: "#1E1E1E"
           },
           light: {
             primary: "#41b883",
             secondary: "#c4c4c4",
-            background: "#FFFFFF"
+            background: "#FFFFFF",
+            tabs: "#FFFFFF",
+            foreground: "#FFFFFF"
           }
         },
         dark: true,
@@ -31,12 +35,16 @@ function theme() {
           light: {
             primary: "#008bcf",
             secondary: "#F3F5F9",
-            background: "#FFFFFF"
+            background: "#FFFFFF",
+            tabs: "#FFFFFF",
+            foreground: "#FFFFFF"
           },
           dark: {
             primary: "#008bcf",
             secondary: "#424242",
-            background: "#000000"
+            background: "#000000",
+            tabs: "#1E1E1E",
+            foreground: "#1E1E1E"
           }
         },
         dark: false,

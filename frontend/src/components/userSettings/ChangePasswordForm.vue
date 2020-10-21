@@ -1,6 +1,6 @@
 <template>
   <ValidationObserver ref="obs1" v-slot="{ invalid }">
-    <v-card class="elevation-12 pb-8">
+    <v-card color="foreground" class="elevation-12 pb-8">
       <v-toolbar color="primary" dark flat>
         <v-toolbar-title>Change Password</v-toolbar-title>
       </v-toolbar>
