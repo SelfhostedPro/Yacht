@@ -67,7 +67,7 @@ const actions = {
     await commit("setAction", "Checking for updates...");
     await Promise.all(
       apps.map(async (_app) => {
-        let url = `/api/apps/updates/${_app.name}`;
+        let url = `/api/apps/${_app.name}/updates`;
         await axios
           .get(url)
           .then((response) => {
@@ -130,7 +130,7 @@ const actions = {
   AppAction({ commit }, { Name, Action }) {
     commit("setLoading", true);
     commit("setAction", Action + " " + Name + " ...");
-    const url = `/api/apps/${Name}/${Action}`;
+    const url = `/api/apps/actions/${Name}/${Action}`;
     axios
       .get(url)
       .then((response) => {

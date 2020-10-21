@@ -43,7 +43,7 @@ def get_db():
 def index():
     return actions.get_apps()
 
-@router.get("/updates/{app_name}", dependencies=[Depends(get_active_user)])
+@router.get("/{app_name}/updates", dependencies=[Depends(get_active_user)])
 def check_app_updates(app_name):
     return actions.check_app_update(app_name)
 
@@ -75,7 +75,7 @@ def update_container(app_name):
     return actions.app_update(app_name)
 
 
-@router.get("/{app_name}/{action}", dependencies=[Depends(get_active_user)])
+@router.get("/actions/{app_name}/{action}", dependencies=[Depends(get_active_user)])
 def container_actions(app_name, action):
     return actions.app_action(app_name, action)
 
