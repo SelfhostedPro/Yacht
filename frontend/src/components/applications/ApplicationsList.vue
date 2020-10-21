@@ -129,7 +129,7 @@
                     !item.Config.Image.includes('selfhostedpro/yacht') &&
                       item.isUpdatable
                   "
-                  @click="AppAction({ Name: item.name, Action: 'update' })"
+                  @click="Update(item.name)"
                 >
                   <v-list-item-icon>
                     <v-icon>mdi-update</v-icon>
@@ -294,7 +294,7 @@ export default {
     ...mapActions({
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
-      checkUpdates: "apps/checkAppsUpdates",
+      Update: "apps/AppUpdate",
       checkUpdate: "apps/checkAppUpdate"
     }),
     handleRowClick(appName) {

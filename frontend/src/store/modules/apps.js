@@ -127,6 +127,25 @@ const actions = {
         commit("snackbar/setErr", err, { root: true });
       });
   },
+  AppUpdate({ commit }, Name) {
+    commit("setLoading", true);
+    commit("setAction", "Updating " + Name + " ...");
+    const url = `/api/apps/${Name}/update`;   
+    axios
+      .get(url)
+      .then((response) => {
+        const app = response.data;
+        commit("setApps", app);
+      })
+      .catch((err) => {
+        commit("snackbar/setErr", err, { root: true });
+      })
+      .finally(() => {
+        commit("setUpdated", Name);
+        commit("setLoading", false);
+        commit("setAction", "");
+      });
+  },
   AppAction({ commit }, { Name, Action }) {
     commit("setLoading", true);
     commit("setAction", Action + " " + Name + " ...");
