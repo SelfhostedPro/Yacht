@@ -64,7 +64,7 @@ def add_template(db: Session, template: models.containers.Template):
                     # Optional use classmethod from_dict
                     try:
                         template_content = models.containers.TemplateItem(
-                            type=int(entry['type']),
+                            type=int(entry.get('type', 1)),
                             title=entry['title'],
                             platform=entry['platform'],
                             description=entry.get('description', ''),
@@ -95,7 +95,7 @@ def add_template(db: Session, template: models.containers.Template):
 
                 # Optional use classmethod from_dict
                 template_content = models.containers.TemplateItem(
-                    type=int(entry['type']),
+                    type=int(entry.get('type', 1)),
                     title=entry['title'],
                     platform=entry['platform'],
                     description=entry.get('description', ''),
@@ -119,7 +119,7 @@ def add_template(db: Session, template: models.containers.Template):
         # Optional handle KeyError here too.
         print('data request failed', err)
         raise HTTPException(
-            status_code=exc.response.status_code, detail=exc.explanation
+            status_code=err.status_code, detail=err.explanation
             )
 
     try:

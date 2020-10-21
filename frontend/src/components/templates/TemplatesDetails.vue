@@ -139,7 +139,7 @@
                 >
                 <v-list-item-content>
                   <v-list-item-title class="px-5 text-centered">
-                    {{ selectedApp.image }}
+                    <a :href="'https://'+'hub.docker.com/r/' + selectedApp.image.split(':')[0]">{{ selectedApp.image }}</a>
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>

@@ -94,6 +94,7 @@ const actions = {
           const app = response.data;
           commit("setLoading", false);
           commit("setApp", app);
+          console.log(app)
           resolve(app);
         })
         .catch((err) => {
