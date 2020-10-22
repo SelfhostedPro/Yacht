@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.session import make_transient
 
+from fastapi import HTTPException
+
 from .. import models, schemas
 from ...utils import conv_ports2dict, conv_sysctls2dict
 
@@ -56,31 +58,35 @@ def add_template(db: Session, template: models.containers.Template):
                 raise
             if type(loaded_file) == list:
                 for entry in loaded_file:
-                    if entry.get('ports'):
-                        ports = conv_ports2dict(entry.get('ports', []))
+                    ports = conv_ports2dict(entry.get('ports', []))
                     sysctls = conv_sysctls2dict(entry.get('sysctls', []))
 
                     # Optional use classmethod from_dict
-                    template_content = models.containers.TemplateItem(
-                        type=int(entry['type']),
-                        title=entry['title'],
-                        platform=entry['platform'],
-                        description=entry.get('description', ''),
-                        name=entry.get('name', entry['title'].lower()),
-                        logo=entry.get('logo', ''),  # default logo here!
-                        image=entry.get('image', ''),
-                        notes=entry.get('note', ''),
-                        categories=entry.get('categories', ''),
-                        restart_policy=entry.get('restart_policy'),
-                        ports=ports,
-                        network_mode=entry.get('network_mode', ''),
-                        volumes=entry.get('volumes', []),
-                        env=entry.get('env', []),
-                        devices=entry.get('devices', []),
-                        labels=entry.get('labels', []),
-                        sysctls=sysctls,
-                        cap_add=entry.get('cap_add', [])
-                    )
+                    try:
+                        template_content = models.containers.TemplateItem(
+                            type=int(entry.get('type', 1)),
+                            title=entry['title'],
+                            platform=entry['platform'],
+                            description=entry.get('description', ''),
+                            name=entry.get('name', entry['title'].lower()),
+                            logo=entry.get('logo', ''),  # default logo here!
+                            image=entry.get('image', ''),
+                            notes=entry.get('note', ''),
+                            categories=entry.get('categories', ''),
+                            restart_policy=entry.get('restart_policy'),
+                            ports=ports,
+                            network_mode=entry.get('network_mode', ''),
+                            volumes=entry.get('volumes', []),
+                            env=entry.get('env', []),
+                            devices=entry.get('devices', []),
+                            labels=entry.get('labels', []),
+                            sysctls=sysctls,
+                            cap_add=entry.get('cap_add', [])
+                        )
+                    except Exception as exc:
+                        raise HTTPException(
+                            status_code=exc.response.status_code, detail=entry.get('name') + ' ' + exc.explanation
+                        )
                     _template.items.append(template_content)
             elif type(loaded_file) == dict:
                 entry = loaded_file
@@ -89,7 +95,7 @@ def add_template(db: Session, template: models.containers.Template):
 
                 # Optional use classmethod from_dict
                 template_content = models.containers.TemplateItem(
-                    type=int(entry['type']),
+                    type=int(entry.get('type', 1)),
                     title=entry['title'],
                     platform=entry['platform'],
                     description=entry.get('description', ''),
@@ -112,7 +118,9 @@ def add_template(db: Session, template: models.containers.Template):
     except (OSError, TypeError, ValueError) as err:
         # Optional handle KeyError here too.
         print('data request failed', err)
-        raise
+        raise HTTPException(
+            status_code=err.status_code, detail=err.explanation
+            )
 
     try:
         db.add(_template)
@@ -136,13 +144,15 @@ def refresh_template(db: Session, template_id: id):
     items = []
     try:
         with urllib.request.urlopen(template.url) as fp:
-            if ext in (".yml", '.yaml'):
+            if ext.rstrip() in (".yml", '.yaml'):
                 loaded_file = yaml.load(fp, Loader=yaml.SafeLoader)
-            elif ext in (".json"):
+            elif ext.rstrip() in (".json"):
                 loaded_file = json.load(fp)
             else:
                 print('Invalid filetype')
-                raise
+                raise HTTPException(
+                status_code=422, detail="Invalid filetype"
+                )
             if type(loaded_file) == list:
                 for entry in loaded_file:
 
@@ -200,7 +210,9 @@ def refresh_template(db: Session, template_id: id):
                 items.append(template_content)
     except Exception as exc:
         print('Template update failed. ERR_001', exc)
-        raise
+        raise HTTPException(
+            status_code=exc.status_code, detail=exc.explanation
+            )
     else:
         # db.delete(template)
         # make_transient(template)
@@ -216,7 +228,9 @@ def refresh_template(db: Session, template_id: id):
         except Exception as exc:
             db.rollback()
             print('Template update failed. ERR_002', exc)
-            raise
+            raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+            )
 
     return template
 
@@ -227,8 +241,9 @@ def read_app_template(db, app_id):
             models.TemplateItem.id == app_id).first()
         return template_item
     except Exception as exc:
-        print('App template not found')
-        raise
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+            )
 
 
 def set_template_variables(db: Session, new_variables: models.TemplateVariables):
@@ -253,8 +268,11 @@ def set_template_variables(db: Session, new_variables: models.TemplateVariables)
 
         return new_template_variables
 
-    except IntegrityError as err:
-        abort(400, {'error': 'Bad Request'})
+    except IntegrityError as exc:
+        print(exc)
+        raise HTTPException(
+            status_code=exc.status_code, detail=exc.explanation
+            )
 
 
 def read_template_variables(db: Session):

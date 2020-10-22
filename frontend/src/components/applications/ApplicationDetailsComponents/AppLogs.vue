@@ -1,5 +1,5 @@
 <template>
-  <v-card raised>
+  <v-card color="foreground" raised>
     <v-card-title class="primary font-weight-bold">
       Logs
     </v-card-title>
@@ -42,7 +42,7 @@ export default {
   font: 1rem Inconsolata, monospace;
 }
 #logcontainer {
-  background-color: black;
+  background-color: var(--v-background-base) !important;
 }
 .keep-whitespace {
   white-space: pre;

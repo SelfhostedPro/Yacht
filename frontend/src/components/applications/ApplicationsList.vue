@@ -1,10 +1,16 @@
 <template lang="html">
   <div class="apps-list component" style="max-width: 90%">
-    <v-card>
+    <v-card color='foreground'>
       <v-fade-transition>
         <v-progress-linear
           indeterminate
-          v-if="isLoading"
+          v-if="isLoading && isLoadingValue == null"
+          color="primary"
+          bottom
+        />
+        <v-progress-linear
+          v-model="isLoadingValue"
+          v-if="isLoading && isLoadingValue"
           color="primary"
           bottom
         />
@@ -17,12 +23,12 @@
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
-          <v-list dense>
+          <v-list color='foreground' dense>
             <v-list-item @click="refresh()">
               <v-list-item-icon><v-icon>mdi-refresh</v-icon></v-list-item-icon>
               <v-list-item-title>Refresh Apps</v-list-item-title>
             </v-list-item>
-            <v-list-item @click="checkUpdates()">
+            <v-list-item @click="checkUpdate(apps)">
               <v-list-item-icon><v-icon>mdi-update</v-icon></v-list-item-icon>
               <v-list-item-title>Check for updates</v-list-item-title>
             </v-list-item>
@@ -43,11 +49,11 @@
           color="secondary"
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" class="ml-2">
+            <v-btn color="secondary" v-bind="attrs" v-on="on" class="ml-2">
               Columns
             </v-btn>
           </template>
-          <v-list>
+          <v-list color='foreground'>
             <v-list-item
               color="primary"
               v-for="(item, index) in headers"
@@ -67,7 +73,7 @@
       <v-card-subtitle v-if="action">{{ action }} </v-card-subtitle>
       <v-data-table
         style="width: 99%"
-        class="mx-auto"
+        class="mx-auto foreground"
         :headers="selectedHeaders"
         :items="apps"
         :items-per-page="10"
@@ -87,7 +93,7 @@
                   <v-icon>mdi-chevron-down</v-icon>
                 </v-btn>
               </template>
-              <v-list dense>
+              <v-list color='foreground' dense>
                 <v-list-item
                   @click="AppAction({ Name: item.name, Action: 'start' })"
                 >
@@ -115,15 +121,15 @@
                 <v-divider
                   v-if="
                     !item.Config.Image.includes('selfhostedpro/yacht') &&
-                      updatable.includes(item.name)
+                      item.isUpdatable
                   "
                 />
                 <v-list-item
                   v-if="
                     !item.Config.Image.includes('selfhostedpro/yacht') &&
-                      updatable.includes(item.name)
+                      item.isUpdatable
                   "
-                  @click="AppAction({ Name: item.name, Action: 'update' })"
+                  @click="Update(item.name)"
                 >
                   <v-list-item-icon>
                     <v-icon>mdi-update</v-icon>
@@ -153,7 +159,7 @@
             <span class="nametext ml-1">{{ item.name }}</span>
             <v-tooltip
               right
-              v-if="updatable.includes(item.name)"
+              v-if="item.isUpdatable"
               color="primary"
               class="mb-2"
             >
@@ -288,7 +294,8 @@ export default {
     ...mapActions({
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
-      checkUpdates: "apps/checkAppsUpdates"
+      Update: "apps/AppUpdate",
+      checkUpdate: "apps/checkAppUpdate"
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
@@ -311,13 +318,12 @@ export default {
     }
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading", "action", "updatable"]),
+    ...mapState("apps", ["apps", "isLoading", "isLoadingValue", "action", "updatable"]),
     showHeaders() {
       return this.headers.filter(s => this.selectedHeaders.includes(s));
     }
   },
   created() {
-    console.log(this.headersMap);
     this.headers = Object.values(this.headersMap);
     this.selectedHeaders = this.headers;
   },

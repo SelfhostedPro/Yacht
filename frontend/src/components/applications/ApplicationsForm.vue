@@ -15,7 +15,7 @@
       <v-card-title>Note:</v-card-title>
       <v-card-text v-html="notes"></v-card-text>
     </v-card>
-    <v-stepper v-model="deployStep" alt-labels non-linear>
+    <v-stepper class="foreground" v-model="deployStep" alt-labels non-linear>
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -100,7 +100,7 @@
                 v-slot="{ errors, valid }"
               >
                 <v-select
-                  :items="['always', 'on-failure', 'unless-stopped']"
+                  :items="['always', 'on-failure', 'unless-stopped', 'none']"
                   label="Restart Policy"
                   v-model="form['restart_policy']"
                   :error-messages="errors"
@@ -145,7 +145,7 @@
               </v-row>
               <transition-group
                 v-if="
-                  form.network_mode !== 'bridge' && form.network !== 'bridge'
+                  form.network_mode !== 'host' && form.network !== 'host'
                 "
                 name="slide"
                 enter-active-class="animated fadeInLeft fast-anim"
@@ -259,7 +259,7 @@
             <v-btn
               color="secondary"
               @click="deployStep -= 1"
-              class="mx-2 float-right"
+              class="mx-2 float-right primary--text"
             >
               Back
             </v-btn>
@@ -337,7 +337,7 @@
             <v-btn
               color="secondary"
               @click="deployStep -= 1"
-              class="mx-2 float-right"
+              class="mx-2 float-right primary--text"
             >
               Back
             </v-btn>
@@ -423,7 +423,7 @@
             <v-btn
               color="secondary"
               @click="deployStep -= 1"
-              class="mx-2 float-right"
+              class="mx-2 float-right primary--text"
             >
               Back
             </v-btn>
@@ -431,13 +431,13 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
-    <v-card color="secondary" class="mt-5">
+    <v-card color="primary" class="mt-5">
       <v-card-title>
         Advanced
       </v-card-title>
       <v-expansion-panels flat accordion multiple focusable>
         <v-expansion-panel>
-          <v-expansion-panel-header color="#303030">
+          <v-expansion-panel-header color='foreground'>
             <v-row no-gutters>
               <v-col cols="2">Devices</v-col>
               <v-col cols="4" class="text--secondary">
@@ -445,7 +445,7 @@
               </v-col>
             </v-row>
           </v-expansion-panel-header>
-          <v-expansion-panel-content color="#303030">
+          <v-expansion-panel-content color='foreground'>
             <form>
               <transition-group
                 name="slide"
@@ -505,7 +505,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header color="#303030">
+          <v-expansion-panel-header color='foreground'>
             <v-row no-gutters>
               <v-col cols="2">Labels</v-col>
               <v-col cols="4" class="text--secondary">
@@ -513,7 +513,7 @@
               </v-col>
             </v-row>
           </v-expansion-panel-header>
-          <v-expansion-panel-content color="#303030">
+          <v-expansion-panel-content color='foreground'>
             <form>
               <transition-group
                 name="slide"
@@ -572,13 +572,13 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header color="#303030">
+          <v-expansion-panel-header color='foreground'>
             <v-row no-gutters>
               <v-col cols="2">Sysctls</v-col>
               <v-col cols="4" class="text--secondary"> (Kernel Options) </v-col>
             </v-row>
           </v-expansion-panel-header>
-          <v-expansion-panel-content color="#303030">
+          <v-expansion-panel-content color='foreground'>
             <form>
               <transition-group
                 name="slide"
@@ -638,7 +638,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header color="#303030">
+          <v-expansion-panel-header color='foreground'>
             <v-row no-gutters>
               <v-col cols="2">Capabilities</v-col>
               <v-col cols="4" class="text--secondary">
@@ -646,7 +646,7 @@
               </v-col>
             </v-row></v-expansion-panel-header
           >
-          <v-expansion-panel-content color="#303030">
+          <v-expansion-panel-content color='foreground'>
             <form>
               <v-select
                 v-model="form['cap_add']"
@@ -831,8 +831,6 @@ export default {
           console.error(error, error.response);
           this.setErr(error);
         }
-      } else {
-        console.log("No app selected");
       }
     }
   },

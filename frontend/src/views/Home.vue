@@ -1,5 +1,5 @@
 <template>
-  <v-card raised>
+  <v-card color="foreground" raised>
     <v-container fluid class="templateDetailsContainer component">
       <v-card-title class="primary font-weight-bold">
         Stats <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
@@ -9,15 +9,18 @@
           <v-col
             v-for="app in sortByTitle(stats)"
             :key="app.name"
-            cols="36"
+            cols="12"
             xl="2"
-            md="4"
-            sm="4"
-            xs="12"
+            lg="2"
+            md="3"
+            sm="3"
             class="d-flex"
             style="flex-direction:column"
           >
-            <v-card class="flex-grow-1">
+            <v-card
+              color='foreground'
+              class="flex-grow-1"
+            >
               <v-card-title class="pb-0">
                 <v-tooltip top transition="scale-transition">
                   <template v-slot:activator="{ on, attrs }">
@@ -73,18 +76,17 @@ import axios from "axios";
 import PercentBarChart from "../components/charts/PercentBarChart";
 export default {
   components: {
-    PercentBarChart
+    PercentBarChart,
   },
   data() {
     return {
-      stats: {}
+      stats: {},
     };
   },
   methods: {
     readAppStats() {
-      console.log("Starting connection to Websocket");
       let url = "/api/users/me";
-      axios.get(url, { withCredentials: true }).catch(err => {
+      axios.get(url, { withCredentials: true }).catch((err) => {
         localStorage.removeItem("username");
         window.location.reload();
         console.log(err);
@@ -95,7 +97,6 @@ export default {
       } else {
         proto = "wss://";
       }
-      console.log(location.protocol);
       this.statConnection = new WebSocket(
         `${proto}${location.hostname}:${location.port}/api/apps/stats`
       );
@@ -104,7 +105,7 @@ export default {
           JSON.stringify({ type: "onopen", data: "Connected!" })
         );
       };
-      this.statConnection.onmessage = event => {
+      this.statConnection.onmessage = (event) => {
         let statsGroup = JSON.parse(event.data);
         if (this.stats[statsGroup.name] == null) {
           this.initStats(statsGroup);
@@ -130,7 +131,6 @@ export default {
       };
     },
     refresh() {
-      console.log(this.stats);
       this.closeStats();
       this.readAppStats();
     },
@@ -148,7 +148,7 @@ export default {
         .reduce(
           (acc, key) => ({
             ...acc,
-            [key]: arr[key]
+            [key]: arr[key],
           }),
           {}
         );
@@ -182,24 +182,24 @@ export default {
           {
             label: "CPU Usage",
             backgroundColor: "#41b883",
-            data: app.cpu_percent
+            data: app.cpu_percent,
           },
           {
             label: "Mem Usage",
-            backgroundColor: "#FFFFFF",
-            data: app.mem_percent
-          }
-        ]
+            backgroundColor: "#008bcf",
+            data: app.mem_percent,
+          },
+        ],
       };
       return datacollection;
-    }
+    },
   },
   async mounted() {
     this.readAppStats();
   },
   beforeDestroy() {
     this.closeStats();
-  }
+  },
 };
 </script>
 

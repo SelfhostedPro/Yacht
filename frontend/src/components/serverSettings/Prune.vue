@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card color="foreground">
     <v-fade-transition>
       <v-progress-linear
         indeterminate
@@ -100,11 +100,8 @@ export default {
         responseType: "text/json"
       })
         .then(response => {
-          console.log(response.data);
           let action = Object.keys(response.data)[0];
-          console.log(action);
           if (response.data[action] != null) {
-            console.log(response.data[action].length);
             var deletedNumber = response.data[action].length;
           } else {
             deletedNumber = "0";

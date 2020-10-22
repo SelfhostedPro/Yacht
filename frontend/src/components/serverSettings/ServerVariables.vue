@@ -1,10 +1,10 @@
 <template>
-  <v-card class="elevation-12 pb-8">
+  <v-card color="foreground" class="elevation-12 pb-8">
     <v-toolbar color="primary" dark flat>
       <v-toolbar-title>Server Template Variables</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <ValidationObserver>
+      <ValidationObserver v-slot="{ invalid }">
         <form>
           <transition-group
             name="slide"

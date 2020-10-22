@@ -52,7 +52,10 @@ export default {
     ...mapGetters({
       isLoggedIn: "auth/isAuthenticated",
       authDisabled: "auth/authDisabled"
-    })
+    }),
+    theme(){
+      return (this.$vuetify.theme.dark) ? 'dark' : 'light'
+    }
   },
   methods: {
     ...mapActions({
@@ -61,14 +64,32 @@ export default {
   },
   created() {
     this.authCheck();
+    
+  },
+  mounted(){
+    const dark_theme = localStorage.getItem("dark_theme");
+    const theme = JSON.parse(localStorage.getItem("theme"));
+
+    if (dark_theme == "false") {
+      this.$vuetify.theme.dark = false;
+    } else {
+      this.$vuetify.theme.dark = true;
+    }
+    if (theme) {
+      this.$vuetify.theme.themes = theme
+
+    }
   }
 };
 </script>
 
 <style>
+.v-application{
+  background-color: var(--v-background-base) !important;
+}
 html {
+  background-color: var(--v-background-base) !important;
   overflow-y: auto;
-  background-color: black;
 }
 .animated {
   --animate-duration: 0.3s;

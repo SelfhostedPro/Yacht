@@ -46,7 +46,7 @@ REGEXP_PORT_ASSIGN = r"^(?:(?:\d{1,5}:)?\d{1,5}|:\d{1,5})/(?:tcp|udp)$"
 
 
 def conv_ports2dict(data: List[str]) -> List[Dict[str, str]]:
-    if type(data[0]) == dict:
+    if len(data) > 0 and type(data[0]) == dict:
         delim = ":"
         portlst = []
         for port_data in data:
@@ -84,6 +84,8 @@ def conv_ports2dict(data: List[str]) -> List[Dict[str, str]]:
             cport, proto = cport.split("/", 1)
             portlst.append({"cport": cport, "hport": hport, "proto": proto})
         return portlst
+    else:
+        return None
 
 
 # Input Format:
@@ -126,8 +128,6 @@ def conv2dict(name, value):
 #     '53/tcp': ('0.0.0.0', 53),
 # }
 def conv_ports2data(data, network, network_mode):
-    if network == "host" or network_mode == "host":
-        return None
     ports = {}
     for d in data:
         cport = d.cport
@@ -255,7 +255,7 @@ def conv_image2data(data):
 
 
 def conv_restart2data(data):
-    if data:
+    if data and data != 'none':
         return {"name": data}
     else:
         restart = None

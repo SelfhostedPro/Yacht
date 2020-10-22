@@ -4,13 +4,13 @@
       <img
         class="mx-auto mt-12"
         alt="Vue logo"
-        src="../../assets/logo.png"
+        :src="themeLogo()"
         width="107"
         height="72"
       />
       <v-row align="center" justify="center" class="mt-12">
         <v-col cols="12" sm="8" md="4">
-          <v-card class="elevation-12 pb-8">
+          <v-card color="foreground" class="elevation-12 pb-8">
             <v-toolbar color="primary" dark flat>
               <v-toolbar-title>Login</v-toolbar-title>
               <v-spacer></v-spacer>
@@ -65,29 +65,32 @@
 </template>
 
 <script>
+import lightLogo from "@/assets/logo-light.svg";
+import darkLogo from "@/assets/logo.svg";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { mapActions } from "vuex";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
       username: "",
       password: "",
-      show: false
+      show: false,
     };
   },
   methods: {
     ...mapActions({
       login: "auth/AUTH_REQUEST",
-      authCheck: "auth/AUTH_CHECK"
+      authCheck: "auth/AUTH_CHECK",
     }),
+
     onSubmit() {
       this.login({
         username: this.username,
-        password: this.password
+        password: this.password,
       });
     },
     mounted() {
@@ -95,8 +98,15 @@ export default {
     },
     created() {
       this.authCheck();
-    }
-  }
+    },
+    themeLogo() {
+      if (this.$vuetify.theme.dark == true) {
+        return darkLogo;
+      } else if (this.$vuetify.theme.dark == false) {
+        return lightLogo;
+      }
+    },
+  },
 };
 </script>
 

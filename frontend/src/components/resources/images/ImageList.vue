@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="images-list component" style="max-width: 90%">
-    <v-card>
+    <v-card color="foreground">
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -24,7 +24,7 @@
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
-          <v-card>
+          <v-card color="foreground">
             <v-card-title class="headline" style="word-break: break-all;">
               Pull Image
             </v-card-title>
@@ -70,8 +70,9 @@
       </v-card-title>
 
       <v-data-table
+        
         style="max-width: 99%;"
-        class="mx-auto image-datatable"
+        class="mx-auto image-datatable foreground"
         :headers="headers"
         :items="images"
         :items-per-page="10"
@@ -113,7 +114,7 @@
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
-              <v-list dense>
+              <v-list color='foreground' dense>
                 <v-list-item @click="imageDetails(item.Id)">
                   <v-list-item-icon>
                     <v-icon>mdi-eye</v-icon>
@@ -237,8 +238,6 @@ export default {
     },
     submit() {
       const data = this.form;
-      console.log("methods");
-      console.log(data);
       this.writeImage(data);
     }
   },

@@ -69,8 +69,6 @@ const actions = {
   writeImage({ commit }, payload) {
     commit("setLoading", true);
     const url = "/api/resources/images/";
-    console.log("store");
-    console.log(payload);
     axios
       .post(url, payload)
       .then(response => {
@@ -82,7 +80,7 @@ const actions = {
       })
       .finally(() => {
         commit("setLoading", false);
-        router.push({ name: "Image List" });
+        router.push({ name: "Images" });
       });
   },
   updateImage({ commit }, id) {
@@ -92,7 +90,6 @@ const actions = {
       .get(url)
       .then(response => {
         const image = response.data;
-        console.log(response.data);
         commit("setImage", image);
       })
       .catch(err => {

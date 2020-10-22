@@ -1,5 +1,5 @@
 <template>
-  <v-card class="elevation-12 pb-8">
+  <v-card color="foreground" class="elevation-12 pb-8">
     <v-toolbar color="primary" dark flat>
       <v-toolbar-title>Server Settings</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -7,7 +7,7 @@
     <v-card-text>
       This is where you can change settings related to your server.
     </v-card-text>
-    <v-card>
+    <v-card color="foreground">
       <v-card-title class="subheading secondary font-weight-bold"
         >Configuration</v-card-title
       >

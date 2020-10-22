@@ -44,6 +44,7 @@ import ServerInfo from "../components/serverSettings/ServerInfo.vue";
 import ServerVariables from "../components/serverSettings/ServerVariables.vue";
 import Prune from "../components/serverSettings/Prune.vue";
 import ServerUpdate from "../components/serverSettings/ServerUpdate.vue";
+import Theme from "../components/serverSettings/Theme.vue"
 // import { component } from "vue/types/umd";
 
 Vue.use(VueRouter);
@@ -152,6 +153,11 @@ const routes = [
         name: "Server Info",
         path: "info",
         component: ServerInfo
+      },
+      {
+        name: "Theme",
+        path: 'theme',
+        component: Theme
       },
       {
         name: "Template Variables",

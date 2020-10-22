@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card color="foreground">
     <v-fade-transition>
       <v-progress-linear
         indeterminate
@@ -59,7 +59,6 @@ export default {
       })
         .then(response => {
           this.isLoading = false;
-          console.log(response);
           this.updatable = response.data;
         })
         .catch(err => {
