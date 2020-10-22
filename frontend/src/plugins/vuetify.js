@@ -31,6 +31,7 @@ function theme() {
     },
     DigitalOcean: {
       theme: {
+        dark: false,
         themes: {
           light: {
             primary: "#008bcf",
@@ -47,7 +48,6 @@ function theme() {
             foreground: "#1E1E1E"
           }
         },
-        dark: false,
         options: {
           customProperties: true,
         }
