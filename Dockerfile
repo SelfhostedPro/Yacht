@@ -1,5 +1,7 @@
 # Build Vue
 FROM node:14.5.0-alpine as build-stage
+ARG VUE_APP_THEME=Default
+ENV VUE_APP_THEME=${VUE_APP_THEME}
 WORKDIR /app
 COPY ./frontend/package*.json ./
 RUN npm install
@@ -11,7 +13,6 @@ FROM lsiobase/alpine:3.12 as deploy-stage
 # MAINTANER Your Name "info@selfhosted.pro"
 
 # Set Variables
-ENV FLASK_CONFIG=production
 ENV PYTHONIOENCODING=UTF-8
 
 WORKDIR /api

@@ -72,7 +72,7 @@ export default {
 
     if (dark_theme == "false") {
       this.$vuetify.theme.dark = false;
-    } else {
+    } else if (dark_theme == "true"){
       this.$vuetify.theme.dark = true;
     }
     if (theme) {
