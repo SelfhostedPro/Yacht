@@ -403,7 +403,7 @@ def check_updates(tag):
             new = dclient.images.get_registry_data(tag)
         except APIError as err:
             return False
-        if new.attrs["Descriptor"]["digest"] in current.attrs["RepoDigests"][0]:
+        if any(new.attrs["Descriptor"]["digest"] in i for i in current.attrs["RepoDigests"]):
             return False
         else:
             return True

@@ -294,4 +294,4 @@ def check_self_update():
                 status_code=exc.response.status_code, detail=exc.explanation
             )
 
-    return check_updates(yacht.image.tags[0])
+    return _update_check(yacht.image.tags[0])
