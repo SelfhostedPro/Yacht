@@ -10,7 +10,7 @@
         <v-form @keyup.native.enter="onSubmit()">
           <ValidationProvider
             name="username"
-            rules="required"
+            rules="required|email"
             immediate
             v-slot="{ errors, valid }"
           >
