@@ -221,7 +221,7 @@ def app_update(app_name):
     try:
         updater = dclient.containers.run(
             image="containrrr/watchtower:latest",
-            command="--run-once " + old.name,
+            command="--cleanup --run-once " + old.name,
             remove=True,
             detach=True,
             volumes=volumes,
@@ -263,12 +263,12 @@ def update_self():
     print("**** Updating " + yacht.name + "****")
     updater = dclient.containers.run(
         image="containrrr/watchtower:latest",
-        command="--run-once " + yacht.name,
+        command="--cleanup --run-once " + yacht.name,
         remove=True,
         detach=True,
         volumes=volumes,
     )
-    result = updater.wait(timeout=120)
+    result = updater
     print(result)
     time.sleep(1)
     return result
