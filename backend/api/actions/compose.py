@@ -1,6 +1,8 @@
 from fastapi import HTTPException
 from sh import docker_compose
+import os
 import yaml
+import pathlib
 
 from ..settings import Settings
 from ..utils.compose import find_yml_files, get_readme_file, get_logo_file
@@ -9,26 +11,26 @@ settings=Settings()
 
 def compose_action(name, action):
     files = find_yml_files(settings.COMPOSE_DIR)
-    for project, file in files.items():
-        if name == project:
-            path = file
-            if action == "up":
-                try:
-                    _action = docker_compose("-f", path, action, '-d')
-                except Exception as exc:
-                    raise HTTPException(400, exc.stderr.decode('UTF-8').rstrip())
-            else:
-                _action = docker_compose("-f", path, action)
-            break
+    compose = get_compose(name)
+    if action == "up":
+        try:
+            cwd = os.getcwd()
+            os.chdir(os.path.dirname(compose['path']))
+            _action = docker_compose("-f", compose['path'], action, '-d')
+            os.chdir(cwd)
+        except Exception as exc:
+            os.chdir(cwd)
+            raise HTTPException(400, exc.stderr.decode('UTF-8').rstrip())
+
     else:
-        raise HTTPException(404, 'Project not found.')
+        _action = docker_compose("-f", compose['path'], action)
     if _action.stdout.decode('UTF-8').rstrip():
         output = _action.stdout.decode('UTF-8').rstrip()
     elif _action.stderr.decode('UTF-8').rstrip():
         output = _action.stderr.decode('UTF-8').rstrip()
     else:
         output = 'No Output'
-    return {'success': True, 'project': project, 'action': action, 'output': output}
+    return {'success': True, 'project': compose['name'], 'action': action, 'output': output}
 
 def get_compose_projects():
     files = find_yml_files(settings.COMPOSE_DIR)
@@ -51,3 +53,40 @@ def get_compose_projects():
         _project = {'name': project, 'path': file, 'version': loaded_compose['version'], 'services': services, 'volumes': volumes, "networks": networks}
         projects.append(_project)
     return projects
+
+def get_compose(name):
+    try:
+        files = find_yml_files(settings.COMPOSE_DIR + name)
+    except Exception as exc:
+        print(exc)
+    for project, file in files.items():
+        if name == project:
+            networks = []
+            volumes = []
+            services = {}
+            compose = open(file)
+            loaded_compose = yaml.load(compose, Loader=yaml.SafeLoader)
+            if loaded_compose.get('volumes'):
+                for volume in loaded_compose.get('volumes'):
+                    volumes.append(volume)
+            if loaded_compose.get('networks'):
+                for network in loaded_compose.get('networks'):
+                    networks.append(network)
+            for service in loaded_compose.get('services'):
+                services[service] = loaded_compose['services'][service]
+        compose_object = {'name': project, 'path': file, 'version': loaded_compose['version'], 'services': services, 'volumes': volumes, "networks": networks}
+        return compose_object
+        break
+    else:
+        raise HTTPException(404, 'Project '+name+' not found' )
+
+
+
+def write_compose(compose):
+    print(compose)
+    pathlib.Path("config/compose/"+compose.name).mkdir(parents=True)
+    f = open('config/compose/'+compose.name+'/docker-compose.yml', "a")
+    f.write(compose.content)
+    f.close()
+
+    return get_compose(name=compose.name)
