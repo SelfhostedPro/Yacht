@@ -48,7 +48,7 @@
                     <v-list-item-title>Kill</v-list-item-title>
                   </v-list-item>
                   <v-list-item
-                    @click="AppAction({ Name: app.name, Action: 'remove' })"
+                    @click="AppAction({ Name: app.name, Action: 'remove' });"
                   >
                     <v-list-item-icon>
                       <v-icon>mdi-delete</v-icon>

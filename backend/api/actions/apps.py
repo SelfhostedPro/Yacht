@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from ..db import models, schemas
 from ..utils import *
 from ..utils import check_updates as _update_check
+from docker.errors import APIError
 
 from datetime import datetime
 import time
@@ -44,7 +45,12 @@ def check_app_update(app_name):
 def get_apps():
     apps_list = []
     dclient = docker.from_env()
-    apps = dclient.containers.list(all=True)
+    try:
+        apps = dclient.containers.list(all=True)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
     for app in apps:
         attrs = app.attrs
 
@@ -191,12 +197,16 @@ def app_action(app_name, action):
         try:
             _action(force=True)
         except Exception as exc:
-            err = f"{exc}"
+            raise HTTPException(
+                status_code=exc.response.status_code, detail=exc.explanation
+            )
     else:
         try:
             _action()
         except Exception as exc:
-            err = exc.explination
+            raise HTTPException(
+                status_code=exc.response.status_code, detail=exc.explanation
+            )
     apps_list = get_apps()
     return apps_list
 
