@@ -14,16 +14,15 @@ def compose_action(name, action):
     compose = get_compose(name)
     if action == "up":
         try:
-            cwd = os.getcwd()
-            os.chdir(os.path.dirname(compose['path']))
-            _action = docker_compose("-f", compose['path'], action, '-d')
-            os.chdir(cwd)
+            _action = docker_compose("-f", compose['path'], action, '-d', _cwd=os.path.dirname(compose['path']))
         except Exception as exc:
-            os.chdir(cwd)
             raise HTTPException(400, exc.stderr.decode('UTF-8').rstrip())
 
     else:
-        _action = docker_compose("-f", compose['path'], action)
+        try:
+            _action = docker_compose("-f", compose['path'], action, _cwd=os.path.dirname(compose['path']))
+        except Exception as exc:
+            raise HTTPException(400, exc.stderr.decode('UTF-8').rstrip())
     if _action.stdout.decode('UTF-8').rstrip():
         output = _action.stdout.decode('UTF-8').rstrip()
     elif _action.stderr.decode('UTF-8').rstrip():
@@ -74,9 +73,8 @@ def get_compose(name):
                     networks.append(network)
             for service in loaded_compose.get('services'):
                 services[service] = loaded_compose['services'][service]
-        compose_object = {'name': project, 'path': file, 'version': loaded_compose['version'], 'services': services, 'volumes': volumes, "networks": networks}
-        return compose_object
-        break
+            compose_object = {'name': project, 'path': file, 'version': loaded_compose['version'], 'services': services, 'volumes': volumes, "networks": networks}
+            return compose_object
     else:
         raise HTTPException(404, 'Project '+name+' not found' )
 
