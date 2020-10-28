@@ -75,6 +75,14 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-list dense>
+<v-list-item v-if="project.services[service].container_name">
+                  <v-list-item-content>
+                    Container Name
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    {{ project.services[service].container_name }}
+                  </v-list-item-content>
+                </v-list-item>
                 <v-list-item v-if="project.services[service].image">
                   <v-list-item-content>
                     Image
