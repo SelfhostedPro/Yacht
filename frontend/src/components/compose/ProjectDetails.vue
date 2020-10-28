@@ -10,21 +10,6 @@
         />
       </v-fade-transition>
       <v-card-title>
-        <v-menu close-on-click close-on-content-click offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon size="small" v-bind="attrs" v-on="on">
-              <v-icon>mdi-chevron-down</v-icon>
-            </v-btn>
-          </template>
-          <v-list color="foreground" dense>
-            <v-list-item @click="deleteProject(project.Name)">
-              <v-list-item-icon
-                ><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon
-              >
-              <v-list-item-title>Delete Project</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
         {{ project.name }}
       </v-card-title>
       <v-card-subtitle>
@@ -71,9 +56,9 @@
       </v-list>
     </v-card>
     <v-card class="mt-2">
-        <v-card-title>
-            Services
-        </v-card-title>
+      <v-card-title>
+        Services
+      </v-card-title>
       <v-card-text>
         <v-expansion-panels>
           <v-expansion-panel
@@ -82,14 +67,14 @@
           >
             <v-expansion-panel-header color="secondary">
               <v-row no-gutters style="max-height: 20px;">
-              <v-col cols="2">{{ service }}</v-col>
-              <v-col cols="5" class="text--secondary">
-                ({{ project.services[service].image || "No Image" }})
-              </v-col>
-            </v-row>
+                <v-col cols="2">{{ service }}</v-col>
+                <v-col cols="5" class="text--secondary">
+                  ({{ project.services[service].image || "No Image" }})
+                </v-col>
+              </v-row>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-list>
+              <v-list dense>
                 <v-list-item v-if="project.services[service].image">
                   <v-list-item-content>
                     Image
@@ -112,6 +97,22 @@
                   </v-list-item-content>
                   <v-list-item-content>
                     {{ project.services[service].depends_on.join(", ") }}
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="project.services[service].restart">
+                  <v-list-item-content>
+                    Restart Policy
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    {{ project.services[service].restart }}
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="project.services[service].read_only">
+                  <v-list-item-content>
+                    Read Only
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    {{ project.services[service].read_only }}
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item v-if="project.services[service].networks">
@@ -200,7 +201,42 @@
                     </v-card>
                   </v-list-item-content>
                 </v-list-item>
-<v-list-item v-if="project.services[service].command">
+                <v-list-item v-if="project.services[service].labels">
+                  <v-list-item-content>
+                    Labels
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    <v-card outlined tile>
+                      <v-simple-table dense>
+                        <thead>
+                          <tr>
+                            <th>
+                              Label
+                            </th>
+                            <th>
+                              Value
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(value, index) in project.services[service]
+                              .labels"
+                            :key="index"
+                          >
+                            <td>
+                              {{ value.split("=")[0] }}
+                            </td>
+                            <td>
+                              {{ value.split("=")[1] }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </v-simple-table>
+                    </v-card>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="project.services[service].command">
                   <v-list-item-content>
                     Command
                   </v-list-item-content>
@@ -229,20 +265,20 @@
       </v-card-text>
     </v-card>
     <v-card v-if="project.networks" class="mt-2">
-        <v-card-title>
-            Networks
-        </v-card-title>
-        <v-card-text>
-            {{project.networks.join(", ")}}
-        </v-card-text>
+      <v-card-title>
+        Networks
+      </v-card-title>
+      <v-card-text>
+        {{ project.networks.join(", ") }}
+      </v-card-text>
     </v-card>
     <v-card v-if="project.volumes" class="mt-2">
-        <v-card-title>
-            Volumes
-        </v-card-title>
-        <v-card-text>
-            {{project.volumes.join(", ")}}
-        </v-card-text>
+      <v-card-title>
+        Volumes
+      </v-card-title>
+      <v-card-text>
+        {{ project.volumes.join(", ") }}
+      </v-card-text>
     </v-card>
   </div>
 </template>
@@ -267,7 +303,6 @@ export default {
   methods: {
     ...mapActions({
       readProject: "projects/readProject",
-      deleteProject: "projects/deleteProject",
     }),
   },
   created() {

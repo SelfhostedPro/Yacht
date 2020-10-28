@@ -61,6 +61,7 @@ const actions = {
     axios
       .get(url)
       .then(response => {
+        console.log(response)
         const projects = response.data;
         commit("setProjects", projects);
       })
@@ -77,7 +78,6 @@ const actions = {
     axios
       .get(url)
       .then(response => {
-        console.log(response)
         const project = response.data;
         commit("setProject", project);
       })
@@ -105,38 +105,22 @@ const actions = {
         router.push({ name: "Projects" });
       });
   },
-  updateProject({ commit }, id) {
+  ProjectAction({ commit }, { Name, Action }) {
     commit("setLoading", true);
-    const url = `/api/compose/${id}/`;
+    const url = `/api/compose/${Name}/${Action}`;
     axios
       .get(url)
-      .then(response => {
-        const project = response.data;
-        commit("setProject", project);
+      .then((response) => {
+        const projects = response.data;
+        commit("setProjects", projects);
       })
-      .catch(err => {
+      .catch((err) => {
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
       });
   },
-  deleteProject({ commit }, id) {
-    commit("setLoading", true);
-    const url = `/api/compose/${id}`;
-    axios
-      .delete(url)
-      .then(response => {
-        const project = response.data;
-        commit("removeProject", project);
-      })
-      .catch(err => {
-        commit("snackbar/setErr", err, { root: true });
-      })
-      .finally(() => {
-        commit("setLoading", false);
-      });
-  }
 };
 
 const getters = {

@@ -29,7 +29,12 @@ def compose_action(name, action):
         output = _action.stderr.decode('UTF-8').rstrip()
     else:
         output = 'No Output'
-    return {'success': True, 'project': compose['name'], 'action': action, 'output': output}
+    print(
+        f"""Project {compose['name']} {action} successful."""
+    )
+    print(f"""Output: """)
+    print(output)
+    return get_compose_projects()
 
 def get_compose_projects():
     files = find_yml_files(settings.COMPOSE_DIR)
