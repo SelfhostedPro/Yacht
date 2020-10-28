@@ -20,6 +20,11 @@ import ApplicationsList from "../components/applications/ApplicationsList.vue";
 import ApplicationsForm from "../components/applications/ApplicationsForm.vue";
 import ApplicationDeployFromTemplate from "../components/applications/ApplicationDeployFromTemplate.vue";
 
+// Project
+import Project from "../views/Project.vue";
+import ProjectList from "../components/compose/ProjectList.vue"
+import ProjectDetails from "../components/compose/ProjectDetails.vue"
+
 // Resources
 import Resources from "../views/Resources.vue";
 // Images
@@ -126,6 +131,22 @@ const routes = [
             component: AppStats
           }
         ]
+      }
+    ]
+  },
+  {
+    path: '/projects',
+    component: Project,
+    children: [
+      {
+        name: "View Projects",
+        path: "/",
+        component: ProjectList
+      },
+      {
+        name: "Project Details",
+        path: ":projectName",
+        component: ProjectDetails
       }
     ]
   },

@@ -89,6 +89,17 @@ export default {
         ]
       },
       {
+        icon: "mdi-book-open",
+        text: "Projects",
+        subLinks: [
+          {
+            text: "View Projects",
+            to: "/projects",
+            icon: "mdi-view-list"
+          }
+        ]
+      },
+      {
         icon: "mdi-cube-outline",
         text: "Resources",
         subLinks: [

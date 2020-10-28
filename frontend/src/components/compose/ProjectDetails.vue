@@ -1,0 +1,280 @@
+<template>
+  <div class="page">
+    <v-card color="foreground">
+      <v-fade-transition>
+        <v-progress-linear
+          indeterminate
+          v-if="isLoading"
+          color="primary"
+          bottom
+        />
+      </v-fade-transition>
+      <v-card-title>
+        <v-menu close-on-click close-on-content-click offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon size="small" v-bind="attrs" v-on="on">
+              <v-icon>mdi-chevron-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list color="foreground" dense>
+            <v-list-item @click="deleteProject(project.Name)">
+              <v-list-item-icon
+                ><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon
+              >
+              <v-list-item-title>Delete Project</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        {{ project.name }}
+      </v-card-title>
+      <v-card-subtitle>
+        <v-chip
+          outlined
+          small
+          color="orange lighten-1"
+          class="align-center mt-1"
+          label
+          v-if="project.inUse == false"
+          >Unused</v-chip
+        >
+      </v-card-subtitle>
+    </v-card>
+    <v-card color="foreground" class="mt-2">
+      <v-card-title>
+        Project Details
+      </v-card-title>
+      <v-list color="foreground" dense>
+        <v-list-item>
+          <v-list-item-content>
+            Name
+          </v-list-item-content>
+          <v-list-item-content>
+            {{ project.name }}
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            Path
+          </v-list-item-content>
+          <v-list-item-content>
+            {{ project.path }}
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            Version
+          </v-list-item-content>
+          <v-list-item-content>
+            {{ project.version }}
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-card>
+    <v-card class="mt-2">
+        <v-card-title>
+            Services
+        </v-card-title>
+      <v-card-text>
+        <v-expansion-panels>
+          <v-expansion-panel
+            v-for="(service, index) in Object.keys(project.services)"
+            :key="index"
+          >
+            <v-expansion-panel-header color="secondary">
+              <v-row no-gutters style="max-height: 20px;">
+              <v-col cols="2">{{ service }}</v-col>
+              <v-col cols="5" class="text--secondary">
+                ({{ project.services[service].image || "No Image" }})
+              </v-col>
+            </v-row>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-list>
+                <v-list-item v-if="project.services[service].image">
+                  <v-list-item-content>
+                    Image
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    {{ project.services[service].image }}
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="project.services[service].env_file">
+                  <v-list-item-content>
+                    Env File
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    {{ project.services[service].env_file.join(", ") }}
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="project.services[service].depends_on">
+                  <v-list-item-content>
+                    Depends on
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    {{ project.services[service].depends_on.join(", ") }}
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="project.services[service].networks">
+                  <v-list-item-content>
+                    Networks
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    {{ project.services[service].networks.join(", ") }}
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="project.services[service].ports">
+                  <v-list-item-content>
+                    Ports
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    {{ project.services[service].ports.join(", ") }}
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="project.services[service].volumes">
+                  <v-list-item-content>
+                    Volumes
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    <v-card outlined tile>
+                      <v-simple-table dense>
+                        <thead>
+                          <tr>
+                            <th>
+                              Host
+                            </th>
+                            <th>
+                              Container
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(value, index) in project.services[service]
+                              .volumes"
+                            :key="index"
+                          >
+                            <td>
+                              {{ value.split(":")[0] }}
+                            </td>
+                            <td>
+                              {{ value.split(":")[1] }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </v-simple-table>
+                    </v-card>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item v-if="project.services[service].environment">
+                  <v-list-item-content>
+                    Environment
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    <v-card outlined tile>
+                      <v-simple-table dense>
+                        <thead>
+                          <tr>
+                            <th>
+                              Variable
+                            </th>
+                            <th>
+                              Value
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(value, index) in project.services[service]
+                              .environment"
+                            :key="index"
+                          >
+                            <td>
+                              {{ value.split("=")[0] }}
+                            </td>
+                            <td>
+                              {{ value.split("=")[1] }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </v-simple-table>
+                    </v-card>
+                  </v-list-item-content>
+                </v-list-item>
+<v-list-item v-if="project.services[service].command">
+                  <v-list-item-content>
+                    Command
+                  </v-list-item-content>
+                  <v-list-item-content>
+                    <v-card outlined tile>
+                      <v-simple-table dense>
+                        <tbody>
+                          <tr
+                            v-for="(value, index) in project.services[service]
+                              .command"
+                            :key="index"
+                          >
+                            <td>
+                              {{ value }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </v-simple-table>
+                    </v-card>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-card-text>
+    </v-card>
+    <v-card v-if="project.networks" class="mt-2">
+        <v-card-title>
+            Networks
+        </v-card-title>
+        <v-card-text>
+            {{project.networks.join(", ")}}
+        </v-card-text>
+    </v-card>
+    <v-card v-if="project.volumes" class="mt-2">
+        <v-card-title>
+            Volumes
+        </v-card-title>
+        <v-card-text>
+            {{project.volumes.join(", ")}}
+        </v-card-text>
+    </v-card>
+  </div>
+</template>
+
+<script>
+import { mapActions, mapGetters, mapState } from "vuex";
+
+export default {
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapState("projects", ["project", "projects", "isLoading"]),
+    ...mapGetters({
+      getProjectByName: "projects/getProjectByName",
+    }),
+    project() {
+      const projectName = this.$route.params.projectName;
+      return this.getProjectByName(projectName);
+    },
+  },
+  methods: {
+    ...mapActions({
+      readProject: "projects/readProject",
+      deleteProject: "projects/deleteProject",
+    }),
+  },
+  created() {
+    const projectName = this.$route.params.projectName;
+    this.readProject(projectName);
+  },
+};
+</script>
+
+<style scoped></style>

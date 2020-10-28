@@ -7,6 +7,7 @@ import snackbar from "./modules/snackbar.js";
 import images from "./modules/images.js";
 import volumes from "./modules/volumes.js";
 import networks from "./modules/networks.js";
+import projects from "./modules/projects.js";
 
 Vue.use(Vuex);
 
@@ -45,6 +46,7 @@ export default new Vuex.Store({
     images,
     volumes,
     networks,
+    projects,
     auth,
     snackbar
   }
