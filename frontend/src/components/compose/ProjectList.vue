@@ -35,7 +35,7 @@
             No Projects available.
           </div>
         </template>
-        <template v-slot:item.Name="{ item }">
+        <template v-slot:item.name="{ item }">
           <div class="d-flex">
             <v-menu
               :close-on-click="true"
@@ -169,7 +169,7 @@
             </v-menu>
           </div>
         </template>
-        <template v-slot:item.Version="{ item }">
+        <template v-slot:item.version="{ item }">
           <div class="projectcell">
             <span
               class="d-inline-block text-truncate idtext"
@@ -178,7 +178,7 @@
             </span>
           </div>
         </template>
-        <template v-slot:item.Path="{ item }" class="idcell">
+        <template v-slot:item.path="{ item }" class="idcell">
           <div class="idcell">
             <span class="d-inline-block text-truncate idtext">
               {{ item.path }}
@@ -205,17 +205,17 @@ export default {
       headers: [
         {
           text: "Name",
-          value: "Name",
+          value: "name",
           sortable: true
         },
         {
           text: "Version",
-          value: "Version",
+          value: "version",
           sortable: true
         },
         {
           text: "Path",
-          value: "Path",
+          value: "path",
           sortable: true
         }
       ]
