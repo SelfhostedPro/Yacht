@@ -100,6 +100,14 @@
                   </v-list-item-icon>
                   <v-list-item-title>Pull</v-list-item-title>
                 </v-list-item>
+                <v-list-item
+                  @click="ProjectAction({ Name: item.name, Action: 'create' })"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-plus-box-multiple</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>Create</v-list-item-title>
+                </v-list-item>
                 <v-divider />
                 <v-list-item
                   @click="ProjectAction({ Name: item.name, Action: 'kill' })"

@@ -17,7 +17,11 @@ def compose_action(name, action):
             _action = docker_compose("-f", compose['path'], action, '-d', _cwd=os.path.dirname(compose['path']))
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode('UTF-8').rstrip())
-
+    elif action == 'create':
+        try:
+             _action = docker_compose("-f", compose['path'], 'up', '--no-start', _cwd=os.path.dirname(compose['path']))
+        except Exception as exc:
+            raise HTTPException(400, exc.stderr.decode('UTF-8').rstrip())
     else:
         try:
             _action = docker_compose("-f", compose['path'], action, _cwd=os.path.dirname(compose['path']))
