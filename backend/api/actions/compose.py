@@ -94,6 +94,7 @@ def compose_app_action(
                 compose["path"],
                 "rm",
                 "--force",
+                "--stop",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
             )

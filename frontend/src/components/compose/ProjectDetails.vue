@@ -83,6 +83,20 @@
             <v-expansion-panel-content color="foreground">
               <div class="text-center mt-2">
                 <v-item-group dense class="v-btn-toggle">
+                                    <v-btn
+                    small
+                    @click="
+                      projectAppAction({
+                        Project: project.name,
+                        Name: service,
+                        Action: 'up',
+                      })
+                    "
+                  >
+                    <v-icon small>mdi-arrow-up-bold</v-icon>
+                    up
+                  </v-btn>
+                  <v-divider vertical/>
                   <v-btn
                     small
                     @click="
