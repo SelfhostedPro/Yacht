@@ -46,6 +46,10 @@
       </div>
     </v-list>
     <template v-slot:append>
+      <a :href="'https://' + 'yacht.sh'">
+        <v-icon size="200%" class="pa-2">mdi-file-document</v-icon>
+      </a>
+      <br>
       <a :href="'https://' + 'github.com/SelfhostedPro/Yacht'">
         <v-icon size="200%" class="pa-2">mdi-github</v-icon>
       </a>
