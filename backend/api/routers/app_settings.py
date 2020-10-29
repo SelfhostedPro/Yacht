@@ -8,7 +8,7 @@ from datetime import datetime
 from ..db import crud, schemas
 from ..db.models import containers
 from ..db.database import SessionLocal, engine
-from ..utils import get_db
+from ..utils.auth import get_db
 from ..auth import get_active_user
 from ..actions import apps
 from ..actions import resources

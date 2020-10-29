@@ -42,18 +42,18 @@ import darkLogo from "@/assets/logo.svg";
 export default {
   methods: {
     ...mapActions({
-      logout: "auth/AUTH_LOGOUT",
+      logout: "auth/AUTH_LOGOUT"
     }),
     themeLogo() {
-      if (this.$vuetify.theme.dark == true ) {
-        return darkLogo
+      if (this.$vuetify.theme.dark == true) {
+        return darkLogo;
       } else if (this.$vuetify.theme.dark == false) {
-        return lightLogo
+        return lightLogo;
       }
-    },
+    }
   },
   computed: {
-    ...mapState("auth", ["username", "authDisabled"]),
-  },
+    ...mapState("auth", ["username", "authDisabled"])
+  }
 };
 </script>

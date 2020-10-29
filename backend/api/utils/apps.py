@@ -1,116 +1,13 @@
-from .db import models
-from .db.database import SessionLocal
-import re
-from typing import Dict, List, Optional
-
-from jose import jwt
-from fastapi import Cookie, Depends, WebSocket, status, HTTPException
-from fastapi.security import APIKeyCookie
-from .auth import cookie_authentication
-from .auth import user_db
-from .settings import Settings
+from ..db import models
+from ..db.database import SessionLocal
+from ..settings import Settings
 import aiodocker
 import docker
 from docker.errors import APIError
 import json
+from fastapi import HTTPException
 
 settings = Settings()
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-# For Templates
-REGEXP_PORT_ASSIGN = r"^(?:(?:\d{1,5}:)?\d{1,5}|:\d{1,5})/(?:tcp|udp)$"
-
-# Input Format:
-# [
-#     '80:8080/tcp',
-#     '123:123/udp'
-#     '4040/tcp',
-# ]
-# Result Format:
-# [
-#     {
-#         'cport': '80',
-#         'hport': '8080',
-#         'proto': 'tcp',
-#     },
-#     ...
-# ]
-
-
-def conv_ports2dict(data: List[str]) -> List[Dict[str, str]]:
-    if len(data) > 0 and type(data[0]) == dict:
-        delim = ":"
-        portlst = []
-        for port_data in data:
-            for label, port in port_data.items():
-                if not re.match(REGEXP_PORT_ASSIGN, port, flags=re.IGNORECASE):
-                    raise HTTPException(
-                        status_code=500, detail="Malformed port assignment." + port_data
-                    )
-
-                hport, cport = None, port
-                if delim in cport:
-                    hport, cport = cport.split(delim, 1)
-                    if not hport:
-                        hport = None
-                cport, proto = cport.split("/", 1)
-                portlst.append(
-                    {"cport": cport, "hport": hport, "proto": proto, "label": label}
-                )
-            return portlst
-
-    elif type(data) == list:
-        delim = ":"
-        portlst = []
-        for port_data in data:
-            if not re.match(REGEXP_PORT_ASSIGN, port_data, flags=re.IGNORECASE):
-                raise HTTPException(
-                    status_code=500, detail="Malformed port assignment." + port_data
-                )
-
-            hport, cport = None, port_data
-            if delim in cport:
-                hport, cport = cport.split(delim, 1)
-                if not hport:
-                    hport = None
-            cport, proto = cport.split("/", 1)
-            portlst.append({"cport": cport, "hport": hport, "proto": proto})
-        return portlst
-    else:
-        return None
-
-
-# Input Format:
-# [
-#     {
-#         'net.ipv6.conf.all.disable_ipv6': '0'
-#     }
-# ]
-# Result Format:
-# [
-#     {
-#         'name': 'net.ipv6.conf.all.disable_ipv6',
-#         'value': '0'
-#     }
-# ]
-
-
-def conv_sysctls2dict(data: List[Dict[str, str]]) -> List[Dict[str, str]]:
-    return [{"name": k, "value": v} for item in data for k, v in item.items()]
-
-
-def conv2dict(name, value):
-    _tmp_attr = {name: value}
-    return _tmp_attr
-
 
 # For Deploy Form
 
@@ -200,11 +97,16 @@ def conv_env2data(data):
 
     for i, variable in enumerate(data):
         for t_var in t_variables:
-            if t_var.variable in variable.default:
-                new_var = data[i].default.replace(t_var.variable, t_var.replacement)
-                variable.default = new_var
+            if variable.default:
+                if t_var.variable in variable.default:
+                    new_var = data[i].default.replace(t_var.variable, t_var.replacement)
+                    variable.default = new_var
+                    break
+        else:
+            if variable.default.startswith('!'):
+                raise HTTPException(400, 'Unset template variable used: '+variable.default)
     delim = "="
-    return [delim.join((d.name, d.default)) for d in data]
+    return [delim.join((d.name, d.default)) for d in data if d.default]
 
 
 def conv_sysctls2data(data):
@@ -262,19 +164,7 @@ def conv_restart2data(data):
         return restart
 
 
-async def websocket_auth(websocket: WebSocket):
-    try:
-        cookie = websocket._cookies["fastapiusersauth"]
-        user = await cookie_authentication(cookie, user_db)
-        if user and user.is_active:
-            return user
-        elif settings.DISABLE_AUTH == "True":
-            return True
-    except:
-        if settings.DISABLE_AUTH == "True":
-            return True
-        else:
-            return None
+
 
 
 async def calculate_cpu_percent(d):

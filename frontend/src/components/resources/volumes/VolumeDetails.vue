@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <v-card color='foreground'>
+    <v-card color="foreground">
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -16,7 +16,7 @@
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
-          <v-list color='foreground' dense>
+          <v-list color="foreground" dense>
             <v-list-item @click="deleteVolume(volume.Name)">
               <v-list-item-icon
                 ><v-icon>mdi-trash-can-outline</v-icon></v-list-item-icon
@@ -38,12 +38,12 @@
           >Unused</v-chip
         >
       </v-card-subtitle>
-    </v-card >
-    <v-card color='foreground' class="mt-2">
+    </v-card>
+    <v-card color="foreground" class="mt-2">
       <v-card-title>
         Volume Details
       </v-card-title>
-      <v-list color='foreground' dense>
+      <v-list color="foreground" dense>
         <v-list-item>
           <v-list-item-content>
             Name

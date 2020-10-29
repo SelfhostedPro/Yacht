@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import Depends, FastAPI, Header, HTTPException
-from .routers import apps, templates, app_settings, resources, auth, user
+from .routers import apps, templates, app_settings, resources, auth, user, compose
 import uuid
 
 from .db import models
@@ -64,6 +64,11 @@ app.include_router(
     prefix="/templates",
     tags=["templates"],
     responses={404: {"description": "Not found"}},
+)
+app.include_router(
+    compose.router,
+    prefix="/compose",
+    tags=["compose"]
 )
 app.include_router(app_settings.router, prefix="/settings", tags=["settings"])
 

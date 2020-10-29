@@ -20,6 +20,11 @@ import ApplicationsList from "../components/applications/ApplicationsList.vue";
 import ApplicationsForm from "../components/applications/ApplicationsForm.vue";
 import ApplicationDeployFromTemplate from "../components/applications/ApplicationDeployFromTemplate.vue";
 
+// Project
+import Project from "../views/Project.vue";
+import ProjectList from "../components/compose/ProjectList.vue";
+import ProjectDetails from "../components/compose/ProjectDetails.vue";
+
 // Resources
 import Resources from "../views/Resources.vue";
 // Images
@@ -44,7 +49,7 @@ import ServerInfo from "../components/serverSettings/ServerInfo.vue";
 import ServerVariables from "../components/serverSettings/ServerVariables.vue";
 import Prune from "../components/serverSettings/Prune.vue";
 import ServerUpdate from "../components/serverSettings/ServerUpdate.vue";
-import Theme from "../components/serverSettings/Theme.vue"
+import Theme from "../components/serverSettings/Theme.vue";
 // import { component } from "vue/types/umd";
 
 Vue.use(VueRouter);
@@ -130,6 +135,22 @@ const routes = [
     ]
   },
   {
+    path: "/projects",
+    component: Project,
+    children: [
+      {
+        name: "View Projects",
+        path: "/",
+        component: ProjectList
+      },
+      {
+        name: "Project Details",
+        path: ":projectName",
+        component: ProjectDetails
+      }
+    ]
+  },
+  {
     path: "/user",
     component: UserSettings,
     children: [
@@ -156,7 +177,7 @@ const routes = [
       },
       {
         name: "Theme",
-        path: 'theme',
+        path: "theme",
         component: Theme
       },
       {

@@ -144,9 +144,7 @@
                 </v-col>
               </v-row>
               <transition-group
-                v-if="
-                  form.network_mode !== 'host' && form.network !== 'host'
-                "
+                v-if="form.network_mode !== 'host' && form.network !== 'host'"
                 name="slide"
                 enter-active-class="animated fadeInLeft fast-anim"
                 leave-active-class="animated fadeOutLeft fast-anim"
@@ -437,7 +435,7 @@
       </v-card-title>
       <v-expansion-panels flat accordion multiple focusable>
         <v-expansion-panel>
-          <v-expansion-panel-header color='foreground'>
+          <v-expansion-panel-header color="foreground">
             <v-row no-gutters>
               <v-col cols="2">Devices</v-col>
               <v-col cols="4" class="text--secondary">
@@ -445,7 +443,7 @@
               </v-col>
             </v-row>
           </v-expansion-panel-header>
-          <v-expansion-panel-content color='foreground'>
+          <v-expansion-panel-content color="foreground">
             <form>
               <transition-group
                 name="slide"
@@ -505,7 +503,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header color='foreground'>
+          <v-expansion-panel-header color="foreground">
             <v-row no-gutters>
               <v-col cols="2">Labels</v-col>
               <v-col cols="4" class="text--secondary">
@@ -513,7 +511,7 @@
               </v-col>
             </v-row>
           </v-expansion-panel-header>
-          <v-expansion-panel-content color='foreground'>
+          <v-expansion-panel-content color="foreground">
             <form>
               <transition-group
                 name="slide"
@@ -572,13 +570,13 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header color='foreground'>
+          <v-expansion-panel-header color="foreground">
             <v-row no-gutters>
               <v-col cols="2">Sysctls</v-col>
               <v-col cols="4" class="text--secondary"> (Kernel Options) </v-col>
             </v-row>
           </v-expansion-panel-header>
-          <v-expansion-panel-content color='foreground'>
+          <v-expansion-panel-content color="foreground">
             <form>
               <transition-group
                 name="slide"
@@ -638,7 +636,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header color='foreground'>
+          <v-expansion-panel-header color="foreground">
             <v-row no-gutters>
               <v-col cols="2">Capabilities</v-col>
               <v-col cols="4" class="text--secondary">
@@ -646,7 +644,7 @@
               </v-col>
             </v-row></v-expansion-panel-header
           >
-          <v-expansion-panel-content color='foreground'>
+          <v-expansion-panel-content color="foreground">
             <form>
               <v-select
                 v-model="form['cap_add']"

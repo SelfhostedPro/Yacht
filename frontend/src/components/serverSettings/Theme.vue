@@ -63,7 +63,7 @@
 export default {
   data() {
     return {
-      color_toggle: 0,
+      color_toggle: 0
     };
   },
   computed: {
@@ -96,12 +96,12 @@ export default {
         } else if (this.color_toggle == 4) {
           this.$vuetify.theme.themes[this.theme].tabs = v;
         } else return null;
-      },
+      }
     },
     setColor() {
       this.$vuetify.theme.themes[this.theme][this.picker] == this.color;
       return this.color;
-    },
+    }
   },
   methods: {
     setTheme() {
@@ -114,8 +114,8 @@ export default {
     resetTheme() {
       localStorage.removeItem("theme");
       window.location.reload();
-    },
-  },
+    }
+  }
 };
 </script>
 

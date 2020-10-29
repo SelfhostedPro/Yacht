@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="apps-list component" style="max-width: 90%">
-    <v-card color='foreground'>
+    <v-card color="foreground">
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -23,7 +23,7 @@
               <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
-          <v-list color='foreground' dense>
+          <v-list color="foreground" dense>
             <v-list-item @click="refresh()">
               <v-list-item-icon><v-icon>mdi-refresh</v-icon></v-list-item-icon>
               <v-list-item-title>Refresh Apps</v-list-item-title>
@@ -53,7 +53,7 @@
               Columns
             </v-btn>
           </template>
-          <v-list color='foreground'>
+          <v-list color="foreground">
             <v-list-item
               color="primary"
               v-for="(item, index) in headers"
@@ -93,7 +93,7 @@
                   <v-icon>mdi-chevron-down</v-icon>
                 </v-btn>
               </template>
-              <v-list color='foreground' dense>
+              <v-list color="foreground" dense>
                 <v-list-item
                   @click="AppAction({ Name: item.name, Action: 'start' })"
                 >
@@ -318,7 +318,13 @@ export default {
     }
   },
   computed: {
-    ...mapState("apps", ["apps", "isLoading", "isLoadingValue", "action", "updatable"]),
+    ...mapState("apps", [
+      "apps",
+      "isLoading",
+      "isLoadingValue",
+      "action",
+      "updatable"
+    ]),
     showHeaders() {
       return this.headers.filter(s => this.selectedHeaders.includes(s));
     }

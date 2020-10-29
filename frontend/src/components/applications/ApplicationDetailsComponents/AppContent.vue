@@ -31,7 +31,14 @@
           >
           <v-list-item-content>
             <v-list-item-title>
-              <a :href="'https://'+'hub.docker.com/r/' + app.Config.Image.split(':')[0]">{{ app.Config.Image.split(':')[0] }}</a>
+              <a
+                :href="
+                  'https://' +
+                    'hub.docker.com/r/' +
+                    app.Config.Image.split(':')[0]
+                "
+                >{{ app.Config.Image.split(":")[0] }}</a
+              >
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
