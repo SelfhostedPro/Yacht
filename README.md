@@ -22,7 +22,7 @@ Check out the getting started guide if this is the first time you've used Yacht:
 
 **Yacht is also available via the DigitalOcean marketplace:**
 
-[![DigitalOcean](https://raw.githubusercontent.com/SelfhostedPro/Yacht/docker-compose-api/readme_media/do-btn-blue.svg)](https://marketplace.digitalocean.com/apps/yacht?refcode=b68dee19dbf6)
+[![DigitalOcean](https://raw.githubusercontent.com/SelfhostedPro/Yacht/develop/readme_media/do-btn-blue.svg)](https://marketplace.digitalocean.com/apps/yacht?refcode=b68dee19dbf6)
 
 ## Features So Far:
 * Vuetify UI Framework
