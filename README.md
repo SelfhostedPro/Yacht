@@ -3,7 +3,7 @@
 [![Docker Hub Pulls](https://img.shields.io/docker/pulls/selfhostedpro/yacht?color=%2341B883&label=Docker%20Pulls&logo=docker&logoColor=%23403d3d&style=for-the-badge)](https://hub.docker.com/r/selfhostedpro/yacht)
 [![Docker Image Size](https://img.shields.io/docker/image-size/selfhostedpro/yacht/vue?color=%2341B883&label=Image%20Size&logo=docker&logoColor=%23403d3d&style=for-the-badge)](https://hub.docker.com/r/selfhostedpro/yacht)
 [![Layers](https://img.shields.io/microbadger/layers/selfhostedpro/yacht?color=%2341B883&label=Layers&logo=docker&logoColor=%23403d3d&style=for-the-badge)](https://hub.docker.com/r/selfhostedpro/yacht)
-[![DigitalOcean](https://raw.githubusercontent.com/SelfhostedPro/Yacht/master/readme_media/do-btn-blue.svg)](https://marketplace.digitalocean.com/apps/yacht?refcode=b68dee19dbf6)
+[![DigitalOcean](https://raw.githubusercontent.com/SelfhostedPro/Yacht/docker-compose-api/readme_media/do-btn-blue.svg)](https://marketplace.digitalocean.com/apps/yacht?refcode=b68dee19dbf6)
 
 ## Yacht
 Yacht is a container management UI with a focus on templates and 1-click deployments.
