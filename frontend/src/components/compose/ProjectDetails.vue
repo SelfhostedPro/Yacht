@@ -67,13 +67,110 @@
           >
             <v-expansion-panel-header color="secondary">
               <v-row no-gutters style="max-height: 20px;">
-                <v-col cols="2">{{ service }}</v-col>
+                <v-col cols="2">{{ service }} </v-col>
                 <v-col cols="5" class="text--secondary">
                   ({{ project.services[service].image || "No Image" }})
+                </v-col>
+                <v-col cols="2" class="text--secondary">
+                  {{
+                    getStatus(
+                      project.services[service].container_name || service
+                    ) || "missing"
+                  }}
                 </v-col>
               </v-row>
             </v-expansion-panel-header>
             <v-expansion-panel-content color="foreground">
+              <div class="text-center mt-2">
+                <v-item-group dense class="v-btn-toggle">
+                  <v-btn
+                    small
+                    @click="
+                      projectAppAction({
+                        Project: project.name,
+                        Name: service,
+                        Action: 'start',
+                      });
+                      reload();
+                    "
+                  >
+                    <v-icon small>mdi-play</v-icon>
+                    start
+                  </v-btn>
+                  <v-btn
+                    small
+                    @click="
+                      projectAppAction({
+                        Project: project.name,
+                        Name: service,
+                        Action: 'stop',
+                      });
+                      reload();
+                    "
+                  >
+                    <v-icon small>mdi-stop</v-icon>
+                    stop
+                  </v-btn>
+                  <v-btn
+                    small
+                    @click="
+                      projectAppAction({
+                        Project: project.name,
+                        Name: service,
+                        Action: 'restart',
+                      });
+                      reload();
+                    "
+                  >
+                    <v-icon small>mdi-refresh</v-icon>
+                    restart
+                  </v-btn>
+                  <v-divider vertical />
+                  <v-btn
+                    small
+                    @click="
+                      projectAppAction({
+                        Project: project.name,
+                        Name: service,
+                        Action: 'pull',
+                      });
+                      reload();
+                    "
+                  >
+                    <v-icon small>mdi-update</v-icon>
+                    pull
+                  </v-btn>
+                  <v-divider vertical />
+                  <v-btn
+                    small
+                    @click="
+                      projectAppAction({
+                        Project: project.name,
+                        Name: service,
+                        Action: 'kill',
+                      });
+                      reload();
+                    "
+                  >
+                    <v-icon small>mdi-fire</v-icon>
+                    kill
+                  </v-btn>
+                  <v-btn
+                    small
+                    @click="
+                      projectAppAction({
+                        Project: project.name,
+                        Name: service,
+                        Action: 'rm',
+                      });
+                      reload();
+                    "
+                  >
+                    <v-icon small>mdi-delete</v-icon>
+                    remove
+                  </v-btn>
+                </v-item-group>
+              </div>
               <v-list color="foreground" dense>
                 <v-list-item v-if="project.services[service].container_name">
                   <v-list-item-content>
@@ -300,23 +397,44 @@ export default {
   },
   computed: {
     ...mapState("projects", ["project", "projects", "isLoading"]),
+    ...mapState("apps", ["apps"]),
     ...mapGetters({
-      getProjectByName: "projects/getProjectByName"
+      getProjectByName: "projects/getProjectByName",
     }),
     project() {
       const projectName = this.$route.params.projectName;
       return this.getProjectByName(projectName);
-    }
+    },
   },
   methods: {
     ...mapActions({
-      readProject: "projects/readProject"
-    })
+      readProject: "projects/readProject",
+      projectAppAction: "projects/ProjectAppAction",
+      readApps: "apps/readApps",
+    }),
+    getStatus(name) {
+      for (var app in this.apps) {
+        console.log(this.project.name + "_" + name + "_1" + " vs " + this.apps[app].name)
+        if (
+          this.apps[app].name == name ||
+          this.apps[app].name == this.project.name + "_" + name + "_1"
+        ) {
+          return this.apps[app].State.Status;
+        }
+      }
+    },
+
+    reload() {
+      const projectName = this.$route.params.projectName;
+      this.readProject(projectName);
+      this.readApps();
+    },
   },
   created() {
     const projectName = this.$route.params.projectName;
     this.readProject(projectName);
-  }
+    this.readApps();
+  },
 };
 </script>
 

@@ -189,6 +189,13 @@
             </span>
           </div>
         </template>
+        <template v-slot:item.services="{ item }" class="idcell">
+          <div class="idcell">
+            <span class="d-inline-block text-truncate idtext">
+              {{ Object.keys(item.services).length }}
+            </span>
+          </div>
+        </template>
       </v-data-table>
     </v-card>
   </div>
@@ -218,6 +225,11 @@ export default {
           sortable: true
         },
         {
+          text: "Services",
+          value: "services",
+          sortable: false
+        },
+        {
           text: "Path",
           value: "path",
           sortable: true
@@ -228,7 +240,6 @@ export default {
   methods: {
     ...mapActions({
       readProjects: "projects/readProjects",
-      writeProjects: "projects/writeProject",
       ProjectAction: "projects/ProjectAction"
     }),
     handleRowClick(item) {
