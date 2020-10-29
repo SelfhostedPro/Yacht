@@ -27,6 +27,8 @@ class TemplateItem(BaseModel):
 
     class Config:
         orm_mode = True
+
+
 ### TEMPLATE ####
 
 
@@ -43,14 +45,18 @@ class TemplateRead(TemplateBase):
     updated_at: datetime
     created_at: datetime
 
+
 class TemplateReadAll(TemplateBase):
     items: List[TemplateItem] = []
+
 
 class TemplateItems(TemplateRead):
     items: List[TemplateItem] = []
 
     class Config:
         orm_mode = True
+
+
 ### TEMPLATES END ###
 
 ### TEMPLATE VARIABLES ###
@@ -66,6 +72,7 @@ class TemplateVariables(BaseModel):
 
 class ReadTemplateVariables(TemplateVariables):
     id: int
+
 
 ### Export/Import ###
 

@@ -4,10 +4,13 @@ from pydantic import BaseSettings
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+
 def compose_dir_check():
-    if not os.environ.get("COMPOSE_DIR", "config/compose/").endswith('/'):
-        os.environ['COMPOSE_DIR'] += '/'
-    return os.environ['COMPOSE_DIR']
+    if not os.environ.get("COMPOSE_DIR", "config/compose/").endswith("/"):
+        os.environ["COMPOSE_DIR"] += "/"
+    return os.environ["COMPOSE_DIR"]
+
+
 class Settings(BaseSettings):
     app_name: str = "Yacht API"
     SECRET_KEY = os.environ.get("SECRET_KEY", secrets.token_hex(16))
@@ -39,4 +42,3 @@ class Settings(BaseSettings):
         "DATABASE_URL", "sqlite:///config/data.sqlite"
     )
     COMPOSE_DIR = compose_dir_check()
-

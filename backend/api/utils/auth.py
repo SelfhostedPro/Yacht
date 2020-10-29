@@ -6,12 +6,14 @@ from fastapi import WebSocket
 
 settings = Settings()
 
+
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
 
 async def websocket_auth(websocket: WebSocket):
     try:

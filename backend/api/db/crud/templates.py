@@ -30,12 +30,17 @@ def get_template_by_id(db: Session, id: int):
 
 
 def get_template_items(db: Session, template_id: int):
-    return db.query(models.TemplateItem).filter(models.TemplateItem.template_id == template_id).all()
+    return (
+        db.query(models.TemplateItem)
+        .filter(models.TemplateItem.template_id == template_id)
+        .all()
+    )
 
 
 def delete_template(db: Session, template_id: int):
-    _template = db.query(models.Template).filter(
-        models.Template.id == template_id).first()
+    _template = (
+        db.query(models.Template).filter(models.Template.id == template_id).first()
+    )
     db.delete(_template)
     db.commit()
     return _template
@@ -46,81 +51,79 @@ def add_template(db: Session, template: models.containers.Template):
         _template_path = urlparse(template.url).path
         ext = os.path.splitext(_template_path)[1]
         # Opens the JSON and iterate over the content.
-        _template = models.containers.Template(
-            title=template.title, url=template.url)
+        _template = models.containers.Template(title=template.title, url=template.url)
         with urllib.request.urlopen(template.url) as file:
-            if ext.rstrip() in (".yml", '.yaml'):
+            if ext.rstrip() in (".yml", ".yaml"):
                 loaded_file = yaml.load(file, Loader=yaml.SafeLoader)
             elif ext.rstrip() in (".json", "json"):
                 loaded_file = json.load(file)
             else:
-                print('Invalid filetype')
+                print("Invalid filetype")
                 raise
             if type(loaded_file) == list:
                 for entry in loaded_file:
-                    ports = conv_ports2dict(entry.get('ports', []))
-                    sysctls = conv_sysctls2dict(entry.get('sysctls', []))
+                    ports = conv_ports2dict(entry.get("ports", []))
+                    sysctls = conv_sysctls2dict(entry.get("sysctls", []))
 
                     # Optional use classmethod from_dict
                     try:
                         template_content = models.containers.TemplateItem(
-                            type=int(entry.get('type', 1)),
-                            title=entry['title'],
-                            platform=entry['platform'],
-                            description=entry.get('description', ''),
-                            name=entry.get('name', entry['title'].lower()),
-                            logo=entry.get('logo', ''),  # default logo here!
-                            image=entry.get('image', ''),
-                            notes=entry.get('note', ''),
-                            categories=entry.get('categories', ''),
-                            restart_policy=entry.get('restart_policy'),
+                            type=int(entry.get("type", 1)),
+                            title=entry["title"],
+                            platform=entry["platform"],
+                            description=entry.get("description", ""),
+                            name=entry.get("name", entry["title"].lower()),
+                            logo=entry.get("logo", ""),  # default logo here!
+                            image=entry.get("image", ""),
+                            notes=entry.get("note", ""),
+                            categories=entry.get("categories", ""),
+                            restart_policy=entry.get("restart_policy"),
                             ports=ports,
-                            network_mode=entry.get('network_mode', ''),
-                            volumes=entry.get('volumes', []),
-                            env=entry.get('env', []),
-                            devices=entry.get('devices', []),
-                            labels=entry.get('labels', []),
+                            network_mode=entry.get("network_mode", ""),
+                            volumes=entry.get("volumes", []),
+                            env=entry.get("env", []),
+                            devices=entry.get("devices", []),
+                            labels=entry.get("labels", []),
                             sysctls=sysctls,
-                            cap_add=entry.get('cap_add', [])
+                            cap_add=entry.get("cap_add", []),
                         )
                     except Exception as exc:
                         raise HTTPException(
-                            status_code=exc.response.status_code, detail=entry.get('name') + ' ' + exc.explanation
+                            status_code=exc.response.status_code,
+                            detail=entry.get("name") + " " + exc.explanation,
                         )
                     _template.items.append(template_content)
             elif type(loaded_file) == dict:
                 entry = loaded_file
-                ports = conv_ports2dict(entry.get('ports', []))
-                sysctls = conv_sysctls2dict(entry.get('sysctls', []))
+                ports = conv_ports2dict(entry.get("ports", []))
+                sysctls = conv_sysctls2dict(entry.get("sysctls", []))
 
                 # Optional use classmethod from_dict
                 template_content = models.containers.TemplateItem(
-                    type=int(entry.get('type', 1)),
-                    title=entry['title'],
-                    platform=entry['platform'],
-                    description=entry.get('description', ''),
-                    name=entry.get('name', entry['title'].lower()),
-                    logo=entry.get('logo', ''),  # default logo here!
-                    image=entry.get('image', ''),
-                    notes=entry.get('note', ''),
-                    categories=entry.get('categories', ''),
-                    restart_policy=entry.get('restart_policy'),
+                    type=int(entry.get("type", 1)),
+                    title=entry["title"],
+                    platform=entry["platform"],
+                    description=entry.get("description", ""),
+                    name=entry.get("name", entry["title"].lower()),
+                    logo=entry.get("logo", ""),  # default logo here!
+                    image=entry.get("image", ""),
+                    notes=entry.get("note", ""),
+                    categories=entry.get("categories", ""),
+                    restart_policy=entry.get("restart_policy"),
                     ports=ports,
-                    network_mode=entry.get('network_mode', ''),
-                    volumes=entry.get('volumes', []),
-                    env=entry.get('env', []),
-                    devices=entry.get('devices', []),
-                    labels=entry.get('labels', []),
+                    network_mode=entry.get("network_mode", ""),
+                    volumes=entry.get("volumes", []),
+                    env=entry.get("env", []),
+                    devices=entry.get("devices", []),
+                    labels=entry.get("labels", []),
                     sysctls=sysctls,
-                    cap_add=entry.get('cap_add', [])
+                    cap_add=entry.get("cap_add", []),
                 )
                 _template.items.append(template_content)
     except (OSError, TypeError, ValueError) as err:
         # Optional handle KeyError here too.
-        print('data request failed', err)
-        raise HTTPException(
-            status_code=err.status_code, detail=err.explanation
-            )
+        print("data request failed", err)
+        raise HTTPException(status_code=err.status_code, detail=err.explanation)
 
     try:
         db.add(_template)
@@ -135,8 +138,9 @@ def add_template(db: Session, template: models.containers.Template):
 
 
 def refresh_template(db: Session, template_id: id):
-    template = db.query(models.Template).filter(
-        models.Template.id == template_id).first()
+    template = (
+        db.query(models.Template).filter(models.Template.id == template_id).first()
+    )
 
     _template_path = urlparse(template.url).path
     ext = os.path.splitext(_template_path)[1]
@@ -144,75 +148,71 @@ def refresh_template(db: Session, template_id: id):
     items = []
     try:
         with urllib.request.urlopen(template.url) as fp:
-            if ext.rstrip() in (".yml", '.yaml'):
+            if ext.rstrip() in (".yml", ".yaml"):
                 loaded_file = yaml.load(fp, Loader=yaml.SafeLoader)
             elif ext.rstrip() in (".json"):
                 loaded_file = json.load(fp)
             else:
-                print('Invalid filetype')
-                raise HTTPException(
-                status_code=422, detail="Invalid filetype"
-                )
+                print("Invalid filetype")
+                raise HTTPException(status_code=422, detail="Invalid filetype")
             if type(loaded_file) == list:
                 for entry in loaded_file:
 
-                    if entry.get('ports'):
-                        ports = conv_ports2dict(entry.get('ports', []))
-                    sysctls = conv_sysctls2dict(entry.get('sysctls', []))
+                    if entry.get("ports"):
+                        ports = conv_ports2dict(entry.get("ports", []))
+                    sysctls = conv_sysctls2dict(entry.get("sysctls", []))
 
                     item = models.TemplateItem(
-                        type=int(entry['type']),
-                        title=entry['title'],
-                        platform=entry['platform'],
-                        description=entry.get('description', ''),
-                        name=entry.get('name', entry['title'].lower()),
-                        logo=entry.get('logo', ''),  # default logo here!
-                        image=entry.get('image', ''),
-                        notes=entry.get('note', ''),
-                        categories=entry.get('categories', ''),
-                        restart_policy=entry.get('restart_policy'),
+                        type=int(entry["type"]),
+                        title=entry["title"],
+                        platform=entry["platform"],
+                        description=entry.get("description", ""),
+                        name=entry.get("name", entry["title"].lower()),
+                        logo=entry.get("logo", ""),  # default logo here!
+                        image=entry.get("image", ""),
+                        notes=entry.get("note", ""),
+                        categories=entry.get("categories", ""),
+                        restart_policy=entry.get("restart_policy"),
                         ports=ports,
-                        network_mode=entry.get('network_mode', ''),
-                        volumes=entry.get('volumes', []),
-                        env=entry.get('env', []),
-                        devices=entry.get('devices', []),
-                        labels=entry.get('labels', []),
+                        network_mode=entry.get("network_mode", ""),
+                        volumes=entry.get("volumes", []),
+                        env=entry.get("env", []),
+                        devices=entry.get("devices", []),
+                        labels=entry.get("labels", []),
                         sysctls=sysctls,
-                        cap_add=entry.get('cap_add', [])
+                        cap_add=entry.get("cap_add", []),
                     )
                     items.append(item)
             elif type(loaded_file) == dict:
                 entry = loaded_file
-                ports = conv_ports2dict(entry.get('ports', []))
-                sysctls = conv_sysctls2dict(entry.get('sysctls', []))
+                ports = conv_ports2dict(entry.get("ports", []))
+                sysctls = conv_sysctls2dict(entry.get("sysctls", []))
 
                 # Optional use classmethod from_dict
                 template_content = models.containers.TemplateItem(
-                    type=int(entry['type']),
-                    title=entry['title'],
-                    platform=entry['platform'],
-                    description=entry.get('description', ''),
-                    name=entry.get('name', entry['title'].lower()),
-                    logo=entry.get('logo', ''),  # default logo here!
-                    image=entry.get('image', ''),
-                    notes=entry.get('note', ''),
-                    categories=entry.get('categories', ''),
-                    restart_policy=entry.get('restart_policy'),
+                    type=int(entry["type"]),
+                    title=entry["title"],
+                    platform=entry["platform"],
+                    description=entry.get("description", ""),
+                    name=entry.get("name", entry["title"].lower()),
+                    logo=entry.get("logo", ""),  # default logo here!
+                    image=entry.get("image", ""),
+                    notes=entry.get("note", ""),
+                    categories=entry.get("categories", ""),
+                    restart_policy=entry.get("restart_policy"),
                     ports=ports,
-                    network_mode=entry.get('network_mode', ''),
-                    volumes=entry.get('volumes', []),
-                    env=entry.get('env', []),
-                    devices=entry.get('devices', []),
-                    labels=entry.get('labels', []),
+                    network_mode=entry.get("network_mode", ""),
+                    volumes=entry.get("volumes", []),
+                    env=entry.get("env", []),
+                    devices=entry.get("devices", []),
+                    labels=entry.get("labels", []),
                     sysctls=sysctls,
-                    cap_add=entry.get('cap_add', [])
+                    cap_add=entry.get("cap_add", []),
                 )
                 items.append(template_content)
     except Exception as exc:
-        print('Template update failed. ERR_001', exc)
-        raise HTTPException(
-            status_code=exc.status_code, detail=exc.explanation
-            )
+        print("Template update failed. ERR_001", exc)
+        raise HTTPException(status_code=exc.status_code, detail=exc.explanation)
     else:
         # db.delete(template)
         # make_transient(template)
@@ -224,12 +224,12 @@ def refresh_template(db: Session, template_id: id):
         try:
             # db.add(template)
             db.commit()
-            print(f"Template \"{template.title}\" updated successfully.")
+            print(f'Template "{template.title}" updated successfully.')
         except Exception as exc:
             db.rollback()
-            print('Template update failed. ERR_002', exc)
+            print("Template update failed. ERR_002", exc)
             raise HTTPException(
-            status_code=exc.response.status_code, detail=exc.explanation
+                status_code=exc.response.status_code, detail=exc.explanation
             )
 
     return template
@@ -237,13 +237,16 @@ def refresh_template(db: Session, template_id: id):
 
 def read_app_template(db, app_id):
     try:
-        template_item = db.query(models.TemplateItem).filter(
-            models.TemplateItem.id == app_id).first()
+        template_item = (
+            db.query(models.TemplateItem)
+            .filter(models.TemplateItem.id == app_id)
+            .first()
+        )
         return template_item
     except Exception as exc:
         raise HTTPException(
             status_code=exc.response.status_code, detail=exc.explanation
-            )
+        )
 
 
 def set_template_variables(db: Session, new_variables: models.TemplateVariables):
@@ -255,8 +258,7 @@ def set_template_variables(db: Session, new_variables: models.TemplateVariables)
 
         for entry in t_vars:
             template_variables = models.TemplateVariables(
-                variable=entry.variable,
-                replacement=entry.replacement
+                variable=entry.variable, replacement=entry.replacement
             )
             variables.append(template_variables)
 
@@ -270,9 +272,7 @@ def set_template_variables(db: Session, new_variables: models.TemplateVariables)
 
     except IntegrityError as exc:
         print(exc)
-        raise HTTPException(
-            status_code=exc.status_code, detail=exc.explanation
-            )
+        raise HTTPException(status_code=exc.status_code, detail=exc.explanation)
 
 
 def read_template_variables(db: Session):

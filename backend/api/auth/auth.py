@@ -63,12 +63,7 @@ user_db = SQLAlchemyUserDatabase(UserDB, database, users)
 app = FastAPI()
 
 fastapi_users = FastAPIUsers(
-    user_db,
-    auth_backends,
-    User,
-    UserCreate,
-    UserUpdate,
-    UserDB,
+    user_db, auth_backends, User, UserCreate, UserUpdate, UserDB,
 )
 
 

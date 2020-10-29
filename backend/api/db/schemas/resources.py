@@ -2,11 +2,14 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 
+
 class ImageWrite(BaseModel):
     image: str
 
+
 class VolumeWrite(BaseModel):
     name: str
+
 
 class NetworkWrite(BaseModel):
     attachable: bool

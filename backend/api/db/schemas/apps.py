@@ -25,13 +25,16 @@ class SysctlsSchema(BaseModel):
     name: str
     value: str
 
+
 class DevicesSchema(BaseModel):
     container: str
     host: str
 
+
 class LabelSchema(BaseModel):
     label: str
     value: str
+
 
 class DeployForm(BaseModel):
     name: str
@@ -47,6 +50,8 @@ class DeployForm(BaseModel):
     cap_add: Optional[List[str]]
     network_mode: Optional[str]
     network: Optional[str]
+
+
 # LOGS #
 
 
@@ -56,6 +61,7 @@ class DeployLogs(BaseModel):
 
 class AppLogs(BaseModel):
     logs: str
+
 
 # Processes #
 

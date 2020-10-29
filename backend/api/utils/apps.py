@@ -103,8 +103,10 @@ def conv_env2data(data):
                     variable.default = new_var
                     break
         else:
-            if variable.default.startswith('!'):
-                raise HTTPException(400, 'Unset template variable used: '+variable.default)
+            if variable.default.startswith("!"):
+                raise HTTPException(
+                    400, "Unset template variable used: " + variable.default
+                )
     delim = "="
     return [delim.join((d.name, d.default)) for d in data if d.default]
 
@@ -157,14 +159,11 @@ def conv_image2data(data):
 
 
 def conv_restart2data(data):
-    if data and data != 'none':
+    if data and data != "none":
         return {"name": data}
     else:
         restart = None
         return restart
-
-
-
 
 
 async def calculate_cpu_percent(d):
@@ -293,7 +292,9 @@ def check_updates(tag):
             new = dclient.images.get_registry_data(tag)
         except APIError as err:
             return False
-        if any(new.attrs["Descriptor"]["digest"] in i for i in current.attrs["RepoDigests"]):
+        if any(
+            new.attrs["Descriptor"]["digest"] in i for i in current.attrs["RepoDigests"]
+        ):
             return False
         else:
             return True

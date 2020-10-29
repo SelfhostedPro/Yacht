@@ -4,16 +4,21 @@ import fnmatch
 
 settings = Settings()
 
+
 def find_yml_files(path):
     """
     find docker-compose.yml files in path
     """
     matches = {}
     for root, _, filenames in os.walk(path, followlinks=True):
-        for _ in set().union(fnmatch.filter(filenames, 'docker-compose.yml'), fnmatch.filter(filenames, 'docker-compose.yaml')):
-            key = root.split('/')[-1]
-            matches[key] = os.path.join(os.getcwd(), root + '/'+_)
+        for _ in set().union(
+            fnmatch.filter(filenames, "docker-compose.yml"),
+            fnmatch.filter(filenames, "docker-compose.yaml"),
+        ):
+            key = root.split("/")[-1]
+            matches[key] = os.path.join(os.getcwd(), root + "/" + _)
     return matches
+
 
 def get_readme_file(path):
     """
@@ -31,6 +36,7 @@ def get_readme_file(path):
 
     return readme
 
+
 def get_logo_file(path):
     """
     find case insensitive logo.png in path and return the contents
@@ -46,4 +52,3 @@ def get_logo_file(path):
             break
 
     return logo
-

@@ -25,6 +25,7 @@ def get_running_apps():
 
     return apps_list
 
+
 def check_app_update(app_name):
     dclient = docker.from_env()
     try:
@@ -33,7 +34,7 @@ def check_app_update(app_name):
         raise HTTPException(
             status_code=exc.response.status_code, detail=exc.explanation
         )
-        
+
     if app.attrs["Config"]["Image"]:
         if _update_check(app.attrs["Config"]["Image"]):
             app.attrs.update(conv2dict("isUpdatable", True))
@@ -41,6 +42,7 @@ def check_app_update(app_name):
     app.attrs.update(conv2dict("ports", app.ports))
     app.attrs.update(conv2dict("short_id", app.short_id))
     return app.attrs
+
 
 def get_apps():
     apps_list = []
@@ -118,9 +120,7 @@ def deploy_app(template: schemas.DeployForm):
             conv_caps2data(template.cap_add),
         )
     except HTTPException as exc:
-        raise HTTPException(
-            status_code=exc.status_code, detail=exc.detail
-        )
+        raise HTTPException(status_code=exc.status_code, detail=exc.detail)
     except Exception as exc:
         raise HTTPException(
             status_code=exc.response.status_code, detail=exc.explanation
