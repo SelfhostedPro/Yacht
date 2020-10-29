@@ -21,6 +21,7 @@ Installation documentation can be found [here](https://yacht.sh/Installation/yac
 Check out the getting started guide if this is the first time you've used Yacht: https://yacht.sh/Installation/gettingstarted/
 
 Yacht is also available via the DigitalOcean marketplace:
+
 [![DigitalOcean](https://raw.githubusercontent.com/SelfhostedPro/Yacht/docker-compose-api/readme_media/do-btn-blue.svg)](https://marketplace.digitalocean.com/apps/yacht?refcode=b68dee19dbf6)
 
 ## Features So Far:
