@@ -5,7 +5,6 @@
 [![Layers](https://img.shields.io/microbadger/layers/selfhostedpro/yacht?color=%2341B883&label=Layers&logo=docker&logoColor=%2341B883&style=for-the-badge)](https://hub.docker.com/r/selfhostedpro/yacht)
 [![Open Collective](https://img.shields.io/opencollective/all/selfhostedpro.svg?color=%2341B883&logoColor=%2341B883&style=for-the-badge&label=Supporters&logo=open%20collective)](https://opencollective.com/selfhostedpro "please consider helping me by either donating or contributing")
 
-
 ## Yacht
 Yacht is a container management UI with a focus on templates and 1-click deployments.
 

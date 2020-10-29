@@ -78,4 +78,4 @@ class TemplateVariables(Base):
     variable = Column(String(255),
                       nullable=False, unique=True, index=True)
     replacement = Column(String(255),
-                         nullable=False, unique=True, index=True)
+                         nullable=False, unique=False, index=True)
