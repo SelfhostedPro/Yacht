@@ -117,7 +117,10 @@ def deploy_app(template: schemas.DeployForm):
             conv_sysctls2data(template.sysctls),
             conv_caps2data(template.cap_add),
         )
-
+    except HTTPException as exc:
+        raise HTTPException(
+            status_code=exc.status_code, detail=exc.detail
+        )
     except Exception as exc:
         raise HTTPException(
             status_code=exc.response.status_code, detail=exc.explanation

@@ -5,6 +5,7 @@ import aiodocker
 import docker
 from docker.errors import APIError
 import json
+from fastapi import HTTPException
 
 settings = Settings()
 
@@ -100,6 +101,10 @@ def conv_env2data(data):
                 if t_var.variable in variable.default:
                     new_var = data[i].default.replace(t_var.variable, t_var.replacement)
                     variable.default = new_var
+                    break
+        else:
+            if variable.default.startswith('!'):
+                raise HTTPException(400, 'Unset template variable used: '+variable.default)
     delim = "="
     return [delim.join((d.name, d.default)) for d in data if d.default]
 
