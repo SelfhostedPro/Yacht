@@ -120,7 +120,7 @@ const actions = {
         commit("setLoading", false);
       });
   },
-  ProjectAppAction({ commit }, { Project, Name, Action }) {
+  ProjectAppAction({ commit, dispatch }, { Project, Name, Action }) {
     commit("setLoading", true);
     const url = `/api/compose/${Project}/${Action}/${Name}`;
     axios
@@ -128,6 +128,7 @@ const actions = {
       .then(response => {
         const projects = response.data;
         commit("setProjects", projects);
+        dispatch("apps/readApps", null, { root: true })
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });

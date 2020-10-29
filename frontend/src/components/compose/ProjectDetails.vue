@@ -90,8 +90,7 @@
                         Project: project.name,
                         Name: service,
                         Action: 'start',
-                      });
-                      reload();
+                      })
                     "
                   >
                     <v-icon small>mdi-play</v-icon>
@@ -104,8 +103,7 @@
                         Project: project.name,
                         Name: service,
                         Action: 'stop',
-                      });
-                      reload();
+                      })
                     "
                   >
                     <v-icon small>mdi-stop</v-icon>
@@ -118,8 +116,7 @@
                         Project: project.name,
                         Name: service,
                         Action: 'restart',
-                      });
-                      reload();
+                      })
                     "
                   >
                     <v-icon small>mdi-refresh</v-icon>
@@ -133,8 +130,7 @@
                         Project: project.name,
                         Name: service,
                         Action: 'pull',
-                      });
-                      reload();
+                      })
                     "
                   >
                     <v-icon small>mdi-update</v-icon>
@@ -148,8 +144,7 @@
                         Project: project.name,
                         Name: service,
                         Action: 'kill',
-                      });
-                      reload();
+                      })
                     "
                   >
                     <v-icon small>mdi-fire</v-icon>
@@ -162,8 +157,7 @@
                         Project: project.name,
                         Name: service,
                         Action: 'rm',
-                      });
-                      reload();
+                      })
                     "
                   >
                     <v-icon small>mdi-delete</v-icon>
@@ -414,7 +408,9 @@ export default {
     }),
     getStatus(name) {
       for (var app in this.apps) {
-        console.log(this.project.name + "_" + name + "_1" + " vs " + this.apps[app].name)
+        console.log(
+          this.project.name + "_" + name + "_1" + " vs " + this.apps[app].name
+        );
         if (
           this.apps[app].name == name ||
           this.apps[app].name == this.project.name + "_" + name + "_1"
