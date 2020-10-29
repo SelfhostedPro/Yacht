@@ -61,7 +61,7 @@ const actions = {
     axios
       .get(url)
       .then(response => {
-        console.log(response)
+        console.log(response);
         const projects = response.data;
         commit("setProjects", projects);
       })
@@ -110,17 +110,17 @@ const actions = {
     const url = `/api/compose/${Name}/${Action}`;
     axios
       .get(url)
-      .then((response) => {
+      .then(response => {
         const projects = response.data;
         commit("setProjects", projects);
       })
-      .catch((err) => {
+      .catch(err => {
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
       });
-  },
+  }
 };
 
 const getters = {

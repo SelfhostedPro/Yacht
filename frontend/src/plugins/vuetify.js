@@ -25,9 +25,9 @@ function theme() {
         },
         dark: true,
         options: {
-          customProperties: true,
+          customProperties: true
         }
-      },
+      }
     },
     DigitalOcean: {
       theme: {
@@ -49,12 +49,12 @@ function theme() {
           }
         },
         options: {
-          customProperties: true,
+          customProperties: true
         }
-      },
-    },
-  }
-  return presetThemes[process.env.VUE_APP_THEME || 'Default']
+      }
+    }
+  };
+  return presetThemes[process.env.VUE_APP_THEME || "Default"];
 }
 
 export default new Vuetify(theme());

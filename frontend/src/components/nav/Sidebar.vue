@@ -1,5 +1,12 @@
 <template>
-  <v-navigation-drawer app clipped permanent mini-variant expand-on-hover color="secondary">
+  <v-navigation-drawer
+    app
+    clipped
+    permanent
+    mini-variant
+    expand-on-hover
+    color="secondary"
+  >
     <!-- -->
 
     <v-list nav dense>

@@ -55,7 +55,7 @@
         </v-list-item>
       </v-list>
     </v-card>
-    <v-card class="mt-2">
+    <v-card color="foreground" class="mt-2">
       <v-card-title>
         Services
       </v-card-title>
@@ -73,9 +73,9 @@
                 </v-col>
               </v-row>
             </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-list dense>
-<v-list-item v-if="project.services[service].container_name">
+            <v-expansion-panel-content color="foreground">
+              <v-list color="foreground" dense>
+                <v-list-item v-if="project.services[service].container_name">
                   <v-list-item-content>
                     Container Name
                   </v-list-item-content>
@@ -145,7 +145,7 @@
                   </v-list-item-content>
                   <v-list-item-content>
                     <v-card outlined tile>
-                      <v-simple-table dense>
+                      <v-simple-table class="secondary" dense>
                         <thead>
                           <tr>
                             <th>
@@ -180,7 +180,7 @@
                   </v-list-item-content>
                   <v-list-item-content>
                     <v-card outlined tile>
-                      <v-simple-table dense>
+                      <v-simple-table class="secondary" dense>
                         <thead>
                           <tr>
                             <th>
@@ -215,7 +215,7 @@
                   </v-list-item-content>
                   <v-list-item-content>
                     <v-card outlined tile>
-                      <v-simple-table dense>
+                      <v-simple-table class="secondary" dense>
                         <thead>
                           <tr>
                             <th>
@@ -250,7 +250,7 @@
                   </v-list-item-content>
                   <v-list-item-content>
                     <v-card outlined tile>
-                      <v-simple-table dense>
+                      <v-simple-table class="secondary" dense>
                         <tbody>
                           <tr
                             v-for="(value, index) in project.services[service]
@@ -272,7 +272,7 @@
         </v-expansion-panels>
       </v-card-text>
     </v-card>
-    <v-card v-if="project.networks" class="mt-2">
+    <v-card color="foreground" v-if="project.networks" class="mt-2">
       <v-card-title>
         Networks
       </v-card-title>
@@ -280,7 +280,7 @@
         {{ project.networks.join(", ") }}
       </v-card-text>
     </v-card>
-    <v-card v-if="project.volumes" class="mt-2">
+    <v-card color="foreground" v-if="project.volumes" class="mt-2">
       <v-card-title>
         Volumes
       </v-card-title>
@@ -301,22 +301,22 @@ export default {
   computed: {
     ...mapState("projects", ["project", "projects", "isLoading"]),
     ...mapGetters({
-      getProjectByName: "projects/getProjectByName",
+      getProjectByName: "projects/getProjectByName"
     }),
     project() {
       const projectName = this.$route.params.projectName;
       return this.getProjectByName(projectName);
-    },
+    }
   },
   methods: {
     ...mapActions({
-      readProject: "projects/readProject",
-    }),
+      readProject: "projects/readProject"
+    })
   },
   created() {
     const projectName = this.$route.params.projectName;
     this.readProject(projectName);
-  },
+  }
 };
 </script>
 

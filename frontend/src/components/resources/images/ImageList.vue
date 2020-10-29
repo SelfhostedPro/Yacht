@@ -70,7 +70,6 @@
       </v-card-title>
 
       <v-data-table
-        
         style="max-width: 99%;"
         class="mx-auto image-datatable foreground"
         :headers="headers"
@@ -114,7 +113,7 @@
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
-              <v-list color='foreground' dense>
+              <v-list color="foreground" dense>
                 <v-list-item @click="imageDetails(item.Id)">
                   <v-list-item-icon>
                     <v-icon>mdi-eye</v-icon>

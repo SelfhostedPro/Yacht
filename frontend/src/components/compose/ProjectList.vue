@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="projects-list component" style="max-width: 90%">
-    <v-card color='foreground'>
+    <v-card color="foreground">
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -47,7 +47,7 @@
                   <v-icon>mdi-chevron-down</v-icon>
                 </v-btn>
               </template>
-              <v-list color='foreground' dense>
+              <v-list color="foreground" dense>
                 <v-list-item
                   @click="ProjectAction({ Name: item.name, Action: 'up' })"
                 >
@@ -64,8 +64,7 @@
                   </v-list-item-icon>
                   <v-list-item-title>Down</v-list-item-title>
                 </v-list-item>
-                <v-divider
-                />
+                <v-divider />
                 <v-list-item
                   @click="ProjectAction({ Name: item.name, Action: 'start' })"
                 >
@@ -90,8 +89,7 @@
                   </v-list-item-icon>
                   <v-list-item-title>Restart</v-list-item-title>
                 </v-list-item>
-                <v-divider
-                />
+                <v-divider />
                 <v-list-item
                   @click="ProjectAction({ Name: item.name, Action: 'pull' })"
                 >
@@ -154,7 +152,7 @@
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
-              <v-list color='foreground' dense>
+              <v-list color="foreground" dense>
                 <v-list-item @click="projectDetails(item.name)">
                   <v-list-item-icon>
                     <v-icon>mdi-eye</v-icon>
@@ -179,9 +177,7 @@
         </template>
         <template v-slot:item.version="{ item }">
           <div class="projectcell">
-            <span
-              class="d-inline-block text-truncate idtext"
-            >
+            <span class="d-inline-block text-truncate idtext">
               {{ item.version }}
             </span>
           </div>
@@ -234,14 +230,13 @@ export default {
       readProjects: "projects/readProjects",
       writeProjects: "projects/writeProject",
       ProjectAction: "projects/ProjectAction"
-      
     }),
     handleRowClick(item) {
       this.$router.push({ path: `/projects/${item.name}` });
     },
     projectDetails(projectname) {
       this.$router.push({ path: `/projects/${projectname}` });
-    },
+    }
   },
   computed: {
     ...mapState("projects", ["projects", "isLoading"])
@@ -252,5 +247,4 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
-</style>
+<style lang="css" scoped></style>

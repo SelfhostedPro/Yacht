@@ -1,5 +1,5 @@
 <template lang="html">
-  <v-card color='foreground' class="d-flex mx-auto page">
+  <v-card color="foreground" class="d-flex mx-auto page">
     <v-container fluid class="component">
       <Nav :isLoading="isLoading" />
       <v-card color="foreground" tile>
@@ -13,7 +13,7 @@
                     <v-icon>mdi-chevron-down</v-icon>
                   </v-btn>
                 </template>
-                <v-list color='foreground' dense>
+                <v-list color="foreground" dense>
                   <v-list-item
                     @click="AppAction({ Name: app.name, Action: 'start' })"
                   >
@@ -48,7 +48,7 @@
                     <v-list-item-title>Kill</v-list-item-title>
                   </v-list-item>
                   <v-list-item
-                    @click="AppAction({ Name: app.name, Action: 'remove' });"
+                    @click="AppAction({ Name: app.name, Action: 'remove' })"
                   >
                     <v-list-item-icon>
                       <v-icon>mdi-delete</v-icon>
