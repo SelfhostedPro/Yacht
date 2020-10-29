@@ -11,6 +11,91 @@
       </v-fade-transition>
       <v-card-title>
         {{ project.name }}
+        <v-menu :close-on-click="true" :close-on-content-click="true" offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon size="small" v-bind="attrs" v-on="on" class="">
+              <v-icon>mdi-chevron-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list color="foreground" dense>
+            <v-list-item
+              @click="ProjectAction({ Name: project.name, Action: 'up' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-arrow-up-bold</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Up</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="ProjectAction({ Name: project.name, Action: 'down' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-arrow-down-bold</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Down</v-list-item-title>
+            </v-list-item>
+            <v-divider />
+            <v-list-item
+              @click="ProjectAction({ Name: project.name, Action: 'start' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-play</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Start</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="ProjectAction({ Name: project.name, Action: 'stop' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-stop</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Stop</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="ProjectAction({ Name: project.name, Action: 'restart' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-refresh</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Restart</v-list-item-title>
+            </v-list-item>
+            <v-divider />
+            <v-list-item
+              @click="ProjectAction({ Name: project.name, Action: 'pull' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-update</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Pull</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="ProjectAction({ Name: project.name, Action: 'create' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-plus-box-multiple</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Create</v-list-item-title>
+            </v-list-item>
+            <v-divider />
+            <v-list-item
+              @click="ProjectAction({ Name: project.name, Action: 'kill' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-fire</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Kill</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              @click="ProjectAction({ Name: project.name, Action: 'rm' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-delete</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Remove</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-card-title>
       <v-card-subtitle>
         <v-chip
@@ -83,7 +168,7 @@
             <v-expansion-panel-content color="foreground">
               <div class="text-center mt-2">
                 <v-item-group dense class="v-btn-toggle">
-                                    <v-btn
+                  <v-btn
                     small
                     @click="
                       projectAppAction({
@@ -96,7 +181,7 @@
                     <v-icon small>mdi-arrow-up-bold</v-icon>
                     up
                   </v-btn>
-                  <v-divider vertical/>
+                  <v-divider vertical />
                   <v-btn
                     small
                     @click="
@@ -418,6 +503,7 @@ export default {
     ...mapActions({
       readProject: "projects/readProject",
       projectAppAction: "projects/ProjectAppAction",
+      ProjectAction: "projects/ProjectAction",
       readApps: "apps/readApps",
     }),
     getStatus(name) {
