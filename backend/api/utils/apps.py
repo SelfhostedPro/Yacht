@@ -96,11 +96,12 @@ def conv_env2data(data):
 
     for i, variable in enumerate(data):
         for t_var in t_variables:
-            if t_var.variable in variable.default:
-                new_var = data[i].default.replace(t_var.variable, t_var.replacement)
-                variable.default = new_var
+            if variable.default:
+                if t_var.variable in variable.default:
+                    new_var = data[i].default.replace(t_var.variable, t_var.replacement)
+                    variable.default = new_var
     delim = "="
-    return [delim.join((d.name, d.default)) for d in data]
+    return [delim.join((d.name, d.default)) for d in data if d.default]
 
 
 def conv_sysctls2data(data):

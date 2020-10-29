@@ -16,7 +16,7 @@ class VolumesSchema(BaseModel):
 
 class EnvSchema(BaseModel):
     label: str
-    default: str
+    default: Optional[str]
     name: Optional[str]
     description: Optional[str]
 
