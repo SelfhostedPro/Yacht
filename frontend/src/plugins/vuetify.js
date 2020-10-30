@@ -52,7 +52,31 @@ function theme() {
           customProperties: true
         }
       }
-    }
+    },
+    OMV: {
+      theme: {
+        dark: false,
+        themes: {
+          light: {
+            primary: "#3A6D9C",
+            secondary: "#5DACDF",
+            background: "#FFFFFF",
+            tabs: "#5DACDF",
+            foreground: "#ECEFF1"
+          },
+          dark: {
+            primary: "#3A6D9C",
+            secondary: "#2B5174",
+            background: "#132433",
+            tabs: "#333B53",
+            foreground: "#333B53"
+          }
+        },
+        options: {
+          customProperties: true
+        }
+      }
+    },
   };
   return presetThemes[process.env.VUE_APP_THEME || "Default"];
 }
