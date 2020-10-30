@@ -211,9 +211,9 @@ def refresh_template(db: Session, template_id: id):
                 )
                 items.append(template_content)
     except Exception as exc:
-        if hasattr(exc, 'code') and exc.code == 404:
+        if hasattr(exc, "code") and exc.code == 404:
             raise HTTPException(status_code=exc.code, detail=exc.url)
-        else: 
+        else:
             print("Template update failed. ERR_001", exc)
             raise HTTPException(status_code=exc.status_code, detail=exc.explanation)
     else:
