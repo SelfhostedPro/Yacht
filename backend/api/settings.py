@@ -8,7 +8,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 def compose_dir_check():
     if not os.environ.get("COMPOSE_DIR", "config/compose/").endswith("/"):
         os.environ["COMPOSE_DIR"] += "/"
-    return os.environ["COMPOSE_DIR"]
+    return os.environ.get("COMPOSE_DIR", "config/compose/")
 
 
 class Settings(BaseSettings):

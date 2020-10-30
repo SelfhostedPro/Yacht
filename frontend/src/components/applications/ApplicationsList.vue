@@ -76,7 +76,10 @@
         class="mx-auto foreground"
         :headers="selectedHeaders"
         :items="apps"
-        :items-per-page="10"
+        :items-per-page="25"
+        :footer-props="{
+          'items-per-page-options': [15, 25, 50, -1]
+        }"
         :search="search"
         @click:row="handleRowClick"
         single-select
@@ -327,7 +330,7 @@ export default {
     ]),
     showHeaders() {
       return this.headers.filter(s => this.selectedHeaders.includes(s));
-    }
+    },
   },
   created() {
     this.headers = Object.values(this.headersMap);

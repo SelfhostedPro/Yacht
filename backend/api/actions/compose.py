@@ -55,7 +55,9 @@ def compose_action(name, action):
 
 
 def compose_app_action(
-    name, action, app,
+    name,
+    action,
+    app,
 ):
 
     files = find_yml_files(settings.COMPOSE_DIR)
@@ -131,23 +133,26 @@ def get_compose_projects():
         services = {}
         compose = open(file)
         loaded_compose = yaml.load(compose, Loader=yaml.SafeLoader)
-        if loaded_compose.get("volumes"):
-            for volume in loaded_compose.get("volumes"):
-                volumes.append(volume)
-        if loaded_compose.get("networks"):
-            for network in loaded_compose.get("networks"):
-                networks.append(network)
-        for service in loaded_compose.get("services"):
-            services[service] = loaded_compose["services"][service]
-        _project = {
-            "name": project,
-            "path": file,
-            "version": loaded_compose["version"],
-            "services": services,
-            "volumes": volumes,
-            "networks": networks,
-        }
-        projects.append(_project)
+        if loaded_compose:
+            if loaded_compose.get("volumes"):
+                for volume in loaded_compose.get("volumes"):
+                    volumes.append(volume)
+            if loaded_compose.get("networks"):
+                for network in loaded_compose.get("networks"):
+                    networks.append(network)
+            for service in loaded_compose.get("services"):
+                services[service] = loaded_compose["services"][service]
+            _project = {
+                "name": project,
+                "path": file,
+                "version": loaded_compose["version"],
+                "services": services,
+                "volumes": volumes,
+                "networks": networks,
+            }
+            projects.append(_project)
+        else:
+            print("ERROR: " + file + " is invalid or empty!")
     return projects
 
 

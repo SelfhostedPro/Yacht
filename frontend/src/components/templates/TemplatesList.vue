@@ -24,7 +24,10 @@
         class="foreground"
         :headers="headers"
         :items="templates"
-        :items-per-page="10"
+        :items-per-page="25"
+        :footer-props="{
+          'items-per-page-options': [15, 25, 50, -1]
+        }"
         :search="search"
         @click:row="handleRowClick"
       >
