@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from ..db import models, schemas
 from ..utils import *
 from ..utils import check_updates as _update_check
+from docker.errors import APIError
 
 from datetime import datetime
 import time
@@ -24,6 +25,7 @@ def get_running_apps():
 
     return apps_list
 
+
 def check_app_update(app_name):
     dclient = docker.from_env()
     try:
@@ -32,7 +34,7 @@ def check_app_update(app_name):
         raise HTTPException(
             status_code=exc.response.status_code, detail=exc.explanation
         )
-        
+
     if app.attrs["Config"]["Image"]:
         if _update_check(app.attrs["Config"]["Image"]):
             app.attrs.update(conv2dict("isUpdatable", True))
@@ -41,10 +43,16 @@ def check_app_update(app_name):
     app.attrs.update(conv2dict("short_id", app.short_id))
     return app.attrs
 
+
 def get_apps():
     apps_list = []
     dclient = docker.from_env()
-    apps = dclient.containers.list(all=True)
+    try:
+        apps = dclient.containers.list(all=True)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
     for app in apps:
         attrs = app.attrs
 
@@ -111,7 +119,8 @@ def deploy_app(template: schemas.DeployForm):
             conv_sysctls2data(template.sysctls),
             conv_caps2data(template.cap_add),
         )
-
+    except HTTPException as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.detail)
     except Exception as exc:
         raise HTTPException(
             status_code=exc.response.status_code, detail=exc.explanation
@@ -191,12 +200,16 @@ def app_action(app_name, action):
         try:
             _action(force=True)
         except Exception as exc:
-            err = f"{exc}"
+            raise HTTPException(
+                status_code=exc.response.status_code, detail=exc.explanation
+            )
     else:
         try:
             _action()
         except Exception as exc:
-            err = exc.explination
+            raise HTTPException(
+                status_code=exc.response.status_code, detail=exc.explanation
+            )
     apps_list = get_apps()
     return apps_list
 
@@ -221,7 +234,7 @@ def app_update(app_name):
     try:
         updater = dclient.containers.run(
             image="containrrr/watchtower:latest",
-            command="--run-once " + old.name,
+            command="--cleanup --run-once " + old.name,
             remove=True,
             detach=True,
             volumes=volumes,
@@ -263,12 +276,12 @@ def update_self():
     print("**** Updating " + yacht.name + "****")
     updater = dclient.containers.run(
         image="containrrr/watchtower:latest",
-        command="--run-once " + yacht.name,
+        command="--cleanup --run-once " + yacht.name,
         remove=True,
         detach=True,
         volumes=volumes,
     )
-    result = updater.wait(timeout=120)
+    result = updater
     print(result)
     time.sleep(1)
     return result
@@ -284,14 +297,18 @@ def check_self_update():
         yacht = dclient.containers.get(yacht_id)
     except Exception as exc:
         print(exc)
-        if exc.response.status_code == 404:
+        if hasattr(exc, 'response') and exc.response.status_code == 404:
             raise HTTPException(
                 status_code=exc.response.status_code,
                 detail="Unable to get Yacht container ID",
             )
-        else:
+        elif hasattr(exc, 'response'):
             raise HTTPException(
                 status_code=exc.response.status_code, detail=exc.explanation
             )
+        else:
+            raise HTTPException(
+                status_code=400, detail=exc.args
+            )
 
-    return check_updates(yacht.image.tags[0])
+    return _update_check(yacht.image.tags[0])

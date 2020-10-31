@@ -70,12 +70,14 @@
       </v-card-title>
 
       <v-data-table
-        
         style="max-width: 99%;"
         class="mx-auto image-datatable foreground"
         :headers="headers"
         :items="images"
-        :items-per-page="10"
+        :items-per-page="25"
+        :footer-props="{
+          'items-per-page-options': [15, 25, 50, -1]
+        }"
         :search="search"
         @click:row="handleRowClick"
       >
@@ -114,7 +116,7 @@
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
-              <v-list color='foreground' dense>
+              <v-list color="foreground" dense>
                 <v-list-item @click="imageDetails(item.Id)">
                   <v-list-item-icon>
                     <v-icon>mdi-eye</v-icon>

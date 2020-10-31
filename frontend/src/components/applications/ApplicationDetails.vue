@@ -1,5 +1,5 @@
 <template lang="html">
-  <v-card color='foreground' class="d-flex mx-auto page">
+  <v-card color="foreground" class="d-flex mx-auto page">
     <v-container fluid class="component">
       <Nav :isLoading="isLoading" />
       <v-card color="foreground" tile>
@@ -13,7 +13,7 @@
                     <v-icon>mdi-chevron-down</v-icon>
                   </v-btn>
                 </template>
-                <v-list color='foreground' dense>
+                <v-list color="foreground" dense>
                   <v-list-item
                     @click="AppAction({ Name: app.name, Action: 'start' })"
                   >

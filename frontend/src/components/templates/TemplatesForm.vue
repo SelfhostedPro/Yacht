@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="template-form component">
-    <v-card color='foreground'>
+    <v-card color="foreground">
       <v-fade-transition>
         <v-progress-linear
           indeterminate

@@ -5,7 +5,7 @@
       v-if="template"
       class="templateDetailsContainer component"
     >
-      <v-card color='foreground'>
+      <v-card color="foreground">
         <v-fade-transition>
           <v-progress-linear
             indeterminate
@@ -34,7 +34,7 @@
           class="d-flex"
           style="flex-direction:column"
         >
-          <v-card color='foreground' class="flex-grow-1">
+          <v-card color="foreground" class="flex-grow-1">
             <v-img
               :src="item.logo"
               contain
@@ -85,7 +85,7 @@
       max-width="90%"
       v-if="selectedApp"
     >
-      <v-card color='foreground' raised shaped>
+      <v-card color="foreground" raised shaped>
         <v-fade-transition>
           <v-progress-linear
             indeterminate
@@ -139,7 +139,14 @@
                 >
                 <v-list-item-content>
                   <v-list-item-title class="px-5 text-centered">
-                    <a :href="'https://'+'hub.docker.com/r/' + selectedApp.image.split(':')[0]">{{ selectedApp.image }}</a>
+                    <a
+                      :href="
+                        'https://' +
+                          'hub.docker.com/r/' +
+                          selectedApp.image.split(':')[0]
+                      "
+                      >{{ selectedApp.image }}</a
+                    >
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>

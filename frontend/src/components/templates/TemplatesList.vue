@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="templates-list component">
-    <v-card color='foreground'>
+    <v-card color="foreground">
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -24,7 +24,10 @@
         class="foreground"
         :headers="headers"
         :items="templates"
-        :items-per-page="10"
+        :items-per-page="25"
+        :footer-props="{
+          'items-per-page-options': [15, 25, 50, -1]
+        }"
         :search="search"
         @click:row="handleRowClick"
       >
@@ -43,7 +46,7 @@
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
-              <v-list color='foreground' dense>
+              <v-list color="foreground" dense>
                 <v-list-item @click="templateDetails(item.id)">
                   <v-list-item-icon>
                     <v-icon>mdi-eye</v-icon>

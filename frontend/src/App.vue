@@ -53,8 +53,8 @@ export default {
       isLoggedIn: "auth/isAuthenticated",
       authDisabled: "auth/authDisabled"
     }),
-    theme(){
-      return (this.$vuetify.theme.dark) ? 'dark' : 'light'
+    theme() {
+      return this.$vuetify.theme.dark ? "dark" : "light";
     }
   },
   methods: {
@@ -64,27 +64,25 @@ export default {
   },
   created() {
     this.authCheck();
-    
   },
-  mounted(){
+  mounted() {
     const dark_theme = localStorage.getItem("dark_theme");
     const theme = JSON.parse(localStorage.getItem("theme"));
 
     if (dark_theme == "false") {
       this.$vuetify.theme.dark = false;
-    } else if (dark_theme == "true"){
+    } else if (dark_theme == "true") {
       this.$vuetify.theme.dark = true;
     }
     if (theme) {
-      this.$vuetify.theme.themes = theme
-
+      this.$vuetify.theme.themes = theme;
     }
   }
 };
 </script>
 
 <style>
-.v-application{
+.v-application {
   background-color: var(--v-background-base) !important;
 }
 html {

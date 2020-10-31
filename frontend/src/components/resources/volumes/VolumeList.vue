@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="volumes-list component" style="max-width: 90%">
-    <v-card color='foreground'>
+    <v-card color="foreground">
       <v-fade-transition>
         <v-progress-linear
           indeterminate
@@ -24,7 +24,7 @@
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
-          <v-card color='foreground'>
+          <v-card color="foreground">
             <v-card-title class="headline" style="word-break: break-all;">
               Create Volume
             </v-card-title>
@@ -74,7 +74,10 @@
         class="mx-auto volume-datatable foreground"
         :headers="headers"
         :items="volumes"
-        :items-per-page="10"
+        :items-per-page="25"
+        :footer-props="{
+          'items-per-page-options': [15, 25, 50, -1]
+        }"
         :search="search"
         @click:row="handleRowClick"
       >
@@ -111,7 +114,7 @@
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
-              <v-list color='foreground' dense>
+              <v-list color="foreground" dense>
                 <v-list-item @click="volumeDetails(item.Name)">
                   <v-list-item-icon>
                     <v-icon>mdi-eye</v-icon>
