@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 import PercentBarChart from "../components/charts/PercentBarChart";
 export default {
   components: {
@@ -82,51 +82,58 @@ export default {
   },
   methods: {
     readAppStats() {
-      let url = "/api/users/me";
-      axios.get(url, { withCredentials: true }).catch(err => {
-        localStorage.removeItem("username");
-        window.location.reload();
-        console.log(err);
-      });
-      var proto = "";
-      if (location.protocol == "http:") {
-        proto = "ws://";
-      } else {
-        proto = "wss://";
-      }
-      this.statConnection = new WebSocket(
-        `${proto}${location.hostname}:${location.port}/api/apps/stats`
-      );
-      this.statConnection.onopen = () => {
-        this.statConnection.send(
-          JSON.stringify({ type: "onopen", data: "Connected!" })
-        );
-      };
-      this.statConnection.onmessage = event => {
-        let statsGroup = JSON.parse(event.data);
-        if (this.stats[statsGroup.name] == null) {
-          this.initStats(statsGroup);
-        }
-        this.stats[statsGroup.name].name = statsGroup.name;
-        this.stats[statsGroup.name].cpu_percent.push(
-          Math.round(statsGroup.cpu_percent)
-        );
-        this.stats[statsGroup.name].mem_percent.push(
-          Math.round(statsGroup.mem_percent)
-        );
-        this.stats[statsGroup.name].mem_current.push(statsGroup.mem_current);
-        this.stats[statsGroup.name].mem_total.push(statsGroup.mem_total);
-        for (let key in this.stats[statsGroup.name]) {
-          if (
-            this.stats[statsGroup.name][key].length > 3 &&
-            Array.isArray(this.stats[statsGroup.name][key])
-          ) {
-            this.stats[statsGroup.name][key].shift();
-          }
-        }
-        this.$forceUpdate();
-      };
+      let es = new EventSource('/api/apps/stats');
+      es.addEventListener('message', event => {
+        let data = JSON.parse(event.data);
+        console.log(data)
+      }, false);
     },
+    // readAppStats() {
+    //   let url = "/api/auth/me";
+    //   axios.get(url, { withCredentials: true }).catch(err => {
+    //     localStorage.removeItem("username");
+    //     window.location.reload();
+    //     console.log(err);
+    //   });
+    //   var proto = "";
+    //   if (location.protocol == "http:") {
+    //     proto = "ws://";
+    //   } else {
+    //     proto = "wss://";
+    //   }
+    //   this.statConnection = new WebSocket(
+    //     `${proto}${location.hostname}:${location.port}/api/apps/stats`
+    //   );
+    //   this.statConnection.onopen = () => {
+    //     this.statConnection.send(
+    //       JSON.stringify({ type: "onopen", data: "Connected!" })
+    //     );
+    //   };
+    //   this.statConnection.onmessage = event => {
+    //     let statsGroup = JSON.parse(event.data);
+    //     if (this.stats[statsGroup.name] == null) {
+    //       this.initStats(statsGroup);
+    //     }
+    //     this.stats[statsGroup.name].name = statsGroup.name;
+    //     this.stats[statsGroup.name].cpu_percent.push(
+    //       Math.round(statsGroup.cpu_percent)
+    //     );
+    //     this.stats[statsGroup.name].mem_percent.push(
+    //       Math.round(statsGroup.mem_percent)
+    //     );
+    //     this.stats[statsGroup.name].mem_current.push(statsGroup.mem_current);
+    //     this.stats[statsGroup.name].mem_total.push(statsGroup.mem_total);
+    //     for (let key in this.stats[statsGroup.name]) {
+    //       if (
+    //         this.stats[statsGroup.name][key].length > 3 &&
+    //         Array.isArray(this.stats[statsGroup.name][key])
+    //       ) {
+    //         this.stats[statsGroup.name][key].shift();
+    //       }
+    //     }
+    //     this.$forceUpdate();
+    //   };
+    // },
     refresh() {
       this.closeStats();
       this.readAppStats();

@@ -1,93 +1,84 @@
 import uvicorn
-from fastapi import Depends, FastAPI, Header, HTTPException
-from .routers import apps, templates, app_settings, resources, auth, user, compose
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi.responses import JSONResponse, RedirectResponse
+from .routers import apps, templates, app_settings, resources, compose, users
 import uuid
 
-from .db import models
-from .db.database import SessionLocal, engine
+from fastapi_jwt_auth import AuthJWT
+from fastapi_jwt_auth.exceptions import AuthJWTException
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
 from .routers.app_settings import (
     read_template_variables,
     set_template_variables,
-    SessionLocal,
 )
-from sqlalchemy.orm import Session
-
 from .settings import Settings
+
 from .utils import get_db
 
-from .auth import (
-    fastapi_users,
-    cookie_authentication,
-    database,
-    users,
-    user_create,
-    UserDB,
-    get_password_hash,
-)
+from backend.api.db.crud import create_user, get_users
+from backend.api.db.models import User, TemplateVariables
+from backend.api.db.database import SessionLocal
+from backend.api.db.schemas import UserCreate
 
 app = FastAPI(root_path="/api")
 
-models.Base.metadata.create_all(bind=engine)
-
 settings = Settings()
 
-print(settings.DISABLE_AUTH)
 
-app.include_router(
-    apps.router,
-    prefix="/apps",
-    tags=["apps"],
-    # dependencies=[Depends(get_token_header)],
-    responses={404: {"description": "Not found"}},
-)
-app.include_router(
-    resources.router, prefix="/resources", tags=["resources"],
-)
-if settings.DISABLE_AUTH == "True":
-    app.include_router(auth.router, prefix="/auth", tags=["auth"])
-else:
-    app.include_router(
-        fastapi_users.get_auth_router(cookie_authentication),
-        prefix="/auth",
-        tags=["auth"],
+class jwtSettings(BaseModel):
+    authjwt_secret_key: str = settings.SECRET_KEY
+    authjwt_token_location: set = {'headers', 'cookies'}
+    authjwt_cookie_secure: bool = False
+    authjwt_cookie_csrf_protect: bool = True
+    authjwt_cookie_samesite: str = 'lax'
+
+
+@AuthJWT.load_config
+def get_config():
+    return jwtSettings()
+
+
+@app.exception_handler(AuthJWTException)
+def authjwt_exception_handler(request: Request, exc: AuthJWTException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.message}
     )
-if settings.DISABLE_AUTH == "True":
-    app.include_router(user.router, prefix="/users", tags=["users"])
-else:
-    app.include_router(
-        fastapi_users.get_users_router(), prefix="/users", tags=["users"]
-    )
+
+app.include_router(users.router, prefix="/auth", tags=["users"])
+app.include_router(apps.router, prefix="/apps", tags=["apps"])
+app.include_router(
+    resources.router,
+    prefix="/resources",
+    tags=["resources"],
+)
 app.include_router(
     templates.router,
     prefix="/templates",
     tags=["templates"],
-    responses={404: {"description": "Not found"}},
 )
 app.include_router(compose.router, prefix="/compose", tags=["compose"])
 app.include_router(app_settings.router, prefix="/settings", tags=["settings"])
 
 
 @app.on_event("startup")
-async def startup():
-    await database.connect()
+async def startup(db: Session = Depends(get_db)):
+    # await database.connect()
     # Clear old db migrations
     delete_alembic = "DROP TABLE IF EXISTS alembic_version;"
-    await database.execute(delete_alembic)
-    users_exist = await database.fetch_all(query=users.select())
+    # await database.execute(delete_alembic)
+    users_exist = get_users(db=SessionLocal())
     if users_exist:
         print("Users Exist")
     else:
         print("No Users. Creating the default user.")
         # This is where I'm having trouble
-        hashed_password = get_password_hash(settings.ADMIN_PASSWORD)
-        base_user = UserDB(
-            id=uuid.uuid4(),
-            email=settings.ADMIN_EMAIL,
-            hashed_password=hashed_password,
-            is_active=True,
-            is_superuser=True,
+        user = UserCreate(
+            username=settings.ADMIN_EMAIL, password=settings.ADMIN_PASSWORD
         )
-        user_created = await user_create(base_user)
+        create_user(db=SessionLocal(), user=user)
     template_variables_exist = read_template_variables(SessionLocal())
     if template_variables_exist:
         print("Template Variables Exist")
@@ -96,16 +87,11 @@ async def startup():
         t_vars = settings.BASE_TEMPLATE_VARIABLES
         t_var_list = []
         for t in t_vars:
-            template_variables = models.TemplateVariables(
+            template_variables = TemplateVariables(
                 variable=t.get("variable"), replacement=t.get("replacement")
             )
             t_var_list.append(template_variables)
         set_template_variables(new_variables=t_var_list, db=SessionLocal())
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
 
 
 if __name__ == "__main__":

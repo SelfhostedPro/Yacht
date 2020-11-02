@@ -18,17 +18,30 @@ Vue.config.productionTip = false;
 // Handle Token Refresh on 401 or 403
 function createAxiosResponseInterceptor() {
   const interceptor = axios.interceptors.response.use(
-    response => response,
-    error => {
+    (response) => response,
+    (error) => {
       if (error.response.status !== 401) {
         return Promise.reject(error);
       }
 
       axios.interceptors.response.eject(interceptor);
+
       return store
-        .dispatch("auth/AUTH_LOGOUT")
+        .dispatch("auth/AUTH_REFRESH")
         .then(() => {
+          error.response.config.xsrfCookieName = "csrf_access_token"
+          error.response.config.xsrfHeaderName = "X-CSRF-TOKEN"
+          console.log(error.response.config)
+          return axios(error.response.config);
+        })
+        .catch((error) => {
+          if (error.response.status != 401) {
+            return Promise.reject(error)
+          }else{
+          store.dispatch("auth/AUTH_LOGOUT");
           this.router.push("/");
+          return Promise.reject(error);
+          }
         })
         .finally(createAxiosResponseInterceptor);
     }

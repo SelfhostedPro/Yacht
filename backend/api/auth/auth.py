@@ -1,88 +1,20 @@
-import databases
-import sqlalchemy
-from fastapi import FastAPI
-from fastapi_users import models
-from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
-from fastapi_users.db import BaseUserDatabase
-from fastapi_users.authentication import CookieAuthentication
-from fastapi_users import FastAPIUsers
-from fastapi_users.password import get_password_hash
+from typing import Tuple
 
-from ..settings import Settings
+from passlib import pwd
+from passlib.context import CryptContext
 
-settings = Settings()
-
-SECRET = settings.SECRET_KEY
-
-auth_backends = []
-
-cookie_authentication = CookieAuthentication(
-    secret=SECRET, lifetime_seconds=3600, cookie_secure=False
-)
-
-auth_backends.append(cookie_authentication)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-class User(models.BaseUser):
-    pass
+def verify_and_update_password(
+    plain_password: str, hashed_password: str
+) -> Tuple[bool, str]:
+    return pwd_context.verify_and_update(plain_password, hashed_password)
 
 
-class UserCreate(models.BaseUserCreate):
-    pass
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
 
 
-class UserUpdate(User, models.BaseUserUpdate):
-    pass
-
-
-class UserDB(User, models.BaseUserDB):
-    pass
-
-
-DATABASE_URL = settings.SQLALCHEMY_DATABASE_URI
-
-database = databases.Database(DATABASE_URL)
-
-Base: DeclarativeMeta = declarative_base()
-
-
-class UserTable(Base, SQLAlchemyBaseUserTable):
-    pass
-
-
-engine = sqlalchemy.create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}
-)
-
-Base.metadata.create_all(engine)
-
-users = UserTable.__table__
-user_db = SQLAlchemyUserDatabase(UserDB, database, users)
-
-app = FastAPI()
-
-fastapi_users = FastAPIUsers(
-    user_db, auth_backends, User, UserCreate, UserUpdate, UserDB,
-)
-
-
-async def fake_get_active_user():
-    DISABLE_AUTH = settings.DISABLE_AUTH
-    if DISABLE_AUTH == "True":
-        return True
-    else:
-        await fastapi_users.get_current_active_user()
-
-
-if settings.DISABLE_AUTH != "True":
-    get_active_user = fastapi_users.get_current_active_user
-else:
-    get_active_user = fake_get_active_user
-# get_active_user = fastapi_users.get_current_active_user
-get_auth_router = fastapi_users.get_auth_router
-get_password_hash = get_password_hash
-
-
-async def user_create(UD):
-    await fastapi_users.db.create(UD)
+def generate_password() -> str:
+    return pwd.genword()
