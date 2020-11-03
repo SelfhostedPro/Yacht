@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app clipped-left color="secondary">
-    <img :src="themeLogo()" width="47" height="32" />
+    <img :src="themeLogo()" class="main-logo" />
     <v-toolbar-title class="ml-2">Yacht</v-toolbar-title>
     <v-toolbar-title class="mx-auto font-weight-bold">
       {{ $route.name }}
@@ -38,14 +38,16 @@
 import { mapActions, mapState } from "vuex";
 import lightLogo from "@/assets/logo-light.svg";
 import darkLogo from "@/assets/logo.svg";
-
+import { themeLogo } from "../../config.js";
 export default {
   methods: {
     ...mapActions({
       logout: "auth/AUTH_LOGOUT"
     }),
     themeLogo() {
-      if (this.$vuetify.theme.dark == true) {
+      if (themeLogo) {
+        return themeLogo;
+      } else if (this.$vuetify.theme.dark == true) {
         return darkLogo;
       } else if (this.$vuetify.theme.dark == false) {
         return lightLogo;
@@ -57,3 +59,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.main-logo{
+  max-width: 47px;
+  max-height: 32px;
+}
+</style>
