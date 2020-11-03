@@ -38,22 +38,24 @@
 import { mapActions, mapState } from "vuex";
 import lightLogo from "@/assets/logo-light.svg";
 import darkLogo from "@/assets/logo.svg";
-
+import { themeLogo } from "../../config.js";
 export default {
   methods: {
     ...mapActions({
-      logout: "auth/AUTH_LOGOUT"
+      logout: "auth/AUTH_LOGOUT",
     }),
     themeLogo() {
-      if (this.$vuetify.theme.dark == true) {
+      if (themeLogo) {
+        return themeLogo;
+      } else if (this.$vuetify.theme.dark == true) {
         return darkLogo;
       } else if (this.$vuetify.theme.dark == false) {
         return lightLogo;
       }
-    }
+    },
   },
   computed: {
-    ...mapState("auth", ["username", "authDisabled"])
-  }
+    ...mapState("auth", ["username", "authDisabled"]),
+  },
 };
 </script>

@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify/lib";
+import {themeTheme} from "../config.js"
 
 Vue.use(Vuetify);
 
@@ -78,7 +79,7 @@ function theme() {
       },
     },
   };
-  return presetThemes[process.env.VUE_APP_THEME || "Default"];
+  return presetThemes[ themeTheme || process.env.VUE_APP_THEME || "Default"];
 }
 
 export default new Vuetify(theme());

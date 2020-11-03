@@ -4,7 +4,7 @@
       <img
         class="mx-auto mt-12"
         alt="Vue logo"
-        :src="themeLogo()"
+        :src=" themeLogo()"
         width="107"
         height="72"
       />
@@ -69,6 +69,8 @@ import lightLogo from "@/assets/logo-light.svg";
 import darkLogo from "@/assets/logo.svg";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { mapActions } from "vuex";
+import {themeLogo} from "../../config.js"
+
 export default {
   components: {
     ValidationProvider,
@@ -100,7 +102,9 @@ export default {
       this.authCheck();
     },
     themeLogo() {
-      if (this.$vuetify.theme.dark == true) {
+      if (themeLogo) {
+        return themeLogo;
+      } else if (this.$vuetify.theme.dark == true) {
         return darkLogo;
       } else if (this.$vuetify.theme.dark == false) {
         return lightLogo;
