@@ -113,6 +113,7 @@ export default {
     },
     resetTheme() {
       localStorage.removeItem("theme");
+      localStorage.removeItem("dark_theme");
       window.location.reload();
     }
   }

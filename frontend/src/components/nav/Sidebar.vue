@@ -65,7 +65,7 @@ export default {
         to: "/",
         icon: "mdi-view-dashboard",
         text: "Dashboard",
-        divider: true,
+        divider: true
       },
       {
         icon: "mdi-application",
@@ -74,14 +74,14 @@ export default {
           {
             text: "View Applications",
             to: "/apps",
-            icon: "mdi-view-list",
+            icon: "mdi-view-list"
           },
           {
             text: "New Application",
             to: "/apps/deploy",
-            icon: "mdi-plus",
-          },
-        ],
+            icon: "mdi-plus"
+          }
+        ]
       },
       {
         icon: "mdi-folder",
@@ -90,14 +90,14 @@ export default {
           {
             text: "View Templates",
             to: "/templates",
-            icon: "mdi-view-list",
+            icon: "mdi-view-list"
           },
           {
             text: "New Template",
             to: "/templates/new",
-            icon: "mdi-plus",
-          },
-        ],
+            icon: "mdi-plus"
+          }
+        ]
       },
       {
         icon: "mdi-book-open",
@@ -106,9 +106,9 @@ export default {
           {
             text: "View Projects",
             to: "/projects",
-            icon: "mdi-view-list",
-          },
-        ],
+            icon: "mdi-view-list"
+          }
+        ]
       },
       {
         icon: "mdi-cube-outline",
@@ -117,27 +117,27 @@ export default {
           {
             text: "Images",
             to: "/resources/images",
-            icon: "mdi-disc",
+            icon: "mdi-disc"
           },
           {
             text: "Volumes",
             to: "/resources/volumes",
-            icon: "mdi-database",
+            icon: "mdi-database"
           },
           {
             text: "Networks",
             to: "/resources/networks",
-            icon: "mdi-network",
-          },
-        ],
+            icon: "mdi-network"
+          }
+        ]
       },
       {
         to: "/settings/info",
         icon: "mdi-cog",
-        text: "Settings",
-      },
-    ],
-  }),
+        text: "Settings"
+      }
+    ]
+  })
 };
 </script>
 

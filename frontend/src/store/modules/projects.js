@@ -112,7 +112,7 @@ const actions = {
       .then(response => {
         const projects = response.data;
         commit("setProjects", projects);
-        dispatch("apps/readApps", null, { root: true })
+        dispatch("apps/readApps", null, { root: true });
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
@@ -129,7 +129,7 @@ const actions = {
       .then(response => {
         const projects = response.data;
         commit("setProjects", projects);
-        dispatch("apps/readApps", null, { root: true })
+        dispatch("apps/readApps", null, { root: true });
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
@@ -137,7 +137,7 @@ const actions = {
       .finally(() => {
         commit("setLoading", false);
       });
-  },
+  }
 };
 
 const getters = {

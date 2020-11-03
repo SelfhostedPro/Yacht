@@ -102,9 +102,9 @@
           <div class="projectcell">
             <span
               class="d-inline-block text-truncate idtext"
-              v-if="item.Labels"
+              v-if="item.Project"
             >
-              {{ item.Labels["com.docker.compose.project"] || "-" }}
+              {{ item.Project || "-" }}
             </span>
           </div>
         </template>

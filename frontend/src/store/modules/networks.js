@@ -61,6 +61,7 @@ const actions = {
     axios
       .get(url)
       .then(response => {
+        console.log(response)
         const networks = response.data;
         commit("setNetworks", networks);
       })
