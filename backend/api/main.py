@@ -10,8 +10,8 @@ from .routers.app_settings import (
     set_template_variables,
     SessionLocal,
 )
-from backend.api.db.schemas.templates import TemplateBase
-from backend.api.db.crud.templates import (
+from .db.schemas.templates import TemplateBase
+from .db.crud.templates import (
     get_templates,
     add_template
 )
