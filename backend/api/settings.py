@@ -38,6 +38,8 @@ class Settings(BaseSettings):
         {"variable": "!PUID", "replacement": "1000"},
         {"variable": "!PGID", "replacement": "100"},
     ]
+    if os.environ.get("BASE_TEMPLATE", None):
+        BASE_TEMPLATE = os.environ.get("BASE_TEMPLATE")
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL", "sqlite:///config/data.sqlite"
     )

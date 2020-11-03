@@ -78,6 +78,30 @@ function theme() {
           customProperties: true
         }
       }
+    },
+    RAGE: {
+      theme: {
+        dark: true,
+        themes: {
+          light: {
+            primary: "#3A6D9C",
+            secondary: "#5DACDF",
+            background: "#FFFFFF",
+            tabs: "#5DACDF",
+            foreground: "#ECEFF1"
+          },
+          dark: {
+            primary: "#C90101",
+            secondary: "#2A2A2A",
+            background: "#2C0000",
+            tabs: "#000000",
+            foreground: "#000000"
+          }
+        },
+        options: {
+          customProperties: true
+        }
+      }
     }
   };
   return presetThemes[themeTheme || process.env.VUE_APP_THEME || "Default"];
