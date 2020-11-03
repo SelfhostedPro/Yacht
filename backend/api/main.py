@@ -95,16 +95,17 @@ async def startup():
         user_created = await user_create(base_user)
 
     existing_templates = get_templates(SessionLocal())
-    base_template_url = settings.BASE_TEMPLATE
-    if base_template_url:
-        for _template in existing_templates:
-            if base_template_url in _template.url:
-                base_exists = True
-                break
-        else:
-            base_exists = False
-        if base_exists == False:
-            add_template(SessionLocal(), template=TemplateBase(title='default', url= base_template_url))
+    if hasattr(settings, 'BASE_TEMPLATE'):
+        base_template_url = settings.BASE_TEMPLATE
+        if base_template_url:
+            for _template in existing_templates:
+                if base_template_url in _template.url:
+                    base_exists = True
+                    break
+            else:
+                base_exists = False
+            if base_exists == False:
+                add_template(SessionLocal(), template=TemplateBase(title='default', url= base_template_url))
 
     template_variables_exist = read_template_variables(SessionLocal())
     if template_variables_exist:
