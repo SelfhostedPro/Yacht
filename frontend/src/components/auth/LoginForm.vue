@@ -2,11 +2,9 @@
   <ValidationObserver ref="obs1" v-slot="{ invalid, validated }">
     <v-container class="fill-height" fluid>
       <img
-        class="mx-auto mt-12"
+        class="mx-auto mt-12 main-logo"
         alt="Vue logo"
-        :src=" themeLogo()"
-        width="107"
-        height="72"
+        :src="themeLogo()"
       />
       <v-row align="center" justify="center" class="mt-12">
         <v-col cols="12" sm="8" md="4">
@@ -69,7 +67,7 @@ import lightLogo from "@/assets/logo-light.svg";
 import darkLogo from "@/assets/logo.svg";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { mapActions } from "vuex";
-import {themeLogo} from "../../config.js"
+import { themeLogo } from "../../config.js";
 
 export default {
   components: {
@@ -115,6 +113,10 @@ export default {
 </script>
 
 <style lang="css" scope>
+.main-logo {
+  max-width: 107px;
+  max-height: 72px;
+}
 .form-signin {
   width: 100%;
   max-width: 330px;
