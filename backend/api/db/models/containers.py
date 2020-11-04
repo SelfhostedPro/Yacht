@@ -57,6 +57,7 @@ class TemplateItem(Base):
     restart_policy = Column(String(20), nullable=True, unique=False, index=False)
     ports = Column(JSON, nullable=True, unique=False, index=False)
     network_mode = Column(JSON, nullable=True, unique=False, index=False)
+    network = Column(JSON, nullable=True, unique=False, index=False)
     volumes = Column(JSON, nullable=True, unique=False, index=False)
     env = Column(JSON, nullable=True, unique=False, index=False)
     devices = Column(JSON, nullable=True, unique=False, index=False)
