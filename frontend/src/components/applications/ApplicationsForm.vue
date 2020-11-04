@@ -527,7 +527,7 @@
                     >
                       <v-text-field
                         label="Label"
-                        v-model="item['label']"
+                        v-model="item['name']"
                         :error-messages="errors"
                         :success="valid"
                         required

@@ -24,6 +24,7 @@ class TemplateItem(BaseModel):
     sysctls: Optional[List] = []
     cap_add: Optional[List] = []
     network_mode: Optional[str]
+    network: Optional[str]
 
     class Config:
         orm_mode = True

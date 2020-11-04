@@ -5,7 +5,6 @@ import { themeTheme } from "../config.js";
 Vue.use(Vuetify);
 
 function theme() {
-  console.log(themeTheme);
   var presetThemes = {
     Default: {
       theme: {
@@ -79,23 +78,23 @@ function theme() {
         }
       }
     },
-    RAGE: {
+    RED: {
       theme: {
         dark: true,
         themes: {
           light: {
-            primary: "#3A6D9C",
-            secondary: "#5DACDF",
+            primary: "#B71C1C",
+            secondary: "#C4C4C4",
             background: "#FFFFFF",
-            tabs: "#5DACDF",
-            foreground: "#ECEFF1"
+            tabs: "#FFFFFF",
+            foreground: "#FFFFFF"
           },
           dark: {
-            primary: "#C90101",
-            secondary: "#2A2A2A",
-            background: "#2C0000",
-            tabs: "#000000",
-            foreground: "#000000"
+            primary: "#B71C1C",
+            secondary: "#1E1E1E",
+            background: "#000000",
+            tabs: "#1E1E1E",
+            foreground: "#1E1E1E"
           }
         },
         options: {
