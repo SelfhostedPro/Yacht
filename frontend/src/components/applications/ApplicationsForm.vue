@@ -130,7 +130,7 @@
                     label="Network"
                     clearable
                     v-model="form.network"
-                    :disabled="form.network_mode !== undefined"
+                    :disabled="form.network_mode !== undefined && form.network_mode !== ''"
                   />
                 </v-col>
                 <v-col>
@@ -139,7 +139,7 @@
                     label="Network Mode"
                     clearable
                     v-model="form.network_mode"
-                    :disabled="form.network !== undefined"
+                    :disabled="form.network !== undefined && form.network !== ''"
                   />
                 </v-col>
               </v-row>
@@ -816,6 +816,8 @@ export default {
             name: app.name || "",
             image: app.image || "",
             restart_policy: app.restart_policy || "",
+            network: app.network,
+            network_mode: app.network_mode,
             ports: app.ports || [],
             volumes: app.volumes || [],
             env: app.env || [],
