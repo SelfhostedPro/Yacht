@@ -92,7 +92,7 @@ async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends
     try:
         csrf = websocket._cookies["csrf_access_token"]
         Authorize.jwt_required("websocket",websocket=websocket,csrf_token=csrf)
-    except AuthJWTException as err:
+    except AuthJWTException:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
     await websocket.accept()
     async with aiodocker.Docker() as docker:
@@ -116,7 +116,7 @@ async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depend
     try:
         csrf = websocket._cookies["csrf_access_token"]
         Authorize.jwt_required("websocket",websocket=websocket,csrf_token=csrf)
-    except AuthJWTException as err:
+    except AuthJWTException:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
     await websocket.accept()
     async with aiodocker.Docker() as docker:
@@ -168,7 +168,7 @@ async def dashboard(websocket: WebSocket, Authorize: AuthJWT = Depends()):
     try:
         csrf = websocket._cookies["csrf_access_token"]
         Authorize.jwt_required("websocket",websocket=websocket,csrf_token=csrf)
-    except AuthJWTException as err:
+    except AuthJWTException:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
     await websocket.accept()
     tasks = []
