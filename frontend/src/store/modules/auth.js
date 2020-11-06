@@ -49,10 +49,10 @@ const actions = {
       commit(AUTH_REQUEST);
       const url = "/api/auth/logout";
       axios
-        .post(
+        .get(
           url,
           {},
-          { xsrfCookieName: "csrf_access_token", withCredentials: true }
+          { withCredentials: true }
         )
         .then((resp) => {
           commit(AUTH_CLEAR, resp);
