@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuetify from "vuetify/lib";
+import { themeTheme } from "../config.js";
 
 Vue.use(Vuetify);
 
@@ -76,9 +77,33 @@ function theme() {
           customProperties: true
         }
       }
+    },
+    RED: {
+      theme: {
+        dark: true,
+        themes: {
+          light: {
+            primary: "#B71C1C",
+            secondary: "#C4C4C4",
+            background: "#FFFFFF",
+            tabs: "#FFFFFF",
+            foreground: "#FFFFFF"
+          },
+          dark: {
+            primary: "#B71C1C",
+            secondary: "#1E1E1E",
+            background: "#000000",
+            tabs: "#1E1E1E",
+            foreground: "#1E1E1E"
+          }
+        },
+        options: {
+          customProperties: true
+        }
+      }
     }
   };
-  return presetThemes[process.env.VUE_APP_THEME || "Default"];
+  return presetThemes[themeTheme || process.env.VUE_APP_THEME || "Default"];
 }
 
 export default new Vuetify(theme());

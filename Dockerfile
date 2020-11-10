@@ -1,7 +1,6 @@
 # Build Vue
 FROM node:14.5.0-alpine as build-stage
-ARG VUE_APP_THEME=Default
-ENV VUE_APP_THEME=${VUE_APP_THEME}
+
 WORKDIR /app
 COPY ./frontend/package*.json ./
 RUN npm install
@@ -14,6 +13,7 @@ FROM lsiobase/alpine:3.12 as deploy-stage
 
 # Set Variables
 ENV PYTHONIOENCODING=UTF-8
+ENV THEME=Default
 
 WORKDIR /api
 COPY ./backend/requirements.txt .
