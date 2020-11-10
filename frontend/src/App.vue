@@ -50,7 +50,7 @@ export default {
   data: () => ({}),
   computed: {
     ...mapGetters({
-      isLoggedIn: "auth/isAuthenticated",
+      isLoggedIn: "auth/isAuthenticated"
       // authDisabled: "auth/authDisabled"
     }),
     theme() {

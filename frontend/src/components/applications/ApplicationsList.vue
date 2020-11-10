@@ -330,7 +330,7 @@ export default {
     ]),
     showHeaders() {
       return this.headers.filter(s => this.selectedHeaders.includes(s));
-    },
+    }
   },
   created() {
     this.headers = Object.values(this.headersMap);

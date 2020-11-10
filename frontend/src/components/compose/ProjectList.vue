@@ -253,7 +253,7 @@ export default {
     }
   },
   computed: {
-    ...mapState("projects", ["projects", "isLoading"]),
+    ...mapState("projects", ["projects", "isLoading"])
   },
   mounted() {
     this.readProjects();

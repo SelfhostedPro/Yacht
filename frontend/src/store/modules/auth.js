@@ -5,20 +5,20 @@ import {
   AUTH_LOGOUT,
   AUTH_REFRESH,
   AUTH_CLEAR,
-  AUTH_CHANGE_PASS,
+  AUTH_CHANGE_PASS
 } from "../actions/auth";
 import axios from "axios";
 import router from "@/router/index";
 
 const state = {
   status: "",
-  username: localStorage.getItem("username") || "",
+  username: localStorage.getItem("username") || ""
 };
 
 const getters = {
-  isAuthenticated: (state) => !!state.username,
-  authStatus: (state) => state.status,
-  getUsername: (state) => state.username,
+  isAuthenticated: state => !!state.username,
+  authStatus: state => state.status,
+  getUsername: state => state.username
 };
 
 const actions = {
@@ -28,7 +28,7 @@ const actions = {
       const url = "/api/auth/login";
       axios
         .post(url, credentials, { withCredentials: true })
-        .then((resp) => {
+        .then(resp => {
           localStorage.setItem("username", resp.data.username);
           axios.defaults.withCredentials = true;
           axios.defaults.xsrfCookieName = "csrf_access_token";
@@ -36,9 +36,9 @@ const actions = {
           commit(AUTH_SUCCESS, resp);
           resolve(resp);
         })
-        .catch((err) => {
+        .catch(err => {
           commit(AUTH_ERROR, err);
-          commit("snackbar/setErr", err, {root: true})
+          commit("snackbar/setErr", err, { root: true });
           localStorage.removeItem("username");
           reject(err);
         });
@@ -46,37 +46,41 @@ const actions = {
   },
 
   [AUTH_LOGOUT]: ({ commit }) => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       commit(AUTH_REQUEST);
       const url = "/api/auth/logout";
       axios
-        .get(
-          url,
-          {},
-          { withCredentials: true }
-        )
-        .then((resp) => {
+        .get(url, {}, { withCredentials: true })
+        .then(resp => {
           commit(AUTH_CLEAR, resp);
           localStorage.removeItem("username");
           router.push({ path: "/" });
           resolve(resp);
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
           commit(AUTH_CLEAR);
         });
     });
   },
   [AUTH_REFRESH]: ({ commit }) => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       commit(AUTH_REQUEST);
       const url = "/api/auth/refresh";
       axios
-        .post(url, {}, { xsrfCookieName: "csrf_refresh_token", xsrfHeaderName: "X-CSRF-TOKEN", withCredentials: true })
-        .then((resp) => {
+        .post(
+          url,
+          {},
+          {
+            xsrfCookieName: "csrf_refresh_token",
+            xsrfHeaderName: "X-CSRF-TOKEN",
+            withCredentials: true
+          }
+        )
+        .then(resp => {
           resolve(resp);
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
           commit(AUTH_CLEAR);
         });
@@ -88,7 +92,7 @@ const actions = {
       const url = "/api/auth/me";
       axios
         .post(url, credentials)
-        .then((resp) => {
+        .then(resp => {
           localStorage.setItem("username", resp.data.username);
           commit(AUTH_SUCCESS, resp);
           resolve(resp);
@@ -96,29 +100,29 @@ const actions = {
         .finally(() => {
           router.push({ path: `/user/info` });
         })
-        .catch((err) => {
+        .catch(err => {
           reject(err);
         });
     });
-  },
+  }
 };
 
 const mutations = {
-  [AUTH_REQUEST]: (state) => {
+  [AUTH_REQUEST]: state => {
     state.status = "loading";
   },
   [AUTH_SUCCESS]: (state, resp) => {
     state.status = "success";
     state.username = resp.data.username;
   },
-  [AUTH_ERROR]: (state) => {
+  [AUTH_ERROR]: state => {
     state.status = "error";
   },
-  [AUTH_CLEAR]: (state) => {
+  [AUTH_CLEAR]: state => {
     state.accessToken = "";
     state.refreshToken = "";
     state.username = "";
-  },
+  }
 };
 
 export default {
@@ -126,5 +130,5 @@ export default {
   state,
   mutations,
   getters,
-  actions,
+  actions
 };
