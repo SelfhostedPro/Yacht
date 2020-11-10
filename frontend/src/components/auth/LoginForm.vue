@@ -1,11 +1,7 @@
 <template>
   <ValidationObserver ref="obs1" v-slot="{ invalid, validated }">
     <v-container class="fill-height" fluid>
-      <img
-        class="mx-auto mt-12 main-logo"
-        alt="Vue logo"
-        :src="themeLogo()"
-      />
+      <img class="mx-auto mt-12 main-logo" alt="Vue logo" :src="themeLogo()" />
       <v-row align="center" justify="center" class="mt-12">
         <v-col cols="12" sm="8" md="4">
           <v-card color="foreground" class="elevation-12 pb-8">
