@@ -15,7 +15,7 @@ require("animate.css/animate.compat.css");
 
 Vue.config.productionTip = false;
 
-// Handle Token Refresh on 401 or 403
+// Handle Token Refresh on 401
 function createAxiosResponseInterceptor() {
   const interceptor = axios.interceptors.response.use(
     (response) => response,
@@ -43,7 +43,9 @@ function createAxiosResponseInterceptor() {
           return Promise.reject(error);
           }
         })
-        .finally(createAxiosResponseInterceptor);
+        .finally(() => {
+          createAxiosResponseInterceptor()
+        });
     }
   );
 }

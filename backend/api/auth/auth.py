@@ -1,10 +1,13 @@
 from typing import Tuple
 
+from ..settings import Settings
+
 from passlib import pwd
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+settings = Settings()
 
 def verify_and_update_password(
     plain_password: str, hashed_password: str

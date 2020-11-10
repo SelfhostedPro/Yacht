@@ -13,6 +13,7 @@ from ..actions.apps import update_self, check_self_update
 from ..actions import resources
 from ..settings import Settings
 import yaml
+from fastapi_jwt_auth import AuthJWT
 
 containers.Base.metadata.create_all(bind=engine)
 
@@ -26,7 +27,8 @@ router = APIRouter()
     response_model=List[schemas.TemplateVariables],
     
 )
-def read_template_variables(db: Session = Depends(get_db)):
+def read_template_variables(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
     return crud.read_template_variables(db=db)
 
 
@@ -36,8 +38,9 @@ def read_template_variables(db: Session = Depends(get_db)):
     
 )
 def set_template_variables(
-    new_variables: List[schemas.TemplateVariables], db: Session = Depends(get_db)
+    new_variables: List[schemas.TemplateVariables], db: Session = Depends(get_db), Authorize: AuthJWT = Depends()
 ):
+    Authorize.jwt_required()
     return crud.set_template_variables(new_variables=new_variables, db=db)
 
 
@@ -46,25 +49,30 @@ def set_template_variables(
     response_model=schemas.Import_Export,
     
 )
-def export_settings(db: Session = Depends(get_db)):
+def export_settings(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
     return crud.export_settings(db=db)
 
 
 @router.post("/export", )
-def import_settings(db: Session = Depends(get_db), upload: UploadFile = File(...)):
+def import_settings(db: Session = Depends(get_db), upload: UploadFile = File(...), Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
     return crud.import_settings(db=db, upload=upload)
 
 
 @router.get("/prune/{resource}", )
-def prune_resources(resource: str):
+def prune_resources(resource: str, Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
     return resources.prune_resources(resource)
 
 
 @router.get("/update", )
-def update_self():
+def update_self(Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
     return update_self()
 
 
 @router.get("/check/update", )
-def _check_self_update():
+def _check_self_update(Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
     return check_self_update()

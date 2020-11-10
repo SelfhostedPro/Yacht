@@ -38,6 +38,7 @@ const actions = {
         })
         .catch((err) => {
           commit(AUTH_ERROR, err);
+          commit("snackbar/setErr", err, {root: true})
           localStorage.removeItem("username");
           reject(err);
         });
@@ -84,7 +85,7 @@ const actions = {
   [AUTH_CHANGE_PASS]: ({ commit }, credentials) => {
     return new Promise((resolve, reject) => {
       commit(AUTH_REQUEST);
-      const url = "/api/auth/changePassword";
+      const url = "/api/auth/me";
       axios
         .post(url, credentials)
         .then((resp) => {

@@ -9,7 +9,7 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from .routers.app_settings import (
+from .db.crud.templates import (
     read_template_variables,
     set_template_variables,
 )
@@ -17,10 +17,10 @@ from .settings import Settings
 
 from .utils import get_db
 
-from backend.api.db.crud import create_user, get_users
-from backend.api.db.models import User, TemplateVariables
-from backend.api.db.database import SessionLocal
-from backend.api.db.schemas import UserCreate
+from .db.crud import create_user, get_users
+from .db.models import User, TemplateVariables
+from .db.database import SessionLocal
+from .db.schemas import UserCreate
 
 app = FastAPI(root_path="/api")
 

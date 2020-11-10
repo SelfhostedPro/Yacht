@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_jwt_auth import AuthJWT
-from backend.api.db import models, crud, schemas, database
+from ..db import models, crud, schemas, database
 from sqlalchemy.orm import Session
-from backend.api.utils import get_db
+from ..utils import get_db
 
 router = APIRouter()
 
@@ -44,6 +44,13 @@ def get_user(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     current_user = Authorize.get_jwt_subject()
     return crud.get_user_by_name(db=db, username=current_user)
+
+@router.post('/me', response_model=schemas.User)
+def update_user(user: schemas.UserCreate, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+    return crud.update_user(db=db, user=user, current_user=current_user)
+
     
 @router.get('/logout')
 def logout(Authorize: AuthJWT = Depends()):

@@ -26,24 +26,13 @@ import urllib.request
 import json
 import asyncio
 
-containers.Base.metadata.create_all(bind=engine)
-
 router = APIRouter()
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.get("/")
 def index(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return actions.get_apps()
-
 
 @router.get("/{app_name}/updates")
 def check_app_updates(app_name, Authorize: AuthJWT = Depends()):
@@ -161,7 +150,6 @@ async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depend
                     return e
         else:
             await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
-
 
 @router.websocket("/stats")
 async def dashboard(websocket: WebSocket, Authorize: AuthJWT = Depends()):
