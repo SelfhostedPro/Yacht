@@ -29,10 +29,10 @@ settings = Settings()
 
 class jwtSettings(BaseModel):
     authjwt_secret_key: str = settings.SECRET_KEY
-    authjwt_token_location: set = {'headers', 'cookies'}
+    authjwt_token_location: set = {"headers", "cookies"}
     authjwt_cookie_secure: bool = False
     authjwt_cookie_csrf_protect: bool = True
-    authjwt_cookie_samesite: str = 'lax'
+    authjwt_cookie_samesite: str = "lax"
 
 
 @AuthJWT.load_config
@@ -42,22 +42,16 @@ def get_config():
 
 @app.exception_handler(AuthJWTException)
 def authjwt_exception_handler(request: Request, exc: AuthJWTException):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"detail": exc.message}
-    )
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
+
 
 app.include_router(users.router, prefix="/auth", tags=["users"])
 app.include_router(apps.router, prefix="/apps", tags=["apps"])
 app.include_router(
-    resources.router,
-    prefix="/resources",
-    tags=["resources"],
+    resources.router, prefix="/resources", tags=["resources"],
 )
 app.include_router(
-    templates.router,
-    prefix="/templates",
-    tags=["templates"],
+    templates.router, prefix="/templates", tags=["templates"],
 )
 app.include_router(compose.router, prefix="/compose", tags=["compose"])
 app.include_router(app_settings.router, prefix="/settings", tags=["settings"])

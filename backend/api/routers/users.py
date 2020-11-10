@@ -6,7 +6,8 @@ from ..utils import get_db
 
 router = APIRouter()
 
-@router.post('/create', response_model=schemas.User)
+
+@router.post("/create", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_name(db, username=user.username)
     if db_user:
@@ -14,9 +15,13 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user)
 
 
-@router.post('/login')
-def login(user: schemas.UserCreate, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
-    _user = db.query(models.User).filter(models.User.username==user.username).first()
+@router.post("/login")
+def login(
+    user: schemas.UserCreate,
+    db: Session = Depends(get_db),
+    Authorize: AuthJWT = Depends(),
+):
+    _user = db.query(models.User).filter(models.User.username == user.username).first()
     if _user is not None and crud.verify_password(user.password, _user.hashed_password):
         # Create Tokens
         access_token = Authorize.create_access_token(subject=user.username)
@@ -25,11 +30,16 @@ def login(user: schemas.UserCreate, db: Session = Depends(get_db), Authorize: Au
         # Assign cookies
         Authorize.set_access_cookies(access_token)
         Authorize.set_refresh_cookies(refresh_token)
-        return {'login': 'successful', 'username': _user.username, 'access_token': access_token}
+        return {
+            "login": "successful",
+            "username": _user.username,
+            "access_token": access_token,
+        }
     else:
         raise HTTPException(status_code=400, detail="Invalid Username or Password.")
 
-@router.post('/refresh')
+
+@router.post("/refresh")
 def refresh(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()
 
@@ -37,22 +47,28 @@ def refresh(Authorize: AuthJWT = Depends()):
     new_access_token = Authorize.create_access_token(subject=current_user)
 
     Authorize.set_access_cookies(new_access_token)
-    return {'refresh': 'successful', 'access_token': new_access_token}
+    return {"refresh": "successful", "access_token": new_access_token}
 
-@router.get('/me', response_model=schemas.User)
+
+@router.get("/me", response_model=schemas.User)
 def get_user(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     current_user = Authorize.get_jwt_subject()
     return crud.get_user_by_name(db=db, username=current_user)
 
-@router.post('/me', response_model=schemas.User)
-def update_user(user: schemas.UserCreate, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+
+@router.post("/me", response_model=schemas.User)
+def update_user(
+    user: schemas.UserCreate,
+    db: Session = Depends(get_db),
+    Authorize: AuthJWT = Depends(),
+):
     Authorize.jwt_required()
     current_user = Authorize.get_jwt_subject()
     return crud.update_user(db=db, user=user, current_user=current_user)
 
-    
-@router.get('/logout')
+
+@router.get("/logout")
 def logout(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     Authorize.unset_jwt_cookies()

@@ -10,6 +10,7 @@ from ..db.models import containers
 from ..db.database import SessionLocal, engine
 from ..utils import get_db
 from fastapi_jwt_auth import AuthJWT
+
 containers.Base.metadata.create_all(bind=engine)
 
 
@@ -17,9 +18,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/",
-    response_model=List[schemas.TemplateRead],
-    
+    "/", response_model=List[schemas.TemplateRead],
 )
 def index(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
@@ -28,9 +27,7 @@ def index(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
 
 
 @router.get(
-    "/{id}",
-    response_model=schemas.TemplateItems,
-    
+    "/{id}", response_model=schemas.TemplateItems,
 )
 def show(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
@@ -39,19 +36,19 @@ def show(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends())
 
 
 @router.delete(
-    "/{id}",
-    response_model=schemas.TemplateRead,
-    
+    "/{id}", response_model=schemas.TemplateRead,
 )
 def delete(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return crud.delete_template(db=db, template_id=id)
 
 
-@router.post(
-    "/", response_model=schemas.TemplateRead
-)
-def add_template(template: schemas.TemplateBase, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+@router.post("/", response_model=schemas.TemplateRead)
+def add_template(
+    template: schemas.TemplateBase,
+    db: Session = Depends(get_db),
+    Authorize: AuthJWT = Depends(),
+):
     Authorize.jwt_required()
     existing_template = crud.get_template(db=db, url=template.url)
     if existing_template:
@@ -60,20 +57,20 @@ def add_template(template: schemas.TemplateBase, db: Session = Depends(get_db), 
 
 
 @router.get(
-    "/{id}/refresh",
-    response_model=schemas.TemplateRead,
-    
+    "/{id}/refresh", response_model=schemas.TemplateRead,
 )
-def refresh_template(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+def refresh_template(
+    id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()
+):
     Authorize.jwt_required()
     return crud.refresh_template(db=db, template_id=id)
 
 
 @router.get(
-    "/app/{id}",
-    response_model=schemas.TemplateItem,
-    
+    "/app/{id}", response_model=schemas.TemplateItem,
 )
-def read_app_template(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+def read_app_template(
+    id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()
+):
     Authorize.jwt_required()
     return crud.read_app_template(db=db, app_id=id)

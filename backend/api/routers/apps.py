@@ -34,6 +34,7 @@ def index(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     return actions.get_apps()
 
+
 @router.get("/{app_name}/updates")
 def check_app_updates(app_name, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
@@ -80,7 +81,7 @@ def deploy_app(template: schemas.DeployForm, Authorize: AuthJWT = Depends()):
 async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends()):
     try:
         csrf = websocket._cookies["csrf_access_token"]
-        Authorize.jwt_required("websocket",websocket=websocket,csrf_token=csrf)
+        Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
     except AuthJWTException:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
     await websocket.accept()
@@ -96,15 +97,13 @@ async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends
                     return e
         else:
             await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
-    
-
 
 
 @router.websocket("/{app_name}/stats")
 async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends()):
     try:
         csrf = websocket._cookies["csrf_access_token"]
-        Authorize.jwt_required("websocket",websocket=websocket,csrf_token=csrf)
+        Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
     except AuthJWTException:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
     await websocket.accept()
@@ -151,11 +150,12 @@ async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depend
         else:
             await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
 
+
 @router.websocket("/stats")
 async def dashboard(websocket: WebSocket, Authorize: AuthJWT = Depends()):
     try:
         csrf = websocket._cookies["csrf_access_token"]
-        Authorize.jwt_required("websocket",websocket=websocket,csrf_token=csrf)
+        Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
     except AuthJWTException:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
     await websocket.accept()

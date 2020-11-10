@@ -297,18 +297,16 @@ def check_self_update():
         yacht = dclient.containers.get(yacht_id)
     except Exception as exc:
         print(exc)
-        if hasattr(exc, 'response') and exc.response.status_code == 404:
+        if hasattr(exc, "response") and exc.response.status_code == 404:
             raise HTTPException(
                 status_code=exc.response.status_code,
                 detail="Unable to get Yacht container ID",
             )
-        elif hasattr(exc, 'response'):
+        elif hasattr(exc, "response"):
             raise HTTPException(
                 status_code=exc.response.status_code, detail=exc.explanation
             )
         else:
-            raise HTTPException(
-                status_code=400, detail=exc.args
-            )
+            raise HTTPException(status_code=400, detail=exc.args)
 
     return _update_check(yacht.image.tags[0])

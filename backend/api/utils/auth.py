@@ -12,6 +12,7 @@ def get_db():
     finally:
         db.close()
 
+
 # async def websocket_auth(websocket: WebSocket, Authorize: AuthJWT = Depends()):
 #     try:
 #         cookie = websocket._cookies["access_token_cookie"]

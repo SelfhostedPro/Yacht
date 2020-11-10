@@ -55,9 +55,7 @@ def compose_action(name, action):
 
 
 def compose_app_action(
-    name,
-    action,
-    app,
+    name, action, app,
 ):
 
     files = find_yml_files(settings.COMPOSE_DIR)
