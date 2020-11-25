@@ -24,6 +24,7 @@ import ApplicationDeployFromTemplate from "../components/applications/Applicatio
 import Project from "../views/Project.vue";
 import ProjectList from "../components/compose/ProjectList.vue";
 import ProjectDetails from "../components/compose/ProjectDetails.vue";
+import ProjectEditor from "../components/compose/ProjectEditor.vue"
 
 // Resources
 import Resources from "../views/Resources.vue";
@@ -50,6 +51,7 @@ import ServerVariables from "../components/serverSettings/ServerVariables.vue";
 import Prune from "../components/serverSettings/Prune.vue";
 import ServerUpdate from "../components/serverSettings/ServerUpdate.vue";
 import Theme from "../components/serverSettings/Theme.vue";
+// import { component } from "vue/types/umd";
 // import { component } from "vue/types/umd";
 
 Vue.use(VueRouter);
@@ -142,6 +144,11 @@ const routes = [
         name: "View Projects",
         path: "/",
         component: ProjectList
+      },
+      {
+        name: "Edit Project",
+        path: ":projectName/edit",
+        component: ProjectEditor
       },
       {
         name: "Project Details",
