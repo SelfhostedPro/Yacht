@@ -15,6 +15,8 @@ from ..settings import Settings
 import yaml
 from fastapi_jwt_auth import AuthJWT
 
+from ..auth import auth_check
+
 containers.Base.metadata.create_all(bind=engine)
 
 settings = Settings()
@@ -28,7 +30,7 @@ router = APIRouter()
 def read_template_variables(
     db: Session = Depends(get_db), Authorize: AuthJWT = Depends()
 ):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return crud.read_template_variables(db=db)
 
 
@@ -40,7 +42,7 @@ def set_template_variables(
     db: Session = Depends(get_db),
     Authorize: AuthJWT = Depends(),
 ):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return crud.set_template_variables(new_variables=new_variables, db=db)
 
 
@@ -48,7 +50,7 @@ def set_template_variables(
     "/export", response_model=schemas.Import_Export,
 )
 def export_settings(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return crud.export_settings(db=db)
 
 
@@ -58,23 +60,23 @@ def import_settings(
     upload: UploadFile = File(...),
     Authorize: AuthJWT = Depends(),
 ):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return crud.import_settings(db=db, upload=upload)
 
 
 @router.get("/prune/{resource}",)
 def prune_resources(resource: str, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return resources.prune_resources(resource)
 
 
 @router.get("/update",)
 def update_self(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return update_self()
 
 
 @router.get("/check/update",)
 def _check_self_update(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return check_self_update()

@@ -3,6 +3,7 @@ from fastapi_jwt_auth import AuthJWT
 from ..db import models, crud, schemas, database
 from sqlalchemy.orm import Session
 from ..utils import get_db
+from ..auth import auth_check
 
 router = APIRouter()
 
@@ -52,9 +53,12 @@ def refresh(Authorize: AuthJWT = Depends()):
 
 @router.get("/me", response_model=schemas.User)
 def get_user(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     current_user = Authorize.get_jwt_subject()
-    return crud.get_user_by_name(db=db, username=current_user)
+    if current_user != None:
+        return crud.get_user_by_name(db=db, username=current_user)
+    else:
+        return
 
 
 @router.post("/me", response_model=schemas.User)
@@ -63,13 +67,13 @@ def update_user(
     db: Session = Depends(get_db),
     Authorize: AuthJWT = Depends(),
 ):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     current_user = Authorize.get_jwt_subject()
     return crud.update_user(db=db, user=user, current_user=current_user)
 
 
 @router.get("/logout")
 def logout(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     Authorize.unset_jwt_cookies()
     return {"msg": "Logout Successful"}

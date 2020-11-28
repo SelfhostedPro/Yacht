@@ -243,7 +243,7 @@ export default {
   methods: {
     ...mapActions({
       readProjects: "projects/readProjects",
-      ProjectAction: "projects/ProjectAction"
+      ProjectAction: "projects/ProjectAction",
     }),
     handleRowClick(item) {
       this.$router.push({ path: `/projects/${item.name}` });

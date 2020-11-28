@@ -2,6 +2,9 @@ from typing import Tuple
 
 from ..settings import Settings
 
+from fastapi import Depends
+from fastapi_jwt_auth import AuthJWT
+
 from passlib import pwd
 from passlib.context import CryptContext
 
@@ -22,3 +25,9 @@ def get_password_hash(password: str) -> str:
 
 def generate_password() -> str:
     return pwd.genword()
+
+def auth_check(Authorize):
+    if settings.DISABLE_AUTH != True and settings.DISABLE_AUTH != "True":
+        return Authorize.jwt_required()
+    else:
+        return

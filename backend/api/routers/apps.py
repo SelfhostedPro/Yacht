@@ -25,65 +25,70 @@ from datetime import datetime
 import urllib.request
 import json
 import asyncio
+from ..settings import Settings
+from ..auth import auth_check
+
+settings = Settings()
 
 router = APIRouter()
 
 
 @router.get("/")
 def index(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return actions.get_apps()
 
 
 @router.get("/{app_name}/updates")
 def check_app_updates(app_name, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return actions.check_app_update(app_name)
 
 
 @router.get("/{app_name}/update")
 def update_container(app_name, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return actions.app_update(app_name)
 
 
 @router.get("/{app_name}")
 def get_container_details(app_name, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return actions.get_app(app_name=app_name)
 
 
 @router.get("/{app_name}/processes", response_model=schemas.Processes)
 def get_container_processes(app_name, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return actions.get_app_processes(app_name=app_name)
 
 
 @router.get("/{app_name}/logs", response_model=schemas.AppLogs)
 def get_container_logs(app_name, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return actions.get_app_logs(app_name=app_name)
 
 
 @router.get("/actions/{app_name}/{action}")
 def container_actions(app_name, action, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return actions.app_action(app_name, action)
 
 
 @router.post("/deploy", response_model=schemas.DeployLogs)
 def deploy_app(template: schemas.DeployForm, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    auth_check(Authorize)
     return actions.deploy_app(template=template)
 
 
 @router.websocket("/{app_name}/livelogs")
 async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends()):
-    try:
-        csrf = websocket._cookies["csrf_access_token"]
-        Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
-    except AuthJWTException:
-        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+    if settings.DISABLE_AUTH != True and settings.DISABLE_AUTH != "True":
+        try:
+            csrf = websocket._cookies["csrf_access_token"]
+            Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
+        except AuthJWTException:
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
     await websocket.accept()
     async with aiodocker.Docker() as docker:
         container: DockerContainer = await docker.containers.get(app_name)
@@ -101,11 +106,12 @@ async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends
 
 @router.websocket("/{app_name}/stats")
 async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends()):
-    try:
-        csrf = websocket._cookies["csrf_access_token"]
-        Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
-    except AuthJWTException:
-        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+    if settings.DISABLE_AUTH != True and settings.DISABLE_AUTH != "True":
+        try:
+            csrf = websocket._cookies["csrf_access_token"]
+            Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
+        except AuthJWTException:
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
     await websocket.accept()
     async with aiodocker.Docker() as docker:
         cpu_total = 0.0
@@ -153,11 +159,12 @@ async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depend
 
 @router.websocket("/stats")
 async def dashboard(websocket: WebSocket, Authorize: AuthJWT = Depends()):
-    try:
-        csrf = websocket._cookies["csrf_access_token"]
-        Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
-    except AuthJWTException:
-        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+    if settings.DISABLE_AUTH != True and settings.DISABLE_AUTH != "True":
+        try:
+            csrf = websocket._cookies["csrf_access_token"]
+            Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
+        except AuthJWTException:
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
     await websocket.accept()
     tasks = []
     async with aiodocker.Docker() as docker:

@@ -42,7 +42,10 @@ def get_config():
 
 @app.exception_handler(AuthJWTException)
 def authjwt_exception_handler(request: Request, exc: AuthJWTException):
-    return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
+    status_code = exc.status_code
+    if exc.message == "Signature verification failed" or exc.message == "Signature has expired":
+        status_code = 401
+    return JSONResponse(status_code=status_code, content={"detail": exc.message})
 
 
 app.include_router(users.router, prefix="/auth", tags=["users"])
