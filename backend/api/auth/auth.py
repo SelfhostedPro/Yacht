@@ -27,7 +27,7 @@ def generate_password() -> str:
     return pwd.genword()
 
 def auth_check(Authorize):
-    if settings.DISABLE_AUTH != True and settings.DISABLE_AUTH != "True":
-        return Authorize.jwt_required()
-    else:
+    if settings.DISABLE_AUTH == "True":
         return
+    else:
+        return Authorize.jwt_required()

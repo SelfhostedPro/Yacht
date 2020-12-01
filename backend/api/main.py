@@ -67,6 +67,7 @@ async def startup(db: Session = Depends(get_db)):
     delete_alembic = "DROP TABLE IF EXISTS alembic_version;"
     # await database.execute(delete_alembic)
     users_exist = get_users(db=SessionLocal())
+    print("DISABLE_AUTH = "+settings.DISABLE_AUTH + ' ('+str(type(settings.DISABLE_AUTH)) + ')')
     if users_exist:
         print("Users Exist")
     else:

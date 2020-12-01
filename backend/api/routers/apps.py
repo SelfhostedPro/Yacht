@@ -159,12 +159,19 @@ async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depend
 
 @router.websocket("/stats")
 async def dashboard(websocket: WebSocket, Authorize: AuthJWT = Depends()):
-    if settings.DISABLE_AUTH != True and settings.DISABLE_AUTH != "True":
+    if settings.DISABLE_AUTH == 'True':
+        pass
+    else:
         try:
             csrf = websocket._cookies["csrf_access_token"]
             Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
         except AuthJWTException:
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
+        except Exception as exc:
+            print(exc)
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
     await websocket.accept()
     tasks = []
     async with aiodocker.Docker() as docker:

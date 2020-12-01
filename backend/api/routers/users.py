@@ -4,12 +4,14 @@ from ..db import models, crud, schemas, database
 from sqlalchemy.orm import Session
 from ..utils import get_db
 from ..auth import auth_check
+from ..settings import Settings
 
 router = APIRouter()
-
+settings = Settings()
 
 @router.post("/create", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+def create_user(user: schemas.UserCreate, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    auth_check(Authorize)
     db_user = crud.get_user_by_name(db, username=user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="Username already in use")
@@ -54,11 +56,21 @@ def refresh(Authorize: AuthJWT = Depends()):
 @router.get("/me", response_model=schemas.User)
 def get_user(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
-    current_user = Authorize.get_jwt_subject()
-    if current_user != None:
-        return crud.get_user_by_name(db=db, username=current_user)
+    if settings.DISABLE_AUTH == 'True':
+        current_user = models.User
+        current_user.authDisabled = True
+        current_user.id = 0
+        current_user.username = 'user'
+        current_user.is_active = True
+        current_user.is_superuser = True
+        return current_user
     else:
-        return
+        Authorize.jwt_required()
+        current_user = Authorize.get_jwt_subject()
+        if current_user != None:
+            return crud.get_user_by_name(db=db, username=current_user)
+        else:
+            raise HTTPException(status_code=401, detail="Not logged in.")
 
 
 @router.post("/me", response_model=schemas.User)

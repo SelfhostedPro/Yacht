@@ -5,14 +5,17 @@ import {
   AUTH_LOGOUT,
   AUTH_REFRESH,
   AUTH_CLEAR,
-  AUTH_CHANGE_PASS
+  AUTH_CHANGE_PASS,
+  AUTH_CHECK,
+  AUTH_DISABLED
 } from "../actions/auth";
 import axios from "axios";
 import router from "@/router/index";
 
 const state = {
   status: "",
-  username: localStorage.getItem("username") || ""
+  username: localStorage.getItem("username") || "",
+  authDisabled: null
 };
 
 const getters = {
@@ -104,6 +107,18 @@ const actions = {
           reject(err);
         });
     });
+  },
+  [AUTH_CHECK]: ({ commit }) => {
+    commit(AUTH_REQUEST);
+    const url = "/api/auth/me";
+    axios
+      .get(url)
+      .then(resp => {
+        console.log(resp)
+        localStorage.setItem("username", resp.data.username);
+        commit(AUTH_DISABLED);
+        commit(AUTH_SUCCESS, resp);
+      })
   }
 };
 
@@ -114,9 +129,15 @@ const mutations = {
   [AUTH_SUCCESS]: (state, resp) => {
     state.status = "success";
     state.username = resp.data.username;
+    if (resp.data.authDisabled) {
+      state.authDisabled = true;
+    }
   },
   [AUTH_ERROR]: state => {
     state.status = "error";
+  },
+  [AUTH_DISABLED]: state => {
+    state.authDisabled = true;
   },
   [AUTH_CLEAR]: state => {
     state.accessToken = "";
