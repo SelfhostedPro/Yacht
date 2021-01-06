@@ -25,11 +25,12 @@ sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 from api.db import models
 from api.settings import Settings
-from api.auth import Base
 
+print("--- MODELS ---")
+print(models)
 # Combine metadata from auth and containers/templates
 combined_meta_data = MetaData()
-for declarative_base in [models.Base, Base]:
+for declarative_base in [models.Base]:
     for (table_name, table) in declarative_base.metadata.tables.items():
         combined_meta_data._add_table(table_name, table.schema, table)
 

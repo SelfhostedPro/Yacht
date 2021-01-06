@@ -130,7 +130,10 @@
                     label="Network"
                     clearable
                     v-model="form.network"
-                    :disabled="form.network_mode !== undefined && form.network_mode !== ''"
+                    :disabled="
+                      form.network_mode !== undefined &&
+                        form.network_mode !== ''
+                    "
                   />
                 </v-col>
                 <v-col>
@@ -139,7 +142,9 @@
                     label="Network Mode"
                     clearable
                     v-model="form.network_mode"
-                    :disabled="form.network !== undefined && form.network !== ''"
+                    :disabled="
+                      form.network !== undefined && form.network !== ''
+                    "
                   />
                 </v-col>
               </v-row>

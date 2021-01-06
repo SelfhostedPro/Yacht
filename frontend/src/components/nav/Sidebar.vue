@@ -107,6 +107,11 @@ export default {
             text: "View Projects",
             to: "/projects",
             icon: "mdi-view-list"
+          },
+          {
+            text: "New Project",
+            to: "/projects/_/edit",
+            icon: "mdi-plus"
           }
         ]
       },

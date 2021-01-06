@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     readAppStats() {
-      let url = "/api/users/me";
+      let url = "/api/auth/me";
       axios.get(url, { withCredentials: true }).catch(err => {
         localStorage.removeItem("username");
         window.location.reload();

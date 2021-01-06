@@ -162,6 +162,12 @@
                   </v-list-item-icon>
                   <v-list-item-title>View</v-list-item-title>
                 </v-list-item>
+                <v-list-item @click="editProject(item.name)">
+                  <v-list-item-icon>
+                    <v-icon>mdi-file-document-edit-outline</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>Edit</v-list-item-title>
+                </v-list-item>
                 <v-divider />
                 <v-list-item
                   @click="
@@ -243,10 +249,13 @@ export default {
   methods: {
     ...mapActions({
       readProjects: "projects/readProjects",
-      ProjectAction: "projects/ProjectAction"
+      ProjectAction: "projects/ProjectAction",
     }),
     handleRowClick(item) {
       this.$router.push({ path: `/projects/${item.name}` });
+    },
+    editProject(projectname) {
+      this.$router.push({ path: `/projects/${projectname}/edit`})
     },
     projectDetails(projectname) {
       this.$router.push({ path: `/projects/${projectname}` });

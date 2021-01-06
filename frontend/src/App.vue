@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import Sidebar from "./components/nav/Sidebar";
 import Appbar from "./components/nav/Appbar";
 import LoginForm from "./components/auth/LoginForm";
@@ -50,20 +50,20 @@ export default {
   data: () => ({}),
   computed: {
     ...mapGetters({
-      isLoggedIn: "auth/isAuthenticated",
-      authDisabled: "auth/authDisabled"
+      isLoggedIn: "auth/isAuthenticated"
+      // authDisabled: "auth/authDisabled"
     }),
     theme() {
       return this.$vuetify.theme.dark ? "dark" : "light";
     }
   },
   methods: {
-    ...mapActions({
-      authCheck: "auth/AUTH_CHECK"
-    })
+    // ...mapActions({
+    //   authCheck: "auth/AUTH_CHECK"
+    // })
   },
   created() {
-    this.authCheck();
+    // this.authCheck();
   },
   mounted() {
     const dark_theme = localStorage.getItem("dark_theme");

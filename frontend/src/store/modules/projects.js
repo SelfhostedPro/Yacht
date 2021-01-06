@@ -71,21 +71,25 @@ const actions = {
         commit("setLoading", false);
       });
   },
-  readProject({ commit }, name) {
+  readProject({ commit }, Name) {
+    const url = `/api/compose/${Name}`;
     commit("setLoading", true);
-    const url = `/api/compose/${name}`;
-    axios
-      .get(url)
-      .then(response => {
-        const project = response.data;
-        commit("setProject", project);
-      })
-      .catch(err => {
-        commit("snackbar/setErr", err, { root: true });
-      })
-      .finally(() => {
-        commit("setLoading", false);
-      });
+    return new Promise((resolve, reject) => {
+      axios
+        .get(url)
+        .then(response => {
+          const app = response.data;
+          commit("setLoading", false);
+          resolve(app);
+        })
+        .finally(() => {
+          commit("setLoading", false);
+        })
+        .catch(error => {
+          commit("snackbar/setErr", error, { root: true });
+          reject(error);
+        });
+    });
   },
   writeProject({ commit }, payload) {
     commit("setLoading", true);

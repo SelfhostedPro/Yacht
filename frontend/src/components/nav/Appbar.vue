@@ -61,7 +61,7 @@ export default {
 </script>
 
 <style scoped>
-.main-logo{
+.main-logo {
   max-width: 47px;
   max-height: 32px;
 }

@@ -1,11 +1,7 @@
 <template>
   <ValidationObserver ref="obs1" v-slot="{ invalid, validated }">
     <v-container class="fill-height" fluid>
-      <img
-        class="mx-auto mt-12 main-logo"
-        alt="Vue logo"
-        :src="themeLogo()"
-      />
+      <img class="mx-auto mt-12 main-logo" alt="Vue logo" :src="themeLogo()" />
       <v-row align="center" justify="center" class="mt-12">
         <v-col cols="12" sm="8" md="4">
           <v-card color="foreground" class="elevation-12 pb-8">
@@ -72,32 +68,26 @@ import { themeLogo } from "../../config.js";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
       username: "",
       password: "",
-      show: false
+      show: false,
     };
   },
   methods: {
     ...mapActions({
       login: "auth/AUTH_REQUEST",
-      authCheck: "auth/AUTH_CHECK"
+      authCheck: "auth/AUTH_CHECK",
     }),
 
     onSubmit() {
       this.login({
         username: this.username,
-        password: this.password
+        password: this.password,
       });
-    },
-    mounted() {
-      this.authCheck();
-    },
-    created() {
-      this.authCheck();
     },
     themeLogo() {
       if (themeLogo) {
@@ -107,8 +97,14 @@ export default {
       } else if (this.$vuetify.theme.dark == false) {
         return lightLogo;
       }
-    }
-  }
+    },
+  },
+  mounted() {
+    this.authCheck();
+  },
+  created() {
+    this.authCheck();
+  },
 };
 </script>
 
