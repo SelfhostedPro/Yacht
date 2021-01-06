@@ -13,12 +13,16 @@
         <div class="d-flex">
         <v-row>
           <v-col class="flex-grow-1 flex-shrink-0">
-        <v-card-title class="mt-1">
+        <v-card-title v-if="!this.existing" class="mt-1">
           New Compose Template
+        </v-card-title>
+        <v-card-title v-if="this.existing" class="mt-1">
+          Edit {{this.form.name}} Project
         </v-card-title>
         </v-col>
         <v-col class="flex-grow-1 flex-shrink-0">
         <v-text-field
+          v-if="!this.existing"
           class="mr-3"
           v-model="form.name"
           label="Template Name"
@@ -46,11 +50,12 @@
 </template>
 
 <script>
-// import { mapActions, mapState } from "vuex";
+import { mapActions } from "vuex";
 import axios from "axios";
 export default {
   data() {
     return {
+      existing: false,
       form: {
         name: "",
         content: null,
@@ -63,22 +68,38 @@ export default {
     editor: require("vue2-ace-editor"),
   },
   methods: {
+    ...mapActions({
+      readProject: "projects/readProject",
+    }),
     editorInit() {
       require("brace/mode/yaml");
       require("brace/theme/twilight");
     },
     submitCompose() {
-      console.log(this.form);
-      let url = '/api/templates/compose/edit'
+      let url = `/api/compose/${this.form.name}/edit`;
       axios
         .post(url, this.form, {})
-        .then(response => {
-          console.log(response)
+        .then((response) => {
+          this.$router.push({ path: `/projects/${response.data.name}` });
         })
-        .catch(err => {
-          console.log(err)
-        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
+    async populateForm() {
+      const projectName = this.$route.params.projectName;
+      if (projectName != "_" && projectName != null) {
+        const project = await this.readProject(projectName);
+        this.form = {
+          name: project.name || "",
+          content: project.content || "",
+        }
+        this.existing = true;
+      }
+    },
+  },
+  async created() {
+    await this.populateForm();
   },
 };
 </script>

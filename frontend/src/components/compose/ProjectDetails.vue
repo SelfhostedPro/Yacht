@@ -19,6 +19,15 @@
           </template>
           <v-list color="foreground" dense>
             <v-list-item
+              @click="editProject(project.name)"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-file-document-edit-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Edit</v-list-item-title>
+            </v-list-item>
+            <v-divider />
+            <v-list-item
               @click="ProjectAction({ Name: project.name, Action: 'up' })"
             >
               <v-list-item-icon>
@@ -506,11 +515,11 @@ export default {
       ProjectAction: "projects/ProjectAction",
       readApps: "apps/readApps"
     }),
+    editProject(projectname) {
+      this.$router.push({ path: `/projects/${projectname}/edit`})
+    },
     getStatus(name) {
       for (var app in this.apps) {
-        console.log(
-          this.project.name + "_" + name + "_1" + " vs " + this.apps[app].name
-        );
         if (
           this.apps[app].name == name ||
           this.apps[app].name == this.project.name + "_" + name + "_1"
