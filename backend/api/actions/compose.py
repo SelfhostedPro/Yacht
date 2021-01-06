@@ -55,7 +55,9 @@ def compose_action(name, action):
 
 
 def compose_app_action(
-    name, action, app,
+    name,
+    action,
+    app,
 ):
 
     files = find_yml_files(settings.COMPOSE_DIR)
@@ -174,6 +176,8 @@ def get_compose(name):
                     networks.append(network)
             for service in loaded_compose.get("services"):
                 services[service] = loaded_compose["services"][service]
+            _content = open(file)
+            content = _content.read()
             compose_object = {
                 "name": project,
                 "path": file,
@@ -181,7 +185,9 @@ def get_compose(name):
                 "services": services,
                 "volumes": volumes,
                 "networks": networks,
+                "content": content,
             }
+            print(compose_object["content"])
             return compose_object
     else:
         raise HTTPException(404, "Project " + name + " not found")

@@ -25,7 +25,8 @@ router = APIRouter()
 
 
 @router.get(
-    "/variables", response_model=List[schemas.TemplateVariables],
+    "/variables",
+    response_model=List[schemas.TemplateVariables],
 )
 def read_template_variables(
     db: Session = Depends(get_db), Authorize: AuthJWT = Depends()
@@ -35,7 +36,8 @@ def read_template_variables(
 
 
 @router.post(
-    "/variables", response_model=List[schemas.TemplateVariables],
+    "/variables",
+    response_model=List[schemas.TemplateVariables],
 )
 def set_template_variables(
     new_variables: List[schemas.TemplateVariables],
@@ -47,14 +49,17 @@ def set_template_variables(
 
 
 @router.get(
-    "/export", response_model=schemas.Import_Export,
+    "/export",
+    response_model=schemas.Import_Export,
 )
 def export_settings(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return crud.export_settings(db=db)
 
 
-@router.post("/export",)
+@router.post(
+    "/export",
+)
 def import_settings(
     db: Session = Depends(get_db),
     upload: UploadFile = File(...),
@@ -64,19 +69,25 @@ def import_settings(
     return crud.import_settings(db=db, upload=upload)
 
 
-@router.get("/prune/{resource}",)
+@router.get(
+    "/prune/{resource}",
+)
 def prune_resources(resource: str, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return resources.prune_resources(resource)
 
 
-@router.get("/update",)
+@router.get(
+    "/update",
+)
 def update_self(Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return update_self()
 
 
-@router.get("/check/update",)
+@router.get(
+    "/check/update",
+)
 def _check_self_update(Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return check_self_update()

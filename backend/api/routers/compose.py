@@ -1,13 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form
 from typing import List
 from ..actions.compose import (
     get_compose_projects,
     compose_action,
     compose_app_action,
     get_compose,
+    write_compose,
 )
 from fastapi_jwt_auth import AuthJWT
 from ..auth import auth_check
+from ..db.schemas.compose import *
 
 router = APIRouter()
 
@@ -34,3 +36,11 @@ def get_compose_action(project_name, action, Authorize: AuthJWT = Depends()):
 def get_compose_app_action(project_name, action, app, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return compose_app_action(project_name, action, app)
+
+
+@router.post("/{project_name}/edit", response_model=ComposeRead)
+def write_compose_project(
+    project_name, compose: ComposeWrite, Authorize: AuthJWT = Depends()
+):
+    auth_check(Authorize)
+    return write_compose(compose=compose)

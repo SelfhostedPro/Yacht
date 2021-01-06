@@ -26,6 +26,7 @@ def get_password_hash(password: str) -> str:
 def generate_password() -> str:
     return pwd.genword()
 
+
 def auth_check(Authorize):
     if settings.DISABLE_AUTH == "True":
         return

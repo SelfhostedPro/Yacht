@@ -9,8 +9,13 @@ from ..settings import Settings
 router = APIRouter()
 settings = Settings()
 
+
 @router.post("/create", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+def create_user(
+    user: schemas.UserCreate,
+    Authorize: AuthJWT = Depends(),
+    db: Session = Depends(get_db),
+):
     auth_check(Authorize)
     db_user = crud.get_user_by_name(db, username=user.username)
     if db_user:
@@ -56,11 +61,11 @@ def refresh(Authorize: AuthJWT = Depends()):
 @router.get("/me", response_model=schemas.User)
 def get_user(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
-    if settings.DISABLE_AUTH == 'True':
+    if settings.DISABLE_AUTH == "True":
         current_user = models.User
         current_user.authDisabled = True
         current_user.id = 0
-        current_user.username = 'user'
+        current_user.username = "user"
         current_user.is_active = True
         current_user.is_superuser = True
         return current_user

@@ -19,7 +19,8 @@ router = APIRouter()
 
 
 @router.get(
-    "/", response_model=List[schemas.TemplateRead],
+    "/",
+    response_model=List[schemas.TemplateRead],
 )
 def index(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
@@ -28,7 +29,8 @@ def index(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
 
 
 @router.get(
-    "/{id}", response_model=schemas.TemplateItems,
+    "/{id}",
+    response_model=schemas.TemplateItems,
 )
 def show(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
@@ -37,7 +39,8 @@ def show(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends())
 
 
 @router.delete(
-    "/{id}", response_model=schemas.TemplateRead,
+    "/{id}",
+    response_model=schemas.TemplateRead,
 )
 def delete(id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
@@ -58,7 +61,8 @@ def add_template(
 
 
 @router.get(
-    "/{id}/refresh", response_model=schemas.TemplateRead,
+    "/{id}/refresh",
+    response_model=schemas.TemplateRead,
 )
 def refresh_template(
     id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()
@@ -68,7 +72,8 @@ def refresh_template(
 
 
 @router.get(
-    "/app/{id}", response_model=schemas.TemplateItem,
+    "/app/{id}",
+    response_model=schemas.TemplateItem,
 )
 def read_app_template(
     id: int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()

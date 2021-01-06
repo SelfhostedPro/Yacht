@@ -43,7 +43,10 @@ def get_config():
 @app.exception_handler(AuthJWTException)
 def authjwt_exception_handler(request: Request, exc: AuthJWTException):
     status_code = exc.status_code
-    if exc.message == "Signature verification failed" or exc.message == "Signature has expired":
+    if (
+        exc.message == "Signature verification failed"
+        or exc.message == "Signature has expired"
+    ):
         status_code = 401
     return JSONResponse(status_code=status_code, content={"detail": exc.message})
 
@@ -51,10 +54,14 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
 app.include_router(users.router, prefix="/auth", tags=["users"])
 app.include_router(apps.router, prefix="/apps", tags=["apps"])
 app.include_router(
-    resources.router, prefix="/resources", tags=["resources"],
+    resources.router,
+    prefix="/resources",
+    tags=["resources"],
 )
 app.include_router(
-    templates.router, prefix="/templates", tags=["templates"],
+    templates.router,
+    prefix="/templates",
+    tags=["templates"],
 )
 app.include_router(compose.router, prefix="/compose", tags=["compose"])
 app.include_router(app_settings.router, prefix="/settings", tags=["settings"])
@@ -67,7 +74,13 @@ async def startup(db: Session = Depends(get_db)):
     delete_alembic = "DROP TABLE IF EXISTS alembic_version;"
     # await database.execute(delete_alembic)
     users_exist = get_users(db=SessionLocal())
-    print("DISABLE_AUTH = "+settings.DISABLE_AUTH + ' ('+str(type(settings.DISABLE_AUTH)) + ')')
+    print(
+        "DISABLE_AUTH = "
+        + str(settings.DISABLE_AUTH)
+        + " ("
+        + str(type(settings.DISABLE_AUTH))
+        + ")"
+    )
     if users_exist:
         print("Users Exist")
     else:

@@ -159,7 +159,7 @@ async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depend
 
 @router.websocket("/stats")
 async def dashboard(websocket: WebSocket, Authorize: AuthJWT = Depends()):
-    if settings.DISABLE_AUTH == 'True':
+    if settings.DISABLE_AUTH == "True":
         pass
     else:
         try:
