@@ -78,9 +78,10 @@ const actions = {
       axios
         .get(url)
         .then(response => {
-          const app = response.data;
+          const project = response.data;
           commit("setLoading", false);
-          resolve(app);
+          commit("setProject", project)
+          resolve(project);
         })
         .finally(() => {
           commit("setLoading", false);
