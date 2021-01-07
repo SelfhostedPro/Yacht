@@ -188,7 +188,6 @@ def get_compose(name):
                 "networks": networks,
                 "content": content,
             }
-            print(compose_object["content"])
             return compose_object
     else:
         raise HTTPException(404, "Project " + name + " not found")
@@ -210,18 +209,18 @@ def write_compose(compose):
     return get_compose(name=compose.name)
 
 def delete_compose(project_name):
-    if not os.path.exists(settings.COMPOSE_DIR+project_name):
+    if not os.path.exists('/'+settings.COMPOSE_DIR+project_name):
         raise HTTPException(404, "Project directory not found.")
-    elif not os.path.exists(settings.COMPOSE_DIR + project_name+"/docker.compose.yml"):
+    elif not os.path.exists('/'+settings.COMPOSE_DIR + project_name+"/docker-compose.yml"):
         raise HTTPException(404, "Project docker-compose.yml not found.")
     else:
         try:
-            with open(settings.COMPOSE_DIR + project_name + 'docker-compose.yml'):
+            with open('/'+settings.COMPOSE_DIR + project_name + '/docker-compose.yml'):
                 pass
         except OSError as exc:
             raise HTTPException(400,exc.strerror)
     try:
-        shutil.rmtree(settings.COMPOSE_DIR+project_name)
+        shutil.rmtree('/'+settings.COMPOSE_DIR+project_name)
     except Exception as exc:
         raise HTTPException(exc.status_code, exc.strerror)
     return get_compose_projects()
