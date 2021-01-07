@@ -114,7 +114,13 @@
               Edit
               <v-icon>mdi-file-document-edit-outline</v-icon>
             </v-btn>
-            <v-btn @click="ProjectAction({ Name: project.name, Action: 'delete' });$router.push({name: 'View Projects'})" color='error'>
+            <v-btn
+              @click="
+                selectedProject = project;
+                deleteDialog = true;
+              "
+              color="error"
+            >
               Delete
               <v-icon>mdi-trash-can-outline</v-icon>
             </v-btn>
@@ -452,6 +458,32 @@
         {{ project.volumes.join(", ") }}
       </v-card-text>
     </v-card>
+    <v-dialog v-if="selectedProject" v-model="deleteDialog" max-width="400">
+      <v-card>
+        <v-card-title class="headline" style="word-break: break-all">
+          Delete {{ selectedProject["name"] }} project?
+        </v-card-title>
+        <v-card-text>
+          The project directory and all files within it will be permanently
+          deleted. This action cannot be revoked.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="deleteDialog = false"> Cancel </v-btn>
+          <v-btn
+            text
+            color="error"
+            @click="
+              ProjectAction({ Name: selectedProject.name, Action: 'delete' });
+              deleteDialog = false;
+              router.push({ name: 'View Projects'})
+            "
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -460,7 +492,10 @@ import { mapActions, mapGetters, mapState } from "vuex";
 
 export default {
   data() {
-    return {};
+    return {
+      selectedProject: null,
+      deleteDialog: false,
+    };
   },
   computed: {
     ...mapState("projects", ["project", "projects", "isLoading"]),
@@ -500,15 +535,10 @@ export default {
       this.readApps();
     },
   },
-  created() {
+  mounted() {
     const projectName = this.$route.params.projectName;
     this.readProject(projectName);
     this.readApps();
-  },
-  async mounted() {
-    const projectName = this.$route.params.projectName;
-    await this.readProject(projectName);
-    await this.readApps();
   },
 };
 </script>

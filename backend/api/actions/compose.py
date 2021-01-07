@@ -182,7 +182,7 @@ def get_compose(name):
             compose_object = {
                 "name": project,
                 "path": file,
-                "version": loaded_compose.get("version", '3.9'),
+                "version": loaded_compose.get("version", '-'),
                 "services": services,
                 "volumes": volumes,
                 "networks": networks,
