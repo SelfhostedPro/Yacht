@@ -196,7 +196,10 @@ def get_compose(name):
 
 def write_compose(compose):
     if not os.path.exists(settings.COMPOSE_DIR + compose.name):
-        pathlib.Path(settings.COMPOSE_DIR + compose.name).mkdir(parents=True)
+        try:
+            pathlib.Path(settings.COMPOSE_DIR + compose.name).mkdir(parents=True)
+        except Exception as exc:
+            raise HTTPException(exc.status_code, exc.detail)
     with open(settings.COMPOSE_DIR + compose.name + "/docker-compose.yml", "w") as f:
         try:
             f.write(compose.content)
