@@ -6,6 +6,7 @@ from ..actions.compose import (
     compose_app_action,
     get_compose,
     write_compose,
+    delete_compose,
 )
 from fastapi_jwt_auth import AuthJWT
 from ..auth import auth_check
@@ -25,6 +26,10 @@ def get_project(project_name, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return get_compose(project_name)
 
+@router.get("/{project_name}/delete")
+def delete_compose_project(project_name, Authorize: AuthJWT = Depends()):
+    auth_check(Authorize)
+    return delete_compose(project_name)
 
 @router.get("/{project_name}/{action}")
 def get_compose_action(project_name, action, Authorize: AuthJWT = Depends()):
@@ -44,3 +49,4 @@ def write_compose_project(
 ):
     auth_check(Authorize)
     return write_compose(compose=compose)
+
