@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from fastapi import HTTPException
+from fastapi import HTTPException, BackgroundTasks
 from ..db import models, schemas
 from ..utils import *
 from ..utils import check_updates as _update_check
@@ -252,7 +252,7 @@ def app_update(app_name):
     return get_apps()
 
 
-def update_self():
+def update_self(background_tasks: BackgroundTasks):
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
     yacht_id = (
@@ -271,21 +271,20 @@ def update_self():
             raise HTTPException(
                 status_code=exc.response.status_code, detail=exc.explanation
             )
+    background_tasks.add_task(update_self_in_background, yacht)
+    return {'result': 'successful'}
 
+def update_self_in_background(yacht):
+    dclient = docker.from_env()
     volumes = {"/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
     print("**** Updating " + yacht.name + "****")
-    updater = dclient.containers.run(
+    dclient.containers.run(
         image="containrrr/watchtower:latest",
         command="--cleanup --run-once " + yacht.name,
         remove=True,
         detach=True,
         volumes=volumes,
     )
-    result = updater
-    print(result)
-    time.sleep(1)
-    return result
-
 
 def check_self_update():
     dclient = docker.from_env()
