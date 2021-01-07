@@ -39,172 +39,160 @@
           </div>
         </template>
         <template v-slot:item.name="{ item }">
-          <div class="d-flex">
-            <v-menu
-              :close-on-click="true"
-              :close-on-content-click="true"
-              offset-y
+  <div class="d-flex">
+    <v-menu :close-on-click="true" :close-on-content-click="false" offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn icon size="small" v-bind="attrs" v-on="on" class="">
+          <v-icon>mdi-chevron-down</v-icon>
+        </v-btn>
+      </template>
+      <v-list color="foreground" dense>
+        <v-list-group prepend-icon="mdi-gamepad">
+          <template slot="activator">
+            <v-list-item-title>Controls </v-list-item-title></template
+          >
+          <v-list color="background" dense>
+            <v-list-item
+              @click="ProjectAction({ Name: item.name, Action: 'up' })"
             >
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon size="small" v-bind="attrs" v-on="on" class="">
-                  <v-icon>mdi-chevron-down</v-icon>
-                </v-btn>
-              </template>
-              <v-list color="foreground" dense>
-                <v-list-item
-                  @click="ProjectAction({ Name: item.name, Action: 'up' })"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-arrow-up-bold</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Up</v-list-item-title>
-                </v-list-item>
-                <v-list-item
-                  @click="ProjectAction({ Name: item.name, Action: 'down' })"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-arrow-down-bold</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Down</v-list-item-title>
-                </v-list-item>
-                <v-divider />
-                <v-list-item
-                  @click="ProjectAction({ Name: item.name, Action: 'start' })"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-play</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Start</v-list-item-title>
-                </v-list-item>
-                <v-list-item
-                  @click="ProjectAction({ Name: item.name, Action: 'stop' })"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-stop</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Stop</v-list-item-title>
-                </v-list-item>
-                <v-list-item
-                  @click="ProjectAction({ Name: item.name, Action: 'restart' })"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-refresh</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Restart</v-list-item-title>
-                </v-list-item>
-                <v-divider />
-                <v-list-item
-                  @click="ProjectAction({ Name: item.name, Action: 'pull' })"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-update</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Pull</v-list-item-title>
-                </v-list-item>
-                <v-list-item
-                  @click="ProjectAction({ Name: item.name, Action: 'create' })"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-plus-box-multiple</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Create</v-list-item-title>
-                </v-list-item>
-                <v-divider />
-                <v-list-item
-                  @click="ProjectAction({ Name: item.name, Action: 'kill' })"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-fire</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Kill</v-list-item-title>
-                </v-list-item>
-
-                <v-list-item
-                  @click="ProjectAction({ Name: item.name, Action: 'rm' })"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-delete</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Remove</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-            <span class="align-streatch text-truncate nametext mt-2">{{
-              item.name
-            }}</span>
-            <v-spacer />
-
-            <v-chip
-              outlined
-              small
-              color="orange lighten-1"
-              class="align-center mt-1"
-              label
-              v-if="item.inUse == false"
-              >Unused</v-chip
+              <v-list-item-icon>
+                <v-icon>mdi-arrow-up-bold</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Up</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="ProjectAction({ Name: item.name, Action: 'down' })"
             >
-            <v-menu close-on-click close-on-content-click offset-y>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  icon
-                  class="align-streatch"
-                  size="small"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  <v-icon>mdi-dots-horizontal</v-icon>
-                </v-btn>
-              </template>
-              <v-list color="foreground" dense>
-                <v-list-item @click="projectDetails(item.name)">
-                  <v-list-item-icon>
-                    <v-icon>mdi-eye</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>View</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="editProject(item.name)">
-                  <v-list-item-icon>
-                    <v-icon>mdi-file-document-edit-outline</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Edit</v-list-item-title>
-                </v-list-item>
-                <v-divider />
-                <v-list-item
-                  @click="
-                    selectedProject = item;
-                    deleteDialog = true;
-                  "
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-delete</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Delete</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </div>
-        </template>
+              <v-list-item-icon>
+                <v-icon>mdi-arrow-down-bold</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Down</v-list-item-title>
+            </v-list-item>
+            <v-divider />
+            <v-list-item
+              @click="ProjectAction({ Name: item.name, Action: 'start' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-play</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Start</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="ProjectAction({ Name: item.name, Action: 'stop' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-stop</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Stop</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="ProjectAction({ Name: item.name, Action: 'restart' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-refresh</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Restart</v-list-item-title>
+            </v-list-item>
+            <v-divider />
+            <v-list-item
+              @click="ProjectAction({ Name: item.name, Action: 'pull' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-update</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Pull</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="ProjectAction({ Name: item.name, Action: 'create' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-plus-box-multiple</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Create</v-list-item-title>
+            </v-list-item>
+            <v-divider />
+            <v-list-item
+              @click="ProjectAction({ Name: item.name, Action: 'kill' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-fire</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Kill</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              @click="ProjectAction({ Name: item.name, Action: 'rm' })"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-delete</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Remove</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-list-group>
+        <v-list-item @click="projectDetails(item.name)">
+          <v-list-item-icon>
+            <v-icon>mdi-eye</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>View</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="editProject(item.name)">
+          <v-list-item-icon>
+            <v-icon>mdi-file-document-edit-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Edit</v-list-item-title>
+        </v-list-item>
+        <v-divider />
+        <v-list-item
+          @click="
+            selectedProject = item;
+            deleteDialog = true;
+          "
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-delete</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Delete</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+    <span class="align-streatch text-truncate nametext mt-2">{{
+      item.name
+    }}</span>
+    <v-spacer />
+
+    <v-chip
+      outlined
+      small
+      color="orange lighten-1"
+      class="align-center mt-1"
+      label
+      v-if="item.inUse == false"
+      >Unused</v-chip
+    >
+  </div>
+</template>
         <template v-slot:item.version="{ item }">
-          <div class="projectcell">
-            <span class="d-inline-block text-truncate idtext">
-              {{ item.version }}
-            </span>
-          </div>
-        </template>
+  <div class="projectcell">
+    <span class="d-inline-block text-truncate idtext">
+      {{ item.version }}
+    </span>
+  </div>
+</template>
         <template v-slot:item.path="{ item }" class="idcell">
-          <div class="idcell">
-            <span class="d-inline-block text-truncate idtext">
-              {{ item.path }}
-            </span>
-          </div>
-        </template>
+  <div class="idcell">
+    <span class="d-inline-block text-truncate idtext">
+      {{ item.path }}
+    </span>
+  </div>
+</template>
         <template v-slot:item.services="{ item }" class="idcell">
-          <div class="idcell">
-            <span class="d-inline-block text-truncate idtext">
-              {{ Object.keys(item.services).length }}
-            </span>
-          </div>
-        </template>
+  <div class="idcell">
+    <span class="d-inline-block text-truncate idtext">
+      {{ Object.keys(item.services).length }}
+    </span>
+  </div>
+</template>
       </v-data-table>
     </v-card>
   </div>
@@ -218,7 +206,7 @@ export default {
       selectedProject: null,
       deleteDialog: false,
       form: {
-        name: ""
+        name: "",
       },
       createDialog: false,
       search: "",
@@ -226,24 +214,24 @@ export default {
         {
           text: "Name",
           value: "name",
-          sortable: true
+          sortable: true,
         },
         {
           text: "Version",
           value: "version",
-          sortable: true
+          sortable: true,
         },
         {
           text: "Services",
           value: "services",
-          sortable: false
+          sortable: false,
         },
         {
           text: "Path",
           value: "path",
-          sortable: true
-        }
-      ]
+          sortable: true,
+        },
+      ],
     };
   },
   methods: {
@@ -255,18 +243,18 @@ export default {
       this.$router.push({ path: `/projects/${item.name}` });
     },
     editProject(projectname) {
-      this.$router.push({ path: `/projects/${projectname}/edit`})
+      this.$router.push({ path: `/projects/${projectname}/edit` });
     },
     projectDetails(projectname) {
       this.$router.push({ path: `/projects/${projectname}` });
-    }
+    },
   },
   computed: {
-    ...mapState("projects", ["projects", "isLoading"])
+    ...mapState("projects", ["projects", "isLoading"]),
   },
   mounted() {
     this.readProjects();
-  }
+  },
 };
 </script>
 

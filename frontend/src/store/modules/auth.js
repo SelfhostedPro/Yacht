@@ -111,14 +111,12 @@ const actions = {
   [AUTH_CHECK]: ({ commit }) => {
     commit(AUTH_REQUEST);
     const url = "/api/auth/me";
-    axios
-      .get(url)
-      .then(resp => {
-        console.log(resp)
-        localStorage.setItem("username", resp.data.username);
-        commit(AUTH_DISABLED);
-        commit(AUTH_SUCCESS, resp);
-      })
+    axios.get(url).then(resp => {
+      console.log(resp);
+      localStorage.setItem("username", resp.data.username);
+      commit(AUTH_DISABLED);
+      commit(AUTH_SUCCESS, resp);
+    });
   }
 };
 

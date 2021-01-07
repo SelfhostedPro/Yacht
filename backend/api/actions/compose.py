@@ -3,6 +3,7 @@ from sh import docker_compose
 import os
 import yaml
 import pathlib
+import shutil
 
 from ..settings import Settings
 from ..utils.compose import find_yml_files, get_readme_file, get_logo_file
@@ -145,7 +146,7 @@ def get_compose_projects():
             _project = {
                 "name": project,
                 "path": file,
-                "version": loaded_compose["version"],
+                "version": loaded_compose.get("version", "3.9"),
                 "services": services,
                 "volumes": volumes,
                 "networks": networks,
@@ -160,7 +161,7 @@ def get_compose(name):
     try:
         files = find_yml_files(settings.COMPOSE_DIR + name)
     except Exception as exc:
-        print(exc)
+        raise HTTPException(exc.status_code, exc.detail)
     for project, file in files.items():
         if name == project:
             networks = []
@@ -181,7 +182,7 @@ def get_compose(name):
             compose_object = {
                 "name": project,
                 "path": file,
-                "version": loaded_compose["version"],
+                "version": loaded_compose.get("version", '3.9'),
                 "services": services,
                 "volumes": volumes,
                 "networks": networks,
@@ -194,10 +195,30 @@ def get_compose(name):
 
 
 def write_compose(compose):
-    print(compose)
-    pathlib.Path("config/compose/" + compose.name).mkdir(parents=True)
-    f = open("config/compose/" + compose.name + "/docker-compose.yml", "a")
-    f.write(compose.content)
-    f.close()
+    if not os.path.exists(settings.COMPOSE_DIR + compose.name):
+        pathlib.Path(settings.COMPOSE_DIR + compose.name).mkdir(parents=True)
+    with open(settings.COMPOSE_DIR + compose.name + "/docker-compose.yml", "w") as f:
+        try:
+            f.write(compose.content)
+            f.close()
+        except Exception as exc:
+            raise HTTPException(exc.status_code, exc.detail)
 
     return get_compose(name=compose.name)
+
+def delete_compose(project_name):
+    if not os.path.exists(settings.COMPOSE_DIR+project_name):
+        raise HTTPException(404, "Project directory not found.")
+    elif not os.path.exists(settings.COMPOSE_DIR + project_name+"/docker.compose.yml"):
+        raise HTTPException(404, "Project docker-compose.yml not found.")
+    else:
+        try:
+            with open(settings.COMPOSE_DIR + project_name + 'docker-compose.yml'):
+                pass
+        except OSError as exc:
+            raise HTTPException(400,exc.strerror)
+    try:
+        shutil.rmtree(settings.COMPOSE_DIR+project_name)
+    except Exception as exc:
+        raise HTTPException(exc.status_code, exc.strerror)
+    return get_compose_projects()

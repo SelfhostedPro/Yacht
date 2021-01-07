@@ -24,7 +24,7 @@ import ApplicationDeployFromTemplate from "../components/applications/Applicatio
 import Project from "../views/Project.vue";
 import ProjectList from "../components/compose/ProjectList.vue";
 import ProjectDetails from "../components/compose/ProjectDetails.vue";
-import ProjectEditor from "../components/compose/ProjectEditor.vue"
+import ProjectEditor from "../components/compose/ProjectEditor.vue";
 
 // Resources
 import Resources from "../views/Resources.vue";
