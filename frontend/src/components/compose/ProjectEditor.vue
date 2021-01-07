@@ -113,4 +113,7 @@ export default {
 .ace_gutter-active-line {
   z-index: 1;
 }
+.ace_editor {
+  z-index: 1;
+}
 </style>
