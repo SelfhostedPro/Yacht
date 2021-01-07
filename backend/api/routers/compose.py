@@ -35,6 +35,12 @@ def get_compose_action(project_name, action, Authorize: AuthJWT = Depends()):
     else:
         return compose_action(project_name, action)
 
+@router.post("/{project_name}/edit", response_model=ComposeRead)
+def write_compose_project(
+    project_name, compose: ComposeWrite, Authorize: AuthJWT = Depends()
+):
+    auth_check(Authorize)
+    return write_compose(compose=compose)
 
 @router.get("/{project_name}/{action}/{app}")
 def get_compose_app_action(project_name, action, app, Authorize: AuthJWT = Depends()):
@@ -42,10 +48,5 @@ def get_compose_app_action(project_name, action, app, Authorize: AuthJWT = Depen
     return compose_app_action(project_name, action, app)
 
 
-@router.post("/{project_name}/edit", response_model=ComposeRead)
-def write_compose_project(
-    project_name, compose: ComposeWrite, Authorize: AuthJWT = Depends()
-):
-    auth_check(Authorize)
-    return write_compose(compose=compose)
+
 

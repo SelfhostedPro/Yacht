@@ -475,8 +475,7 @@
             color="error"
             @click="
               ProjectAction({ Name: selectedProject.name, Action: 'delete' });
-              deleteDialog = false;
-              router.push({ name: 'View Projects'})
+              postDelete();              
             "
           >
             Delete
@@ -517,6 +516,9 @@ export default {
     }),
     editProject(projectname) {
       this.$router.push({ path: `/projects/${projectname}/edit` });
+    },
+    postDelete(){
+      this.$router.push({ name: 'View Projects'})
     },
     getStatus(name) {
       for (var app in this.apps) {
