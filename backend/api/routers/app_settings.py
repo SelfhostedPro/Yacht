@@ -9,7 +9,7 @@ from ..db import crud, schemas
 from ..db.models import containers
 from ..db.database import SessionLocal, engine
 from ..utils.auth import get_db
-from ..actions.apps import update_self, check_self_update
+from ..actions.apps import _update_self, check_self_update
 from ..actions import resources
 from ..settings import Settings
 import yaml

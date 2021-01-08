@@ -252,7 +252,7 @@ def app_update(app_name):
     return get_apps()
 
 
-def update_self(background_tasks: BackgroundTasks):
+def _update_self(background_tasks: BackgroundTasks):
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
     yacht_id = (
