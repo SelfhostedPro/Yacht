@@ -34,6 +34,9 @@
             </v-list-item>
           </v-list>
         </v-menu>
+        <v-btn fab x-small class="ml-2" color="primary" to="/apps/deploy">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"

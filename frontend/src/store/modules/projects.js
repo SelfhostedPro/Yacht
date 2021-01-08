@@ -80,7 +80,7 @@ const actions = {
         .then(response => {
           const project = response.data;
           commit("setLoading", false);
-          commit("setProject", project)
+          commit("setProject", project);
           resolve(project);
         })
         .finally(() => {
