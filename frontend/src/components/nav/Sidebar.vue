@@ -65,22 +65,22 @@ export default {
         to: "/",
         icon: "mdi-view-dashboard",
         text: "Dashboard",
-        divider: true,
+        divider: true
       },
       {
         text: "View Applications",
         to: "/apps",
-        icon: "mdi-application",
+        icon: "mdi-application"
       },
       {
         text: "View Templates",
         to: "/templates",
-        icon: "mdi-folder",
+        icon: "mdi-folder"
       },
       {
         text: "View Projects",
         to: "/projects",
-        icon: "mdi-book-open",
+        icon: "mdi-book-open"
       },
       {
         icon: "mdi-cube-outline",
@@ -89,27 +89,27 @@ export default {
           {
             text: "Images",
             to: "/resources/images",
-            icon: "mdi-disc",
+            icon: "mdi-disc"
           },
           {
             text: "Volumes",
             to: "/resources/volumes",
-            icon: "mdi-database",
+            icon: "mdi-database"
           },
           {
             text: "Networks",
             to: "/resources/networks",
-            icon: "mdi-network",
-          },
-        ],
+            icon: "mdi-network"
+          }
+        ]
       },
       {
         to: "/settings/info",
         icon: "mdi-cog",
-        text: "Settings",
-      },
-    ],
-  }),
+        text: "Settings"
+      }
+    ]
+  })
 };
 </script>
 

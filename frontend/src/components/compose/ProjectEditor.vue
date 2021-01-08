@@ -41,7 +41,7 @@
           v-model="form.content"
           @init="editorInit"
           lang="yaml"
-          :theme='editorTheming()'
+          :theme="editorTheming()"
           :height="windowHeight"
           :width="windowWidth"
           class="editor"
@@ -78,11 +78,11 @@ export default {
       require("brace/theme/twilight");
       require("brace/theme/textmate");
     },
-    editorTheming(){
-      if ( this.$vuetify.theme.dark == false) {
-        return "textmate"
+    editorTheming() {
+      if (this.$vuetify.theme.dark == false) {
+        return "textmate";
       } else {
-        return "twilight"
+        return "twilight";
       }
     },
     submitCompose() {

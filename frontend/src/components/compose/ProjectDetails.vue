@@ -194,7 +194,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'up',
+                        Action: 'up'
                       })
                     "
                   >
@@ -208,7 +208,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'start',
+                        Action: 'start'
                       })
                     "
                   >
@@ -221,7 +221,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'stop',
+                        Action: 'stop'
                       })
                     "
                   >
@@ -234,7 +234,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'restart',
+                        Action: 'restart'
                       })
                     "
                   >
@@ -248,7 +248,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'pull',
+                        Action: 'pull'
                       })
                     "
                   >
@@ -262,7 +262,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'kill',
+                        Action: 'kill'
                       })
                     "
                   >
@@ -275,7 +275,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'rm',
+                        Action: 'rm'
                       })
                     "
                   >
@@ -504,26 +504,26 @@ export default {
   data() {
     return {
       selectedProject: null,
-      deleteDialog: false,
+      deleteDialog: false
     };
   },
   computed: {
     ...mapState("projects", ["project", "projects", "isLoading"]),
     ...mapState("apps", ["apps"]),
     ...mapGetters({
-      getProjectByName: "projects/getProjectByName",
+      getProjectByName: "projects/getProjectByName"
     }),
     project() {
       const projectName = this.$route.params.projectName;
       return this.getProjectByName(projectName);
-    },
+    }
   },
   methods: {
     ...mapActions({
       readProject: "projects/readProject",
       projectAppAction: "projects/ProjectAppAction",
       ProjectAction: "projects/ProjectAction",
-      readApps: "apps/readApps",
+      readApps: "apps/readApps"
     }),
     editProject(projectname) {
       this.$router.push({ path: `/projects/${projectname}/edit` });
@@ -546,13 +546,13 @@ export default {
       const projectName = this.$route.params.projectName;
       this.readProject(projectName);
       this.readApps();
-    },
+    }
   },
   mounted() {
     const projectName = this.$route.params.projectName;
     this.readProject(projectName);
     this.readApps();
-  },
+  }
 };
 </script>
 
