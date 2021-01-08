@@ -68,17 +68,17 @@ export default {
         divider: true
       },
       {
-        text: "View Applications",
+        text: "Applications",
         to: "/apps",
         icon: "mdi-application"
       },
       {
-        text: "View Templates",
+        text: "Templates",
         to: "/templates",
         icon: "mdi-folder"
       },
       {
-        text: "View Projects",
+        text: "Projects",
         to: "/projects",
         icon: "mdi-book-open"
       },
