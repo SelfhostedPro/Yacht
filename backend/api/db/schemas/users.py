@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from uuid import UUID
+from typing import Union
 
 
 class UserBase(BaseModel):
@@ -10,7 +12,7 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    id: int
+    id: Union[int, str, UUID]
     is_active: bool
 
     class Config:
