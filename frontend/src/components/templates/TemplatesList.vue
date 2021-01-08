@@ -11,6 +11,15 @@
       </v-fade-transition>
       <v-card-title>
         Templates
+                    <v-btn
+              fab
+              x-small
+              class="ml-2"
+              color="primary"
+              to="/templates/new"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -38,49 +47,49 @@
           </div>
         </template>
         <template v-slot:item.title="{ item }">
-          <div class="namecell">
-            <span class="nametext">{{ item.title }}</span>
-            <v-menu close-on-click close-on-content-click offset-y>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon size="small" v-bind="attrs" v-on="on">
-                  <v-icon>mdi-dots-horizontal</v-icon>
-                </v-btn>
-              </template>
-              <v-list color="foreground" dense>
-                <v-list-item @click="templateDetails(item.id)">
-                  <v-list-item-icon>
-                    <v-icon>mdi-eye</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>View</v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="updateTemplate(item.id)">
-                  <v-list-item-icon>
-                    <v-icon>mdi-update</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Update</v-list-item-title>
-                </v-list-item>
-                <v-divider />
-                <v-list-item
-                  @click="
-                    selectedTemplate = item;
-                    deleteDialog = true;
-                  "
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-delete</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Delete</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </div>
-        </template>
+  <div class="namecell">
+    <span class="nametext">{{ item.title }}</span>
+    <v-menu close-on-click close-on-content-click offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn icon size="small" v-bind="attrs" v-on="on">
+          <v-icon>mdi-dots-horizontal</v-icon>
+        </v-btn>
+      </template>
+      <v-list color="foreground" dense>
+        <v-list-item @click="templateDetails(item.id)">
+          <v-list-item-icon>
+            <v-icon>mdi-eye</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>View</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="updateTemplate(item.id)">
+          <v-list-item-icon>
+            <v-icon>mdi-update</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Update</v-list-item-title>
+        </v-list-item>
+        <v-divider />
+        <v-list-item
+          @click="
+            selectedTemplate = item;
+            deleteDialog = true;
+          "
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-delete</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Delete</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </div>
+</template>
         <template v-slot:item.created_at="{ item }">
-          <span>{{ item.created_at | formatDate }}</span>
-        </template>
+  <span>{{ item.created_at | formatDate }}</span>
+</template>
         <template v-slot:item.updated_at="{ item }">
-          <span>{{ item.updated_at | formatDate }}</span>
-        </template>
+  <span>{{ item.updated_at | formatDate }}</span>
+</template>
       </v-data-table>
     </v-card>
 
@@ -127,42 +136,42 @@ export default {
           text: "Title",
           value: "title",
           sortable: true,
-          align: "start"
+          align: "start",
         },
         {
           text: "Created At",
           value: "created_at",
           sortable: true,
-          width: "20%"
+          width: "20%",
         },
         {
           text: "Updated At",
           value: "updated_at",
           sortable: true,
-          width: "20%"
-        }
-      ]
+          width: "20%",
+        },
+      ],
     };
   },
   methods: {
     ...mapActions({
       deleteTemplate: "templates/deleteTemplate",
       readTemplates: "templates/readTemplates",
-      updateTemplate: "templates/updateTemplate"
+      updateTemplate: "templates/updateTemplate",
     }),
     handleRowClick(value) {
       this.$router.push({ path: `/templates/${value.id}` });
     },
     templateDetails(templateId) {
       this.$router.push({ path: `/templates/${templateId}` });
-    }
+    },
   },
   computed: {
-    ...mapState("templates", ["templates", "isLoading"])
+    ...mapState("templates", ["templates", "isLoading"]),
   },
   mounted() {
     this.readTemplates();
-  }
+  },
 };
 </script>
 

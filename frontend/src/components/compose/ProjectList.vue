@@ -11,6 +11,15 @@
       </v-fade-transition>
       <v-card-title>
         Projects
+                    <v-btn
+              fab
+              x-small
+              class="ml-2"
+              color="primary"
+              to="/projects/_/edit"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
         <v-spacer />
         <v-text-field
           v-model="search"
