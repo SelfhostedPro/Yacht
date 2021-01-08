@@ -180,7 +180,7 @@
                   {{
                     getStatus(
                       project.services[service].container_name || service
-                    ) || "missing"
+                    ) || "not created"
                   }}
                 </v-col>
               </v-row>
@@ -425,7 +425,11 @@
                   <v-list-item-content>
                     <v-card outlined tile>
                       <v-simple-table class="secondary" dense>
-                        <tbody>
+                        <tbody
+                          v-if="
+                            Array.isArray(project.services[service].command)
+                          "
+                        >
                           <tr
                             v-for="(value, index) in project.services[service]
                               .command"
@@ -433,6 +437,13 @@
                           >
                             <td>
                               {{ value }}
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tbody v-else>
+                          <tr>
+                            <td>
+                              {{ project.services[service].command }}
                             </td>
                           </tr>
                         </tbody>
@@ -475,7 +486,7 @@
             color="error"
             @click="
               ProjectAction({ Name: selectedProject.name, Action: 'delete' });
-              postDelete();              
+              postDelete();
             "
           >
             Delete
@@ -517,8 +528,8 @@ export default {
     editProject(projectname) {
       this.$router.push({ path: `/projects/${projectname}/edit` });
     },
-    postDelete(){
-      this.$router.push({ name: 'View Projects'})
+    postDelete() {
+      this.$router.push({ name: "View Projects" });
     },
     getStatus(name) {
       for (var app in this.apps) {

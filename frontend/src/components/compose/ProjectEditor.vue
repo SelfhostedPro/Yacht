@@ -41,7 +41,7 @@
           v-model="form.content"
           @init="editorInit"
           lang="yaml"
-          theme="twilight"
+          :theme='editorTheming()'
           :height="windowHeight"
           :width="windowWidth"
           class="editor"
@@ -76,6 +76,14 @@ export default {
     editorInit() {
       require("brace/mode/yaml");
       require("brace/theme/twilight");
+      require("brace/theme/textmate");
+    },
+    editorTheming(){
+      if ( this.$vuetify.theme.dark == false) {
+        return "textmate"
+      } else {
+        return "twilight"
+      }
     },
     submitCompose() {
       let url = `/api/compose/${this.form.name}/edit`;
