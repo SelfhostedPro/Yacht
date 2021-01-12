@@ -20,7 +20,7 @@ function createAxiosResponseInterceptor() {
   const interceptor = axios.interceptors.response.use(
     response => response,
     error => {
-      if (error.response.status !== 401 || error.response.status !== 403) {
+      if (error.response.status !== 401) {
         return Promise.reject(error);
       }
 
@@ -35,7 +35,7 @@ function createAxiosResponseInterceptor() {
           return axios(error.response.config);
         })
         .catch(error => {
-          if (error.response.status !== 401 || error.response.status !== 403) {
+          if (error.response.status !== 401) {
             return Promise.reject(error);
           } else {
             store.dispatch("auth/AUTH_LOGOUT");

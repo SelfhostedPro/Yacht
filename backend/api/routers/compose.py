@@ -27,7 +27,7 @@ def get_project(project_name, Authorize: AuthJWT = Depends()):
     return get_compose(project_name)
 
 
-@router.get("/{project_name}/{action}")
+@router.get("/{project_name}/actions/{action}")
 def get_compose_action(project_name, action, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     if action == "delete":
@@ -42,7 +42,7 @@ def write_compose_project(
     auth_check(Authorize)
     return write_compose(compose=compose)
 
-@router.get("/{project_name}/{action}/{app}")
+@router.get("/{project_name}/actions/{action}/{app}")
 def get_compose_app_action(project_name, action, app, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return compose_app_action(project_name, action, app)
