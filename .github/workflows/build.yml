@@ -41,3 +41,4 @@ jobs:
             selfhostedpro/yacht:do
             selfhostedpro/yacht:omv
             selfhostedpro/yacht:vue
+            ghcr.io/selfhostedpro/yacht:latest
