@@ -2,8 +2,9 @@ from typing import Tuple
 
 from ..settings import Settings
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from fastapi_jwt_auth import AuthJWT
+from fastapi_jwt_auth.exceptions import JWTDecodeError
 
 from passlib import pwd
 from passlib.context import CryptContext
@@ -31,4 +32,10 @@ def auth_check(Authorize):
     if settings.DISABLE_AUTH == "True":
         return
     else:
-        return Authorize.jwt_required()
+        try:
+            return Authorize.jwt_required()
+        except JWTDecodeError as exc:
+            status_code = exc.status_code
+            if exc.message == "Signature verification failed":
+                status_code = 401
+            raise HTTPException(status_code=status_code, detail=exc.message)
