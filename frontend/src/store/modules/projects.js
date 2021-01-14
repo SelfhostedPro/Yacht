@@ -111,7 +111,7 @@ const actions = {
   },
   ProjectAction({ commit, dispatch }, { Name, Action }) {
     commit("setLoading", true);
-    const url = `/api/compose/actions/${Name}/${Action}`;
+    const url = `/api/compose/${Name}/actions/${Action}`;
     axios
       .get(url)
       .then(response => {
