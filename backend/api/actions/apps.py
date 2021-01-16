@@ -252,7 +252,7 @@ def app_update(app_name):
     return get_apps()
 
 
-def _update_self(background_tasks: BackgroundTasks):
+def _update_self(background_tasks):
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
     yacht_id = (
@@ -268,10 +268,12 @@ def _update_self(background_tasks: BackgroundTasks):
                 detail="Unable to get Yacht container ID",
             )
         else:
+            status_code = 500
+            detail = exc.args[0]
             raise HTTPException(
-                status_code=exc.response.status_code, detail=exc.explanation
+                status_code=status_code, detail=detail
             )
-    background_tasks.add_task(update_self_in_background, yacht)
+    background_tasks.add_task(update_self_in_background, 100)
     return {'result': 'successful'}
 
 def update_self_in_background(yacht):
