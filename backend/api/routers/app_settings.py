@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, BackgroundTasks
 from fastapi.responses import FileResponse
 from typing import List
 
@@ -80,9 +80,9 @@ def prune_resources(resource: str, Authorize: AuthJWT = Depends()):
 @router.get(
     "/update",
 )
-def update_self(Authorize: AuthJWT = Depends()):
+def update_self(background_tasks: BackgroundTasks, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
-    return update_self()
+    return _update_self(background_tasks)
 
 
 @router.get(
