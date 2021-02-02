@@ -72,7 +72,6 @@ def compose_app_action(
                 app,
                 _cwd=os.path.dirname(compose["path"]),
             )
-            return get_compose_projects()
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
     elif action == "create":

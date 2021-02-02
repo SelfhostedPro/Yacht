@@ -20,7 +20,7 @@ idna==2.10
 python-jose==3.2.0
 makefun==1.9.2
 passlib==1.7.4
-psycopg2=2.8.6
+psycopg2==2.8.6
 pycparser==2.20
 pydantic==1.7.3
 PyJWT==1.7.1
