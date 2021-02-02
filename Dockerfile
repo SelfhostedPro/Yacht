@@ -26,7 +26,8 @@ RUN \
 	make \
 	python3-dev \
 	libffi-dev \
-	ruby-dev &&\
+	ruby-dev \
+	postgresql-dev &&\
  echo "**** install packages ****" && \
  apk add --no-cache \
 	python3 \
