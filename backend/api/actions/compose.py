@@ -67,8 +67,6 @@ def compose_app_action(
     if action == "up":
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 "up",
                 "-d",
                 app,
@@ -79,8 +77,6 @@ def compose_app_action(
     elif action == "create":
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 "up",
                 "--no-start",
                 app,
@@ -91,8 +87,6 @@ def compose_app_action(
     elif action == "rm":
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 "rm",
                 "--force",
                 "--stop",
@@ -104,8 +98,6 @@ def compose_app_action(
     else:
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 action,
                 app,
                 _cwd=os.path.dirname(compose["path"]),
