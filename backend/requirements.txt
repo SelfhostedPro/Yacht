@@ -20,11 +20,12 @@ idna==2.10
 python-jose==3.2.0
 makefun==1.9.2
 passlib==1.7.4
+psycopg2=2.8.6
 pycparser==2.20
 pydantic==1.7.3
 PyJWT==1.7.1
 python-multipart==0.0.5
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.24.0
 six==1.15.0
 sh==1.14.1
@@ -36,3 +37,4 @@ uvicorn==0.11.8
 uvloop==0.14.0
 websocket-client==0.57.0
 websockets==8.1
+wheel==0.36.2
