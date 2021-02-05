@@ -3,7 +3,8 @@ import router from "@/router/index";
 
 const state = {
   projects: [],
-  isLoading: false
+  isLoading: false,
+  action: ''
 };
 
 const mutations = {
@@ -30,6 +31,9 @@ const mutations = {
   },
   setLoading(state, loading) {
     state.isLoading = loading;
+  },
+  setAction(state, action) {
+    state.action = action;
   }
 };
 
@@ -111,6 +115,7 @@ const actions = {
   },
   ProjectAction({ commit, dispatch }, { Name, Action }) {
     commit("setLoading", true);
+    commit("setAction", Action)
     const url = `/api/compose/${Name}/actions/${Action}`;
     axios
       .get(url)
@@ -120,10 +125,13 @@ const actions = {
         dispatch("apps/readApps", null, { root: true });
       })
       .catch(err => {
+        console.log(err)
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
+        commit("setAction", '')
+        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, { root: true })
       });
   },
   ProjectAppAction({ commit, dispatch }, { Project, Name, Action }) {

@@ -23,6 +23,7 @@
           hide-details
         ></v-text-field>
       </v-card-title>
+      <v-card-subtitle v-if="action">Running docker-compose {{ action }} ...</v-card-subtitle>
 
       <v-data-table
         style="max-width: 99%;"
@@ -298,7 +299,7 @@ export default {
     }
   },
   computed: {
-    ...mapState("projects", ["projects", "isLoading"])
+    ...mapState("projects", ["projects", "isLoading", "action"])
   },
   mounted() {
     this.readProjects();

@@ -17,8 +17,6 @@ def compose_action(name, action):
     if action == "up":
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 action,
                 "-d",
                 _cwd=os.path.dirname(compose["path"]),
@@ -28,8 +26,6 @@ def compose_action(name, action):
     elif action == "create":
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 "up",
                 "--no-start",
                 _cwd=os.path.dirname(compose["path"]),
@@ -39,19 +35,19 @@ def compose_action(name, action):
     else:
         try:
             _action = docker_compose(
-                "-f", compose["path"], action, _cwd=os.path.dirname(compose["path"])
+                action, _cwd=os.path.dirname(compose["path"])
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
     if _action.stdout.decode("UTF-8").rstrip():
-        output = _action.stdout.decode("UTF-8").rstrip()
+        _output = _action.stdout.decode("UTF-8").rstrip()
     elif _action.stderr.decode("UTF-8").rstrip():
-        output = _action.stderr.decode("UTF-8").rstrip()
+        _output = _action.stderr.decode("UTF-8").rstrip()
     else:
-        output = "No Output"
+        _output = "No Output"
     print(f"""Project {compose['name']} {action} successful.""")
     print(f"""Output: """)
-    print(output)
+    print(_output)
     return get_compose_projects()
 
 
