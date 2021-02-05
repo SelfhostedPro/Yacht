@@ -273,7 +273,7 @@ def _update_self(background_tasks):
             raise HTTPException(
                 status_code=status_code, detail=detail
             )
-    background_tasks.add_task(update_self_in_background, 100)
+    background_tasks.add_task(update_self_in_background, yacht)
     return {'result': 'successful'}
 
 def update_self_in_background(yacht):

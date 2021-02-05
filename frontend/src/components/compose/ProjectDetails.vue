@@ -127,17 +127,7 @@
           </v-col>
         </v-row>
       </v-card-title>
-      <v-card-subtitle>
-        <v-chip
-          outlined
-          small
-          color="orange lighten-1"
-          class="align-center mt-1"
-          label
-          v-if="project.inUse == false"
-          >Unused</v-chip
-        >
-      </v-card-subtitle>
+      <v-card-subtitle v-if="action">Running compose {{ action }} ...</v-card-subtitle>
     </v-card>
     <v-card color="foreground" class="mt-2">
       <v-card-title> Project Details </v-card-title>
@@ -508,7 +498,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("projects", ["project", "projects", "isLoading"]),
+    ...mapState("projects", ["project", "projects", "isLoading", "action"]),
     ...mapState("apps", ["apps"]),
     ...mapGetters({
       getProjectByName: "projects/getProjectByName"
