@@ -136,6 +136,7 @@ const actions = {
   },
   ProjectAppAction({ commit, dispatch }, { Project, Name, Action }) {
     commit("setLoading", true);
+    commit("setAction", Action);
     const url = `/api/compose/${Project}/actions/${Action}/${Name}`;
     axios
       .get(url)
@@ -149,6 +150,8 @@ const actions = {
       })
       .finally(() => {
         commit("setLoading", false);
+        commit("setAction", '')
+        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, { root: true })
       });
   }
 };
