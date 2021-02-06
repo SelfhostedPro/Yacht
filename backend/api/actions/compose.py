@@ -67,6 +67,7 @@ def compose_app_action(
                 "-d",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
+                _env=None
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -77,6 +78,7 @@ def compose_app_action(
                 "--no-start",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
+                _env=None
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -88,6 +90,7 @@ def compose_app_action(
                 "--stop",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
+                _env=None
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -97,6 +100,7 @@ def compose_app_action(
                 action,
                 app,
                 _cwd=os.path.dirname(compose["path"]),
+                _env=None
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
