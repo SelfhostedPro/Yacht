@@ -20,6 +20,7 @@ def compose_action(name, action):
                 action,
                 "-d",
                 _cwd=os.path.dirname(compose["path"]),
+                _env=None
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -29,13 +30,14 @@ def compose_action(name, action):
                 "up",
                 "--no-start",
                 _cwd=os.path.dirname(compose["path"]),
+                _env=None
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
     else:
         try:
             _action = docker_compose(
-                action, _cwd=os.path.dirname(compose["path"])
+                action, _cwd=os.path.dirname(compose["path"], _env=None)
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
