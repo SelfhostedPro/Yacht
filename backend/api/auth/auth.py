@@ -36,6 +36,9 @@ def auth_check(Authorize):
             return Authorize.jwt_required()
         except JWTDecodeError as exc:
             status_code = exc.status_code
-            if exc.message == "Signature verification failed":
+            if (
+                exc.message == "Signature verification failed"
+                or exc.message == "Signature has expired"
+            ):
                 status_code = 401
             raise HTTPException(status_code=status_code, detail=exc.message)
