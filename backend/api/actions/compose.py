@@ -37,9 +37,10 @@ def compose_action(name, action):
     else:
         try:
             _action = docker_compose(
-                action, _cwd=os.path.dirname(compose["path"],_env={'clear_env': 'true'})
+                action, _cwd=os.path.dirname(compose["path"]),_env={'clear_env': 'true'}
             )
         except Exception as exc:
+            print(exc)
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
     if _action.stdout.decode("UTF-8").rstrip():
         _output = _action.stdout.decode("UTF-8").rstrip()
