@@ -20,7 +20,7 @@ def compose_action(name, action):
                 action,
                 "-d",
                 _cwd=os.path.dirname(compose["path"]),
-                _env=None
+                _env={'clear_env': 'true'}
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -30,14 +30,14 @@ def compose_action(name, action):
                 "up",
                 "--no-start",
                 _cwd=os.path.dirname(compose["path"]),
-                _env=None
+                _env={'clear_env': 'true'}
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
     else:
         try:
             _action = docker_compose(
-                action, _cwd=os.path.dirname(compose["path"], _env=None)
+                action, _cwd=os.path.dirname(compose["path"],_env={'clear_env': 'true'})
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -69,7 +69,7 @@ def compose_app_action(
                 "-d",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
-                _env=None
+                _env={'clear_env': 'true'}
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -80,7 +80,7 @@ def compose_app_action(
                 "--no-start",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
-                _env=None
+                _env={'clear_env': 'true'}
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -92,7 +92,7 @@ def compose_app_action(
                 "--stop",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
-                _env=None
+                _env={'clear_env': 'true'}
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -102,7 +102,7 @@ def compose_app_action(
                 action,
                 app,
                 _cwd=os.path.dirname(compose["path"]),
-                _env=None
+                _env={'clear_env': 'true'}
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
