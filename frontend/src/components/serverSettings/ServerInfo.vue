@@ -11,9 +11,7 @@
       <v-card-title class="subheading secondary font-weight-bold"
         >Configuration</v-card-title
       >
-      <v-card-title class="font-weight-bold">
-        Import:
-      </v-card-title>
+      <v-card-title class="font-weight-bold"> Import: </v-card-title>
       <ValidationObserver ref="obs1" v-slot="{ invalid }">
         <validationProvider
           name="importFile"
@@ -40,13 +38,12 @@
           >Import
         </v-btn>
       </ValidationObserver>
-      <v-card-title class="font-weight-bold mt-5">
-        Export:
-      </v-card-title>
+      <v-card-title class="font-weight-bold mt-5"> Export: </v-card-title>
       <v-btn class="mx-5 mb-5" color="primary" @click="export_settings()"
         >Export
       </v-btn>
     </v-card>
+    <v-card-subtitle> Version: 0.0.6-rc1 </v-card-subtitle>
   </v-card>
 </template>
 
@@ -57,24 +54,24 @@ import { mapMutations } from "vuex";
 export default {
   components: {
     ValidationObserver,
-    ValidationProvider
+    ValidationProvider,
   },
   data() {
     return {
-      importFile: null
+      importFile: null,
     };
   },
   methods: {
     ...mapMutations({
       setSuccess: "snackbar/setSuccess",
-      setErr: "snackbar/setErr"
+      setErr: "snackbar/setErr",
     }),
     export_settings() {
       axios({
         url: "/api/settings/export",
         method: "GET",
-        responseType: "blob"
-      }).then(response => {
+        responseType: "blob",
+      }).then((response) => {
         var FileURL = window.URL.createObjectURL(new Blob([response.data]));
         var fileLink = document.createElement("a");
 
@@ -90,18 +87,18 @@ export default {
       formData.append("upload", importFile);
       let axiosHeader = {
         headers: {
-          "Content-Type": "multipart/form-data"
-        }
+          "Content-Type": "multipart/form-data",
+        },
       };
       axios
         .post("/api/settings/export", formData, axiosHeader)
-        .then(response => {
+        .then((response) => {
           this.setSuccess(response);
         })
-        .catch(err => {
+        .catch((err) => {
           this.setErr(err);
         });
-    }
-  }
+    },
+  },
 };
 </script>
