@@ -40,7 +40,7 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64,linux/arm
           push: true
-          args: |
+          build-args: |
             VUE_APP_VERSION=devel-$NOW
           tags: |
             selfhostedpro/yacht:devel
