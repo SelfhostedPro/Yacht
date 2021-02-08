@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Get date
         id: date
-        run: echo "name=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+        run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -41,7 +41,7 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm
           push: true
           args: |
-            VUE_APP_VERSION=devel-${{ steps.date.outputs.date }}
+            VUE_APP_VERSION=devel-$NOW
           tags: |
             selfhostedpro/yacht:devel
             ghcr.io/selfhostedpro/yacht:devel
