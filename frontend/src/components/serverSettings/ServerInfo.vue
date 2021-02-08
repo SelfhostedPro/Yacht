@@ -1,5 +1,5 @@
 <template>
-  <v-card color="foreground" class="elevation-12 pb-8">
+  <v-card color="foreground" class="elevation-12">
     <v-toolbar color="primary" dark flat>
       <v-toolbar-title>Server Settings</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -43,7 +43,6 @@
         >Export
       </v-btn>
     </v-card>
-    <v-card-subtitle> Version: 0.0.6-rc1 </v-card-subtitle>
   </v-card>
 </template>
 
