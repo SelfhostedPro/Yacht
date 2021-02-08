@@ -7,7 +7,8 @@ import {
   AUTH_CLEAR,
   AUTH_CHANGE_PASS,
   AUTH_CHECK,
-  AUTH_DISABLED
+  AUTH_DISABLED,
+  AUTH_ENABLED
 } from "../actions/auth";
 import axios from "axios";
 import router from "@/router/index";
@@ -113,10 +114,17 @@ const actions = {
     const url = "/api/auth/me";
     axios.get(url).then(resp => {
       console.log(resp);
-      localStorage.setItem("username", resp.data.username);
-      commit(AUTH_DISABLED);
-      commit(AUTH_SUCCESS, resp);
-    });
+      if (resp.data.authDisabled == true) {
+        localStorage.setItem("username", resp.data.username);
+        commit(AUTH_DISABLED);
+        commit(AUTH_SUCCESS, resp);
+      } else {
+        commit(AUTH_ENABLED)
+      }
+    })
+      .catch(() => {
+        commit(AUTH_ENABLED);
+      })
   }
 };
 
@@ -136,6 +144,9 @@ const mutations = {
   },
   [AUTH_DISABLED]: state => {
     state.authDisabled = true;
+  },
+  [AUTH_ENABLED]: state => {
+    state.authDisabled = false
   },
   [AUTH_CLEAR]: state => {
     state.accessToken = "";

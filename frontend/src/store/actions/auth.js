@@ -7,3 +7,4 @@ export const AUTH_REFRESH = "AUTH_REFRESH";
 export const AUTH_CHANGE_PASS = "AUTH_CHANGE_PASS";
 export const AUTH_CHECK = "AUTH_CHECK";
 export const AUTH_DISABLED = "AUTH_DISABLED";
+export const AUTH_ENABLED = "AUTH_ENABLED";
