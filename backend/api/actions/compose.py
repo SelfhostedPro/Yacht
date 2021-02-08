@@ -40,7 +40,6 @@ def compose_action(name, action):
                 action, _cwd=os.path.dirname(compose["path"]),_env={'clear_env': 'true'}
             )
         except Exception as exc:
-            print(exc)
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
     if _action.stdout.decode("UTF-8").rstrip():
         _output = _action.stdout.decode("UTF-8").rstrip()
@@ -62,7 +61,7 @@ def compose_app_action(
 
     files = find_yml_files(settings.COMPOSE_DIR)
     compose = get_compose(name)
-    print("docker-compose -f " + compose["path"] + " " + action + " " + app)
+    print('RUNNING: '+compose["path"] + " docker-compose " + " " + action + " " + app)
     if action == "up":
         try:
             _action = docker_compose(
