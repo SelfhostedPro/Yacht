@@ -14,13 +14,14 @@ settings = Settings()
 def compose_action(name, action):
     files = find_yml_files(settings.COMPOSE_DIR)
     compose = get_compose(name)
+    env = os.environ.copy()
     if action == "up":
         try:
             _action = docker_compose(
                 action,
                 "-d",
                 _cwd=os.path.dirname(compose["path"]),
-                _env={'clear_env': 'true'}
+                _env=check_dockerhost(env)
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -30,14 +31,14 @@ def compose_action(name, action):
                 "up",
                 "--no-start",
                 _cwd=os.path.dirname(compose["path"]),
-                _env={'clear_env': 'true'}
+                _env=check_dockerhost(env)
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
     else:
         try:
             _action = docker_compose(
-                action, _cwd=os.path.dirname(compose["path"]),_env={'clear_env': 'true'}
+                action, _cwd=os.path.dirname(compose["path"]),_env=check_dockerhost(env)
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -52,6 +53,11 @@ def compose_action(name, action):
     print(_output)
     return get_compose_projects()
 
+def check_dockerhost(environment):
+    if environment.get("DOCKER_HOST"):
+        return environment["DOCKER_HOST"]
+    else:
+        return {'clear_env': 'true'}
 
 def compose_app_action(
     name,
@@ -61,6 +67,7 @@ def compose_app_action(
 
     files = find_yml_files(settings.COMPOSE_DIR)
     compose = get_compose(name)
+    env = os.environ.copy()
     print('RUNNING: '+compose["path"] + " docker-compose " + " " + action + " " + app)
     if action == "up":
         try:
@@ -69,7 +76,7 @@ def compose_app_action(
                 "-d",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
-                _env={'clear_env': 'true'}
+                _env=check_dockerhost(env)
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -80,7 +87,7 @@ def compose_app_action(
                 "--no-start",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
-                _env={'clear_env': 'true'}
+                _env=check_dockerhost(env)
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -92,7 +99,7 @@ def compose_app_action(
                 "--stop",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
-                _env={'clear_env': 'true'}
+                _env=check_dockerhost(env)
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
@@ -102,7 +109,7 @@ def compose_app_action(
                 action,
                 app,
                 _cwd=os.path.dirname(compose["path"]),
-                _env={'clear_env': 'true'}
+                _env=check_dockerhost(env)
             )
         except Exception as exc:
             raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
