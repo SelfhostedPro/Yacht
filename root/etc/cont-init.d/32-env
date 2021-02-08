@@ -9,5 +9,6 @@ do
 
   sed -i 's|VUE_APP_THEME|'${THEME}'|g' $file 
   sed -i 's|VUE_APP_LOGO|'${LOGO}'|g' $file
+  # sed -i 's|VUE_APP_VERSION|'${VERSION}'|g' $file
 
 done
