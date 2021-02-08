@@ -46,7 +46,10 @@ def check_app_update(app_name):
 
 def get_apps():
     apps_list = []
-    dclient = docker.from_env()
+    try:
+        dclient = docker.from_env()
+    except docker.errors.DockerException as exc:
+        raise HTTPException(status_code=500, detail=exc.args)
     try:
         apps = dclient.containers.list(all=True)
     except Exception as exc:
