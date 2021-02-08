@@ -61,7 +61,7 @@ def compose_app_action(
 
     files = find_yml_files(settings.COMPOSE_DIR)
     compose = get_compose(name)
-    print("docker-compose -f " + compose["path"] + " " + action + " " + app)
+    print('RUNNING: '+compose["path"] + " docker-compose " + " " + action + " " + app)
     if action == "up":
         try:
             _action = docker_compose(
