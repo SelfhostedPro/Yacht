@@ -32,13 +32,15 @@
 import ServerSettingsNav from "../components/serverSettings/ServerSettingsNav";
 export default {
   components: {
-    Nav: ServerSettingsNav
+    Nav: ServerSettingsNav,
   },
   methods: {
-    get_version(){
-      return process.env.VUE_APP_VERSION
+    get_version() {
+      if (process.env.VUE_APP_VERSION) {
+        return process.env.VUE_APP_VERSION;
+      } else return null;
     },
-  }
+  },
 };
 </script>
 
