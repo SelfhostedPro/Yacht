@@ -21,6 +21,7 @@
             </v-card-text>
           </v-col>
         </v-row>
+        <v-card-text>Version: {{get_version()}}</v-card-text>
       </v-card>
     </v-container>
   </v-card>
@@ -32,6 +33,11 @@ import ServerSettingsNav from "../components/serverSettings/ServerSettingsNav";
 export default {
   components: {
     Nav: ServerSettingsNav
+  },
+  methods: {
+    get_version(){
+      return process.env.VUE_APP_VERSION
+    },
   }
 };
 </script>
