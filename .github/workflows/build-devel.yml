@@ -54,6 +54,8 @@ jobs:
             VUE_APP_VERSION=devel-${{ steps.current-time.outputs.formattedTime }}
           tags: |
             selfhostedpro/yacht:devel
+            selfhostedpro/yacht:devel-${{ steps.current-time.outputs.formattedTime }}
             ghcr.io/selfhostedpro/yacht:devel
+            ghcr.io/selfhostedpro/yacht:devel-${{ steps.current-time.outputs.formattedTime }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
