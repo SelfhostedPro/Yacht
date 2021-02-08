@@ -24,7 +24,10 @@ def compose_action(name, action):
                 _env=check_dockerhost(env)
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, 'stderr'):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)    
     elif action == "create":
         try:
             _action = docker_compose(
@@ -34,14 +37,20 @@ def compose_action(name, action):
                 _env=check_dockerhost(env)
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, 'stderr'):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)    
     else:
         try:
             _action = docker_compose(
                 action, _cwd=os.path.dirname(compose["path"]),_env=check_dockerhost(env)
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, 'stderr'):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)    
     if _action.stdout.decode("UTF-8").rstrip():
         _output = _action.stdout.decode("UTF-8").rstrip()
     elif _action.stderr.decode("UTF-8").rstrip():
@@ -55,7 +64,7 @@ def compose_action(name, action):
 
 def check_dockerhost(environment):
     if environment.get("DOCKER_HOST"):
-        return environment["DOCKER_HOST"]
+        return {'DOCKER_HOST': environment["DOCKER_HOST"]}
     else:
         return {'clear_env': 'true'}
 
@@ -79,7 +88,10 @@ def compose_app_action(
                 _env=check_dockerhost(env)
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, 'stderr'):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)
     elif action == "create":
         try:
             _action = docker_compose(
@@ -90,7 +102,10 @@ def compose_app_action(
                 _env=check_dockerhost(env)
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, 'stderr'):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)
     elif action == "rm":
         try:
             _action = docker_compose(
@@ -102,7 +117,10 @@ def compose_app_action(
                 _env=check_dockerhost(env)
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, 'stderr'):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)    
     else:
         try:
             _action = docker_compose(
@@ -112,7 +130,10 @@ def compose_app_action(
                 _env=check_dockerhost(env)
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, 'stderr'):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)    
     if _action.stdout.decode("UTF-8").rstrip():
         output = _action.stdout.decode("UTF-8").rstrip()
     elif _action.stderr.decode("UTF-8").rstrip():
