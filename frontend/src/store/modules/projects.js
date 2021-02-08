@@ -123,6 +123,7 @@ const actions = {
         const projects = response.data;
         commit("setProjects", projects);
         dispatch("apps/readApps", null, { root: true });
+        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, { root: true })
       })
       .catch(err => {
         console.log(err)
@@ -131,7 +132,6 @@ const actions = {
       .finally(() => {
         commit("setLoading", false);
         commit("setAction", '')
-        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, { root: true })
       });
   },
   ProjectAppAction({ commit, dispatch }, { Project, Name, Action }) {
@@ -144,6 +144,7 @@ const actions = {
         const projects = response.data;
         commit("setProjects", projects);
         dispatch("apps/readApps", null, { root: true });
+        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, { root: true })
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
@@ -151,7 +152,6 @@ const actions = {
       .finally(() => {
         commit("setLoading", false);
         commit("setAction", '')
-        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, { root: true })
       });
   }
 };
