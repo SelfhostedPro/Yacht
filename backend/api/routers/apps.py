@@ -94,7 +94,7 @@ async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends
         container: DockerContainer = await docker.containers.get(app_name)
         if container._container["State"]["Status"] == "running":
             stats = container.stats(stream=True)
-            logs = container.log(stdout=True, stderr=True, follow=True)
+            logs = container.log(stdout=True, stderr=True, follow=True, tail=1000)
             async for line in logs:
                 try:
                     await websocket.send_text(line)
