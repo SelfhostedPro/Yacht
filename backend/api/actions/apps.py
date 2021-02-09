@@ -123,14 +123,12 @@ def deploy_app(template: schemas.DeployForm):
             conv_caps2data(template.cap_add),
             edit=template.edit or False
         )
-    # except HTTPException as exc:
-    #     raise HTTPException(status_code=exc.status_code, detail=exc.detail)
-    # except Exception as exc:
-    #     raise HTTPException(
-    #         status_code=exc.response.status_code, detail=exc.explanation
-    #     )
+    except HTTPException as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.detail)
     except Exception as exc:
-        print(exc)
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.explanation
+        )
     print("done deploying")
 
     return schemas.DeployLogs(logs=launch.logs())
@@ -138,7 +136,8 @@ def deploy_app(template: schemas.DeployForm):
 
 def Merge(dict1, dict2):
     if dict1 and dict2:
-        return dict2.update(dict1)
+        updated_dict = dict2.update(dict1)
+        return dict2
     elif dict1:
         return dict1
     elif dict2:
