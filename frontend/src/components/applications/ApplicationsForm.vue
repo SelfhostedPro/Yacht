@@ -3,7 +3,7 @@
     <h1>
       Deploy {{ form.name }}
       <v-btn
-        v-if="!this.$route.params.appId"
+        v-if="!this.$route.params.appId && !this.$route.params.appName"
         tile
         :to="{ name: 'Deploy from Template' }"
         class="primary float-right"
@@ -784,14 +784,14 @@ export default {
     removeCap_add(index) {
       this.form.cap_add.splice(index, 1);
     },
-    transform_ports(ports) {
+    transform_ports(ports, app) {
       let portlist = [];
       for (let port in ports) {
         let _port = port.split("/");
         var cport = _port[0];
         var hport = ports[port][0].HostPort;
         var proto = _port[1];
-        var label = "";
+        var label = app.Config.Labels[`local.yacht.port.${hport}`] || "";
         let port_entry = {
           cport: cport,
           hport: hport,
@@ -907,7 +907,7 @@ export default {
           image: app.Config.Image || "",
           restart_policy: app.HostConfig.RestartPolicy.Name || "",
           network: Object.keys(app.NetworkSettings.Networks)[0] || "",
-          ports: this.transform_ports(app.ports) || [],
+          ports: this.transform_ports(app.ports, app) || [],
           volumes: this.transform_volumes(app.Mounts) || [],
           env: this.transform_env(app.Config.Env) || [],
           devices: [],
