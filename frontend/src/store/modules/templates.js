@@ -153,7 +153,7 @@ const actions = {
         commit("setLoading", false);
       });
   },
-  readApp({ commit }, Name) {
+  readTemplateApp({ commit }, Name) {
     const url = `/api/templates/app/${Name}`;
     commit("setLoading", true);
     return new Promise((resolve, reject) => {

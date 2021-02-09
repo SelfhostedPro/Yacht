@@ -94,6 +94,11 @@ const routes = [
         component: ApplicationsForm
       },
       {
+        name: "Edit",
+        path: "edit/:appName",
+        component: ApplicationsForm
+      },
+      {
         name: "Deploy from Template",
         path: "templates",
         component: ApplicationDeployFromTemplate
@@ -131,7 +136,7 @@ const routes = [
             name: "Stats",
             path: "stats",
             component: AppStats
-          }
+          },
         ]
       }
     ]
