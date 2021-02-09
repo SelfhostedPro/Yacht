@@ -11,6 +11,7 @@
     </v-card-text>
     <v-virtual-scroll
       v-else
+      v-chat-scroll="{enable: true, always: false, notSmoothOnInit: true}"
       :bench="20"
       :items="logs"
       height="600"
@@ -19,9 +20,9 @@
       id="logcontainer"
     >
       <template v-slot="{ item }">
-        <div id="logtext">
+        <li id="logtext">
           {{ item }}
-        </div>
+        </li>
       </template>
     </v-virtual-scroll>
   </v-card>
@@ -32,7 +33,8 @@
 export default {
   props: ["app", "logs"],
   data() {
-    return {};
+    return {
+    };
   }
 };
 </script>

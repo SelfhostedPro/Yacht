@@ -3,6 +3,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import VueChatScroll from 'vue-chat-scroll';
 // API Calls
 import axios from "axios";
 // UI Framework
@@ -12,6 +13,8 @@ import VueUtils from "./plugins/vueutils";
 import "./vee-validate";
 // Animations
 require("animate.css/animate.compat.css");
+
+Vue.use(VueChatScroll)
 
 Vue.config.productionTip = false;
 

@@ -19,6 +19,7 @@
     "vee-validate": "^3.4.5",
     "vue": "^2.6.12",
     "vue-chartjs": "^3.5.1",
+    "vue-chat-scroll": "^1.4.0",
     "vue-router": "^3.4.9",
     "vue2-ace-editor": "0.0.15",
     "vuetify": "^2.4.2",
