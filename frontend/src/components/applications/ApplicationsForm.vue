@@ -677,7 +677,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
@@ -698,7 +698,7 @@ export default {
         devices: [],
         labels: [],
         sysctls: [],
-        cap_add: []
+        cap_add: [],
       },
       network_modes: ["bridge", "none", "host"],
       isLoading: false,
@@ -725,21 +725,22 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND"
-      ]
+        "BLOCK_SUSPEND",
+      ],
     };
   },
   calculated: {
     ...mapState("networks", ["networks"]),
-    ...mapState("volumes", ["volumes"])
+    ...mapState("volumes", ["volumes"]),
   },
   methods: {
     ...mapActions({
-      readApp: "templates/readApp",
-      readNetworks: "networks/_readNetworks"
+      readTemplateApp: "templates/readTemplateApp",
+      readNetworks: "networks/_readNetworks",
+      readApp: "apps/readApp",
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr"
+      setErr: "snackbar/setErr",
     }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
@@ -783,6 +784,65 @@ export default {
     removeCap_add(index) {
       this.form.cap_add.splice(index, 1);
     },
+    transform_ports(ports) {
+      let portlist = [];
+      for (let port in ports) {
+        let _port = port.split("/");
+        var cport = _port[0];
+        var hport = ports[port][0].HostPort;
+        var proto = _port[1];
+        var label = "";
+        let port_entry = {
+          cport: cport,
+          hport: hport,
+          proto: proto,
+          label: label,
+        };
+        portlist.push(port_entry);
+      }
+      return portlist;
+    },
+    transform_volumes(volumes) {
+      let volumelist = [];
+      for (let volume in volumes) {
+        let container = volumes[volume].Destination || "";
+        let bind = volumes[volume].Source || "";
+        let volume_entry = {
+          bind: bind,
+          container: container,
+        };
+        volumelist.push(volume_entry);
+      }
+      return volumelist;
+    },
+    transform_env(envs) {
+      let envlist = [];
+      for (let env in envs) {
+        let _env = envs[env].split("=");
+        let name = _env[0];
+        let value = _env[1];
+        let env_entry = {
+          label: name,
+          name: name,
+          default: value,
+        };
+        envlist.push(env_entry);
+      }
+      return envlist;
+    },
+    transform_labels(labels) {
+      let labellist = [];
+      for (let label in labels) {
+        let name = label;
+        let value = labels[label];
+        let label_entry = {
+          name: name,
+          value: value,
+        };
+        labellist.push(label_entry);
+      }
+      return labellist;
+    },
     nextStep(n) {
       if (n === this.deploySteps) {
         // this.deployStep = 1;
@@ -801,7 +861,7 @@ export default {
           this.isLoading = false;
           this.$router.push({ name: "View Applications" });
         })
-        .catch(err => {
+        .catch((err) => {
           this.isLoading = false;
           this.setErr(err);
         });
@@ -813,36 +873,56 @@ export default {
       }
     },
     async populateForm() {
-      const appId = this.$route.params.appId;
-      if (appId != null) {
-        try {
-          const app = await this.readApp(appId);
-          this.form = {
-            name: app.name || "",
-            image: app.image || "",
-            restart_policy: app.restart_policy || "",
-            network: app.network,
-            network_mode: app.network_mode,
-            ports: app.ports || [],
-            volumes: app.volumes || [],
-            env: app.env || [],
-            devices: app.devices || [],
-            labels: app.labels || [],
-            sysctls: app.sysctls || [],
-            cap_add: app.cap_add || []
-          };
-          this.notes = app.notes || null;
-        } catch (error) {
-          console.error(error, error.response);
-          this.setErr(error);
+      if (this.$route.params.appId) {
+        const appId = this.$route.params.appId;
+        if (appId != null) {
+          try {
+            const app = await this.readTemplateApp(appId);
+            this.form = {
+              name: app.name || "",
+              image: app.image || "",
+              restart_policy: app.restart_policy || "",
+              network: app.network,
+              network_mode: app.network_mode,
+              ports: app.ports || [],
+              volumes: app.volumes || [],
+              env: app.env || [],
+              devices: app.devices || [],
+              labels: app.labels || [],
+              sysctls: app.sysctls || [],
+              cap_add: app.cap_add || [],
+            };
+            this.notes = app.notes || null;
+          } catch (error) {
+            console.error(error, error.response);
+            this.setErr(error);
+          }
         }
+      } else if (this.$route.params.appName) {
+        const appName = this.$route.params.appName;
+        const app = await this.readApp(appName);
+        console.log(app);
+        this.form = {
+          name: app.name || "",
+          image: app.Config.Image || "",
+          restart_policy: app.HostConfig.RestartPolicy.Name || "",
+          network: Object.keys(app.NetworkSettings.Networks)[0] || "",
+          ports: this.transform_ports(app.ports) || [],
+          volumes: this.transform_volumes(app.Mounts) || [],
+          env: this.transform_env(app.Config.Env) || [],
+          devices: [],
+          labels: this.transform_labels(app.Config.Labels) || [],
+          sysctls: this.transform_labels(app.HostConfig.Sysctls),
+          cap_add: app.HostConfig.CapAdd || [],
+          edit: true
+        };
       }
-    }
+    },
   },
   async created() {
     await this.populateForm();
     await this.populateNetworks();
-  }
+  },
 };
 </script>
 

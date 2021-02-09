@@ -121,13 +121,16 @@ def deploy_app(template: schemas.DeployForm):
             conv_labels2data(template.labels),
             conv_sysctls2data(template.sysctls),
             conv_caps2data(template.cap_add),
+            edit=template.edit or False
         )
-    except HTTPException as exc:
-        raise HTTPException(status_code=exc.status_code, detail=exc.detail)
+    # except HTTPException as exc:
+    #     raise HTTPException(status_code=exc.status_code, detail=exc.detail)
+    # except Exception as exc:
+    #     raise HTTPException(
+    #         status_code=exc.response.status_code, detail=exc.explanation
+    #     )
     except Exception as exc:
-        raise HTTPException(
-            status_code=exc.response.status_code, detail=exc.explanation
-        )
+        print(exc)
     print("done deploying")
 
     return schemas.DeployLogs(logs=launch.logs())
@@ -158,8 +161,22 @@ def launch_app(
     labels,
     sysctls,
     caps,
+    edit
 ):
     dclient = docker.from_env()
+    if edit != False:
+        try:
+            dclient.containers.get(name)
+            try:
+                running_app = dclient.containers.get(name)
+                running_app.remove(force=True)
+            except Exception as e:
+                raise e
+        except Exception as e:
+            raise e
+
+
+
     combined_labels = Merge(portlabels, labels)
     try:
         lauch = dclient.containers.run(
