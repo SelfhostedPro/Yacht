@@ -787,10 +787,10 @@ export default {
     transform_ports(ports, app) {
       let portlist = [];
       for (let port in ports) {
-        let _port = port.split("/");
-        var cport = _port[0];
-        var hport = ports[port][0].HostPort;
-        var proto = _port[1];
+        let _port = port.split("/") || '';
+        var cport = _port[0] || '';
+        var hport = ports[port][0].HostPort || '';
+        var proto = _port[1] || '';
         var label = app.Config.Labels[`local.yacht.port.${hport}`] || "";
         let port_entry = {
           cport: cport,
