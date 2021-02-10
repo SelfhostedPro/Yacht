@@ -111,7 +111,7 @@
             </form>
             <v-btn
               color="primary"
-              @click="deployStep += 1"
+              @click="deployStep = 2"
               :disabled="invalid"
               class="float-right"
             >
@@ -253,7 +253,7 @@
             </form>
             <v-btn
               color="primary"
-              @click="deployStep += 1"
+              @click="deployStep = 3"
               :disabled="invalid"
               class="float-right"
             >
@@ -261,7 +261,7 @@
             </v-btn>
             <v-btn
               color="secondary"
-              @click="deployStep -= 1"
+              @click="deployStep = 1"
               class="mx-2 float-right primary--text"
             >
               Back
@@ -331,7 +331,7 @@
             </form>
             <v-btn
               color="primary"
-              @click="deployStep += 1"
+              @click="deployStep = 4"
               :disabled="invalid"
               class="float-right"
             >
@@ -339,7 +339,7 @@
             </v-btn>
             <v-btn
               color="secondary"
-              @click="deployStep -= 1"
+              @click="deployStep = 2"
               class="mx-2 float-right primary--text"
             >
               Back
@@ -425,7 +425,7 @@
             </v-btn>
             <v-btn
               color="secondary"
-              @click="deployStep -= 1"
+              @click="deployStep = 3"
               class="mx-2 float-right primary--text"
             >
               Back
@@ -867,6 +867,7 @@ export default {
         })
         .catch((err) => {
           this.isLoading = false;
+          this.deployStep = 1;
           this.setErr(err);
         });
     },

@@ -93,8 +93,7 @@ async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends
     async with aiodocker.Docker() as docker:
         container: DockerContainer = await docker.containers.get(app_name)
         if container._container["State"]["Status"] == "running":
-            stats = container.stats(stream=True)
-            logs = container.log(stdout=True, stderr=True, follow=True, tail=1000)
+            logs = container.log(stdout=True, stderr=True, follow=True, tail=200)
             async for line in logs:
                 try:
                     await websocket.send_text(line)
@@ -206,7 +205,7 @@ async def process_container(name, stats, websocket):
             cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(
                 line, cpu_total, cpu_system
             )
-        except KeyError as e:
+        except KeyError:
             print("error while getting new CPU stats: %r, falling back")
             cpu_percent = await calculate_cpu_percent(line)
 
