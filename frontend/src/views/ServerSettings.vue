@@ -21,7 +21,7 @@
             </v-card-text>
           </v-col>
         </v-row>
-        <v-card-text>Version: {{version}}</v-card-text>
+        <v-card-text>Version: {{ version }}</v-card-text>
       </v-card>
     </v-container>
   </v-card>
@@ -33,11 +33,11 @@ import ServerSettingsNav from "../components/serverSettings/ServerSettingsNav";
 export default {
   data() {
     return {
-      version: process.env.VUE_APP_VERSION || 'unreleased',
+      version: process.env.VUE_APP_VERSION || "unreleased"
     };
   },
   components: {
-    Nav: ServerSettingsNav,
+    Nav: ServerSettingsNav
   }
 };
 </script>

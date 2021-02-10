@@ -136,7 +136,7 @@ const routes = [
             name: "Stats",
             path: "stats",
             component: AppStats
-          },
+          }
         ]
       }
     ]
