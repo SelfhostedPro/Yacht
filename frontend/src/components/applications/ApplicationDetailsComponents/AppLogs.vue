@@ -1,8 +1,6 @@
 <template>
   <v-card color="foreground" raised>
-    <v-card-title class="primary font-weight-bold">
-      Logs
-    </v-card-title>
+    <v-card-title class="primary font-weight-bold"> Logs</v-card-title>
     <v-card-text
       v-if="app.State.Status != 'running'"
       class="secondary text-center px-5 py-5"
@@ -10,8 +8,8 @@
       Start the app to view logs
     </v-card-text>
     <v-virtual-scroll
+      v-chat-scroll="scrollOptions"
       v-else
-      v-chat-scroll="{enable: true, always: false, notSmoothOnInit: true}"
       :bench="20"
       :items="logs"
       height="600"
@@ -34,8 +32,9 @@ export default {
   props: ["app", "logs"],
   data() {
     return {
+      scrollOptions: { enable: true, always: false, smooth: false, notSmoothOnInit: true },
     };
-  }
+  },
 };
 </script>
 

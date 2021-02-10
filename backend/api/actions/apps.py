@@ -136,7 +136,7 @@ def deploy_app(template: schemas.DeployForm):
 
 def Merge(dict1, dict2):
     if dict1 and dict2:
-        updated_dict = dict2.update(dict1)
+        dict2.update(dict1)
         return dict2
     elif dict1:
         return dict1
@@ -163,7 +163,7 @@ def launch_app(
     edit
 ):
     dclient = docker.from_env()
-    if edit != False:
+    if edit == True:
         try:
             dclient.containers.get(name)
             try:
@@ -172,7 +172,8 @@ def launch_app(
             except Exception as e:
                 raise e
         except Exception as e:
-            raise e
+            # User probably changed the name so it doesn't conflict. If this is the case we'll just spin up a second container.
+            pass
 
 
 
