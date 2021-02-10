@@ -89,7 +89,7 @@
         <template v-slot:item.RepoTags="{ item }">
           <div class="d-flex">
             <span class="align-streatch text-truncate nametext mt-2">{{
-              item.RepoTags[0] || handleDigests(item.RepoDigests) || ""
+              item.RepoTags[0] || handleDigests(item) || ""
             }}</span>
             <v-spacer />
 
@@ -240,12 +240,13 @@ export default {
       const data = this.form;
       this.writeImage(data);
     },
-    handleDigests(digests) {
-      if (digests[0]) {
-        let _digest = digests[0].split("@")[0];
+    handleDigests(item) {
+      if (item.RepoDigests[0]) {
+        let _digest = item.RepoDigests[0].split("@")[0];
         return _digest;
       } else {
-        return null;
+        let _shortid = item.Id.split(":")[1].substring(0,10)
+        return _shortid;
       }
     }
   },
