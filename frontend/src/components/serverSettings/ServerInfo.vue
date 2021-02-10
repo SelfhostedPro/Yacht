@@ -53,24 +53,24 @@ import { mapMutations } from "vuex";
 export default {
   components: {
     ValidationObserver,
-    ValidationProvider,
+    ValidationProvider
   },
   data() {
     return {
-      importFile: null,
+      importFile: null
     };
   },
   methods: {
     ...mapMutations({
       setSuccess: "snackbar/setSuccess",
-      setErr: "snackbar/setErr",
+      setErr: "snackbar/setErr"
     }),
     export_settings() {
       axios({
         url: "/api/settings/export",
         method: "GET",
-        responseType: "blob",
-      }).then((response) => {
+        responseType: "blob"
+      }).then(response => {
         var FileURL = window.URL.createObjectURL(new Blob([response.data]));
         var fileLink = document.createElement("a");
 
@@ -86,18 +86,18 @@ export default {
       formData.append("upload", importFile);
       let axiosHeader = {
         headers: {
-          "Content-Type": "multipart/form-data",
-        },
+          "Content-Type": "multipart/form-data"
+        }
       };
       axios
         .post("/api/settings/export", formData, axiosHeader)
-        .then((response) => {
+        .then(response => {
           this.setSuccess(response);
         })
-        .catch((err) => {
+        .catch(err => {
           this.setErr(err);
         });
-    },
-  },
+    }
+  }
 };
 </script>

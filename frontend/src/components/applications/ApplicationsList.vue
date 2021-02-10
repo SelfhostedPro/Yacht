@@ -52,10 +52,10 @@
           color="secondary"
         >
           <template v-slot:activator="{ on, attrs }">
-  <v-btn color="secondary" v-bind="attrs" v-on="on" class="ml-2">
-    Columns
-  </v-btn>
-</template>
+            <v-btn color="secondary" v-bind="attrs" v-on="on" class="ml-2">
+              Columns
+            </v-btn>
+          </template>
           <v-list color="foreground">
             <v-list-item
               color="primary"
@@ -100,15 +100,13 @@
                 </v-btn>
               </template>
               <v-list color="foreground" dense>
-                <v-list-item
-                  @click="editClick({ Name: item.name})"
-                >
+                <v-list-item @click="editClick({ Name: item.name })">
                   <v-list-item-icon>
                     <v-icon>mdi-file-document-edit-outline</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title>Edit</v-list-item-title>
                 </v-list-item>
-                <v-divider/>
+                <v-divider />
                 <v-list-item
                   @click="AppAction({ Name: item.name, Action: 'start' })"
                 >
@@ -272,37 +270,37 @@ export default {
           text: "Name",
           value: "name",
           sortable: true,
-          align: "start",
+          align: "start"
           // width: "30%",
         },
         project: {
           text: "Project",
           value: "project",
-          sortable: true,
+          sortable: true
         },
         status: {
           text: "Status",
           value: "status",
-          sortable: true,
+          sortable: true
           // width: "10%",
         },
         image: {
           text: "Image",
           value: "image",
-          sortable: true,
+          sortable: true
         },
         ports: {
           text: "Ports",
           value: "ports",
-          sortable: true,
+          sortable: true
         },
         created: {
           text: "Created At",
           value: "created",
-          sortable: true,
-        },
+          sortable: true
+        }
       },
-      selectedHeaders: [],
+      selectedHeaders: []
     };
   },
   methods: {
@@ -310,20 +308,20 @@ export default {
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
       Update: "apps/AppUpdate",
-      checkUpdate: "apps/checkAppUpdate",
+      checkUpdate: "apps/checkAppUpdate"
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
     },
-    editClick(appName){
-      this.$router.push({path: `/apps/edit/${appName.Name}`})
+    editClick(appName) {
+      this.$router.push({ path: `/apps/edit/${appName.Name}` });
     },
     convPorts(data) {
       let o = [];
       for (var k in data) {
         if (data[k]) {
           o = o.concat(
-            data[k].map(function (x) {
+            data[k].map(function(x) {
               return { cport: k, hip: x.HostIp, hport: x.HostPort };
             })
           );
@@ -333,7 +331,7 @@ export default {
     },
     refresh() {
       this.readApps();
-    },
+    }
   },
   computed: {
     ...mapState("apps", [
@@ -341,11 +339,11 @@ export default {
       "isLoading",
       "isLoadingValue",
       "action",
-      "updatable",
+      "updatable"
     ]),
     showHeaders() {
-      return this.headers.filter((s) => this.selectedHeaders.includes(s));
-    },
+      return this.headers.filter(s => this.selectedHeaders.includes(s));
+    }
   },
   created() {
     this.headers = Object.values(this.headersMap);
@@ -353,7 +351,7 @@ export default {
   },
   mounted() {
     this.readApps();
-  },
+  }
 };
 </script>
 

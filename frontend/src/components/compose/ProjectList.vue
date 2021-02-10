@@ -23,7 +23,9 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-card-subtitle v-if="action">Running docker-compose {{ action }} ...</v-card-subtitle>
+      <v-card-subtitle v-if="action"
+        >Running docker-compose {{ action }} ...</v-card-subtitle
+      >
 
       <v-data-table
         style="max-width: 99%;"

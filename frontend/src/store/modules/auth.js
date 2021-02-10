@@ -112,19 +112,21 @@ const actions = {
   [AUTH_CHECK]: ({ commit }) => {
     commit(AUTH_REQUEST);
     const url = "/api/auth/me";
-    axios.get(url).then(resp => {
-      console.log(resp);
-      if (resp.data.authDisabled == true) {
-        localStorage.setItem("username", resp.data.username);
-        commit(AUTH_DISABLED);
-        commit(AUTH_SUCCESS, resp);
-      } else {
-        commit(AUTH_ENABLED)
-      }
-    })
+    axios
+      .get(url)
+      .then(resp => {
+        console.log(resp);
+        if (resp.data.authDisabled == true) {
+          localStorage.setItem("username", resp.data.username);
+          commit(AUTH_DISABLED);
+          commit(AUTH_SUCCESS, resp);
+        } else {
+          commit(AUTH_ENABLED);
+        }
+      })
       .catch(() => {
         commit(AUTH_ENABLED);
-      })
+      });
   }
 };
 
@@ -146,7 +148,7 @@ const mutations = {
     state.authDisabled = true;
   },
   [AUTH_ENABLED]: state => {
-    state.authDisabled = false
+    state.authDisabled = false;
   },
   [AUTH_CLEAR]: state => {
     state.accessToken = "";

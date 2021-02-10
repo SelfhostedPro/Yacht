@@ -677,7 +677,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver,
+    ValidationObserver
   },
   data() {
     return {
@@ -698,7 +698,7 @@ export default {
         devices: [],
         labels: [],
         sysctls: [],
-        cap_add: [],
+        cap_add: []
       },
       network_modes: ["bridge", "none", "host"],
       isLoading: false,
@@ -725,22 +725,22 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND",
-      ],
+        "BLOCK_SUSPEND"
+      ]
     };
   },
   calculated: {
     ...mapState("networks", ["networks"]),
-    ...mapState("volumes", ["volumes"]),
+    ...mapState("volumes", ["volumes"])
   },
   methods: {
     ...mapActions({
       readTemplateApp: "templates/readTemplateApp",
       readNetworks: "networks/_readNetworks",
-      readApp: "apps/readApp",
+      readApp: "apps/readApp"
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr",
+      setErr: "snackbar/setErr"
     }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
@@ -800,7 +800,7 @@ export default {
           cport: cport,
           hport: hport,
           proto: proto,
-          label: label,
+          label: label
         };
         portlist.push(port_entry);
       }
@@ -813,7 +813,7 @@ export default {
         let bind = volumes[volume].Source || "";
         let volume_entry = {
           bind: bind,
-          container: container,
+          container: container
         };
         volumelist.push(volume_entry);
       }
@@ -828,7 +828,7 @@ export default {
         let env_entry = {
           label: name,
           name: name,
-          default: value,
+          default: value
         };
         envlist.push(env_entry);
       }
@@ -841,7 +841,7 @@ export default {
         let value = labels[label];
         let label_entry = {
           name: name,
-          value: value,
+          value: value
         };
         labellist.push(label_entry);
       }
@@ -865,7 +865,7 @@ export default {
           this.isLoading = false;
           this.$router.push({ name: "View Applications" });
         })
-        .catch((err) => {
+        .catch(err => {
           this.isLoading = false;
           this.deployStep = 1;
           this.setErr(err);
@@ -895,7 +895,7 @@ export default {
               devices: app.devices || [],
               labels: app.labels || [],
               sysctls: app.sysctls || [],
-              cap_add: app.cap_add || [],
+              cap_add: app.cap_add || []
             };
             this.notes = app.notes || null;
           } catch (error) {
@@ -919,15 +919,15 @@ export default {
           labels: this.transform_labels(app.Config.Labels) || [],
           sysctls: this.transform_labels(app.HostConfig.Sysctls),
           cap_add: app.HostConfig.CapAdd || [],
-          edit: true,
+          edit: true
         };
       }
-    },
+    }
   },
   async created() {
     await this.populateForm();
     await this.populateNetworks();
-  },
+  }
 };
 </script>
 

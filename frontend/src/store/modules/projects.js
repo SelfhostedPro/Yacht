@@ -4,7 +4,7 @@ import router from "@/router/index";
 const state = {
   projects: [],
   isLoading: false,
-  action: ''
+  action: ""
 };
 
 const mutations = {
@@ -115,7 +115,7 @@ const actions = {
   },
   ProjectAction({ commit, dispatch }, { Name, Action }) {
     commit("setLoading", true);
-    commit("setAction", Action)
+    commit("setAction", Action);
     const url = `/api/compose/${Name}/actions/${Action}`;
     axios
       .get(url)
@@ -123,15 +123,17 @@ const actions = {
         const projects = response.data;
         commit("setProjects", projects);
         dispatch("apps/readApps", null, { root: true });
-        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, { root: true })
+        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, {
+          root: true
+        });
       })
       .catch(err => {
-        console.log(err)
+        console.log(err);
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
-        commit("setAction", '')
+        commit("setAction", "");
       });
   },
   ProjectAppAction({ commit, dispatch }, { Project, Name, Action }) {
@@ -144,14 +146,16 @@ const actions = {
         const projects = response.data;
         commit("setProjects", projects);
         dispatch("apps/readApps", null, { root: true });
-        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, { root: true })
+        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, {
+          root: true
+        });
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
-        commit("setAction", '')
+        commit("setAction", "");
       });
   }
 };

@@ -88,7 +88,9 @@
         </template>
         <template v-slot:item.RepoTags="{ item }">
           <div class="d-flex">
-            <span class="align-streatch text-truncate nametext mt-2">{{ item.RepoTags[0] || handleDigests(item.RepoDigests) || '' }}</span>
+            <span class="align-streatch text-truncate nametext mt-2">{{
+              item.RepoTags[0] || handleDigests(item.RepoDigests) || ""
+            }}</span>
             <v-spacer />
 
             <v-chip
@@ -240,10 +242,10 @@ export default {
     },
     handleDigests(digests) {
       if (digests[0]) {
-      let _digest = digests[0].split("@")[0]
-      return _digest
+        let _digest = digests[0].split("@")[0];
+        return _digest;
       } else {
-        return null
+        return null;
       }
     }
   },

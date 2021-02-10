@@ -32,9 +32,14 @@ export default {
   props: ["app", "logs"],
   data() {
     return {
-      scrollOptions: { enable: true, always: false, smooth: false, notSmoothOnInit: true },
+      scrollOptions: {
+        enable: true,
+        always: false,
+        smooth: false,
+        notSmoothOnInit: true
+      }
     };
-  },
+  }
 };
 </script>
 

@@ -127,7 +127,9 @@
           </v-col>
         </v-row>
       </v-card-title>
-      <v-card-subtitle v-if="action">Running docker-compose {{ action }} ...</v-card-subtitle>
+      <v-card-subtitle v-if="action"
+        >Running docker-compose {{ action }} ...</v-card-subtitle
+      >
     </v-card>
     <v-card color="foreground" class="mt-2">
       <v-card-title> Project Details </v-card-title>
