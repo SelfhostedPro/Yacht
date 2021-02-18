@@ -62,7 +62,7 @@ const actions = {
           resolve(resp);
         })
         .catch(error => {
-          console.log(error);
+          console.error(error);
           commit(AUTH_CLEAR);
         });
     });
@@ -85,7 +85,7 @@ const actions = {
           resolve(resp);
         })
         .catch(error => {
-          console.log(error);
+          console.error(error);
           commit(AUTH_CLEAR);
         });
     });
@@ -115,7 +115,6 @@ const actions = {
     axios
       .get(url)
       .then(resp => {
-        console.log(resp);
         if (resp.data.authDisabled == true) {
           localStorage.setItem("username", resp.data.username);
           commit(AUTH_DISABLED);
