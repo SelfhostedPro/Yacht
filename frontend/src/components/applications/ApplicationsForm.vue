@@ -407,6 +407,25 @@
               </v-row>
             </form>
             <v-btn
+              v-if="form.edit == true"
+              color="primary"
+              @click="editDialog = true"
+              :disabled="invalid"
+              class="float-right"
+            >
+              <div v-if="isLoading">
+                Deploying
+                <v-progress-circular
+                  indeterminate
+                  color="white"
+                  size="15"
+                  width="2"
+                />
+              </div>
+              <div v-else>Deploy</div>
+            </v-btn>
+            <v-btn
+              v-else
               color="primary"
               @click="nextStep(4)"
               :disabled="invalid"
@@ -666,6 +685,33 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-card>
+    <v-dialog v-model="editDialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline" style="word-break: break-all;">
+          Are you sure you want to edit this container?
+        </v-card-title>
+        <v-card-text>
+          This will remove the currently running container and deploy a new one with the settings in this form.
+          Please make sure your container data is persistant or backed up.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="editDialog = false">
+            Cancel
+          </v-btn>
+          <v-btn
+            text
+            color="yellow"
+            @click="
+              nextStep(4);
+              editDialog = false;
+            "
+          >
+            Edit
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -686,6 +732,7 @@ export default {
       notes: "",
       networks: [],
       volumes: [],
+      editDialog: false,
       form: {
         name: "",
         image: "",
@@ -906,7 +953,6 @@ export default {
       } else if (this.$route.params.appName) {
         const appName = this.$route.params.appName;
         const app = await this.readApp(appName);
-        console.log(app);
         this.form = {
           name: app.name || "",
           image: app.Config.Image || "",
@@ -919,7 +965,8 @@ export default {
           labels: this.transform_labels(app.Config.Labels) || [],
           sysctls: this.transform_labels(app.HostConfig.Sysctls),
           cap_add: app.HostConfig.CapAdd || [],
-          edit: true
+          edit: true,
+          id: app.Id
         };
       }
     }
