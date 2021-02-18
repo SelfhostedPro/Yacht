@@ -29,7 +29,8 @@ def generate_password() -> str:
 
 
 def auth_check(Authorize):
-    if str(settings.DISABLE_AUTH).lower() == "true":
+    auth_setting = str(settings.DISABLE_AUTH)
+    if auth_setting.lower() == "true":
         return
     else:
         try:
