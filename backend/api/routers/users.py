@@ -61,7 +61,8 @@ def refresh(Authorize: AuthJWT = Depends()):
 @router.get("/me", response_model=schemas.User)
 def get_user(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
-    if settings.DISABLE_AUTH == "True":
+    auth_setting = str(settings.DISABLE_AUTH)
+    if auth_setting.lower() == "true":
         current_user = models.User
         current_user.authDisabled = True
         current_user.id = 0
