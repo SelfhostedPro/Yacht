@@ -30,7 +30,7 @@
 
 <script>
 import axios from "axios";
-import { mapMutations, mapActions } from "vuex";
+import { mapMutations, mapActions, mapState } from "vuex";
 export default {
   data() {
     return {
@@ -46,6 +46,9 @@ export default {
     ...mapMutations({
       setMessage: "snackbar/setMessage",
       setErr: "snackbar/setErr"
+    }),
+    ...mapState({
+      authDisabled: "auth/authDisabled"
     }),
     ...mapActions({
       logout: "auth/AUTH_LOGOUT"
@@ -85,7 +88,12 @@ export default {
           const sleep = delay =>
             new Promise(resolve => setTimeout(resolve, delay));
           sleep(5000);
-          this.logout();
+          if (this.authDisabled == true){
+            this.$forceUpdate();
+          } else {
+            this.logout();
+            this.$forceUpdate();
+          }
         })
         .catch(err => {
           this.isLoading = false;
