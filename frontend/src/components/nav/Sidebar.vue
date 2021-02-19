@@ -68,47 +68,19 @@ export default {
         divider: true
       },
       {
-        icon: "mdi-application",
         text: "Applications",
-        subLinks: [
-          {
-            text: "View Applications",
-            to: "/apps",
-            icon: "mdi-view-list"
-          },
-          {
-            text: "New Application",
-            to: "/apps/deploy",
-            icon: "mdi-plus"
-          }
-        ]
+        to: "/apps",
+        icon: "mdi-application"
       },
       {
-        icon: "mdi-folder",
         text: "Templates",
-        subLinks: [
-          {
-            text: "View Templates",
-            to: "/templates",
-            icon: "mdi-view-list"
-          },
-          {
-            text: "New Template",
-            to: "/templates/new",
-            icon: "mdi-plus"
-          }
-        ]
+        to: "/templates",
+        icon: "mdi-folder"
       },
       {
-        icon: "mdi-book-open",
         text: "Projects",
-        subLinks: [
-          {
-            text: "View Projects",
-            to: "/projects",
-            icon: "mdi-view-list"
-          }
-        ]
+        to: "/projects",
+        icon: "mdi-book-open"
       },
       {
         icon: "mdi-cube-outline",

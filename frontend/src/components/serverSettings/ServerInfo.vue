@@ -1,5 +1,5 @@
 <template>
-  <v-card color="foreground" class="elevation-12 pb-8">
+  <v-card color="foreground" class="elevation-12">
     <v-toolbar color="primary" dark flat>
       <v-toolbar-title>Server Settings</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -11,9 +11,7 @@
       <v-card-title class="subheading secondary font-weight-bold"
         >Configuration</v-card-title
       >
-      <v-card-title class="font-weight-bold">
-        Import:
-      </v-card-title>
+      <v-card-title class="font-weight-bold"> Import: </v-card-title>
       <ValidationObserver ref="obs1" v-slot="{ invalid }">
         <validationProvider
           name="importFile"
@@ -40,9 +38,7 @@
           >Import
         </v-btn>
       </ValidationObserver>
-      <v-card-title class="font-weight-bold mt-5">
-        Export:
-      </v-card-title>
+      <v-card-title class="font-weight-bold mt-5"> Export: </v-card-title>
       <v-btn class="mx-5 mb-5" color="primary" @click="export_settings()"
         >Export
       </v-btn>

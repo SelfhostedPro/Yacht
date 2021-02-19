@@ -14,6 +14,13 @@
                   </v-btn>
                 </template>
                 <v-list color="foreground" dense>
+                  <v-list-item @click="editClick({ Name: app.name })">
+                    <v-list-item-icon>
+                      <v-icon>mdi-file-document-edit-outline</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Edit</v-list-item-title>
+                  </v-list-item>
+                  <v-divider />
                   <v-list-item
                     @click="AppAction({ Name: app.name, Action: 'start' })"
                   >
@@ -123,6 +130,9 @@ export default {
       readAppProcesses: "apps/readAppProcesses",
       AppAction: "apps/AppAction"
     }),
+    editClick(appName) {
+      this.$router.push({ path: `/apps/edit/${appName.Name}` });
+    },
     refresh() {
       const appName = this.$route.params.appName;
       this.readApp(appName);

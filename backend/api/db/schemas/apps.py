@@ -50,6 +50,8 @@ class DeployForm(BaseModel):
     cap_add: Optional[List[str]]
     network_mode: Optional[str]
     network: Optional[str]
+    edit: Optional[bool]
+    id: Optional[str]
 
 
 # LOGS #

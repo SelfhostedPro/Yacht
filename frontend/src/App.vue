@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import Sidebar from "./components/nav/Sidebar";
 import Appbar from "./components/nav/Appbar";
 import LoginForm from "./components/auth/LoginForm";

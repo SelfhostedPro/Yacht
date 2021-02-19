@@ -34,6 +34,9 @@
             </v-list-item>
           </v-list>
         </v-menu>
+        <v-btn fab x-small class="ml-2" color="primary" to="/apps/deploy">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -97,6 +100,13 @@
                 </v-btn>
               </template>
               <v-list color="foreground" dense>
+                <v-list-item @click="editClick({ Name: item.name })">
+                  <v-list-item-icon>
+                    <v-icon>mdi-file-document-edit-outline</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>Edit</v-list-item-title>
+                </v-list-item>
+                <v-divider />
                 <v-list-item
                   @click="AppAction({ Name: item.name, Action: 'start' })"
                 >
@@ -302,6 +312,9 @@ export default {
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}/info` });
+    },
+    editClick(appName) {
+      this.$router.push({ path: `/apps/edit/${appName.Name}` });
     },
     convPorts(data) {
       let o = [];

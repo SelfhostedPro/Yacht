@@ -3,7 +3,8 @@ import router from "@/router/index";
 
 const state = {
   projects: [],
-  isLoading: false
+  isLoading: false,
+  action: ""
 };
 
 const mutations = {
@@ -30,6 +31,9 @@ const mutations = {
   },
   setLoading(state, loading) {
     state.isLoading = loading;
+  },
+  setAction(state, action) {
+    state.action = action;
   }
 };
 
@@ -71,21 +75,26 @@ const actions = {
         commit("setLoading", false);
       });
   },
-  readProject({ commit }, name) {
+  readProject({ commit }, Name) {
+    const url = `/api/compose/${Name}`;
     commit("setLoading", true);
-    const url = `/api/compose/${name}`;
-    axios
-      .get(url)
-      .then(response => {
-        const project = response.data;
-        commit("setProject", project);
-      })
-      .catch(err => {
-        commit("snackbar/setErr", err, { root: true });
-      })
-      .finally(() => {
-        commit("setLoading", false);
-      });
+    return new Promise((resolve, reject) => {
+      axios
+        .get(url)
+        .then(response => {
+          const project = response.data;
+          commit("setLoading", false);
+          commit("setProject", project);
+          resolve(project);
+        })
+        .finally(() => {
+          commit("setLoading", false);
+        })
+        .catch(error => {
+          commit("snackbar/setErr", error, { root: true });
+          reject(error);
+        });
+    });
   },
   writeProject({ commit }, payload) {
     commit("setLoading", true);
@@ -106,36 +115,47 @@ const actions = {
   },
   ProjectAction({ commit, dispatch }, { Name, Action }) {
     commit("setLoading", true);
-    const url = `/api/compose/${Name}/${Action}`;
+    commit("setAction", Action);
+    const url = `/api/compose/${Name}/actions/${Action}`;
     axios
       .get(url)
       .then(response => {
         const projects = response.data;
         commit("setProjects", projects);
         dispatch("apps/readApps", null, { root: true });
+        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, {
+          root: true
+        });
       })
       .catch(err => {
+        console.log(err);
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
+        commit("setAction", "");
       });
   },
   ProjectAppAction({ commit, dispatch }, { Project, Name, Action }) {
     commit("setLoading", true);
-    const url = `/api/compose/${Project}/${Action}/${Name}`;
+    commit("setAction", Action);
+    const url = `/api/compose/${Project}/actions/${Action}/${Name}`;
     axios
       .get(url)
       .then(response => {
         const projects = response.data;
         commit("setProjects", projects);
         dispatch("apps/readApps", null, { root: true });
+        commit("snackbar/setMessage", `${Name} has been ${Action}ed.`, {
+          root: true
+        });
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });
       })
       .finally(() => {
         commit("setLoading", false);
+        commit("setAction", "");
       });
   }
 };

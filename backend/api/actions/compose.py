@@ -3,55 +3,90 @@ from sh import docker_compose
 import os
 import yaml
 import pathlib
+import shutil
 
 from ..settings import Settings
 from ..utils.compose import find_yml_files, get_readme_file, get_logo_file
 
 settings = Settings()
 
+"""
+Runs an action on the specified compose project.
+"""
+
 
 def compose_action(name, action):
     files = find_yml_files(settings.COMPOSE_DIR)
     compose = get_compose(name)
+    env = os.environ.copy()
     if action == "up":
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 action,
                 "-d",
                 _cwd=os.path.dirname(compose["path"]),
+                _env=check_dockerhost(env),
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, "stderr"):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)
     elif action == "create":
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 "up",
                 "--no-start",
                 _cwd=os.path.dirname(compose["path"]),
+                _env=check_dockerhost(env),
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, "stderr"):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)
     else:
         try:
             _action = docker_compose(
-                "-f", compose["path"], action, _cwd=os.path.dirname(compose["path"])
+                action,
+                _cwd=os.path.dirname(compose["path"]),
+                _env=check_dockerhost(env),
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, "stderr"):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)
     if _action.stdout.decode("UTF-8").rstrip():
-        output = _action.stdout.decode("UTF-8").rstrip()
+        _output = _action.stdout.decode("UTF-8").rstrip()
     elif _action.stderr.decode("UTF-8").rstrip():
-        output = _action.stderr.decode("UTF-8").rstrip()
+        _output = _action.stderr.decode("UTF-8").rstrip()
     else:
-        output = "No Output"
+        _output = "No Output"
     print(f"""Project {compose['name']} {action} successful.""")
     print(f"""Output: """)
-    print(output)
+    print(_output)
     return get_compose_projects()
+
+
+"""
+Used to include the DOCKER_HOST in the shell env
+when someone ups a compose project or returns a
+useless var to just clear the shell env.
+"""
+
+
+def check_dockerhost(environment):
+    if environment.get("DOCKER_HOST"):
+        return {"DOCKER_HOST": environment["DOCKER_HOST"]}
+    else:
+        return {"clear_env": "true"}
+
+
+"""
+Used to run docker-compose commands on specific 
+apps in compose projects.
+"""
 
 
 def compose_app_action(
@@ -62,55 +97,64 @@ def compose_app_action(
 
     files = find_yml_files(settings.COMPOSE_DIR)
     compose = get_compose(name)
-    print("docker-compose -f " + compose["path"] + " " + action + " " + app)
+    env = os.environ.copy()
+    print("RUNNING: " + compose["path"] + " docker-compose " + " " + action + " " + app)
     if action == "up":
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 "up",
                 "-d",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
+                _env=check_dockerhost(env),
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, "stderr"):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)
     elif action == "create":
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 "up",
                 "--no-start",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
+                _env=check_dockerhost(env),
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, "stderr"):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)
     elif action == "rm":
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 "rm",
                 "--force",
                 "--stop",
                 app,
                 _cwd=os.path.dirname(compose["path"]),
+                _env=check_dockerhost(env),
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, "stderr"):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)
     else:
         try:
             _action = docker_compose(
-                "-f",
-                compose["path"],
                 action,
                 app,
                 _cwd=os.path.dirname(compose["path"]),
+                _env=check_dockerhost(env),
             )
         except Exception as exc:
-            raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            if hasattr(exc, "stderr"):
+                raise HTTPException(400, exc.stderr.decode("UTF-8").rstrip())
+            else:
+                raise HTTPException(400, exc)
     if _action.stdout.decode("UTF-8").rstrip():
         output = _action.stdout.decode("UTF-8").rstrip()
     elif _action.stderr.decode("UTF-8").rstrip():
@@ -121,6 +165,12 @@ def compose_app_action(
     print(f"""Output: """)
     print(output)
     return get_compose_projects()
+
+
+"""
+Checks for compose projects in the COMPOSE_DIR and
+returns most of the info inside them.
+"""
 
 
 def get_compose_projects():
@@ -145,7 +195,7 @@ def get_compose_projects():
             _project = {
                 "name": project,
                 "path": file,
-                "version": loaded_compose["version"],
+                "version": loaded_compose.get("version", "3.9"),
                 "services": services,
                 "volumes": volumes,
                 "networks": networks,
@@ -156,11 +206,17 @@ def get_compose_projects():
     return projects
 
 
+"""
+Returns detailed information on a specific compose
+project.
+"""
+
+
 def get_compose(name):
     try:
         files = find_yml_files(settings.COMPOSE_DIR + name)
     except Exception as exc:
-        print(exc)
+        raise HTTPException(exc.status_code, exc.detail)
     for project, file in files.items():
         if name == project:
             networks = []
@@ -176,24 +232,68 @@ def get_compose(name):
                     networks.append(network)
             for service in loaded_compose.get("services"):
                 services[service] = loaded_compose["services"][service]
+            _content = open(file)
+            content = _content.read()
             compose_object = {
                 "name": project,
                 "path": file,
-                "version": loaded_compose["version"],
+                "version": loaded_compose.get("version", "-"),
                 "services": services,
                 "volumes": volumes,
                 "networks": networks,
+                "content": content,
             }
             return compose_object
     else:
         raise HTTPException(404, "Project " + name + " not found")
 
 
+"""
+Creates a compose directory (if one isn't there
+already) with the name of the project. Then writes
+the content of compose.content to it.
+"""
+
+
 def write_compose(compose):
-    print(compose)
-    pathlib.Path("config/compose/" + compose.name).mkdir(parents=True)
-    f = open("config/compose/" + compose.name + "/docker-compose.yml", "a")
-    f.write(compose.content)
-    f.close()
+    if not os.path.exists(settings.COMPOSE_DIR + compose.name):
+        try:
+            pathlib.Path(settings.COMPOSE_DIR + compose.name).mkdir(parents=True)
+        except Exception as exc:
+            raise HTTPException(exc.status_code, exc.detail)
+    with open(settings.COMPOSE_DIR + compose.name + "/docker-compose.yml", "w") as f:
+        try:
+            f.write(compose.content)
+            f.close()
+        except Exception as exc:
+            raise HTTPException(exc.status_code, exc.detail)
 
     return get_compose(name=compose.name)
+
+
+"""
+Deletes a compose project after checking to see if
+it exists. This also deletes all files in the folder.
+"""
+
+
+def delete_compose(project_name):
+    if not os.path.exists("/" + settings.COMPOSE_DIR + project_name):
+        raise HTTPException(404, "Project directory not found.")
+    elif not os.path.exists(
+        "/" + settings.COMPOSE_DIR + project_name + "/docker-compose.yml"
+    ):
+        raise HTTPException(404, "Project docker-compose.yml not found.")
+    else:
+        try:
+            with open(
+                "/" + settings.COMPOSE_DIR + project_name + "/docker-compose.yml"
+            ):
+                pass
+        except OSError as exc:
+            raise HTTPException(400, exc.strerror)
+    try:
+        shutil.rmtree("/" + settings.COMPOSE_DIR + project_name)
+    except Exception as exc:
+        raise HTTPException(exc.status_code, exc.strerror)
+    return get_compose_projects()

@@ -41,6 +41,7 @@ const actions = {
       .get(url)
       .then(response => {
         const images = response.data;
+        console.log(images);
         commit("setImages", images);
       })
       .catch(err => {
@@ -83,7 +84,7 @@ const actions = {
         router.push({ name: "Images" });
       });
   },
-  updateImage({ commit }, id) {
+  updateImage({ commit, dispatch }, id) {
     commit("setLoading", true);
     const url = `/api/resources/images/${id}/pull`;
     axios
@@ -91,6 +92,7 @@ const actions = {
       .then(response => {
         const image = response.data;
         commit("setImage", image);
+        dispatch("readImages");
       })
       .catch(err => {
         commit("snackbar/setErr", err, { root: true });

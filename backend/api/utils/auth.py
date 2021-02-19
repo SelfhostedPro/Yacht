@@ -1,8 +1,6 @@
-from ..auth import cookie_authentication
-from ..auth import user_db
 from ..settings import Settings
 from ..db.database import SessionLocal
-from fastapi import WebSocket
+from fastapi import WebSocket, Depends
 
 settings = Settings()
 
@@ -15,16 +13,17 @@ def get_db():
         db.close()
 
 
-async def websocket_auth(websocket: WebSocket):
-    try:
-        cookie = websocket._cookies["fastapiusersauth"]
-        user = await cookie_authentication(cookie, user_db)
-        if user and user.is_active:
-            return user
-        elif settings.DISABLE_AUTH == "True":
-            return True
-    except:
-        if settings.DISABLE_AUTH == "True":
-            return True
-        else:
-            return None
+# async def websocket_auth(websocket: WebSocket, Authorize: AuthJWT = Depends()):
+#     try:
+#         cookie = websocket._cookies["access_token_cookie"]
+#         csrf_cookie = websocket._cookies["csrf_access_token"]
+#         _verify_jwt_in_request(token = cookie, type_token='cookie', token_from='cookie')
+#         if user and user.is_active:
+#             return user
+#         elif settings.DISABLE_AUTH == "True":
+#             return True
+#     except:
+#         if settings.DISABLE_AUTH == "True":
+#             return True
+#         else:
+#             return None

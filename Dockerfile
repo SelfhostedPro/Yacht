@@ -1,6 +1,9 @@
 # Build Vue
 FROM node:14.5.0-alpine as build-stage
 
+ARG VUE_APP_VERSION
+ENV VUE_APP_VERSION=${VUE_APP_VERSION}
+
 WORKDIR /app
 COPY ./frontend/package*.json ./
 RUN npm install
@@ -26,7 +29,8 @@ RUN \
 	make \
 	python3-dev \
 	libffi-dev \
-	ruby-dev &&\
+	ruby-dev \
+	postgresql-dev &&\
  echo "**** install packages ****" && \
  apk add --no-cache \
 	python3 \
@@ -34,6 +38,7 @@ RUN \
 	nginx &&\
  gem install sass &&\
  echo "**** Installing Python Modules ****" && \
+ pip3 install wheel &&\
  pip3 install -r requirements.txt &&\
  echo "**** Cleaning Up ****" &&\
  apk del --purge \

@@ -3,7 +3,7 @@
     <h1>
       Deploy {{ form.name }}
       <v-btn
-        v-if="!this.$route.params.appId"
+        v-if="!this.$route.params.appId && !this.$route.params.appName"
         tile
         :to="{ name: 'Deploy from Template' }"
         class="primary float-right"
@@ -111,7 +111,7 @@
             </form>
             <v-btn
               color="primary"
-              @click="deployStep += 1"
+              @click="deployStep = 2"
               :disabled="invalid"
               class="float-right"
             >
@@ -130,7 +130,10 @@
                     label="Network"
                     clearable
                     v-model="form.network"
-                    :disabled="form.network_mode !== undefined && form.network_mode !== ''"
+                    :disabled="
+                      form.network_mode !== undefined &&
+                        form.network_mode !== ''
+                    "
                   />
                 </v-col>
                 <v-col>
@@ -139,7 +142,9 @@
                     label="Network Mode"
                     clearable
                     v-model="form.network_mode"
-                    :disabled="form.network !== undefined && form.network !== ''"
+                    :disabled="
+                      form.network !== undefined && form.network !== ''
+                    "
                   />
                 </v-col>
               </v-row>
@@ -248,7 +253,7 @@
             </form>
             <v-btn
               color="primary"
-              @click="deployStep += 1"
+              @click="deployStep = 3"
               :disabled="invalid"
               class="float-right"
             >
@@ -256,7 +261,7 @@
             </v-btn>
             <v-btn
               color="secondary"
-              @click="deployStep -= 1"
+              @click="deployStep = 1"
               class="mx-2 float-right primary--text"
             >
               Back
@@ -326,7 +331,7 @@
             </form>
             <v-btn
               color="primary"
-              @click="deployStep += 1"
+              @click="deployStep = 4"
               :disabled="invalid"
               class="float-right"
             >
@@ -334,7 +339,7 @@
             </v-btn>
             <v-btn
               color="secondary"
-              @click="deployStep -= 1"
+              @click="deployStep = 2"
               class="mx-2 float-right primary--text"
             >
               Back
@@ -402,6 +407,25 @@
               </v-row>
             </form>
             <v-btn
+              v-if="form.edit == true"
+              color="primary"
+              @click="editDialog = true"
+              :disabled="invalid"
+              class="float-right"
+            >
+              <div v-if="isLoading">
+                Deploying
+                <v-progress-circular
+                  indeterminate
+                  color="white"
+                  size="15"
+                  width="2"
+                />
+              </div>
+              <div v-else>Deploy</div>
+            </v-btn>
+            <v-btn
+              v-else
               color="primary"
               @click="nextStep(4)"
               :disabled="invalid"
@@ -420,7 +444,7 @@
             </v-btn>
             <v-btn
               color="secondary"
-              @click="deployStep -= 1"
+              @click="deployStep = 3"
               class="mx-2 float-right primary--text"
             >
               Back
@@ -661,6 +685,33 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-card>
+    <v-dialog v-model="editDialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline" style="word-break: break-all;">
+          Are you sure you want to edit this container?
+        </v-card-title>
+        <v-card-text>
+          This will remove the currently running container and deploy a new one with the settings in this form.
+          Please make sure your container data is persistant or backed up.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="editDialog = false">
+            Cancel
+          </v-btn>
+          <v-btn
+            text
+            color="yellow"
+            @click="
+              nextStep(4);
+              editDialog = false;
+            "
+          >
+            Edit
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -681,6 +732,7 @@ export default {
       notes: "",
       networks: [],
       volumes: [],
+      editDialog: false,
       form: {
         name: "",
         image: "",
@@ -730,8 +782,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      readApp: "templates/readApp",
-      readNetworks: "networks/_readNetworks"
+      readTemplateApp: "templates/readTemplateApp",
+      readNetworks: "networks/_readNetworks",
+      readApp: "apps/readApp"
     }),
     ...mapMutations({
       setErr: "snackbar/setErr"
@@ -778,6 +831,69 @@ export default {
     removeCap_add(index) {
       this.form.cap_add.splice(index, 1);
     },
+    transform_ports(ports, app) {
+      let portlist = [];
+      for (let port in ports) {
+        let _port = port.split("/") || "";
+        var cport = _port[0] || "";
+        if (ports[port]) {
+          var hport = ports[port][0].HostPort || "";
+        } else {
+          continue;
+        }
+        var proto = _port[1] || "";
+        var label = app.Config.Labels[`local.yacht.port.${hport}`] || "";
+        let port_entry = {
+          cport: cport,
+          hport: hport,
+          proto: proto,
+          label: label
+        };
+        portlist.push(port_entry);
+      }
+      return portlist;
+    },
+    transform_volumes(volumes) {
+      let volumelist = [];
+      for (let volume in volumes) {
+        let container = volumes[volume].Destination || "";
+        let bind = volumes[volume].Source || "";
+        let volume_entry = {
+          bind: bind,
+          container: container
+        };
+        volumelist.push(volume_entry);
+      }
+      return volumelist;
+    },
+    transform_env(envs) {
+      let envlist = [];
+      for (let env in envs) {
+        let _env = envs[env].split("=");
+        let name = _env[0];
+        let value = _env[1];
+        let env_entry = {
+          label: name,
+          name: name,
+          default: value
+        };
+        envlist.push(env_entry);
+      }
+      return envlist;
+    },
+    transform_labels(labels) {
+      let labellist = [];
+      for (let label in labels) {
+        let name = label;
+        let value = labels[label];
+        let label_entry = {
+          name: name,
+          value: value
+        };
+        labellist.push(label_entry);
+      }
+      return labellist;
+    },
     nextStep(n) {
       if (n === this.deploySteps) {
         // this.deployStep = 1;
@@ -798,6 +914,7 @@ export default {
         })
         .catch(err => {
           this.isLoading = false;
+          this.deployStep = 1;
           this.setErr(err);
         });
     },
@@ -808,29 +925,49 @@ export default {
       }
     },
     async populateForm() {
-      const appId = this.$route.params.appId;
-      if (appId != null) {
-        try {
-          const app = await this.readApp(appId);
-          this.form = {
-            name: app.name || "",
-            image: app.image || "",
-            restart_policy: app.restart_policy || "",
-            network: app.network,
-            network_mode: app.network_mode,
-            ports: app.ports || [],
-            volumes: app.volumes || [],
-            env: app.env || [],
-            devices: app.devices || [],
-            labels: app.labels || [],
-            sysctls: app.sysctls || [],
-            cap_add: app.cap_add || []
-          };
-          this.notes = app.notes || null;
-        } catch (error) {
-          console.error(error, error.response);
-          this.setErr(error);
+      if (this.$route.params.appId) {
+        const appId = this.$route.params.appId;
+        if (appId != null) {
+          try {
+            const app = await this.readTemplateApp(appId);
+            this.form = {
+              name: app.name || "",
+              image: app.image || "",
+              restart_policy: app.restart_policy || "",
+              network: app.network,
+              network_mode: app.network_mode,
+              ports: app.ports || [],
+              volumes: app.volumes || [],
+              env: app.env || [],
+              devices: app.devices || [],
+              labels: app.labels || [],
+              sysctls: app.sysctls || [],
+              cap_add: app.cap_add || []
+            };
+            this.notes = app.notes || null;
+          } catch (error) {
+            console.error(error, error.response);
+            this.setErr(error);
+          }
         }
+      } else if (this.$route.params.appName) {
+        const appName = this.$route.params.appName;
+        const app = await this.readApp(appName);
+        this.form = {
+          name: app.name || "",
+          image: app.Config.Image || "",
+          restart_policy: app.HostConfig.RestartPolicy.Name || "",
+          network: Object.keys(app.NetworkSettings.Networks)[0] || "",
+          ports: this.transform_ports(app.ports, app) || [],
+          volumes: this.transform_volumes(app.Mounts) || [],
+          env: this.transform_env(app.Config.Env) || [],
+          devices: [],
+          labels: this.transform_labels(app.Config.Labels) || [],
+          sysctls: this.transform_labels(app.HostConfig.Sysctls),
+          cap_add: app.HostConfig.CapAdd || [],
+          edit: true,
+          id: app.Id
+        };
       }
     }
   },

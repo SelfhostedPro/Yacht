@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from fastapi import HTTPException
+from fastapi import HTTPException, BackgroundTasks
 from ..db import models, schemas
 from ..utils import *
 from ..utils import check_updates as _update_check
@@ -10,6 +10,10 @@ from datetime import datetime
 import time
 import subprocess
 import docker
+
+"""
+Returns all running apps in a list
+"""
 
 
 def get_running_apps():
@@ -24,6 +28,14 @@ def get_running_apps():
         apps_list.append(attrs)
 
     return apps_list
+
+
+"""
+Checks repo digest for app and compares it to image
+digest to see if there's an update available.
+
+TODO: This has issues if there's more than one repo digest
+"""
 
 
 def check_app_update(app_name):
@@ -44,9 +56,18 @@ def check_app_update(app_name):
     return app.attrs
 
 
+"""
+Gets all apps in a list and add some easy access to
+properties that aren't in the app attributes
+"""
+
+
 def get_apps():
     apps_list = []
-    dclient = docker.from_env()
+    try:
+        dclient = docker.from_env()
+    except docker.errors.DockerException as exc:
+        raise HTTPException(status_code=500, detail=exc.args)
     try:
         apps = dclient.containers.list(all=True)
     except Exception as exc:
@@ -62,6 +83,13 @@ def get_apps():
         apps_list.append(attrs)
 
     return apps_list
+
+
+"""
+Get a single app by the container name and some easy 
+access to properties that aren't in the app 
+attributes
+"""
 
 
 def get_app(app_name):
@@ -81,6 +109,11 @@ def get_app(app_name):
     return attrs
 
 
+"""
+Get processes running in an app.
+"""
+
+
 def get_app_processes(app_name):
     dclient = docker.from_env()
     app = dclient.containers.get(app_name)
@@ -93,6 +126,12 @@ def get_app_processes(app_name):
         return None
 
 
+"""
+Get app logs (this isn't in use as logs are served
+via a websocket in routers so they're realtime)
+"""
+
+
 def get_app_logs(app_name):
     dclient = docker.from_env()
     app = dclient.containers.get(app_name)
@@ -100,6 +139,12 @@ def get_app_logs(app_name):
         return schemas.AppLogs(logs=app.logs())
     else:
         return None
+
+
+"""
+Deploy a new app. Format is available in 
+../db/schemas/apps.py
+"""
 
 
 def deploy_app(template: schemas.DeployForm):
@@ -118,6 +163,8 @@ def deploy_app(template: schemas.DeployForm):
             conv_labels2data(template.labels),
             conv_sysctls2data(template.sysctls),
             conv_caps2data(template.cap_add),
+            edit=template.edit or False,
+            id=template.id or None
         )
     except HTTPException as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.detail)
@@ -130,15 +177,30 @@ def deploy_app(template: schemas.DeployForm):
     return schemas.DeployLogs(logs=launch.logs())
 
 
+"""
+Merge utility used for combining portlabels and
+labels into a single variable
+"""
+
+
 def Merge(dict1, dict2):
     if dict1 and dict2:
-        return dict2.update(dict1)
+        dict2.update(dict1)
+        return dict2
     elif dict1:
         return dict1
     elif dict2:
         return dict2
     else:
         return None
+
+
+"""
+This function actually runs the docker run command.
+It also checks if edit is set to true so it can 
+remove the container you're editing before deploying
+a new one.
+"""
 
 
 def launch_app(
@@ -155,8 +217,22 @@ def launch_app(
     labels,
     sysctls,
     caps,
+    edit,
+    id
 ):
     dclient = docker.from_env()
+    if edit == True:
+        try:
+            dclient.containers.get(id)
+            try:
+                running_app = dclient.containers.get(id)
+                running_app.remove(force=True)
+            except Exception as e:
+                raise e
+        except Exception as e:
+            # User probably changed the name so it doesn't conflict. If this is the case we'll just spin up a second container.
+            pass
+
     combined_labels = Merge(portlabels, labels)
     try:
         lauch = dclient.containers.run(
@@ -191,6 +267,11 @@ def launch_app(
     return lauch
 
 
+"""
+Runs an app action (ie. docker stop, docker start, etc.)
+"""
+
+
 def app_action(app_name, action):
     err = None
     dclient = docker.from_env()
@@ -212,6 +293,12 @@ def app_action(app_name, action):
             )
     apps_list = get_apps()
     return apps_list
+
+
+"""
+Spins up a watchtower container that uses the --run-once
+and --cleanup flags and targets a container by name
+"""
 
 
 def app_update(app_name):
@@ -252,7 +339,14 @@ def app_update(app_name):
     return get_apps()
 
 
-def update_self():
+"""
+Checks for current docker id (the one yacht is running
+in) and then launches the next function in a 
+background task.
+"""
+
+
+def _update_self(background_tasks):
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
     yacht_id = (
@@ -268,23 +362,36 @@ def update_self():
                 detail="Unable to get Yacht container ID",
             )
         else:
-            raise HTTPException(
-                status_code=exc.response.status_code, detail=exc.explanation
-            )
+            status_code = 500
+            detail = exc.args[0]
+            raise HTTPException(status_code=status_code, detail=detail)
+    background_tasks.add_task(update_self_in_background, yacht)
+    return {"result": "successful"}
 
+
+"""
+Spins up a watchtower instance with --cleanup and 
+--run-once pointed at the current ID of yacht.
+"""
+
+
+def update_self_in_background(yacht):
+    dclient = docker.from_env()
     volumes = {"/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
     print("**** Updating " + yacht.name + "****")
-    updater = dclient.containers.run(
+    dclient.containers.run(
         image="containrrr/watchtower:latest",
         command="--cleanup --run-once " + yacht.name,
         remove=True,
         detach=True,
         volumes=volumes,
     )
-    result = updater
-    print(result)
-    time.sleep(1)
-    return result
+
+
+"""
+Checks current docker id and compares the repo digest
+to the local digest to see if there's an updata available.
+"""
 
 
 def check_self_update():
@@ -297,18 +404,16 @@ def check_self_update():
         yacht = dclient.containers.get(yacht_id)
     except Exception as exc:
         print(exc)
-        if hasattr(exc, 'response') and exc.response.status_code == 404:
+        if hasattr(exc, "response") and exc.response.status_code == 404:
             raise HTTPException(
                 status_code=exc.response.status_code,
                 detail="Unable to get Yacht container ID",
             )
-        elif hasattr(exc, 'response'):
+        elif hasattr(exc, "response"):
             raise HTTPException(
                 status_code=exc.response.status_code, detail=exc.explanation
             )
         else:
-            raise HTTPException(
-                status_code=400, detail=exc.args
-            )
+            raise HTTPException(status_code=400, detail=exc.args)
 
     return _update_check(yacht.image.tags[0])

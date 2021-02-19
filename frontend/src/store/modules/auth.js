@@ -3,10 +3,12 @@ import {
   AUTH_ERROR,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
-  // AUTH_REFRESH,
+  AUTH_REFRESH,
   AUTH_CLEAR,
   AUTH_CHANGE_PASS,
-  AUTH_CHECK
+  AUTH_CHECK,
+  AUTH_DISABLED,
+  AUTH_ENABLED
 } from "../actions/auth";
 import axios from "axios";
 import router from "@/router/index";
@@ -28,27 +30,15 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit(AUTH_REQUEST);
       const url = "/api/auth/login";
-      const formData = new FormData();
-      formData.set("username", credentials.username);
-      formData.set("password", credentials.password);
       axios
-        .post(url, formData, { withCredentials: true })
-        .then(() => {
-          let url = "/api/users/me";
-          axios
-            .get(url, { withCredentials: true })
-            .then(resp => {
-              localStorage.setItem("username", resp.data.email);
-              axios.defaults.withCredentials = true;
-              commit(AUTH_SUCCESS, resp);
-              resolve(resp);
-            })
-            .catch(err => {
-              commit(AUTH_ERROR, err);
-              commit("snackbar/setErr", err, { root: true });
-              localStorage.removeItem("username");
-              reject(err);
-            });
+        .post(url, credentials, { withCredentials: true })
+        .then(resp => {
+          localStorage.setItem("username", resp.data.username);
+          axios.defaults.withCredentials = true;
+          axios.defaults.xsrfCookieName = "csrf_access_token";
+          axios.defaults.xsrfHeaderName = "X-CSRF-TOKEN";
+          commit(AUTH_SUCCESS, resp);
+          resolve(resp);
         })
         .catch(err => {
           commit(AUTH_ERROR, err);
@@ -64,15 +54,38 @@ const actions = {
       commit(AUTH_REQUEST);
       const url = "/api/auth/logout";
       axios
-        .post(url, {}, { withCredentials: true })
+        .get(url, {}, { withCredentials: true })
         .then(resp => {
           commit(AUTH_CLEAR, resp);
           localStorage.removeItem("username");
           router.push({ path: "/" });
           resolve(resp);
         })
-        .catch(err => {
-          commit("snackbar/setErr", err, { root: true });
+        .catch(error => {
+          console.log(error);
+          commit(AUTH_CLEAR);
+        });
+    });
+  },
+  [AUTH_REFRESH]: ({ commit }) => {
+    return new Promise(resolve => {
+      commit(AUTH_REQUEST);
+      const url = "/api/auth/refresh";
+      axios
+        .post(
+          url,
+          {},
+          {
+            xsrfCookieName: "csrf_refresh_token",
+            xsrfHeaderName: "X-CSRF-TOKEN",
+            withCredentials: true
+          }
+        )
+        .then(resp => {
+          resolve(resp);
+        })
+        .catch(error => {
+          console.log(error);
           commit(AUTH_CLEAR);
         });
     });
@@ -80,16 +93,11 @@ const actions = {
   [AUTH_CHANGE_PASS]: ({ commit }, credentials) => {
     return new Promise((resolve, reject) => {
       commit(AUTH_REQUEST);
-      const url = "/api/users/me";
-      let password = credentials.password;
-      let email = credentials.username;
+      const url = "/api/auth/me";
       axios
-        .patch(url, {
-          password: password,
-          email: email
-        })
+        .post(url, credentials)
         .then(resp => {
-          localStorage.setItem("username", resp.data.email);
+          localStorage.setItem("username", resp.data.username);
           commit(AUTH_SUCCESS, resp);
           resolve(resp);
         })
@@ -97,26 +105,26 @@ const actions = {
           router.push({ path: `/user/info` });
         })
         .catch(err => {
-          commit("snackbar/setErr", err, { root: true });
           reject(err);
         });
     });
   },
   [AUTH_CHECK]: ({ commit }) => {
     commit(AUTH_REQUEST);
-    const url = "/api/auth/login";
+    const url = "/api/auth/me";
     axios
-      .post(url)
+      .get(url)
       .then(resp => {
-        localStorage.setItem("username", resp.data.email);
-        commit(AUTH_SUCCESS, resp);
-      })
-      .catch(err => {
-        if (err.status_code == 422) {
-          console.log("Auth is enabled");
+        if (resp.data.authDisabled == true) {
+          localStorage.setItem("username", resp.data.username);
+          commit(AUTH_DISABLED);
+          commit(AUTH_SUCCESS, resp);
         } else {
-          console.log(err);
+          commit(AUTH_ENABLED);
         }
+      })
+      .catch(() => {
+        commit(AUTH_ENABLED);
       });
   }
 };
@@ -127,7 +135,7 @@ const mutations = {
   },
   [AUTH_SUCCESS]: (state, resp) => {
     state.status = "success";
-    state.username = resp.data.email;
+    state.username = resp.data.username;
     if (resp.data.authDisabled) {
       state.authDisabled = true;
     }
@@ -135,14 +143,16 @@ const mutations = {
   [AUTH_ERROR]: state => {
     state.status = "error";
   },
+  [AUTH_DISABLED]: state => {
+    state.authDisabled = true;
+  },
+  [AUTH_ENABLED]: state => {
+    state.authDisabled = false;
+  },
   [AUTH_CLEAR]: state => {
     state.accessToken = "";
     state.refreshToken = "";
     state.username = "";
-  },
-  [AUTH_CHECK]: (state, resp) => {
-    state.authDisabled = resp.data.authDisabled;
-    state.username = resp.data.email;
   }
 };
 
