@@ -85,6 +85,8 @@ def deploy_app(template: schemas.DeployForm, Authorize: AuthJWT = Depends()):
 async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends()):
     auth_setting = str(settings.DISABLE_AUTH)
     if auth_setting.lower() == "true":
+        pass
+    else:
         try:
             csrf = websocket._cookies["csrf_access_token"]
             Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
@@ -108,6 +110,8 @@ async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends
 async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends()):
     auth_setting = str(settings.DISABLE_AUTH)
     if auth_setting.lower() == "true":
+        pass
+    else:
         try:
             csrf = websocket._cookies["csrf_access_token"]
             Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
