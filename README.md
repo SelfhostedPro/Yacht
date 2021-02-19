@@ -12,6 +12,11 @@
 ## Yacht
 Yacht is a container management UI with a focus on templates and 1-click deployments.
 
+*If the built in update button isn't working for you try the following command:*
+```
+docker run -rm -d -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower:latest --cleanup --run-once <container-name>
+```
+
 ## Demo:
 ![Tempaltes](https://raw.githubusercontent.com/SelfhostedPro/Yacht/master/readme_media/Yacht-Demo.gif "templates")
 
