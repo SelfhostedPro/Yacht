@@ -22,8 +22,7 @@ const state = {
 const getters = {
   isAuthenticated: state => !!state.username,
   authStatus: state => state.status,
-  getUsername: state => state.username,
-  authDisabled: state => state.authDisabled
+  getUsername: state => state.username
 };
 
 const actions = {
@@ -63,7 +62,7 @@ const actions = {
           resolve(resp);
         })
         .catch(error => {
-          console.error(error);
+          console.log(error);
           commit(AUTH_CLEAR);
         });
     });
@@ -86,7 +85,7 @@ const actions = {
           resolve(resp);
         })
         .catch(error => {
-          console.error(error);
+          console.log(error);
           commit(AUTH_CLEAR);
         });
     });
@@ -116,7 +115,6 @@ const actions = {
     axios
       .get(url)
       .then(resp => {
-        console.log(resp)
         if (resp.data.authDisabled == true) {
           localStorage.setItem("username", resp.data.username);
           commit(AUTH_DISABLED);
