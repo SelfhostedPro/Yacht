@@ -34,14 +34,15 @@ Check out the getting started guide if this is the first time you've used Yacht:
 * Template Framework
 * Easy Template Updating
 * Centralized settings for volume management and similar QOL functionality.
+* Docker-Compose Compatibility
+* Advanced Container Management (Edit/Modify)
 
 
 ## Planned Features:
-* Advanced Container Management (Edit/Modify)
 * Container Monitoring
-* Docker-Compose Compatibility
 * Easy access to container interfaces
 * User Management
+* Scheduled Jobs
 
 *If you want something that's not planned please open a feature request issue and we'll see about getting it added.*
 
