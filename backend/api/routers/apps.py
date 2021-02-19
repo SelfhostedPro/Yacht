@@ -83,7 +83,8 @@ def deploy_app(template: schemas.DeployForm, Authorize: AuthJWT = Depends()):
 
 @router.websocket("/{app_name}/livelogs")
 async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends()):
-    if settings.DISABLE_AUTH != True and settings.DISABLE_AUTH != "True":
+    auth_setting = str(settings.DISABLE_AUTH)
+    if auth_setting.lower() == "true":
         try:
             csrf = websocket._cookies["csrf_access_token"]
             Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
@@ -105,7 +106,8 @@ async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends
 
 @router.websocket("/{app_name}/stats")
 async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends()):
-    if settings.DISABLE_AUTH != True and settings.DISABLE_AUTH != "True":
+    auth_setting = str(settings.DISABLE_AUTH)
+    if auth_setting.lower() == "true":
         try:
             csrf = websocket._cookies["csrf_access_token"]
             Authorize.jwt_required("websocket", websocket=websocket, csrf_token=csrf)
@@ -158,7 +160,8 @@ async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depend
 
 @router.websocket("/stats")
 async def dashboard(websocket: WebSocket, Authorize: AuthJWT = Depends()):
-    if settings.DISABLE_AUTH == "True":
+    auth_setting = str(settings.DISABLE_AUTH)
+    if auth_setting.lower() == "true":
         pass
     else:
         try:
