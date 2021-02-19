@@ -22,7 +22,8 @@ const state = {
 const getters = {
   isAuthenticated: state => !!state.username,
   authStatus: state => state.status,
-  getUsername: state => state.username
+  getUsername: state => state.username,
+  authDisabled: state => state.authDisabled
 };
 
 const actions = {
@@ -115,6 +116,7 @@ const actions = {
     axios
       .get(url)
       .then(resp => {
+        console.log(resp)
         if (resp.data.authDisabled == true) {
           localStorage.setItem("username", resp.data.username);
           commit(AUTH_DISABLED);

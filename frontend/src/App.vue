@@ -1,6 +1,6 @@
 <template>
   <v-app id="yacht">
-    <div v-if="isLoggedIn">
+    <div v-if="isLoggedIn || authDisabled">
       <Sidebar />
       <Appbar />
       <v-main>
@@ -64,6 +64,7 @@ export default {
   },
   created() {
     this.authCheck();
+    console.log(this.authDisabled)
   },
   mounted() {
     const dark_theme = localStorage.getItem("dark_theme");
