@@ -63,7 +63,7 @@ def get_user(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     auth_setting = str(settings.DISABLE_AUTH)
     if auth_setting.lower() == "true":
-        current_user = models.User
+        current_user = schemas.User
         current_user.authDisabled = True
         current_user.id = 0
         current_user.username = "user"
