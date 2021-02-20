@@ -1,9 +1,12 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, Response
 from sh import docker_compose
 import os
 import yaml
 import pathlib
 import shutil
+import docker
+import io
+import zipfile
 
 from ..settings import Settings
 from ..utils.compose import find_yml_files, get_readme_file, get_logo_file
@@ -297,3 +300,31 @@ def delete_compose(project_name):
     except Exception as exc:
         raise HTTPException(exc.status_code, exc.strerror)
     return get_compose_projects()
+
+def generate_support_bundle(project_name):
+    dclient = docker.from_env()
+    with zipfile.ZipFile(project_name + "_bundle.zip", "w") as zf:
+        try:
+            files = find_yml_files(settings.COMPOSE_DIR + project_name)
+        except Exception as exc:
+            raise HTTPException(exc.status_code, exc.detail)
+        for project, file in files.items():
+            if project_name == project:
+                services = {}
+                logs = {}
+                compose = open(file)
+                loaded_compose = yaml.load(compose, Loader=yaml.SafeLoader)
+                for service in loaded_compose.get("services"):
+                    _service = dclient.containers.get(service)
+                    service_log = _service.logs()
+                    zf.writestr(service+'.log', service_log)
+                _content = open(file)
+                content = _content.read()
+                zf.writestr('docker-compose.yml', content)
+                zf.close()
+
+                resp = Response(zf, media_type="application/x-zip-compressed")
+                resp['Content-Disposition'] = 'attachment; filename=%s' % project_name + "_bundle.zip"
+                return resp
+        else:
+            raise HTTPException(404, "Project " + project_name + " not found")

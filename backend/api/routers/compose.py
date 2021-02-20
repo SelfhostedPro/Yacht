@@ -7,6 +7,7 @@ from ..actions.compose import (
     get_compose,
     write_compose,
     delete_compose,
+    generate_support_bundle
 )
 from fastapi_jwt_auth import AuthJWT
 from ..auth import auth_check
@@ -48,3 +49,8 @@ def write_compose_project(
 def get_compose_app_action(project_name, action, app, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return compose_app_action(project_name, action, app)
+
+@router.get("/{project_name}/support")
+def get_support_bundle(project_name, Authorize: AuthJWT = Depends()):
+    auth_check(Authorize)
+    return generate_support_bundle(project_name)

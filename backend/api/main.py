@@ -32,7 +32,7 @@ class jwtSettings(BaseModel):
     authjwt_token_location: set = {"headers", "cookies"}
     authjwt_cookie_secure: bool = False
     authjwt_cookie_csrf_protect: bool = True
-    authjwt_cookie_samesite: str = "lax"
+    authjwt_cookie_samesite: str = settings.SAME_SITE_COOKIES
 
 
 @AuthJWT.load_config
