@@ -186,7 +186,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'up'
+                        Action: 'up',
                       })
                     "
                   >
@@ -200,7 +200,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'start'
+                        Action: 'start',
                       })
                     "
                   >
@@ -213,7 +213,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'stop'
+                        Action: 'stop',
                       })
                     "
                   >
@@ -226,7 +226,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'restart'
+                        Action: 'restart',
                       })
                     "
                   >
@@ -240,7 +240,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'pull'
+                        Action: 'pull',
                       })
                     "
                   >
@@ -254,7 +254,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'kill'
+                        Action: 'kill',
                       })
                     "
                   >
@@ -267,7 +267,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'rm'
+                        Action: 'rm',
                       })
                     "
                   >
@@ -365,7 +365,11 @@
                             <th>Value</th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody
+                          v-if="
+                            Array.isArray(project.services[service].environment)
+                          "
+                        >
                           <tr
                             v-for="(value, index) in project.services[service]
                               .environment"
@@ -376,6 +380,24 @@
                             </td>
                             <td>
                               {{ value.split("=")[1] }}
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tbody
+                          v-else-if="
+                            isObject(project.services[service].environment)
+                          "
+                        >
+                          <tr
+                            v-for="(value, index) in project.services[service]
+                              .environment"
+                            :key="index"
+                          >
+                            <td>
+                              {{ index }}
+                            </td>
+                            <td>
+                              {{ value }}
                             </td>
                           </tr>
                         </tbody>
@@ -461,6 +483,11 @@
         {{ project.volumes.join(", ") }}
       </v-card-text>
     </v-card>
+    <v-card color="foreground" class="mt-2">
+      <v-card-title> Download Support Bundle </v-card-title>
+      <v-card-text> Download the logs and docker-compose to get help with your project</v-card-text>
+      <v-btn :href="`/api/compose/${project.name}/support`" target="_blank">Download</v-btn>
+    </v-card>
     <v-dialog v-if="selectedProject" v-model="deleteDialog" max-width="400">
       <v-card>
         <v-card-title class="headline" style="word-break: break-all">
@@ -496,32 +523,38 @@ export default {
   data() {
     return {
       selectedProject: null,
-      deleteDialog: false
+      deleteDialog: false,
     };
   },
   computed: {
     ...mapState("projects", ["project", "projects", "isLoading", "action"]),
     ...mapState("apps", ["apps"]),
     ...mapGetters({
-      getProjectByName: "projects/getProjectByName"
+      getProjectByName: "projects/getProjectByName",
     }),
     project() {
       const projectName = this.$route.params.projectName;
       return this.getProjectByName(projectName);
-    }
+    },
   },
   methods: {
     ...mapActions({
       readProject: "projects/readProject",
       projectAppAction: "projects/ProjectAppAction",
       ProjectAction: "projects/ProjectAction",
-      readApps: "apps/readApps"
+      readApps: "apps/readApps",
     }),
     editProject(projectname) {
       this.$router.push({ path: `/projects/${projectname}/edit` });
     },
     postDelete() {
       this.$router.push({ name: "View Projects" });
+    },
+    isObject(val) {
+      if (val === null) {
+        return false;
+      }
+      return typeof val === "function" || typeof val === "object";
     },
     getStatus(name) {
       for (var app in this.apps) {
@@ -538,13 +571,13 @@ export default {
       const projectName = this.$route.params.projectName;
       this.readProject(projectName);
       this.readApps();
-    }
+    },
   },
   mounted() {
     const projectName = this.$route.params.projectName;
     this.readProject(projectName);
     this.readApps();
-  }
+  },
 };
 </script>
 

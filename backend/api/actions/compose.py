@@ -1,4 +1,5 @@
 from fastapi import HTTPException, Response
+from fastapi.responses import StreamingResponse
 from sh import docker_compose
 import os
 import yaml
@@ -302,29 +303,35 @@ def delete_compose(project_name):
     return get_compose_projects()
 
 def generate_support_bundle(project_name):
-    dclient = docker.from_env()
-    with zipfile.ZipFile(project_name + "_bundle.zip", "w") as zf:
-        try:
-            files = find_yml_files(settings.COMPOSE_DIR + project_name)
-        except Exception as exc:
-            raise HTTPException(exc.status_code, exc.detail)
-        for project, file in files.items():
-            if project_name == project:
-                services = {}
-                logs = {}
-                compose = open(file)
-                loaded_compose = yaml.load(compose, Loader=yaml.SafeLoader)
-                for service in loaded_compose.get("services"):
-                    _service = dclient.containers.get(service)
-                    service_log = _service.logs()
-                    zf.writestr(service+'.log', service_log)
-                _content = open(file)
-                content = _content.read()
-                zf.writestr('docker-compose.yml', content)
-                zf.close()
-
-                resp = Response(zf, media_type="application/x-zip-compressed")
-                resp['Content-Disposition'] = 'attachment; filename=%s' % project_name + "_bundle.zip"
-                return resp
-        else:
-            raise HTTPException(404, "Project " + project_name + " not found")
+    files = find_yml_files(settings.COMPOSE_DIR + project_name)
+    if project_name in files:
+        dclient = docker.from_env()
+        stream = io.BytesIO()
+        with zipfile.ZipFile(stream, "w") as zf, open(files[project_name], 'r') as fp:
+            compose = yaml.load(fp, Loader=yaml.SafeLoader)
+            for _service in compose.get("services"):
+                if len(compose.get("services").keys()) <2:
+                    try:
+                        service = dclient.containers.get(_service)
+                    except docker.errors.NotFound as exc:
+                        raise HTTPException(exc.status_code, detail='container ' + _service + ' not found')
+                else: 
+                    try:
+                        service = dclient.containers.get(project_name+'_'+_service)
+                    except docker.errors.NotFound as exc:
+                        raise HTTPException(exc.status_code, detail='container ' + _service + ' not found')
+                service_log = service.logs()
+                zf.writestr(f"{_service}.log", service_log)
+            fp.seek(0)
+            # It is possible that ".write(...)" has better memory management here. 
+            zf.writestr("docker-compose.yml", fp.read())
+        stream.seek(0)
+        return StreamingResponse(
+            stream,
+            media_type="application/x-zip-compressed",
+            headers={
+                "Content-Disposition": f"attachment;filename={project_name}_bundle.zip"
+            }
+        )
+    else:
+        raise HTTPException(404, f"Project {project_name} not found.")
