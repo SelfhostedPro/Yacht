@@ -47,7 +47,7 @@
                     <v-progress-linear :value="app.cpu_percent" color="blue"/>
                     {{ app.mem_percent }}%,
                     {{
-                      formatBytes(app.mem_current)
+                      app.mem_current
                     }}
                   </v-card-text>
                 </template>
@@ -55,7 +55,7 @@
                   >CPU Usage: {{ app.cpu_percent }}%
                   <br />
                   MEM Usage: {{ app.mem_percent }}%,
-                  {{ formatBytes(app.mem_current) }}
+                  {{ app.mem_current }}
                 </span>
               </v-tooltip>
             </v-card>
@@ -105,7 +105,6 @@ export default {
         this.stats[statsGroup.name].cpu_percent = statsGroup.cpu_percent;
         this.stats[statsGroup.name].mem_percent = statsGroup.mem_percent;
         this.stats[statsGroup.name].mem_current = statsGroup.mem_current;
-        this.stats[statsGroup.name].mem_total = statsGroup.mem_total;
         // for (let key in this.stats[statsGroup.name]) {
         //   if (
         //     this.stats[statsGroup.name][key].length > 3 &&
@@ -127,7 +126,6 @@ export default {
       this.stats[statsGroup.name].cpu_percent = '';
       this.stats[statsGroup.name].mem_percent = '';
       this.stats[statsGroup.name].mem_current = '';
-      this.stats[statsGroup.name].mem_total = '';
     },
     sortByTitle(arr) {
       let sorted = Object.keys(arr)
@@ -150,17 +148,6 @@ export default {
         JSON.stringify({ message: "Closing Websocket" })
       );
       this.statConnection.close(1000, "Leaving page or refreshing");
-    },
-    formatBytes(bytes) {
-      if (bytes === 0) return "0 Bytes";
-      const decimals = 2;
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
     },
     fillStats(app) {
       let datacollection = {

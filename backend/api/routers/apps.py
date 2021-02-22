@@ -16,6 +16,7 @@ from ..utils import (
     calculate_cpu_percent2,
     calculate_network_bytes,
     get_app_stats,
+    format_bytes
 )
 
 from fastapi_jwt_auth import AuthJWT
@@ -233,8 +234,7 @@ async def process_container(name, stats, websocket):
         full_stats = {
             "name": name,
             "cpu_percent": round(cpu_percent,0),
-            "mem_current": round(mem_current, 0),
-            "mem_total": round(mem_total,0),
+            "mem_current": format_bytes(mem_current),
             "mem_percent": round(mem_percent,0),
         }
         try:
