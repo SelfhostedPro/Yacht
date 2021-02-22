@@ -16,73 +16,34 @@
         <small v-if="template.items">({{ template.items.length }})</small>
       </v-tab>
     </v-tabs>
-    <v-tabs-items v-model="tab" v-if="templates">
+    <v-tabs-items v-model='tab' v-if="templates">
       <v-tab-item v-for="template in templates" :key="template.id">
-        <div class="d-flex templates-details page">
-          <v-container
-            fluid
-            v-if="template"
-            class="templateDetailsContainer component"
-          >
-            <v-card class="pb-3">
-              <v-fade-transition>
-                <v-progress-linear
-                  indeterminate
-                  v-if="isLoading"
-                  color="primary"
-                  bottom
-                />
-              </v-fade-transition>
-              <v-card-title>
-                {{ template.title }}
+        <div>
+          <v-card color="secondary">
+            <v-card-title>
+              {{template.title}}
               </v-card-title>
               <v-card-subtitle>
-                {{ template.url }}
+                {{template.url}}
               </v-card-subtitle>
-
-              <v-text-field
-                label="Search"
-                v-model="search"
-                class="mx-5"
-              ></v-text-field>
-              <v-row dense class="mt-3 mx-5">
-                <v-col
-                  v-for="item in filterAndSortItems(template.items)"
-                  :key="item.id"
-                  cols="12"
-                  xl="2"
-                  md="3"
-                  sm="4"
-                  xs="12"
-                  class="d-flex"
-                  style="flex-direction:column"
-                >
-                  <v-card class="flex-grow-1">
-                    <v-img
-                      :src="item.logo"
-                      contain
-                      class="white--text align-end"
-                      gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                      aspect-ratio="1"
-                      height="200px"
-                    >
-                      <v-card-title v-text="item.title"></v-card-title>
-                    </v-img>
-                    <v-card-text style="overflow-y: auto; height:168px">
-                      <!--
-                Back link required!
-                Perhaps display the description scrollable and add an action
-                "Deploy"
-                {{ item.description ? item.description : "" | truncate(200) }}
-              -->
-                      {{
+              <v-text-field label="Search" v-model="search" class="mx-5"/>
+              <v-container fluid v-if="template">
+                <v-row dense>
+                  <v-col cols="12" xl="2" md="3" sm="4" xs="12" v-for="item in filterAndSortItems(template.items)" :key="item.id" class="d-flex" style="flex-direction:column">
+                    <v-card class="flex-grow-1 mt-1">
+                      <v-img :src="item.logo" contain aspect ratio="1" height="200px" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" class="white--text align-end">
+                        <v-card-title>
+                       {{item.name}}
+                      </v-card-title>
+                      </v-img>
+                     
+                      <v-card-text style="overflow-y: auto; height:168px">
+                        {{
                         item.description ? item.description : "" | truncate(120)
                       }}
-                    </v-card-text>
-
-                    <v-card-actions>
+                      </v-card-text>
+                      <v-card-actions>
                       <v-btn
-                        text
                         @click="
                           selectedApp = item;
                           appDetailsDialog = true;
@@ -92,19 +53,18 @@
                       </v-btn>
                       <v-spacer></v-spacer>
                       <v-btn
-                        text
                         color="primary"
                         :to="{ name: 'Deploy', params: { appId: item.id } }"
                       >
                         Deploy
                       </v-btn>
                     </v-card-actions>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-container>
-          <v-dialog
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-container>
+          </v-card>
+<v-dialog
             v-model="appDetailsDialog"
             scrollable
             class="mt-20"
@@ -360,15 +320,15 @@ export default {
       appDetailsDialog: false,
       selectedApp: null,
       search: "",
-      tab: null
+      tab: null,
     };
   },
   computed: {
-    ...mapState("templates", ["templates", "isLoading"])
+    ...mapState("templates", ["templates", "isLoading"]),
   },
   methods: {
     ...mapActions({
-      readTemplates: "templates/readTemplatesAndItems"
+      readTemplates: "templates/readTemplatesAndItems",
     }),
     filterItems(items) {
       if (!items) {
@@ -378,7 +338,7 @@ export default {
         return items;
       }
       let regex = new RegExp(this.search, "i");
-      return items.filter(item => {
+      return items.filter((item) => {
         return regex.test(item.title);
       });
     },
@@ -387,11 +347,11 @@ export default {
       return [...result].sort((a, b) => {
         return a.title.localeCompare(b.title);
       });
-    }
+    },
   },
   mounted() {
     this.readTemplates();
-  }
+  },
 };
 </script>
 
