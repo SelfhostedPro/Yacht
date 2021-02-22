@@ -302,28 +302,50 @@ def delete_compose(project_name):
         raise HTTPException(exc.status_code, exc.strerror)
     return get_compose_projects()
 
+
 def generate_support_bundle(project_name):
     files = find_yml_files(settings.COMPOSE_DIR + project_name)
     if project_name in files:
         dclient = docker.from_env()
         stream = io.BytesIO()
-        with zipfile.ZipFile(stream, "w") as zf, open(files[project_name], 'r') as fp:
+        with zipfile.ZipFile(stream, "w") as zf, open(files[project_name], "r") as fp:
             compose = yaml.load(fp, Loader=yaml.SafeLoader)
+            # print(compose)
+            # print(compose.get("services"))
             for _service in compose.get("services"):
-                if len(compose.get("services").keys()) <2:
+                print()
+                if len(compose.get("services").keys()) < 2:
                     try:
-                        service = dclient.containers.get(_service)
+                        if compose.get("services")[_service].get("container_name"):
+                            service = dclient.containers.get(
+                                compose.get("services")[_service].get("container_name")
+                            )
+                        else:
+                            service = dclient.containers.get(_service)
                     except docker.errors.NotFound as exc:
-                        raise HTTPException(exc.status_code, detail='container ' + _service + ' not found')
-                else: 
+                        raise HTTPException(
+                            exc.status_code,
+                            detail="container " + _service + " not found",
+                        )
+                else:
                     try:
-                        service = dclient.containers.get(project_name+'_'+_service)
+                        if compose.get("services")[_service].get("container_name"):
+                            service = dclient.containers.get(
+                                compose.get("services")[_service].get("container_name")
+                            )
+                        else:
+                            service = dclient.containers.get(
+                                project_name.lower() + "_" + _service + "_1"
+                            )
                     except docker.errors.NotFound as exc:
-                        raise HTTPException(exc.status_code, detail='container ' + _service + ' not found')
+                        raise HTTPException(
+                            exc.status_code,
+                            detail="container " + _service + " not found",
+                        )
                 service_log = service.logs()
                 zf.writestr(f"{_service}.log", service_log)
             fp.seek(0)
-            # It is possible that ".write(...)" has better memory management here. 
+            # It is possible that ".write(...)" has better memory management here.
             zf.writestr("docker-compose.yml", fp.read())
         stream.seek(0)
         return StreamingResponse(
@@ -331,7 +353,7 @@ def generate_support_bundle(project_name):
             media_type="application/x-zip-compressed",
             headers={
                 "Content-Disposition": f"attachment;filename={project_name}_bundle.zip"
-            }
+            },
         )
     else:
         raise HTTPException(404, f"Project {project_name} not found.")
