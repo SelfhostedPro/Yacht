@@ -20,6 +20,9 @@
       <v-tab-item v-for="template in templates" :key="template.id">
         <div>
           <v-card color="secondary">
+            <v-fade-transition>
+              <v-progress-linear indeterminate v-if="isLoading" color="primary" bottom />
+            </v-fade-transition>
             <v-card-title>
               {{template.title}}
               </v-card-title>
