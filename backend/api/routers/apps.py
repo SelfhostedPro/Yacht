@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, WebSocket, status, Cookie
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, status, Cookie, WebSocketDisconnect
 from typing import List
+from websockets.exceptions import ConnectionClosedOK
 
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -100,8 +101,14 @@ async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends
             async for line in logs:
                 try:
                     await websocket.send_text(line)
-                except Exception as e:
-                    return e
+                except ConnectionClosedOK as e:
+                    await websocket.close(code=e.code)
+                    break
+                except RuntimeError as e:
+                    if e.args[0] == 'Cannot call "send" once a close message has been sent.':
+                        break
+                    else:
+                        print(e)
         else:
             await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
 
@@ -156,8 +163,15 @@ async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depend
                 }
                 try:
                     await websocket.send_text(json.dumps(full_stats))
-                except Exception as e:
-                    return e
+                
+                except ConnectionClosedOK as e:
+                    await websocket.close(code=e.code)
+                    break
+                except RuntimeError as e:
+                    if e.args[0] == 'Cannot call "send" once a close message has been sent.':
+                        break
+                    else:
+                        print(e)
         else:
             await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
 
@@ -218,12 +232,23 @@ async def process_container(name, stats, websocket):
 
         full_stats = {
             "name": name,
-            "cpu_percent": cpu_percent,
-            "mem_current": mem_current,
-            "mem_total": mem_total,
-            "mem_percent": mem_percent,
+            "cpu_percent": round(cpu_percent,0),
+            "mem_current": round(mem_current, 0),
+            "mem_total": round(mem_total,0),
+            "mem_percent": round(mem_percent,0),
         }
         try:
-            await websocket.send_text(json.dumps(full_stats))
-        except Exception as e:
-            pass
+            if 'last_stats' in locals() and full_stats != last_stats:
+                last_stats = full_stats
+                await websocket.send_text(json.dumps(full_stats))
+            elif 'last_stats' not in locals():
+                last_stats = full_stats
+                await websocket.send_text(json.dumps(full_stats))
+        except ConnectionClosedOK as e:
+            await websocket.close(code=e.code)
+            break
+        except RuntimeError as e:
+            if e.args[0] == 'Cannot call "send" once a close message has been sent.':
+                break
+            else:
+                print(e)
