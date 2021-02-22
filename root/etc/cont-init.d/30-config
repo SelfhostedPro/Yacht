@@ -3,8 +3,8 @@
 # permissions
 chown -R abc:abc \
 		/app
-chown -R abc:abc \
-		/config
+find /config -type d \( -path /config/compose \) -prune -o \
+    -exec chown abc:abc {} \;
 chown -R abc:abc \
     /alembic
 # non-root docker
