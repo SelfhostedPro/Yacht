@@ -40,26 +40,24 @@
                     class="text-left pt-0 AppTitle"
                   >
                     CPU Usage:
-                    {{ app.cpu_percent[app.cpu_percent.length - 1] }}%
+                    {{ app.cpu_percent }}%
+                    <v-progress-linear :value="app.cpu_percent" color="primary"/>
                     <br />
                     MEM Usage:
-                    {{ app.mem_percent[app.mem_percent.length - 1] }}%,
+                    {{ app.mem_percent }}%,
                     {{
-                      formatBytes(app.mem_current[app.mem_current.length - 1])
+                      formatBytes(app.mem_current)
                     }}
+                    <v-progress-linear :value="app.cpu_percent" color="blue"/>
                   </v-card-text>
                 </template>
                 <span
-                  >CPU Usage: {{ app.cpu_percent[app.cpu_percent.length - 1] }}%
+                  >CPU Usage: {{ app.cpu_percent }}%
                   <br />
-                  MEM Usage: {{ app.mem_percent[app.mem_percent.length - 1] }}%,
-                  {{ formatBytes(app.mem_current[app.mem_current.length - 1]) }}
+                  MEM Usage: {{ app.mem_percent }}%,
+                  {{ formatBytes(app.mem_current) }}
                 </span>
               </v-tooltip>
-              <PercentBarChart
-                :chart-id="app.name"
-                :chartData="fillStats(app)"
-              />
             </v-card>
           </v-col>
         </v-row>
@@ -70,11 +68,7 @@
 
 <script>
 import axios from "axios";
-import PercentBarChart from "../components/charts/PercentBarChart";
 export default {
-  components: {
-    PercentBarChart
-  },
   data() {
     return {
       stats: {}
@@ -108,22 +102,18 @@ export default {
           this.initStats(statsGroup);
         }
         this.stats[statsGroup.name].name = statsGroup.name;
-        this.stats[statsGroup.name].cpu_percent.push(
-          Math.round(statsGroup.cpu_percent)
-        );
-        this.stats[statsGroup.name].mem_percent.push(
-          Math.round(statsGroup.mem_percent)
-        );
-        this.stats[statsGroup.name].mem_current.push(statsGroup.mem_current);
-        this.stats[statsGroup.name].mem_total.push(statsGroup.mem_total);
-        for (let key in this.stats[statsGroup.name]) {
-          if (
-            this.stats[statsGroup.name][key].length > 3 &&
-            Array.isArray(this.stats[statsGroup.name][key])
-          ) {
-            this.stats[statsGroup.name][key].shift();
-          }
-        }
+        this.stats[statsGroup.name].cpu_percent = Math.round(statsGroup.cpu_percent)
+        this.stats[statsGroup.name].mem_percent = Math.round(statsGroup.mem_percent)
+        this.stats[statsGroup.name].mem_current = statsGroup.mem_current;
+        this.stats[statsGroup.name].mem_total = statsGroup.mem_total;
+        // for (let key in this.stats[statsGroup.name]) {
+        //   if (
+        //     this.stats[statsGroup.name][key].length > 3 &&
+        //     Array.isArray(this.stats[statsGroup.name][key])
+        //   ) {
+        //     this.stats[statsGroup.name][key].shift();
+        //   }
+        // }
         this.$forceUpdate();
       };
     },
@@ -134,10 +124,10 @@ export default {
     initStats(statsGroup) {
       this.stats[statsGroup.name] = {};
       this.stats[statsGroup.name].name = "";
-      this.stats[statsGroup.name].cpu_percent = [];
-      this.stats[statsGroup.name].mem_percent = [];
-      this.stats[statsGroup.name].mem_current = [];
-      this.stats[statsGroup.name].mem_total = [];
+      this.stats[statsGroup.name].cpu_percent = '';
+      this.stats[statsGroup.name].mem_percent = '';
+      this.stats[statsGroup.name].mem_current = '';
+      this.stats[statsGroup.name].mem_total = '';
     },
     sortByTitle(arr) {
       let sorted = Object.keys(arr)
