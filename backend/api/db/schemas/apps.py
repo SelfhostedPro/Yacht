@@ -32,7 +32,7 @@ class DevicesSchema(BaseModel):
 
 
 class LabelSchema(BaseModel):
-    name: str
+    label: str
     value: str
 
 

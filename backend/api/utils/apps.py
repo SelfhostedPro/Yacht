@@ -132,7 +132,7 @@ def conv_devices2data(data):
 
 def conv_labels2data(data):
     if data:
-        return dict((d.name, d.value) for d in data)
+        return dict((d.label, d.value) for d in data)
     else:
         labels = {}
         return labels
