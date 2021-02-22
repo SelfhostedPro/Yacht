@@ -485,8 +485,13 @@
     </v-card>
     <v-card color="foreground" class="mt-2">
       <v-card-title> Download Support Bundle </v-card-title>
-      <v-card-text> Download the logs and docker-compose to get help with your project</v-card-text>
-      <v-btn :href="`/api/compose/${project.name}/support`" target="_blank">Download</v-btn>
+      <v-card-text>
+        Download the logs and docker-compose to get help with your
+        project</v-card-text
+      >
+      <v-btn :href="`/api/compose/${project.name}/support`" target="_blank" class="mb-2 ml-2" color="primary" download
+        >Download</v-btn
+      >
     </v-card>
     <v-dialog v-if="selectedProject" v-model="deleteDialog" max-width="400">
       <v-card>
@@ -560,7 +565,7 @@ export default {
       for (var app in this.apps) {
         if (
           this.apps[app].name == name ||
-          this.apps[app].name == this.project.name + "_" + name + "_1"
+          this.apps[app].name == this.project.name.toLowerCase() + "_" + name + "_1"
         ) {
           return this.apps[app].State.Status;
         }
@@ -576,6 +581,7 @@ export default {
   mounted() {
     const projectName = this.$route.params.projectName;
     this.readProject(projectName);
+
     this.readApps();
   },
 };
