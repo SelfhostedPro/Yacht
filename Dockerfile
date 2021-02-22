@@ -30,6 +30,7 @@ RUN \
 	python3-dev \
 	libffi-dev \
 	ruby-dev \
+	mysql-dev \
 	postgresql-dev &&\
  echo "**** install packages ****" && \
  apk add --no-cache \
