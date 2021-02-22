@@ -29,13 +29,13 @@ RUN \
 	make \
 	python3-dev \
 	libffi-dev \
-	ruby-dev \
-	mysql-dev \
-	postgresql-dev &&\
+	ruby-dev &&\
  echo "**** install packages ****" && \
  apk add --no-cache \
 	python3 \
 	py3-pip \
+	postgresql-dev \
+	mysql-dev \
 	nginx &&\
  gem install sass &&\
  echo "**** Installing Python Modules ****" && \
