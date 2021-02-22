@@ -40,15 +40,15 @@
                     class="text-left pt-0 AppTitle"
                   >
                     CPU Usage:
-                    {{ app.cpu_percent }}%
                     <v-progress-linear :value="app.cpu_percent" color="primary"/>
+                    {{ app.cpu_percent }}%
                     <br />
                     MEM Usage:
+                    <v-progress-linear :value="app.cpu_percent" color="blue"/>
                     {{ app.mem_percent }}%,
                     {{
                       formatBytes(app.mem_current)
                     }}
-                    <v-progress-linear :value="app.cpu_percent" color="blue"/>
                   </v-card-text>
                 </template>
                 <span
@@ -102,8 +102,8 @@ export default {
           this.initStats(statsGroup);
         }
         this.stats[statsGroup.name].name = statsGroup.name;
-        this.stats[statsGroup.name].cpu_percent = Math.round(statsGroup.cpu_percent)
-        this.stats[statsGroup.name].mem_percent = Math.round(statsGroup.mem_percent)
+        this.stats[statsGroup.name].cpu_percent = statsGroup.cpu_percent;
+        this.stats[statsGroup.name].mem_percent = statsGroup.mem_percent;
         this.stats[statsGroup.name].mem_current = statsGroup.mem_current;
         this.stats[statsGroup.name].mem_total = statsGroup.mem_total;
         // for (let key in this.stats[statsGroup.name]) {

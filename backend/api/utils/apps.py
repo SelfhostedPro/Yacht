@@ -251,7 +251,7 @@ async def get_app_stats(app_name):
                     line, cpu_total, cpu_system
                 )
             except KeyError as e:
-                print("error while getting new CPU stats: %r, falling back")
+                print(f"error while getting new CPU stats: {e}, falling back")
                 cpu_percent = await calculate_cpu_percent(line)
 
             full_stats = {
