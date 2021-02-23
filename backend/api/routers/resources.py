@@ -4,7 +4,6 @@ from fastapi_jwt_auth import AuthJWT
 
 from api.actions import resources
 from api.db.schemas.resources import ImageWrite, VolumeWrite, NetworkWrite
-from api.utils.auth import get_db
 from api.auth.auth import auth_check
 
 router = APIRouter()

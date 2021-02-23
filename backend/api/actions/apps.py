@@ -171,7 +171,7 @@ def deploy_app(template: DeployForm):
             conv_sysctls2data(template.sysctls),
             conv_caps2data(template.cap_add),
             edit=template.edit or False,
-            id=template.id or None,
+            _id=template.id or None,
         )
     except HTTPException as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.detail)
@@ -225,14 +225,14 @@ def launch_app(
     sysctls,
     caps,
     edit,
-    id,
+    _id,
 ):
     dclient = docker.from_env()
     if edit == True:
         try:
-            dclient.containers.get(id)
+            dclient.containers.get(_id)
             try:
-                running_app = dclient.containers.get(id)
+                running_app = dclient.containers.get(_id)
                 running_app.remove(force=True)
             except Exception as e:
                 raise e

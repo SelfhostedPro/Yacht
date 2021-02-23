@@ -202,6 +202,7 @@ async def process_container(name, stats, websocket):
     cpu_total = 0.0
     cpu_system = 0.0
     cpu_percent = 0.0
+    last_stats = {}
     async for line in stats:
         if line["memory_stats"]:
             mem_current = line["memory_stats"]["usage"]
