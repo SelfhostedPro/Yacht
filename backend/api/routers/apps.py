@@ -1,33 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, WebSocket, status, Cookie, WebSocketDisconnect
-from typing import List
+from fastapi import APIRouter, Depends, WebSocket, status
 from websockets.exceptions import ConnectionClosedOK
 
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.session import make_transient
-
-from ..db import models, schemas
-from ..db.models import containers
-from ..db.database import SessionLocal, engine
-from .. import actions
-from ..utils import (
-    calculate_blkio_bytes,
-    calculate_cpu_percent,
-    calculate_cpu_percent2,
-    calculate_network_bytes,
-    get_app_stats,
-)
+from api.db.schemas import apps as schemas
+import api.actions.apps as actions
+from api.settings import Settings
+from api.auth.auth import auth_check
+from api.utils.apps import calculate_cpu_percent, calculate_cpu_percent2, format_bytes
 
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
-import docker as sdocker
 import aiodocker
-from datetime import datetime
-import urllib.request
 import json
 import asyncio
-from ..settings import Settings
-from ..auth import auth_check
 
 settings = Settings()
 
@@ -105,7 +89,10 @@ async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends
                     await websocket.close(code=e.code)
                     break
                 except RuntimeError as e:
-                    if e.args[0] == 'Cannot call "send" once a close message has been sent.':
+                    if (
+                        e.args[0]
+                        == 'Cannot call "send" once a close message has been sent.'
+                    ):
                         break
                     else:
                         print(e)
@@ -163,12 +150,15 @@ async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depend
                 }
                 try:
                     await websocket.send_text(json.dumps(full_stats))
-                
+
                 except ConnectionClosedOK as e:
                     await websocket.close(code=e.code)
                     break
                 except RuntimeError as e:
-                    if e.args[0] == 'Cannot call "send" once a close message has been sent.':
+                    if (
+                        e.args[0]
+                        == 'Cannot call "send" once a close message has been sent.'
+                    ):
                         break
                     else:
                         print(e)
@@ -212,6 +202,7 @@ async def process_container(name, stats, websocket):
     cpu_total = 0.0
     cpu_system = 0.0
     cpu_percent = 0.0
+    last_stats = {}
     async for line in stats:
         if line["memory_stats"]:
             mem_current = line["memory_stats"]["usage"]
@@ -232,16 +223,15 @@ async def process_container(name, stats, websocket):
 
         full_stats = {
             "name": name,
-            "cpu_percent": round(cpu_percent,0),
-            "mem_current": round(mem_current, 0),
-            "mem_total": round(mem_total,0),
-            "mem_percent": round(mem_percent,0),
+            "cpu_percent": round(cpu_percent, 0),
+            "mem_current": format_bytes(mem_current),
+            "mem_percent": round(mem_percent, 0),
         }
         try:
-            if 'last_stats' in locals() and full_stats != last_stats:
+            if "last_stats" in locals() and full_stats != last_stats:
                 last_stats = full_stats
                 await websocket.send_text(json.dumps(full_stats))
-            elif 'last_stats' not in locals():
+            elif "last_stats" not in locals():
                 last_stats = full_stats
                 await websocket.send_text(json.dumps(full_stats))
         except ConnectionClosedOK as e:

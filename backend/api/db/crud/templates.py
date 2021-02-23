@@ -1,11 +1,10 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.session import make_transient
 
 from fastapi import HTTPException
 
-from .. import models, schemas
-from ...utils import conv_ports2dict, conv_sysctls2dict
+from api.db.models import containers as models
+from api.utils.templates import conv_sysctls2dict, conv_ports2dict
 
 from datetime import datetime
 import urllib.request
@@ -46,12 +45,12 @@ def delete_template(db: Session, template_id: int):
     return _template
 
 
-def add_template(db: Session, template: models.containers.Template):
+def add_template(db: Session, template: models.Template):
     try:
         _template_path = urlparse(template.url).path
         ext = os.path.splitext(_template_path)[1]
         # Opens the JSON and iterate over the content.
-        _template = models.containers.Template(title=template.title, url=template.url)
+        _template = models.Template(title=template.title, url=template.url)
         with urllib.request.urlopen(template.url) as file:
             if ext.rstrip() in (".yml", ".yaml"):
                 loaded_file = yaml.load(file, Loader=yaml.SafeLoader)
@@ -67,7 +66,7 @@ def add_template(db: Session, template: models.containers.Template):
 
                     # Optional use classmethod from_dict
                     try:
-                        template_content = models.containers.TemplateItem(
+                        template_content = models.TemplateItem(
                             type=int(entry.get("type", 1)),
                             title=entry["title"],
                             platform=entry["platform"],
@@ -100,7 +99,7 @@ def add_template(db: Session, template: models.containers.Template):
                 sysctls = conv_sysctls2dict(entry.get("sysctls", []))
 
                 # Optional use classmethod from_dict
-                template_content = models.containers.TemplateItem(
+                template_content = models.TemplateItem(
                     type=int(entry.get("type", 1)),
                     title=entry["title"],
                     platform=entry["platform"],
@@ -134,7 +133,6 @@ def add_template(db: Session, template: models.containers.Template):
         # TODO raises IntegrityError on duplicates (uniqueness)
         #       status
         db.rollback()
-        pass
 
     return get_template(db=db, url=template.url)
 
@@ -192,7 +190,7 @@ def refresh_template(db: Session, template_id: id):
                 sysctls = conv_sysctls2dict(entry.get("sysctls", []))
 
                 # Optional use classmethod from_dict
-                template_content = models.containers.TemplateItem(
+                template_content = models.TemplateItem(
                     type=int(entry["type"]),
                     title=entry["title"],
                     platform=entry["platform"],

@@ -1,5 +1,4 @@
 from sqlalchemy import (
-    Boolean,
     Column,
     ForeignKey,
     Integer,
@@ -10,7 +9,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from ..database import Base
+from api.db.database import Base
 
 from datetime import datetime
 
