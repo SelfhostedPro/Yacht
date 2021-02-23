@@ -1,34 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException, WebSocket, status, Cookie, WebSocketDisconnect
-from typing import List
+from fastapi import APIRouter, Depends, WebSocket, status
 from websockets.exceptions import ConnectionClosedOK
 
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.session import make_transient
-
-from ..db import models, schemas
-from ..db.models import containers
-from ..db.database import SessionLocal, engine
-from .. import actions
-from ..utils import (
-    calculate_blkio_bytes,
+from api.db.schemas import apps as schemas
+import api.actions.apps as actions
+from api.settings import Settings
+from api.auth.auth import auth_check
+from api.utils.apps import (
     calculate_cpu_percent,
     calculate_cpu_percent2,
-    calculate_network_bytes,
-    get_app_stats,
     format_bytes
 )
 
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
-import docker as sdocker
 import aiodocker
-from datetime import datetime
-import urllib.request
 import json
 import asyncio
-from ..settings import Settings
-from ..auth import auth_check
 
 settings = Settings()
 

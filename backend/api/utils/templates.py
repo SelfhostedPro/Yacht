@@ -1,6 +1,6 @@
 import re
 from fastapi import HTTPException
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 # For Templates
 REGEXP_PORT_ASSIGN = r"^(?:(?:\d{1,5}:)?\d{1,5}|:\d{1,5})/(?:tcp|udp)$"

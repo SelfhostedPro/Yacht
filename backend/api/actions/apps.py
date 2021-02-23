@@ -1,12 +1,26 @@
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
-from fastapi import HTTPException, BackgroundTasks
-from ..db import models, schemas
-from ..utils import *
-from ..utils import check_updates as _update_check
-from docker.errors import APIError
+from fastapi import HTTPException
 
-from datetime import datetime
+from api.db.schemas.apps import (
+    DeployLogs,
+    DeployForm,
+    AppLogs,
+    Processes
+)
+from api.utils.apps import (
+    conv_caps2data,
+    conv_devices2data,
+    conv_env2data,
+    conv_image2data,
+    conv_labels2data,
+    conv_portlabels2data,
+    conv_ports2data,
+    conv_restart2data,
+    conv_sysctls2data,
+    conv_volumes2data,
+    _check_updates,
+)
+from api.utils.templates import conv2dict
+
 import time
 import subprocess
 import docker
@@ -48,7 +62,7 @@ def check_app_update(app_name):
         )
 
     if app.attrs["Config"]["Image"]:
-        if _update_check(app.attrs["Config"]["Image"]):
+        if _check_updates(app.attrs["Config"]["Image"]):
             app.attrs.update(conv2dict("isUpdatable", True))
     app.attrs.update(conv2dict("name", app.name))
     app.attrs.update(conv2dict("ports", app.ports))
@@ -119,7 +133,7 @@ def get_app_processes(app_name):
     app = dclient.containers.get(app_name)
     if app.status == "running":
         processes = app.top()
-        return schemas.Processes(
+        return Processes(
             Processes=processes["Processes"], Titles=processes["Titles"]
         )
     else:
@@ -136,7 +150,7 @@ def get_app_logs(app_name):
     dclient = docker.from_env()
     app = dclient.containers.get(app_name)
     if app.status == "running":
-        return schemas.AppLogs(logs=app.logs())
+        return AppLogs(logs=app.logs())
     else:
         return None
 
@@ -147,7 +161,7 @@ Deploy a new app. Format is available in
 """
 
 
-def deploy_app(template: schemas.DeployForm):
+def deploy_app(template: DeployForm):
     try:
         launch = launch_app(
             template.name,
@@ -174,7 +188,7 @@ def deploy_app(template: schemas.DeployForm):
         )
     print("done deploying")
 
-    return schemas.DeployLogs(logs=launch.logs())
+    return DeployLogs(logs=launch.logs())
 
 
 """
@@ -416,4 +430,4 @@ def check_self_update():
         else:
             raise HTTPException(status_code=400, detail=exc.args)
 
-    return _update_check(yacht.image.tags[0])
+    return _check_updates(yacht.image.tags[0])

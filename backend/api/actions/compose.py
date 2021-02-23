@@ -1,4 +1,4 @@
-from fastapi import HTTPException, Response
+from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
 from sh import docker_compose
 import os
@@ -9,8 +9,8 @@ import docker
 import io
 import zipfile
 
-from ..settings import Settings
-from ..utils.compose import find_yml_files, get_readme_file, get_logo_file
+from api.settings import Settings
+from api.utils.compose import find_yml_files
 
 settings = Settings()
 

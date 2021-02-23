@@ -1,5 +1,4 @@
 import docker
-import json
 from fastapi import HTTPException
 
 ### IMAGES ###

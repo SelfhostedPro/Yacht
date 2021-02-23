@@ -1,7 +1,7 @@
 from __future__ import annotations
-from typing import List, Optional, Union
+from typing import List, Optional
 from datetime import datetime
-from pydantic import BaseModel, Json
+from pydantic import BaseModel
 
 
 class TemplateItem(BaseModel):

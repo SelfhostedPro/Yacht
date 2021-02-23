@@ -1,9 +1,8 @@
 from typing import Tuple
 
-from ..settings import Settings
+from api.settings import Settings
 
-from fastapi import Depends, HTTPException
-from fastapi_jwt_auth import AuthJWT
+from fastapi import HTTPException
 from fastapi_jwt_auth.exceptions import JWTDecodeError
 
 from passlib import pwd

@@ -1,6 +1,5 @@
 from ..settings import Settings
 from ..db.database import SessionLocal
-from fastapi import WebSocket, Depends
 
 settings = Settings()
 

@@ -1,6 +1,7 @@
-from ..db import models
-from ..db.database import SessionLocal
-from ..settings import Settings
+import api.db.models.containers as models
+from api.db.database import SessionLocal
+from api.settings import Settings
+
 import aiodocker
 import docker
 from docker.errors import APIError
@@ -276,7 +277,7 @@ def get_update_ports(ports):
         return None
 
 
-def check_updates(tag):
+def _check_updates(tag):
     if tag:
         dclient = docker.from_env()
         try:

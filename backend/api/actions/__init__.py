@@ -1,3 +1,3 @@
-from .apps import *
-from .compose import *
-from .resources import *
+from . import apps
+from . import compose
+from . import resources

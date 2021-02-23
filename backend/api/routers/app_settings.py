@@ -1,21 +1,27 @@
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, BackgroundTasks
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, BackgroundTasks, Depends, File, UploadFile
 from typing import List
 
 from sqlalchemy.orm import Session
-from datetime import datetime
 
-from ..db import crud, schemas
-from ..db.models import containers
-from ..db.database import SessionLocal, engine
-from ..utils.auth import get_db
-from ..actions.apps import _update_self, check_self_update
-from ..actions import resources
-from ..settings import Settings
-import yaml
+from api.utils.auth import get_db
+from api.auth.auth import auth_check
+
+from api.db.crud import templates as crud
+from api.db.crud import settings as scrud
+from api.db.schemas import templates as schemas
+from api.db.models import containers
+from api.db.database import engine
+
+from api.actions import resources
+from api.actions.apps import (
+    _update_self,
+    check_self_update
+)
+
+from api.settings import Settings
+
 from fastapi_jwt_auth import AuthJWT
 
-from ..auth import auth_check
 
 containers.Base.metadata.create_all(bind=engine)
 
@@ -54,7 +60,7 @@ def set_template_variables(
 )
 def export_settings(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
-    return crud.export_settings(db=db)
+    return scrud.export_settings(db=db)
 
 
 @router.post(
@@ -66,7 +72,7 @@ def import_settings(
     Authorize: AuthJWT = Depends(),
 ):
     auth_check(Authorize)
-    return crud.import_settings(db=db, upload=upload)
+    return scrud.import_settings(db=db, upload=upload)
 
 
 @router.get(

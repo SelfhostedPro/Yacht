@@ -1,12 +1,7 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.session import make_transient
 
-from .. import models, schemas
-
+from api.db.models import containers as models
 from datetime import datetime
-import urllib.request
-import sqlite3
 import json
 
 
