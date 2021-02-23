@@ -210,7 +210,7 @@
                   v-bind="attrs"
                   class="mx-1"
                   v-if="port.hip == '0.0.0.0'"
-                  color="indigo darken-2"
+                  color="primary"
                   label
                   small
                   :href="'http://' + host_ip + ':' + port.hport"
