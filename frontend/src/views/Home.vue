@@ -44,7 +44,7 @@
                     {{ app.cpu_percent }}%
                     <br />
                     MEM Usage:
-                    <v-progress-linear :value="app.cpu_percent" color="blue"/>
+                    <v-progress-linear :value="app.mem_percent" color="blue"/>
                     {{ app.mem_percent }}%,
                     {{
                       app.mem_current
