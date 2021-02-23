@@ -4,10 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 
 from api.db.models import containers as models
-from api.utils.templates import (
-    conv_sysctls2dict,
-    conv_ports2dict
-)
+from api.utils.templates import conv_sysctls2dict, conv_ports2dict
 
 from datetime import datetime
 import urllib.request

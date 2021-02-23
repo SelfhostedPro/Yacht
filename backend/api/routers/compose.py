@@ -8,7 +8,7 @@ from api.actions.compose import (
     get_compose,
     write_compose,
     delete_compose,
-    generate_support_bundle
+    generate_support_bundle,
 )
 from api.auth.auth import auth_check
 from api.db.schemas import compose as schemas
@@ -49,6 +49,7 @@ def write_compose_project(
 def get_compose_app_action(project_name, action, app, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return compose_app_action(project_name, action, app)
+
 
 @router.get("/{project_name}/support")
 def get_support_bundle(project_name, Authorize: AuthJWT = Depends()):

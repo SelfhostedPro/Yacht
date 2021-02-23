@@ -13,10 +13,7 @@ from api.db.models import containers
 from api.db.database import engine
 
 from api.actions import resources
-from api.actions.apps import (
-    _update_self,
-    check_self_update
-)
+from api.actions.apps import _update_self, check_self_update
 
 from api.settings import Settings
 

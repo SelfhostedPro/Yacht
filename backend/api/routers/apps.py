@@ -5,11 +5,7 @@ from api.db.schemas import apps as schemas
 import api.actions.apps as actions
 from api.settings import Settings
 from api.auth.auth import auth_check
-from api.utils.apps import (
-    calculate_cpu_percent,
-    calculate_cpu_percent2,
-    format_bytes
-)
+from api.utils.apps import calculate_cpu_percent, calculate_cpu_percent2, format_bytes
 
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
@@ -93,7 +89,10 @@ async def logs(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depends
                     await websocket.close(code=e.code)
                     break
                 except RuntimeError as e:
-                    if e.args[0] == 'Cannot call "send" once a close message has been sent.':
+                    if (
+                        e.args[0]
+                        == 'Cannot call "send" once a close message has been sent.'
+                    ):
                         break
                     else:
                         print(e)
@@ -151,12 +150,15 @@ async def stats(websocket: WebSocket, app_name: str, Authorize: AuthJWT = Depend
                 }
                 try:
                     await websocket.send_text(json.dumps(full_stats))
-                
+
                 except ConnectionClosedOK as e:
                     await websocket.close(code=e.code)
                     break
                 except RuntimeError as e:
-                    if e.args[0] == 'Cannot call "send" once a close message has been sent.':
+                    if (
+                        e.args[0]
+                        == 'Cannot call "send" once a close message has been sent.'
+                    ):
                         break
                     else:
                         print(e)
@@ -220,15 +222,15 @@ async def process_container(name, stats, websocket):
 
         full_stats = {
             "name": name,
-            "cpu_percent": round(cpu_percent,0),
+            "cpu_percent": round(cpu_percent, 0),
             "mem_current": format_bytes(mem_current),
-            "mem_percent": round(mem_percent,0),
+            "mem_percent": round(mem_percent, 0),
         }
         try:
-            if 'last_stats' in locals() and full_stats != last_stats:
+            if "last_stats" in locals() and full_stats != last_stats:
                 last_stats = full_stats
                 await websocket.send_text(json.dumps(full_stats))
-            elif 'last_stats' not in locals():
+            elif "last_stats" not in locals():
                 last_stats = full_stats
                 await websocket.send_text(json.dumps(full_stats))
         except ConnectionClosedOK as e:

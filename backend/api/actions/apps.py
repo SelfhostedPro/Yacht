@@ -1,11 +1,6 @@
 from fastapi import HTTPException
 
-from api.db.schemas.apps import (
-    DeployLogs,
-    DeployForm,
-    AppLogs,
-    Processes
-)
+from api.db.schemas.apps import DeployLogs, DeployForm, AppLogs, Processes
 from api.utils.apps import (
     conv_caps2data,
     conv_devices2data,
@@ -133,9 +128,7 @@ def get_app_processes(app_name):
     app = dclient.containers.get(app_name)
     if app.status == "running":
         processes = app.top()
-        return Processes(
-            Processes=processes["Processes"], Titles=processes["Titles"]
-        )
+        return Processes(Processes=processes["Processes"], Titles=processes["Titles"])
     else:
         return None
 
@@ -178,7 +171,7 @@ def deploy_app(template: DeployForm):
             conv_sysctls2data(template.sysctls),
             conv_caps2data(template.cap_add),
             edit=template.edit or False,
-            id=template.id or None
+            id=template.id or None,
         )
     except HTTPException as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.detail)
@@ -232,7 +225,7 @@ def launch_app(
     sysctls,
     caps,
     edit,
-    id
+    id,
 ):
     dclient = docker.from_env()
     if edit == True:
