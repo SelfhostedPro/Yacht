@@ -551,7 +551,7 @@
                     >
                       <v-text-field
                         label="Label"
-                        v-model="item['name']"
+                        v-model="item['label']"
                         :error-messages="errors"
                         :success="valid"
                         required
@@ -883,11 +883,11 @@ export default {
     },
     transform_labels(labels) {
       let labellist = [];
-      for (let label in labels) {
-        let name = label;
+      for (let _label in labels) {
+        let label = _label;
         let value = labels[label];
         let label_entry = {
-          name: name,
+          label: label,
           value: value
         };
         labellist.push(label_entry);

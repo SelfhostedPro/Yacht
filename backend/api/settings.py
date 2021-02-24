@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@yacht.local")
     ACCESS_TOKEN_EXPIRES = os.environ.get("ACCESS_TOKEN_EXPIRES", 15)
     REFRESH_TOKEN_EXPIRES = os.environ.get("REFRESH_TOKEN_EXPIRES", 1)
-    SAME_SITE_COOKIES = os.environ.get("SAME_SITE_COOKIES", True)
+    SAME_SITE_COOKIES = os.environ.get("SAME_SITE_COOKIES", "lax")
     DISABLE_AUTH = os.environ.get("DISABLE_AUTH", False)
     BASE_TEMPLATE_VARIABLES = [
         {"variable": "!config", "replacement": "/yacht/AppData/Config"},

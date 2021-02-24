@@ -3,16 +3,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 
 from sqlalchemy.orm import Session
-from datetime import datetime
 
-from ..db import crud, schemas
-from ..db.models import containers
-from ..db.database import SessionLocal, engine
-from ..utils import get_db
+import api.db.crud.templates as crud
+import api.db.schemas.templates as schemas
+from api.db.models.containers import Base
+from api.db.database import engine
+from api.utils.auth import get_db
+from api.auth.auth import auth_check
+
 from fastapi_jwt_auth import AuthJWT
-from ..auth import auth_check
 
-containers.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 
 router = APIRouter()

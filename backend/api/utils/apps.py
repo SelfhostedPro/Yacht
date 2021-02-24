@@ -1,6 +1,7 @@
-from ..db import models
-from ..db.database import SessionLocal
-from ..settings import Settings
+import api.db.models.containers as models
+from api.db.database import SessionLocal
+from api.settings import Settings
+
 import aiodocker
 import docker
 from docker.errors import APIError
@@ -132,7 +133,7 @@ def conv_devices2data(data):
 
 def conv_labels2data(data):
     if data:
-        return dict((d.name, d.value) for d in data)
+        return dict((d.label, d.value) for d in data)
     else:
         labels = {}
         return labels
@@ -251,7 +252,7 @@ async def get_app_stats(app_name):
                     line, cpu_total, cpu_system
                 )
             except KeyError as e:
-                print("error while getting new CPU stats: %r, falling back")
+                print(f"error while getting new CPU stats: {e}, falling back")
                 cpu_percent = await calculate_cpu_percent(line)
 
             full_stats = {
@@ -276,7 +277,7 @@ def get_update_ports(ports):
         return None
 
 
-def check_updates(tag):
+def _check_updates(tag):
     if tag:
         dclient = docker.from_env()
         try:
@@ -301,3 +302,13 @@ def check_updates(tag):
 
     else:
         return False
+
+
+def format_bytes(size):
+    power = 2 ** 10
+    n = 0
+    power_labels = {0: "B", 1: "KB", 2: "MB", 3: "GB"}
+    while size > power:
+        size /= power
+        n += 1
+    return str(round(size)) + " " + str(power_labels[n])
