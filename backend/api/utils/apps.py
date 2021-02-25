@@ -164,7 +164,7 @@ def conv_devices2data(data):
 
 
 def conv_labels2data(data):
-    # grab template varialbes
+    # grab template variables
     db = SessionLocal()
     t_variables = db.query(models.TemplateVariables).all()
 
