@@ -129,7 +129,38 @@ def conv_devices2data(data):
     else:
         devices = None
         return devices
+# def conv_labels2data(data):
+#     # Set is depracated. Name is the actual value. Label is the name of the field.
+#     # Label is the label of the label field.
+#     if not data:
+#         labels = {}
+#         return labels
+#     db = SessionLocal()
+#     t_variables = db.query(models.TemplateVariables).all()
 
+#     for i, variable in enumerate(data):
+#         for t_var in t_variables:
+#             if variable.label:
+#                 if t_var.variable in variable.label:
+#                     new_var = data[i].label.replace(t_var.variable, t_var.replacement)
+#                     variable.label = new_var
+#                     continue
+#             if variable.value:
+#                 if t_var.variable in variable.value:
+#                     new_var = data[i].value.replace(t_var.variable, t_var.replacement)
+#                     variable.value = new_var
+#                     continue
+#         else:
+#             if variable.value.startswith("!"):
+#                 raise HTTPException(
+#                     400, "Unset template variable used: " + variable.value
+#                 )
+#             if variable.label.startswith("!"):
+#                 raise HTTPException(
+#                     400, "Unset template variable used: " + variable.label
+#                 )
+#     delim = "="
+#     return {delim.join((d.label, d.value)) for d in data if d.value}
 
 def conv_labels2data(data):
     if data:
@@ -190,11 +221,12 @@ async def calculate_cpu_percent2(d, previous_cpu, previous_system):
     cpu_delta = cpu_total - previous_cpu
     cpu_system = float(d["cpu_stats"]["system_cpu_usage"])
     system_delta = cpu_system - previous_system
-    online_cpus = d["cpu_stats"].get(
-        "online_cpus", len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
-    )
+    # online_cpus = d["cpu_stats"].get(
+    #     "online_cpus", len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
+    # )
     if system_delta > 0.0:
-        cpu_percent = (cpu_delta / system_delta) * online_cpus * 100.0
+        # cpu_percent = (cpu_delta / system_delta) * online_cpus * 100.0
+        cpu_percent = (cpu_delta / system_delta) * 100.0
     return cpu_percent, cpu_system, cpu_total
 
 
