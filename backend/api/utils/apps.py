@@ -162,12 +162,26 @@ def conv_devices2data(data):
 #     delim = "="
 #     return {delim.join((d.label, d.value)) for d in data if d.value}
 
+
 def conv_labels2data(data):
-    if data:
-        return dict((d.label, d.value) for d in data)
-    else:
-        labels = {}
-        return labels
+    # grab template variables
+    db = SessionLocal()
+    t_variables = db.query(models.TemplateVariables).all()
+
+    # if we have nothing return an empty dictionary
+    if not data:
+        return {}
+
+    # iterate over template variables and labels and replace templated fields
+    for label in data:
+        for t_var in t_variables:
+            if t_var.variable in label.label:
+                label.label = label.label.replace(t_var.variable, t_var.replacement)
+            if t_var.variable in label.value:
+                label.value = label.value.replace(t_var.variable, t_var.replacement)
+
+    # generate dictionary from de-templated local data
+    return dict((d.label, d.value) for d in data)
 
 
 def conv_caps2data(data):
