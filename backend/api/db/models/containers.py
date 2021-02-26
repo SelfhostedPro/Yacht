@@ -64,6 +64,7 @@ class TemplateItem(Base):
     sysctls = Column(JSON, nullable=True, unique=False, index=False)
     cap_add = Column(JSON, nullable=True, unique=False, index=False)
     cpus = Column(JSON, nullable=True, unique=False, index=False)
+    mem_limit = Column(JSON, nullable=True, unique=False, index=False)
     template_id = Column(Integer, ForeignKey("templates.id"))
 
 

@@ -86,7 +86,8 @@ def add_template(db: Session, template: models.Template):
                             labels=entry.get("labels", []),
                             sysctls=sysctls,
                             cap_add=entry.get("cap_add", []),
-                            cpus=entry.get("cpus")
+                            cpus=entry.get("cpus"),
+                            mem_limit=entry.get("mem_limit")
                         )
                     except Exception as exc:
                         raise HTTPException(
@@ -120,7 +121,8 @@ def add_template(db: Session, template: models.Template):
                     labels=entry.get("labels", []),
                     sysctls=sysctls,
                     cap_add=entry.get("cap_add", []),
-                    cpus=entry.get("cpus")
+                    cpus=entry.get("cpus"),
+                    mem_limit=entry.get("mem_limit")
                 )
                 _template.items.append(template_content)
     except (OSError, TypeError, ValueError) as err:
@@ -184,7 +186,8 @@ def refresh_template(db: Session, template_id: id):
                         labels=entry.get("labels", []),
                         sysctls=sysctls,
                         cap_add=entry.get("cap_add", []),
-                        cpus=entry.get("cpus")
+                        cpus=entry.get("cpus"),
+                        mem_limit=entry.get("mem_limit")
                     )
                     items.append(item)
             elif type(loaded_file) == dict:
@@ -213,7 +216,8 @@ def refresh_template(db: Session, template_id: id):
                     labels=entry.get("labels", []),
                     sysctls=sysctls,
                     cap_add=entry.get("cap_add", []),
-                    cpus=entry.get("cpus")
+                    cpus=entry.get("cpus"),
+                    mem_limit=entry.get("mem_limit")
                 )
                 items.append(template_content)
     except Exception as exc:
