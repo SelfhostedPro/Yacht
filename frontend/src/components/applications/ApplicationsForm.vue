@@ -153,7 +153,7 @@
                 name="slide"
                 enter-active-class="animated fadeInLeft fast-anim"
                 leave-active-class="animated fadeOutLeft fast-anim"
-              >
+              >item
                 <v-row v-for="(item, index) in form.ports" :key="index">
                   <v-col>
                     <ValidationProvider
@@ -458,6 +458,59 @@
         Advanced
       </v-card-title>
       <v-expansion-panels flat accordion multiple focusable>
+<v-expansion-panel>
+          <v-expansion-panel-header color="foreground">
+            <v-row no-gutters>
+              <v-col cols="2">Command</v-col>
+              <v-col cols="4" class="text--secondary">
+                (Container Commands)
+              </v-col>
+            </v-row>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content color="foreground" class="mt-5">
+            <form>
+              <transition-group
+                name="slide"
+                enter-active-class="animated fadeInLeft fast-anim"
+                leave-active-class="animated fadeOutLeft fast-anim"
+              >
+                <v-row v-for="(item, index) in form.command" :key="index">
+                  <v-col>
+                    <ValidationProvider
+                      name="Command"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        :label="'Command '+index+':'"
+                        v-model="form.command[index]"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col class="d-flex justify-end" cols="1">
+                    <v-btn
+                      icon
+                      class="align-self-center"
+                      @click="removeCommand(index)"
+                    >
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </transition-group>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addCommand">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
         <v-expansion-panel>
           <v-expansion-panel-header color="foreground">
             <v-row no-gutters>
@@ -816,6 +869,12 @@ export default {
     ...mapMutations({
       setErr: "snackbar/setErr",
     }),
+    addCommand() {
+      this.form.command.push("")
+    },
+    removeCommand(index){
+      this.form.command.splice(index, 1)
+    },
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
     },
@@ -978,6 +1037,7 @@ export default {
               name: app.name || "",
               image: app.image || "",
               restart_policy: app.restart_policy || "",
+              command: app.command || [],
               network: app.network,
               network_mode: app.network_mode,
               ports: app.ports || [],

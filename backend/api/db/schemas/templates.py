@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Optional
+from typing import List, Optional, Union
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -13,6 +13,7 @@ class TemplateItem(BaseModel):
     description: Optional[str]
     logo: Optional[str]
     image: str
+    command: Optional[List[str]]
     notes: Optional[str]
     categories: Optional[List[str]] = []
     restart_policy: Optional[str]

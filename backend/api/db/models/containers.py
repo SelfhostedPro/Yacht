@@ -51,6 +51,7 @@ class TemplateItem(Base):
     name = Column(String(255), nullable=True, unique=False, index=True)
     logo = Column(Text, nullable=True, unique=False, index=False)
     image = Column(String(128), nullable=False, unique=False, index=False)
+    command = Column(JSON, nullable=True, unique=False, index=False)
     notes = Column(Text, nullable=True, unique=False, index=False)
     categories = Column(JSON, nullable=True, unique=False, index=False)
     restart_policy = Column(String(20), nullable=True, unique=False, index=False)

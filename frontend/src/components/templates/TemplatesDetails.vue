@@ -163,6 +163,22 @@
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
+              <v-divider v-if="selectedApp.command"/>
+              <v-list-item v-if="selectedApp.command">
+                <v-list-item-content>
+                <v-list-item-title class="px-5 text-centered font-weight-bold">
+                  Command
+                </v-list-item-title>
+                </v-list-item-content>
+                <v-list-item-content>
+                  <v-list-item-title v-if="Array.isArray(selectedApp.command)">
+                    <p v-for="(item, index) in selectedApp.command" :key="index">{{item}}</p>
+                    </v-list-item-title>
+                    <v-list-item-title v-else>
+                      {{selectedApp.command}}
+                      </v-list-item-title>
+                    </v-list-item-content>
+                    </v-list-item>
             </v-list>
           </v-card>
           <v-card v-if="selectedApp.ports" tile>
@@ -323,12 +339,12 @@ export default {
     return {
       appDetailsDialog: false,
       selectedApp: null,
-      search: ""
+      search: "",
     };
   },
   computed: {
     ...mapGetters({
-      getTemplateById: "templates/getTemplateById"
+      getTemplateById: "templates/getTemplateById",
     }),
     ...mapState("templates", ["isLoading"]),
     template() {
@@ -344,15 +360,15 @@ export default {
         return this.items;
       }
       return templ.items.filter(this.filterByTitle);
-    }
+    },
   },
   methods: {
     ...mapActions({
-      readTemplate: "templates/readTemplate"
+      readTemplate: "templates/readTemplate",
     }),
     sortByTitle(arr) {
       // Set slice() to avoid to generate an infinite loop!
-      return arr.slice().sort(function(a, b) {
+      return arr.slice().sort(function (a, b) {
         return a.title.localeCompare(b.title);
       });
     },
@@ -363,12 +379,12 @@ export default {
       const regex = new RegExp(this.search, "i");
       return regex.test(item.title);
       // return item.title.includes(this.search);
-    }
+    },
   },
   created() {
     const templateId = this.$route.params.templateId;
     this.readTemplate(templateId);
-  }
+  },
 };
 </script>
 
