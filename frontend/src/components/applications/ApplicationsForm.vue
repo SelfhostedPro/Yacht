@@ -914,6 +914,13 @@ export default {
       }
       return labellist;
     },
+    transform_cpus(_cpus){
+      let cpus = _cpus / 10**9
+      if (cpus != 0){
+        return cpus
+      }
+      return undefined
+    },
     nextStep(n) {
       if (n === this.deploySteps) {
         // this.deployStep = 1;
@@ -986,6 +993,7 @@ export default {
           labels: this.transform_labels(app.Config.Labels) || [],
           sysctls: this.transform_labels(app.HostConfig.Sysctls),
           cap_add: app.HostConfig.CapAdd || [],
+          cpus: this.transform_cpus(app.HostConfig.NanoCpus),
           edit: true,
           id: app.Id
         };
