@@ -18,9 +18,9 @@
       id="logcontainer"
     >
       <template v-slot="{ item }">
-        <li id="logtext">
+        <p id="logtext">
           {{ item }}
-        </li>
+        </p>
       </template>
     </v-virtual-scroll>
   </v-card>
