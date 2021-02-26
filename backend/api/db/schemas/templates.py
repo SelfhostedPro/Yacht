@@ -25,6 +25,7 @@ class TemplateItem(BaseModel):
     cap_add: Optional[List] = []
     network_mode: Optional[str]
     network: Optional[str]
+    cpus: Optional[int]
 
     class Config:
         orm_mode = True

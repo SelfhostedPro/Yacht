@@ -683,6 +683,25 @@
             </form>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header color="foreground">
+            <v-row no-gutters>
+              <v-col cols="2">Runtime</v-col>
+              <v-col cols="4" class="text--secondary">
+                (CPU Limits)
+              </v-col>
+            </v-row></v-expansion-panel-header
+          >
+          <v-expansion-panel-content color="foreground">
+            <form>
+              <v-text-field
+                v-model="form['cpus']"
+                label="CPU Cores:"
+                clearable
+              />
+            </form>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
     </v-card>
     <v-dialog v-model="editDialog" max-width="290">
@@ -745,7 +764,8 @@ export default {
         devices: [],
         labels: [],
         sysctls: [],
-        cap_add: []
+        cap_add: [],
+        cpus: undefined,
       },
       network_modes: ["bridge", "none", "host"],
       isLoading: false,
@@ -942,7 +962,8 @@ export default {
               devices: app.devices || [],
               labels: app.labels || [],
               sysctls: app.sysctls || [],
-              cap_add: app.cap_add || []
+              cap_add: app.cap_add || [],
+              cpus: app.cpus
             };
             this.notes = app.notes || null;
           } catch (error) {
