@@ -51,6 +51,7 @@ class DeployForm(BaseModel):
     network_mode: Optional[str]
     network: Optional[str]
     cpus: Optional[int]
+    mem_limit: Optional[str]
     edit: Optional[bool]
     id: Optional[str]
 

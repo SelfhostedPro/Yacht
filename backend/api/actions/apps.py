@@ -172,6 +172,7 @@ def deploy_app(template: DeployForm):
             conv_sysctls2data(template.sysctls),
             conv_caps2data(template.cap_add),
             conv_cpus2data(template.cpus),
+            template.mem_limit,
             edit=template.edit or False,
             _id=template.id or None,
         )
@@ -227,6 +228,7 @@ def launch_app(
     sysctls,
     caps,
     cpus,
+    mem_limit,
     edit,
     _id,
 ):
@@ -259,6 +261,7 @@ def launch_app(
             devices=devices,
             cap_add=caps,
             nano_cpus=cpus,
+            mem_limit=mem_limit,
             detach=True,
         )
     except Exception as e:
