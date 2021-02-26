@@ -683,6 +683,25 @@
             </form>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header color="foreground">
+            <v-row no-gutters>
+              <v-col cols="2">Runtime</v-col>
+              <v-col cols="4" class="text--secondary">
+                (CPU Limits)
+              </v-col>
+            </v-row></v-expansion-panel-header
+          >
+          <v-expansion-panel-content color="foreground">
+            <form>
+              <v-text-field
+                v-model="form['cpus']"
+                label="CPU Cores:"
+                clearable
+              />
+            </form>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
     </v-card>
     <v-dialog v-model="editDialog" max-width="290">
@@ -745,7 +764,8 @@ export default {
         devices: [],
         labels: [],
         sysctls: [],
-        cap_add: []
+        cap_add: [],
+        cpus: undefined,
       },
       network_modes: ["bridge", "none", "host"],
       isLoading: false,
@@ -894,6 +914,13 @@ export default {
       }
       return labellist;
     },
+    transform_cpus(_cpus){
+      let cpus = _cpus / 10**9
+      if (cpus != 0){
+        return cpus
+      }
+      return undefined
+    },
     nextStep(n) {
       if (n === this.deploySteps) {
         // this.deployStep = 1;
@@ -942,7 +969,8 @@ export default {
               devices: app.devices || [],
               labels: app.labels || [],
               sysctls: app.sysctls || [],
-              cap_add: app.cap_add || []
+              cap_add: app.cap_add || [],
+              cpus: app.cpus
             };
             this.notes = app.notes || null;
           } catch (error) {
@@ -965,6 +993,7 @@ export default {
           labels: this.transform_labels(app.Config.Labels) || [],
           sysctls: this.transform_labels(app.HostConfig.Sysctls),
           cap_add: app.HostConfig.CapAdd || [],
+          cpus: this.transform_cpus(app.HostConfig.NanoCpus),
           edit: true,
           id: app.Id
         };

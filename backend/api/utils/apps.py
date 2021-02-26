@@ -358,3 +358,6 @@ def format_bytes(size):
         size /= power
         n += 1
     return str(round(size)) + " " + str(power_labels[n])
+
+def conv_cpus2data(cpus):
+    return cpus*10**9
