@@ -50,6 +50,8 @@ class DeployForm(BaseModel):
     cap_add: Optional[List[str]]
     network_mode: Optional[str]
     network: Optional[str]
+    cpus: Optional[int]
+    mem_limit: Optional[str]
     edit: Optional[bool]
     id: Optional[str]
 

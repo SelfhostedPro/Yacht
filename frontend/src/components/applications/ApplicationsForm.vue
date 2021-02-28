@@ -683,6 +683,31 @@
             </form>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header color="foreground">
+            <v-row no-gutters>
+              <v-col cols="2">Runtime</v-col>
+              <v-col cols="4" class="text--secondary">
+                (CPU/MEM Limits)
+              </v-col>
+            </v-row></v-expansion-panel-header
+          >
+          <v-expansion-panel-content color="foreground">
+            <form>
+              <v-text-field
+                v-model="form['cpus']"
+                label="CPU Cores:"
+                clearable
+              />
+              <v-text-field
+                v-model="form['mem_limit']"
+                label="Memory Limit:"
+                placeholder="(1000b,100k,10m,1g)"
+                clearable
+              />
+            </form>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
     </v-card>
     <v-dialog v-model="editDialog" max-width="290">
@@ -723,7 +748,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
   },
   data() {
     return {
@@ -745,7 +770,9 @@ export default {
         devices: [],
         labels: [],
         sysctls: [],
-        cap_add: []
+        cap_add: [],
+        cpus: undefined,
+        mem_limit: undefined,
       },
       network_modes: ["bridge", "none", "host"],
       isLoading: false,
@@ -772,22 +799,22 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND"
-      ]
+        "BLOCK_SUSPEND",
+      ],
     };
   },
   calculated: {
     ...mapState("networks", ["networks"]),
-    ...mapState("volumes", ["volumes"])
+    ...mapState("volumes", ["volumes"]),
   },
   methods: {
     ...mapActions({
       readTemplateApp: "templates/readTemplateApp",
       readNetworks: "networks/_readNetworks",
-      readApp: "apps/readApp"
+      readApp: "apps/readApp",
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr"
+      setErr: "snackbar/setErr",
     }),
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
@@ -847,7 +874,7 @@ export default {
           cport: cport,
           hport: hport,
           proto: proto,
-          label: label
+          label: label,
         };
         portlist.push(port_entry);
       }
@@ -860,7 +887,7 @@ export default {
         let bind = volumes[volume].Source || "";
         let volume_entry = {
           bind: bind,
-          container: container
+          container: container,
         };
         volumelist.push(volume_entry);
       }
@@ -875,7 +902,7 @@ export default {
         let env_entry = {
           label: name,
           name: name,
-          default: value
+          default: value,
         };
         envlist.push(env_entry);
       }
@@ -888,11 +915,28 @@ export default {
         let value = labels[label];
         let label_entry = {
           label: label,
-          value: value
+          value: value,
         };
         labellist.push(label_entry);
       }
       return labellist;
+    },
+    transform_cpus(_cpus) {
+      let cpus = _cpus / 10 ** 9;
+      if (cpus != 0) {
+        return cpus;
+      }
+      return undefined;
+    },
+    transform_mem_limit(bytes) {
+      if (bytes != 0) {
+        var i = Math.floor(Math.log(bytes) / Math.log(1024)),
+          sizes = ["b", "k", "m", "g"];
+
+        return (bytes / Math.pow(1024, i)).toFixed(2) * 1 + sizes[i];
+      } else {
+        return undefined;
+      }
     },
     nextStep(n) {
       if (n === this.deploySteps) {
@@ -912,7 +956,7 @@ export default {
           this.isLoading = false;
           this.$router.push({ name: "View Applications" });
         })
-        .catch(err => {
+        .catch((err) => {
           this.isLoading = false;
           this.deployStep = 1;
           this.setErr(err);
@@ -942,7 +986,9 @@ export default {
               devices: app.devices || [],
               labels: app.labels || [],
               sysctls: app.sysctls || [],
-              cap_add: app.cap_add || []
+              cap_add: app.cap_add || [],
+              cpus: app.cpus,
+              mem_limit: app.mem_limit,
             };
             this.notes = app.notes || null;
           } catch (error) {
@@ -965,16 +1011,18 @@ export default {
           labels: this.transform_labels(app.Config.Labels) || [],
           sysctls: this.transform_labels(app.HostConfig.Sysctls),
           cap_add: app.HostConfig.CapAdd || [],
+          cpus: this.transform_cpus(app.HostConfig.NanoCpus),
+          mem_limit: this.transform_mem_limit(app.HostConfig.Memory),
           edit: true,
-          id: app.Id
+          id: app.Id,
         };
       }
-    }
+    },
   },
   async created() {
     await this.populateForm();
     await this.populateNetworks();
-  }
+  },
 };
 </script>
 

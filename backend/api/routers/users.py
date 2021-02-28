@@ -32,7 +32,7 @@ def login(
     db: Session = Depends(get_db),
     Authorize: AuthJWT = Depends(),
 ):
-    _user = db.query(models.User).filter(models.User.username == user.username).first()
+    _user = db.query(models.User).filter(models.User.username == user.username.casefold()).first()
     if _user is not None and crud.verify_password(user.password, _user.hashed_password):
         # Create Tokens
         access_token = Authorize.create_access_token(subject=user.username)

@@ -12,6 +12,7 @@ from api.utils.apps import (
     conv_restart2data,
     conv_sysctls2data,
     conv_volumes2data,
+    conv_cpus2data,
     _check_updates,
 )
 from api.utils.templates import conv2dict
@@ -170,6 +171,8 @@ def deploy_app(template: DeployForm):
             conv_labels2data(template.labels),
             conv_sysctls2data(template.sysctls),
             conv_caps2data(template.cap_add),
+            conv_cpus2data(template.cpus),
+            template.mem_limit,
             edit=template.edit or False,
             _id=template.id or None,
         )
@@ -224,6 +227,8 @@ def launch_app(
     labels,
     sysctls,
     caps,
+    cpus,
+    mem_limit,
     edit,
     _id,
 ):
@@ -255,6 +260,8 @@ def launch_app(
             labels=combined_labels,
             devices=devices,
             cap_add=caps,
+            nano_cpus=cpus,
+            mem_limit=mem_limit,
             detach=True,
         )
     except Exception as e:
