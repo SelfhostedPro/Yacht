@@ -12,7 +12,7 @@ def get_user(db: Session, user_id: int):
 
 
 def get_user_by_name(db: Session, username: str):
-    return db.query(models.User).filter(models.User.username == username).first()
+    return db.query(models.User).filter(models.User.username == username.casefold()).first()
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
@@ -32,8 +32,10 @@ def update_user(db: Session, user: schemas.UserCreate, current_user):
     _hashed_password = get_password_hash(user.password)
     _user = get_user_by_name(db=db, username=current_user)
     if _user and _user.is_active:
-        print(_user)
-        _user.username = user.username
+        if _user.username.casefold() != user.username.casefold():
+            print('Old Username: {name}'.format(name=_user.username))
+            print('New Username: {name}'.format(name=user.username))
+        _user.username = user.username.casefold()
         _user.hashed_password = _hashed_password
         try:
             db.add(_user)
