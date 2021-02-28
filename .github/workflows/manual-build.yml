@@ -1,4 +1,4 @@
-name: dockerhub-mirror
+name: manual-dispatch
 
 on:
   workflow_dispatch:
@@ -19,8 +19,8 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v2
-        ref: ${{ github.event.inputs.release }}
-
+        with:
+          ref: ${{ github.event.inputs.release }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
