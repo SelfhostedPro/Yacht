@@ -36,7 +36,8 @@ def update_user(db: Session, user: schemas.UserCreate, current_user):
             print('Old Username: {name}'.format(name=_user.username))
             print('New Username: {name}'.format(name=user.username))
         _user.username = user.username.casefold()
-        _user.hashed_password = _hashed_password
+        if user.password != "":
+            _user.hashed_password = _hashed_password
         try:
             db.add(_user)
             db.commit()
