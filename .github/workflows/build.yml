@@ -55,6 +55,8 @@ jobs:
           tags: |
             selfhostedpro/yacht
             selfhostedpro/yacht:latest-${{ steps.current-time.outputs.formattedTime }}
+            ghcr.io/selfhostedpro/yacht
+            ghcr.io/selfhostedpro/yacht:latest-${{ steps.current-time.outputs.formattedTime }}
             selfhostedpro/yacht:v0.0.6-alpha-${{ steps.current-time.outputs.formattedTime }}
             ghcr.io/selfhostedpro/yacht
             ghcr.io/selfhostedpro/yacht:latest-${{ steps.current-time.outputs.formattedTime }}
