@@ -88,7 +88,7 @@ export default {
           const sleep = delay =>
             new Promise(resolve => setTimeout(resolve, delay));
           sleep(5000);
-          if (this.authDisabled == true){
+          if (this.authDisabled == true) {
             this.$forceUpdate();
           } else {
             this.logout();

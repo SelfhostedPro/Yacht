@@ -40,15 +40,16 @@
                     class="text-left pt-0 AppTitle"
                   >
                     CPU Usage:
-                    <v-progress-linear :value="app.cpu_percent" color="primary"/>
+                    <v-progress-linear
+                      :value="app.cpu_percent"
+                      color="primary"
+                    />
                     {{ app.cpu_percent }}%
                     <br />
                     MEM Usage:
-                    <v-progress-linear :value="app.mem_percent" color="blue"/>
+                    <v-progress-linear :value="app.mem_percent" color="blue" />
                     {{ app.mem_percent }}%,
-                    {{
-                      app.mem_current
-                    }}
+                    {{ app.mem_current }}
                   </v-card-text>
                 </template>
                 <span
@@ -123,9 +124,9 @@ export default {
     initStats(statsGroup) {
       this.stats[statsGroup.name] = {};
       this.stats[statsGroup.name].name = "";
-      this.stats[statsGroup.name].cpu_percent = '';
-      this.stats[statsGroup.name].mem_percent = '';
-      this.stats[statsGroup.name].mem_current = '';
+      this.stats[statsGroup.name].cpu_percent = "";
+      this.stats[statsGroup.name].mem_percent = "";
+      this.stats[statsGroup.name].mem_current = "";
     },
     sortByTitle(arr) {
       let sorted = Object.keys(arr)
