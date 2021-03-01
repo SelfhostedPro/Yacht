@@ -223,7 +223,7 @@
           </v-tabs-items>
         </v-card>
       </v-col>
-      <v-col sm="12" md="6">
+      <v-col cols="12">
         <v-card
           :class="{
             'mx-4': $vuetify.breakpoint.smAndDown,
