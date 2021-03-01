@@ -24,6 +24,7 @@
                       class="mx-1 my-1 hidden-sm-and-down"
                       @click="editClick({ Name: app.name })"
                     >
+                      <span class="hidden-md-and-down">Edit</span>
                       <v-icon>mdi-file-document-edit-outline</v-icon>
                     </v-btn>
                   </template>
