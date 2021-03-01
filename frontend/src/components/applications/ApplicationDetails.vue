@@ -118,8 +118,8 @@
           <v-col sm="12" md="6" class="hidden-sm-and-down">
             <v-card
               :class="{
-                'mx-4 secondary': $vuetify.breakpoint.smAndDown,
-                'mr-4 secondary': $vuetify.breakpoint.mdAndUp
+                'mx-4 primary': $vuetify.breakpoint.smAndDown,
+                'mr-4 primary': $vuetify.breakpoint.mdAndUp
               }"
             >
               <v-card-title class="d-flex justify-space-between">
@@ -128,6 +128,7 @@
                     <v-btn
                       v-bind="{ attrs }"
                       v-on="on"
+                      color="secondary"
                       class="mx-1 my-1"
                       @click="AppAction({ Name: app.name, Action: 'start' })"
                     >
@@ -142,6 +143,7 @@
                     <v-btn
                       v-bind="{ attrs }"
                       v-on="on"
+                      color="secondary"
                       class="mx-1 my-1"
                       @click="AppAction({ Name: app.name, Action: 'stop' })"
                     >
@@ -156,6 +158,7 @@
                     <v-btn
                       v-bind="{ attrs }"
                       v-on="on"
+                      color="secondary"
                       class="mx-1 my-1"
                       @click="AppAction({ Name: app.name, Action: 'restart' })"
                     >
@@ -170,6 +173,7 @@
                     <v-btn
                       v-bind="attrs"
                       v-on="on"
+                      color="secondary"
                       class="mx-1 my-1"
                       @click="AppAction({ Name: app.name, Action: 'kill' })"
                     >
@@ -184,6 +188,7 @@
                     <v-btn
                       v-bind="attrs"
                       v-on="on"
+                      color="secondary"
                       class="mx-1 my-1"
                       @click="AppAction({ Name: app.name, Action: 'remove' })"
                     >
