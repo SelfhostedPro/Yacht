@@ -261,7 +261,7 @@
         xs="12"
         v-if="
           app.Args.length ||
-            app.HostConfig.Devices.length ||
+            app.HostConfig.Devices && app.HostConfig.Devices.length ||
             app.HostConfig.CapAdd
         "
       >
@@ -278,6 +278,7 @@
             >
             <v-tab
               v-if="
+                app.HostConfig.Devices &&
                 Array.isArray(app.HostConfig.Devices) &&
                   app.HostConfig.Devices.length
               "
@@ -298,6 +299,7 @@
             </v-tab-item>
             <v-tab-item
               v-if="
+              app.HostConfig.Devices &&
                 Array.isArray(app.HostConfig.Devices) &&
                   app.HostConfig.Devices.length
               "
