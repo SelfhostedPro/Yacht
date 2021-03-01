@@ -14,17 +14,34 @@
               <v-card-title>
                 {{ app.name }}
                 <v-spacer />
-                <v-btn
-                  size="x-small"
-                  color="secondary"
-                  class="mx-1 my-1 hidden-sm-and-down"
-                  @click="editClick({ Name: app.name })"
-                >
-                  <v-icon>mdi-file-document-edit-outline</v-icon>
-                </v-btn>
-                <v-btn size="x-small" v-on:click="refresh()" color="secondary"
-                  ><v-icon>mdi-refresh</v-icon></v-btn
-                >
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      size="x-small"
+                      color="secondary"
+                      v-bind="attrs"
+                      v-on="on"
+                      class="mx-1 my-1 hidden-sm-and-down"
+                      @click="editClick({ Name: app.name })"
+                    >
+                      <v-icon>mdi-file-document-edit-outline</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      size="x-small"
+                      @click="refresh()"
+                      v-bind="{ attrs }"
+                      v-on="on"
+                      color="secondary"
+                      ><v-icon>mdi-refresh</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Refresh</span>
+                </v-tooltip>
                 <v-menu
                   close-on-click
                   close-on-content-click
@@ -97,15 +114,7 @@
             </v-card>
           </v-col>
           <v-spacer class="hidden-sm-and-down" />
-          <v-col
-            cols="6"
-            xs="12"
-            sm="12"
-            md="6"
-            lg="5"
-            xl="3"
-            class="hidden-sm-and-down"
-          >
+          <v-col sm="12" md="6" class="hidden-sm-and-down">
             <v-card
               :class="{
                 'mx-4 secondary': $vuetify.breakpoint.smAndDown,
@@ -113,36 +122,76 @@
               }"
             >
               <v-card-title class="d-flex justify-space-between">
-                <v-btn
-                  class="mx-1 my-1"
-                  @click="AppAction({ Name: app.name, Action: 'start' })"
-                >
-                  <v-icon>mdi-play</v-icon>
-                </v-btn>
-                <v-btn
-                  class="mx-1 my-1"
-                  @click="AppAction({ Name: app.name, Action: 'stop' })"
-                >
-                  <v-icon>mdi-stop</v-icon>
-                </v-btn>
-                <v-btn
-                  class="mx-1 my-1"
-                  @click="AppAction({ Name: app.name, Action: 'restart' })"
-                >
-                  <v-icon>mdi-refresh</v-icon>
-                </v-btn>
-                <v-btn
-                  class="mx-1 my-1"
-                  @click="AppAction({ Name: app.name, Action: 'kill' })"
-                >
-                  <v-icon>mdi-fire</v-icon>
-                </v-btn>
-                <v-btn
-                  class="mx-1 my-1"
-                  @click="AppAction({ Name: app.name, Action: 'remove' })"
-                >
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      v-bind="{ attrs }"
+                      v-on="on"
+                      class="mx-1 my-1"
+                      @click="AppAction({ Name: app.name, Action: 'start' })"
+                    >
+                      <span class="hidden-md-and-down">start</span>
+                      <v-icon>mdi-play</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Start</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      v-bind="{ attrs }"
+                      v-on="on"
+                      class="mx-1 my-1"
+                      @click="AppAction({ Name: app.name, Action: 'stop' })"
+                    >
+                      <span class="hidden-md-and-down">stop</span>
+                      <v-icon>mdi-stop</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Stop</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      v-bind="{ attrs }"
+                      v-on="on"
+                      class="mx-1 my-1"
+                      @click="AppAction({ Name: app.name, Action: 'restart' })"
+                    >
+                      <span class="hidden-md-and-down">restart</span>
+                      <v-icon>mdi-refresh</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Restart</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      class="mx-1 my-1"
+                      @click="AppAction({ Name: app.name, Action: 'kill' })"
+                    >
+                      <span class="hidden-md-and-down">kill</span>
+                      <v-icon>mdi-fire</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Kill</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      class="mx-1 my-1"
+                      @click="AppAction({ Name: app.name, Action: 'remove' })"
+                    >
+                      <span class="hidden-md-and-down">remove</span>
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Remove</span>
+                </v-tooltip>
               </v-card-title>
             </v-card>
           </v-col>
