@@ -1,5 +1,5 @@
 <template>
-  <v-card color="foreground" raised>
+  <v-card color="foreground" class="mx-4 my-2" raised>
     <v-card-title class="primary font-weight-bold">
       Stats
     </v-card-title>
