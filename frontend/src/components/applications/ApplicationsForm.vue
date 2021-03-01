@@ -821,6 +821,7 @@ export default {
         ports: [],
         volumes: [],
         env: [],
+        command: [],
         devices: [],
         labels: [],
         sysctls: [],
