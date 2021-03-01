@@ -167,7 +167,7 @@
         >
           <v-card-title class="primary"> Environment </v-card-title>
           <v-simple-table
-            style="max-height: 290px; overflow-y: auto;"
+            style="max-height: 500px;overflow-y: auto;"
             class="foreground px-0 text-center"
           >
             <template v-slot:default>
