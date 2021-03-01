@@ -44,7 +44,7 @@
             'mr-4 flex-grow-0 flex-shrink-1': $vuetify.breakpoint.mdAndUp
           }"
         >
-          <v-card-title class="secondary"> Networking </v-card-title>
+          <v-card-title class="primary"> Networking </v-card-title>
           <v-card-text>
             <v-tabs v-model="network_tab">
               <v-tab> Ports </v-tab>
@@ -197,7 +197,7 @@
             'mr-4 flex-grow-0 flex-shrink-1': $vuetify.breakpoint.mdAndUp
           }"
         >
-          <v-card-title class="secondary"> Storage </v-card-title>
+          <v-card-title class="primary"> Storage </v-card-title>
           <v-tabs v-model="storage_tab">
             <v-tab v-for="(mount, index) in app.Mounts" :key="index">
               {{ mount.Destination }}
@@ -261,7 +261,7 @@
         xs="12"
         v-if="
           app.Args.length ||
-            app.HostConfig.Devices && app.HostConfig.Devices.length ||
+            (app.HostConfig.Devices && app.HostConfig.Devices.length) ||
             app.HostConfig.CapAdd
         "
       >
@@ -271,7 +271,7 @@
             'mr-4 flex-grow-0 flex-shrink-1': $vuetify.breakpoint.mdAndUp
           }"
         >
-          <v-card-title class="secondary"> Advanced </v-card-title>
+          <v-card-title class="primary"> Advanced </v-card-title>
           <v-tabs v-model="advanced_tab">
             <v-tab v-if="Array.isArray(app.Args) && app.Args.length"
               >Command</v-tab
@@ -279,7 +279,7 @@
             <v-tab
               v-if="
                 app.HostConfig.Devices &&
-                Array.isArray(app.HostConfig.Devices) &&
+                  Array.isArray(app.HostConfig.Devices) &&
                   app.HostConfig.Devices.length
               "
               >Devices</v-tab
@@ -299,8 +299,8 @@
             </v-tab-item>
             <v-tab-item
               v-if="
-              app.HostConfig.Devices &&
-                Array.isArray(app.HostConfig.Devices) &&
+                app.HostConfig.Devices &&
+                  Array.isArray(app.HostConfig.Devices) &&
                   app.HostConfig.Devices.length
               "
             >
