@@ -18,6 +18,7 @@
                   size="x-small"
                   color="secondary"
                   class="mx-1 my-1 hidden-sm-and-down"
+                  @click="editClick({ Name: app.name })"
                 >
                   <v-icon>mdi-file-document-edit-outline</v-icon>
                 </v-btn>

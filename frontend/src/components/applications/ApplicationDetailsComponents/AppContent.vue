@@ -39,6 +39,7 @@
       </v-col>
       <v-col>
         <v-card
+          style="max-height:500px;"
           :class="{
             'mx-4': $vuetify.breakpoint.smAndDown,
             'mr-4 flex-grow-0 flex-shrink-1': $vuetify.breakpoint.mdAndUp
@@ -159,6 +160,7 @@
       </v-col>
       <v-col sm="12" md="6">
         <v-card
+          style="max-height: 500px;"
           v-if="app.Config.Env"
           :class="{
             'mx-4': $vuetify.breakpoint.smAndDown,
@@ -167,7 +169,7 @@
         >
           <v-card-title class="primary"> Environment </v-card-title>
           <v-simple-table
-            style="max-height: 290px; overflow-y: auto;"
+            style="overflow-y: auto;"
             class="foreground px-0 text-center"
           >
             <template v-slot:default>
