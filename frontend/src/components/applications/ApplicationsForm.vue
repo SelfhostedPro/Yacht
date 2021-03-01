@@ -153,7 +153,7 @@
                 name="slide"
                 enter-active-class="animated fadeInLeft fast-anim"
                 leave-active-class="animated fadeOutLeft fast-anim"
-              >
+                >item
                 <v-row v-for="(item, index) in form.ports" :key="index">
                   <v-col>
                     <ValidationProvider
@@ -461,6 +461,59 @@
         <v-expansion-panel>
           <v-expansion-panel-header color="foreground">
             <v-row no-gutters>
+              <v-col cols="2">Command</v-col>
+              <v-col cols="4" class="text--secondary">
+                (Container Commands)
+              </v-col>
+            </v-row>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content color="foreground" class="mt-5">
+            <form>
+              <transition-group
+                name="slide"
+                enter-active-class="animated fadeInLeft fast-anim"
+                leave-active-class="animated fadeOutLeft fast-anim"
+              >
+                <v-row v-for="(item, index) in form.command" :key="index">
+                  <v-col>
+                    <ValidationProvider
+                      name="Command"
+                      rules="required"
+                      v-slot="{ errors, valid }"
+                    >
+                      <v-text-field
+                        :label="'Command ' + index + ':'"
+                        v-model="form.command[index]"
+                        :error-messages="errors"
+                        :success="valid"
+                        required
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col class="d-flex justify-end" cols="1">
+                    <v-btn
+                      icon
+                      class="align-self-center"
+                      @click="removeCommand(index)"
+                    >
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </transition-group>
+              <v-row>
+                <v-col cols="12" class="d-flex justify-end">
+                  <v-btn icon class="align-self-center" @click="addCommand">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header color="foreground">
+            <v-row no-gutters>
               <v-col cols="2">Devices</v-col>
               <v-col cols="4" class="text--secondary">
                 (Passthrough Devices)
@@ -716,8 +769,9 @@
           Are you sure you want to edit this container?
         </v-card-title>
         <v-card-text>
-          This will remove the currently running container and deploy a new one with the settings in this form.
-          Please make sure your container data is persistant or backed up.
+          This will remove the currently running container and deploy a new one
+          with the settings in this form. Please make sure your container data
+          is persistant or backed up.
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -748,7 +802,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 export default {
   components: {
     ValidationProvider,
-    ValidationObserver,
+    ValidationObserver
   },
   data() {
     return {
@@ -767,12 +821,13 @@ export default {
         ports: [],
         volumes: [],
         env: [],
+        command: [],
         devices: [],
         labels: [],
         sysctls: [],
         cap_add: [],
         cpus: undefined,
-        mem_limit: undefined,
+        mem_limit: undefined
       },
       network_modes: ["bridge", "none", "host"],
       isLoading: false,
@@ -799,23 +854,29 @@ export default {
         "SYS_BOOT",
         "LEASE",
         "WAKE_ALARM",
-        "BLOCK_SUSPEND",
-      ],
+        "BLOCK_SUSPEND"
+      ]
     };
   },
   calculated: {
     ...mapState("networks", ["networks"]),
-    ...mapState("volumes", ["volumes"]),
+    ...mapState("volumes", ["volumes"])
   },
   methods: {
     ...mapActions({
       readTemplateApp: "templates/readTemplateApp",
       readNetworks: "networks/_readNetworks",
-      readApp: "apps/readApp",
+      readApp: "apps/readApp"
     }),
     ...mapMutations({
-      setErr: "snackbar/setErr",
+      setErr: "snackbar/setErr"
     }),
+    addCommand() {
+      this.form.command.push("");
+    },
+    removeCommand(index) {
+      this.form.command.splice(index, 1);
+    },
     addPort() {
       this.form.ports.push({ hport: "", cport: "", proto: "tcp" });
     },
@@ -874,7 +935,7 @@ export default {
           cport: cport,
           hport: hport,
           proto: proto,
-          label: label,
+          label: label
         };
         portlist.push(port_entry);
       }
@@ -887,7 +948,7 @@ export default {
         let bind = volumes[volume].Source || "";
         let volume_entry = {
           bind: bind,
-          container: container,
+          container: container
         };
         volumelist.push(volume_entry);
       }
@@ -902,7 +963,7 @@ export default {
         let env_entry = {
           label: name,
           name: name,
-          default: value,
+          default: value
         };
         envlist.push(env_entry);
       }
@@ -915,7 +976,7 @@ export default {
         let value = labels[label];
         let label_entry = {
           label: label,
-          value: value,
+          value: value
         };
         labellist.push(label_entry);
       }
@@ -956,7 +1017,7 @@ export default {
           this.isLoading = false;
           this.$router.push({ name: "View Applications" });
         })
-        .catch((err) => {
+        .catch(err => {
           this.isLoading = false;
           this.deployStep = 1;
           this.setErr(err);
@@ -978,6 +1039,7 @@ export default {
               name: app.name || "",
               image: app.image || "",
               restart_policy: app.restart_policy || "",
+              command: app.command || [],
               network: app.network,
               network_mode: app.network_mode,
               ports: app.ports || [],
@@ -988,7 +1050,7 @@ export default {
               sysctls: app.sysctls || [],
               cap_add: app.cap_add || [],
               cpus: app.cpus,
-              mem_limit: app.mem_limit,
+              mem_limit: app.mem_limit
             };
             this.notes = app.notes || null;
           } catch (error) {
@@ -1014,15 +1076,15 @@ export default {
           cpus: this.transform_cpus(app.HostConfig.NanoCpus),
           mem_limit: this.transform_mem_limit(app.HostConfig.Memory),
           edit: true,
-          id: app.Id,
+          id: app.Id
         };
       }
-    },
+    }
   },
   async created() {
     await this.populateForm();
     await this.populateNetworks();
-  },
+  }
 };
 </script>
 

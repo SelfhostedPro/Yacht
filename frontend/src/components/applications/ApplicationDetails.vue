@@ -1,93 +1,164 @@
 <template lang="html">
   <v-card color="foreground" class="d-flex mx-auto page">
     <v-container fluid class="component">
-      <Nav :isLoading="isLoading" />
+      <Nav class="mb-3" :isLoading="isLoading" />
       <v-card color="foreground" tile>
         <v-row>
-          <v-col class="flex-grow-1 flex-shrink-0">
-            <v-card-title>
-              {{ app.name }}
-              <v-menu close-on-click close-on-content-click offset-y>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon size="small" v-bind="attrs" v-on="on" class="">
-                    <v-icon>mdi-chevron-down</v-icon>
-                  </v-btn>
-                </template>
-                <v-list color="foreground" dense>
-                  <v-list-item @click="editClick({ Name: app.name })">
-                    <v-list-item-icon>
-                      <v-icon>mdi-file-document-edit-outline</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Edit</v-list-item-title>
-                  </v-list-item>
-                  <v-divider />
-                  <v-list-item
-                    @click="AppAction({ Name: app.name, Action: 'start' })"
-                  >
-                    <v-list-item-icon>
-                      <v-icon>mdi-play</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Start</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item
-                    @click="AppAction({ Name: app.name, Action: 'stop' })"
-                  >
-                    <v-list-item-icon>
-                      <v-icon>mdi-stop</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Stop</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item
-                    @click="AppAction({ Name: app.name, Action: 'restart' })"
-                  >
-                    <v-list-item-icon>
-                      <v-icon>mdi-refresh</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Restart</v-list-item-title>
-                  </v-list-item>
-                  <v-divider />
-                  <v-list-item
-                    @click="AppAction({ Name: app.name, Action: 'kill' })"
-                  >
-                    <v-list-item-icon>
-                      <v-icon>mdi-fire</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Kill</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item
-                    @click="AppAction({ Name: app.name, Action: 'remove' })"
-                  >
-                    <v-list-item-icon>
-                      <v-icon>mdi-delete</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Remove</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </v-card-title>
-            <v-card-subtitle>
-              View and Manage {{ app.name }}
-              <v-icon v-on:click="refresh()"
-                >mdi-refresh</v-icon
-              ></v-card-subtitle
+          <v-col xs="12" sm="12" md="6" class="flex-grow-1 flex-shrink-0">
+            <v-card
+              :class="{
+                'mx-4 primary': $vuetify.breakpoint.smAndDown,
+                'ml-4 primary': $vuetify.breakpoint.mdAndUp
+              }"
             >
-            <v-card-text>
-              <transition
-                name="slide"
-                enter-active-class="animated slideInRight delay"
-                leave-active-class="animated slideOutRight"
-                mode="out-in"
-              >
-                <router-view
-                  :app="app"
-                  :processes="processes"
-                  :logs="logs"
-                  :stats="stats"
-                />
-              </transition>
-            </v-card-text>
+              <v-card-title>
+                {{ app.name }}
+                <v-spacer />
+                <v-btn
+                  size="x-small"
+                  color="secondary"
+                  class="mx-1 my-1 hidden-sm-and-down"
+                >
+                  <v-icon>mdi-file-document-edit-outline</v-icon>
+                </v-btn>
+                <v-btn size="x-small" v-on:click="refresh()" color="secondary"
+                  ><v-icon>mdi-refresh</v-icon></v-btn
+                >
+                <v-menu
+                  close-on-click
+                  close-on-content-click
+                  offset-y
+                  class="hidden-md-and-up"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      size="small"
+                      color="secondary"
+                      v-bind="attrs"
+                      v-on="on"
+                      class="hidden-md-and-up mx-1"
+                    >
+                      <v-icon>mdi-chevron-down</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list color="foreground" class="hidden-md-and-up" dense>
+                    <v-list-item @click="editClick({ Name: app.name })">
+                      <v-list-item-icon>
+                        <v-icon>mdi-file-document-edit-outline</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Edit</v-list-item-title>
+                    </v-list-item>
+                    <v-divider />
+                    <v-list-item
+                      @click="AppAction({ Name: app.name, Action: 'start' })"
+                    >
+                      <v-list-item-icon>
+                        <v-icon>mdi-play</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Start</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item
+                      @click="AppAction({ Name: app.name, Action: 'stop' })"
+                    >
+                      <v-list-item-icon>
+                        <v-icon>mdi-stop</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Stop</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item
+                      @click="AppAction({ Name: app.name, Action: 'restart' })"
+                    >
+                      <v-list-item-icon>
+                        <v-icon>mdi-refresh</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Restart</v-list-item-title>
+                    </v-list-item>
+                    <v-divider />
+                    <v-list-item
+                      @click="AppAction({ Name: app.name, Action: 'kill' })"
+                    >
+                      <v-list-item-icon>
+                        <v-icon>mdi-fire</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Kill</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item
+                      @click="AppAction({ Name: app.name, Action: 'remove' })"
+                    >
+                      <v-list-item-icon>
+                        <v-icon>mdi-delete</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Remove</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-card-title>
+            </v-card>
+          </v-col>
+          <v-spacer class="hidden-sm-and-down" />
+          <v-col
+            cols="6"
+            xs="12"
+            sm="12"
+            md="6"
+            lg="5"
+            xl="3"
+            class="hidden-sm-and-down"
+          >
+            <v-card
+              :class="{
+                'mx-4 secondary': $vuetify.breakpoint.smAndDown,
+                'mr-4 secondary': $vuetify.breakpoint.mdAndUp
+              }"
+            >
+              <v-card-title class="d-flex justify-space-between">
+                <v-btn
+                  class="mx-1 my-1"
+                  @click="AppAction({ Name: app.name, Action: 'start' })"
+                >
+                  <v-icon>mdi-play</v-icon>
+                </v-btn>
+                <v-btn
+                  class="mx-1 my-1"
+                  @click="AppAction({ Name: app.name, Action: 'stop' })"
+                >
+                  <v-icon>mdi-stop</v-icon>
+                </v-btn>
+                <v-btn
+                  class="mx-1 my-1"
+                  @click="AppAction({ Name: app.name, Action: 'restart' })"
+                >
+                  <v-icon>mdi-refresh</v-icon>
+                </v-btn>
+                <v-btn
+                  class="mx-1 my-1"
+                  @click="AppAction({ Name: app.name, Action: 'kill' })"
+                >
+                  <v-icon>mdi-fire</v-icon>
+                </v-btn>
+                <v-btn
+                  class="mx-1 my-1"
+                  @click="AppAction({ Name: app.name, Action: 'remove' })"
+                >
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </v-card-title>
+            </v-card>
           </v-col>
         </v-row>
+        <transition
+          name="slide"
+          enter-active-class="animated slideInRight delay"
+          leave-active-class="animated slideOutRight"
+          mode="out-in"
+        >
+          <router-view
+            :app="app"
+            :processes="processes"
+            :logs="logs"
+            :stats="stats"
+          />
+        </transition>
       </v-card>
     </v-container>
   </v-card>

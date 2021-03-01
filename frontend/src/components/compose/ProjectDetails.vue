@@ -186,7 +186,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'up',
+                        Action: 'up'
                       })
                     "
                   >
@@ -200,7 +200,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'start',
+                        Action: 'start'
                       })
                     "
                   >
@@ -213,7 +213,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'stop',
+                        Action: 'stop'
                       })
                     "
                   >
@@ -226,7 +226,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'restart',
+                        Action: 'restart'
                       })
                     "
                   >
@@ -240,7 +240,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'pull',
+                        Action: 'pull'
                       })
                     "
                   >
@@ -254,7 +254,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'kill',
+                        Action: 'kill'
                       })
                     "
                   >
@@ -267,7 +267,7 @@
                       projectAppAction({
                         Project: project.name,
                         Name: service,
-                        Action: 'rm',
+                        Action: 'rm'
                       })
                     "
                   >
@@ -489,7 +489,12 @@
         Download the logs and docker-compose to get help with your
         project</v-card-text
       >
-      <v-btn :href="`/api/compose/${project.name}/support`" target="_blank" class="mb-2 ml-2" color="primary" download
+      <v-btn
+        :href="`/api/compose/${project.name}/support`"
+        target="_blank"
+        class="mb-2 ml-2"
+        color="primary"
+        download
         >Download</v-btn
       >
     </v-card>
@@ -528,26 +533,26 @@ export default {
   data() {
     return {
       selectedProject: null,
-      deleteDialog: false,
+      deleteDialog: false
     };
   },
   computed: {
     ...mapState("projects", ["project", "projects", "isLoading", "action"]),
     ...mapState("apps", ["apps"]),
     ...mapGetters({
-      getProjectByName: "projects/getProjectByName",
+      getProjectByName: "projects/getProjectByName"
     }),
     project() {
       const projectName = this.$route.params.projectName;
       return this.getProjectByName(projectName);
-    },
+    }
   },
   methods: {
     ...mapActions({
       readProject: "projects/readProject",
       projectAppAction: "projects/ProjectAppAction",
       ProjectAction: "projects/ProjectAction",
-      readApps: "apps/readApps",
+      readApps: "apps/readApps"
     }),
     editProject(projectname) {
       this.$router.push({ path: `/projects/${projectname}/edit` });
@@ -565,7 +570,8 @@ export default {
       for (var app in this.apps) {
         if (
           this.apps[app].name == name ||
-          this.apps[app].name == this.project.name.toLowerCase() + "_" + name + "_1"
+          this.apps[app].name ==
+            this.project.name.toLowerCase() + "_" + name + "_1"
         ) {
           return this.apps[app].State.Status;
         }
@@ -576,14 +582,14 @@ export default {
       const projectName = this.$route.params.projectName;
       this.readProject(projectName);
       this.readApps();
-    },
+    }
   },
   mounted() {
     const projectName = this.$route.params.projectName;
     this.readProject(projectName);
 
     this.readApps();
-  },
+  }
 };
 </script>
 

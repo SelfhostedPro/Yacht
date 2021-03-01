@@ -245,7 +245,7 @@ export default {
         let _digest = item.RepoDigests[0].split("@")[0];
         return _digest;
       } else {
-        let _shortid = item.Id.split(":")[1].substring(0,10)
+        let _shortid = item.Id.split(":")[1].substring(0, 10);
         return _shortid;
       }
     }

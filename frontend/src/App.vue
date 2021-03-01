@@ -45,22 +45,22 @@ export default {
     Sidebar: Sidebar,
     Appbar: Appbar,
     LoginForm: LoginForm,
-    snackbar: snackbar,
+    snackbar: snackbar
   },
   data: () => ({}),
   computed: {
     ...mapGetters({
       isLoggedIn: "auth/isAuthenticated",
-      authDisabled: "auth/authDisabled",
+      authDisabled: "auth/authDisabled"
     }),
     theme() {
       return this.$vuetify.theme.dark ? "dark" : "light";
-    },
+    }
   },
   methods: {
     ...mapActions({
-      authCheck: "auth/AUTH_CHECK",
-    }),
+      authCheck: "auth/AUTH_CHECK"
+    })
   },
   created() {
     this.authCheck();
@@ -88,7 +88,7 @@ export default {
     if (theme) {
       this.$vuetify.theme.themes = theme;
     }
-  },
+  }
 };
 </script>
 
