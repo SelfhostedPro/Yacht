@@ -3,7 +3,7 @@
     <v-card-title class="primary font-weight-bold"> Logs</v-card-title>
     <v-card-text
       v-if="app.State.Status != 'running'"
-      class="secondary text-center px-5 py-5"
+      class="foreground text-center px-5 py-5"
     >
       Start the app to view logs
     </v-card-text>
@@ -36,10 +36,10 @@ export default {
         enable: true,
         always: false,
         smooth: false,
-        notSmoothOnInit: true
-      }
+        notSmoothOnInit: true,
+      },
     };
-  }
+  },
 };
 </script>
 
