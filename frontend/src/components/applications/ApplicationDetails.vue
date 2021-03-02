@@ -2,7 +2,7 @@
   <v-card color="foreground" class="d-flex mx-auto page">
     <v-container fluid class="component">
       <Nav class="mb-3" :isLoading="isLoading" />
-      <v-card color="foreground" class="pb-3">
+      <v-card color="foreground" class="pb-3" tile>
         <v-row>
           <v-col xs="12" sm="12" md="6" class="flex-grow-1 flex-shrink-0">
             <v-card

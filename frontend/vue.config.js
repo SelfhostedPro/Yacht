@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: "",
+  publicPath: "./",
   transpileDependencies: ["vuetify"],
   devServer: {
     proxy: {
