@@ -2,13 +2,14 @@
   <v-card color="foreground" class="d-flex mx-auto page">
     <v-container fluid class="component">
       <Nav class="mb-3" :isLoading="isLoading" />
-      <v-card color="foreground" tile>
+      <v-card color="foreground" class="pb-3">
         <v-row>
           <v-col xs="12" sm="12" md="6" class="flex-grow-1 flex-shrink-0">
             <v-card
               :class="{
                 'mx-4 primary': $vuetify.breakpoint.smAndDown,
-                'ml-4 primary': $vuetify.breakpoint.mdAndUp
+                'ml-4 primary flex-shrink-1 flex-grow-0':
+                  $vuetify.breakpoint.mdAndUp
               }"
             >
               <v-card-title>
