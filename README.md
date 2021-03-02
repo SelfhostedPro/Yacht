@@ -25,9 +25,9 @@ Currently only linux has been verified as working but we are open to the idea of
 
 **Keep in mind, this is an alpha so the risk of data loss is real and it may not be stable**
 
-Installation documentation can be found [here](https://yacht.sh/Installation/yacht/).
+Installation documentation can be found [here](https://yacht.sh/docs/Installation/Install).
 
-Check out the getting started guide if this is the first time you've used Yacht: https://yacht.sh/Installation/gettingstarted/
+Check out the getting started guide if this is the first time you've used Yacht: https://yacht.sh/docs/Installation/Getting_Started
 
 **Yacht is also available via the DigitalOcean marketplace:**
 
