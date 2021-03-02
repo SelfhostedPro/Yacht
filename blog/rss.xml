@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Yacht Blog</title>
+        <link>https://yach.sh/blog</link>
+        <description>Yacht Blog</description>
+        <lastBuildDate>Mon, 01 Mar 2021 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Welcome]]></title>
+            <link>https://yach.sh/blog/welcome</link>
+            <guid>welcome</guid>
+            <pubDate>Mon, 01 Mar 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Welcome to Yacht's new documentation. It's built with Docusaurusv2 which uses react to build out the documentation, blog, and main website. I'll be posting updated about new features, releases, and tutorials as I'm able to.]]></description>
+        </item>
+    </channel>
+</rss>
