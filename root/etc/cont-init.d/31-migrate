@@ -1,8 +1,8 @@
 #!/usr/bin/with-contenv bash
 cd /
 #Stage a db migration
-# s6-setuidgid abc \
-#     sqlite3 /config/data.sqlite "DROP TABLE IF EXISTS alembic_version;"
+s6-setuidgid abc \
+    sqlite3 /config/data.sqlite "DROP TABLE IF EXISTS alembic_version;"
 # Make sure versions folder exists
 s6-setuidgid abc \
     mkdir -p /alembic/versions
@@ -12,3 +12,6 @@ s6-setuidgid abc \
 #Execute db migration
 s6-setuidgid abc \
     alembic upgrade head
+#Delete Alembic Versions Folder
+# s6-setuidgid abc \
+#     rm -rf /alembic/versions
