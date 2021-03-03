@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Any
 from pydantic import BaseModel
 
 
@@ -74,3 +74,8 @@ class AppLogs(BaseModel):
 class Processes(BaseModel):
     Processes: List[List[str]]
     Titles: List[str]
+
+class App(BaseModel):
+    name: str
+    short_id: str
+    ports: Any

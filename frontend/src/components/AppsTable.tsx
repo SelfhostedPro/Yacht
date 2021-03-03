@@ -1,12 +1,11 @@
 import { useEffect } from "react";
-import { atom, useRecoilState } from "recoil";
+import { atom, useRecoilState, useRecoilValue } from "recoil";
 
 const appsState = atom({
   key: 'AppsState',
-  default: {} // TODO:  We really should apply types here later, and possibly move the Atoms into a consolidated location/file
+  default: [] // TODO:  We really should apply types here later, and possibly move the Atoms into a consolidated location/file
 });
-
-const AppsTable = () => {
+const AppsList = () => {
   const [apps, setApps] = useRecoilState(appsState);
 
   useEffect(() => {
@@ -25,6 +24,16 @@ const AppsTable = () => {
       <div className="text-xs">{JSON.stringify(apps)}</div>
     </div>
   );
+};
+
+const AppsTable = () => {
+  const Apps = useRecoilValue(appsState);
+
+  return (
+    <div>
+      {Apps.map(app => { return (<tbody>{app}</tbody>) })}
+    </div>
+  )
 };
 
 export default AppsTable;

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, WebSocket, status
 from websockets.exceptions import ConnectionClosedOK
-
+from typing import List
 from api.db.schemas import apps as schemas
 import api.actions.apps as actions
 from api.settings import Settings
@@ -18,7 +18,7 @@ settings = Settings()
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", response_model=List[schemas.App])
 def index(Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return actions.get_apps()
