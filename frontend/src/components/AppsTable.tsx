@@ -3,19 +3,22 @@ import { atom, useRecoilState } from "recoil";
 
 const appsState = atom({
   key: "AppsState",
-  default: [] as App[], // TODO:  We really should apply types here later, and possibly move the Atoms into a consolidated location/file
+  default: [] as App[],
 });
 
 interface App {
   name: string;
   short_id: string;
-  ports: {}; // {[name: string]: [{HostIp: string, HostPort: string}]} // something like this?
+  ports: {};
 }
 
-// interface Port {
-//   HostIp: string;
-//   HostPort: string;
-// }
+//  This would be a good interface for a Port, and above `ports: {}` would become `ports: Port[]`
+//  interface Port {
+//    id: number;
+//    Name: string;
+//    HostIp: string;
+//    HostPort: string;
+//  }
 
 const AppsTable = () => {
   const [apps, setApps] = useRecoilState(appsState);
@@ -26,14 +29,15 @@ const AppsTable = () => {
         .then((res) => res.json())
         .then((data) => {
           setApps(data);
-        });
+        })
+        .catch((err) => console.log(`Fetch error: ${err}`));
     };
 
     fetchApps();
   }, [setApps]);
 
   return (
-    <div>
+    <div className={"flex flex-col justify-center align-center m-4"}>
       <div>Hello world, we be fetching apps!</div>
       <div className={"flex flex-row justify-between w-1/4"}>
         <div>name</div>

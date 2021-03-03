@@ -14,16 +14,16 @@ const pathD6 =
 const YachtLogo = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" height={32} width={47} viewBox="0 0 1127.48 762.97">
-      {/* <g id="Layer_2" data-name="Layer 2">
-        <g id="Layer_1-2" data-name="Layer 1"> */}
+      <g id="Layer_2" data-name="Layer 2">
+        <g id="Layer_1-2" data-name="Layer 1">
           <path className="cls-1" d={pathD1} />
           <path className="cls-1" d={pathD2} />
           <path className="cls-2" d={pathD3} />
           <path className="cls-3" d={pathD4} />
           <path className="cls-2" d={pathD5} />
           <path className="cls-1" d={pathD6} />
-        {/* </g>
-      </g> */}
+        </g>
+      </g>
     </svg>
   );
 };

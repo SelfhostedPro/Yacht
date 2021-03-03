@@ -20,7 +20,14 @@ html {
   fill: #41b883;
 }
 
+.mat-ui-shadow {
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%);
+}
+
+.header {
+  @apply flex flex-row justify-between p-4 text-black dark:text-white bg-header-lgt dark:bg-header-drk h-16;
+}
+
 .btn {
   @apply flex flex-row justify-center items-center rounded text-sm text-white uppercase font-semibold tracking-widest p-4;
-  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%);
 }
