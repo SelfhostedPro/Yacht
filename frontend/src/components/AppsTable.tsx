@@ -21,28 +21,32 @@ const AppsTable = () => {
   return (
     <div className={"flex flex-col justify-center align-center m-4"}>
       <div>Hello world, we be fetching apps!</div>
-      <div className={"flex flex-row justify-between w-1/2"}>
-        <div>name</div>
-        <div>short_id</div>
-        <div>ports</div>
-      </div>
-      {apps.map((app, index) => {
-        return (
-          <div className={"flex flex-row justify-between w-1/2"} key={index}>
-            <div>{app.name}</div>
-            <div>{app.short_id}</div>
-            <div className={"flex flex-col"}>
-              {Object.keys(app.ports).map((port) => {
+      <table>
+        <thead>
+          <tr className={"flex flex-row justify-between w-1/2"}>
+            <th>name</th>
+            <th>short_id</th>
+            <th>ports</th>
+          </tr>
+        </thead>
+      </table>
+      <tbody>
+        {apps.map((app, index) => {
+          return (
+            <tr className={"flex flex-row justify-between w-1/2"} key={index}>
+              <td>{app.name}</td>
+              <td>{app.short_id}</td>
+              <td>
+              {app.ports.map((port, index) => {
                 return (
-                  <span>
-                    { app.ports[port] ? app.ports[port][0].HostIp + app.ports[port][0].HostPort : null}
-                  </span>
-                );
+                  <p>{app.ports[index]["Label"] + '=>' + app.ports[index]["HostIp"] + ':' + app.ports[index]["HostPort"] || app.ports[index]["ContainerPort"] + '=>' + app.ports[index]["HostIp"] + ':' + app.ports[index]["HostPort"]}</p>
+                )
               })}
-            </div>
-          </div>
-        );
-      })}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
     </div>
   );
 };

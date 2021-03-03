@@ -14,6 +14,7 @@ from api.utils.apps import (
     conv_volumes2data,
     conv_cpus2data,
     _check_updates,
+    conv_ports2dict
 )
 from api.utils.templates import conv2dict
 
@@ -88,13 +89,19 @@ def get_apps():
         attrs = app.attrs
 
         attrs.update(conv2dict("name", app.name))
-        attrs.update(conv2dict("ports", app.ports))
+        attrs.update(conv2dict("ports", conv_ports2dict(app)))
         attrs.update(conv2dict("short_id", app.short_id))
+        attrs.update(conv2dict("status", app.attrs["State"]["Status"]))
+        attrs.update(conv2dict("created", app.attrs["Created"]))
+        attrs.update(conv2dict("image", app.attrs["Image"]))
         apps_list.append(attrs)
 
     return apps_list
 
-
+    # image: str
+    # portlabels: List[str]
+    # created: str
+    # status: str
 """
 Get a single app by the container name and some easy 
 access to properties that aren't in the app 

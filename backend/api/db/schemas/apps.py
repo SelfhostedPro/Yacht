@@ -77,5 +77,8 @@ class Processes(BaseModel):
 
 class App(BaseModel):
     name: str
+    image: str
     short_id: str
     ports: Any
+    created: str
+    

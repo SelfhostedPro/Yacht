@@ -364,3 +364,22 @@ def conv_cpus2data(cpus):
         return cpus*10**9
     else:
         return None
+
+def conv_ports2dict(app):
+    if hasattr(app, 'ports'):
+        ports = []
+        for port in app.ports:
+            print(port)
+            cport = port
+            if app.ports.get(port):
+                hip = app.ports.get(port)[0].get('HostIp')
+                hport = app.ports.get(port)[0].get('HostPort')
+                labels = app.labels
+                if labels and labels.get('local.yacht.port.'+hport):
+                    label = labels.get('local.yacht.port.'+hport)
+                    ports.append({'ContainerPort': cport, 'HostIp': hip, 'HostPort': hport, 'Label': label  })
+                else:
+                    ports.append({'ContainerPort': cport, 'HostIp': hip, 'HostPort': hport, 'Label': None  })
+        return ports
+
+            
