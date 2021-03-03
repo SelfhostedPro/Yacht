@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { appsState } from "../atoms";
+import { appsState } from "../store/apps";
 
 const AppsTable = () => {
   const [apps, setApps] = useRecoilState(appsState);
