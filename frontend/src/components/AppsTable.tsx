@@ -35,7 +35,7 @@ const AppsTable = () => {
               {Object.keys(app.ports).map((port) => {
                 return (
                   <span>
-                    {app.ports[port][0].HostIp + app.ports[port][0].HostPort}
+                    { app.ports[port] ? app.ports[port][0].HostIp + app.ports[port][0].HostPort : null}
                   </span>
                 );
               })}
