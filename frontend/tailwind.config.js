@@ -1,11 +1,19 @@
 module.exports = {
   purge: [],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: "class", // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        yacht: ["Roboto", "sans-serif"],
+      },
+      colors: {
+        "header-lgt": "#C4C4C4",
+        "header-drk": "#424242",
+      },
+    },
   },
   variants: {
     extend: {},
   },
   plugins: [],
-}
+};

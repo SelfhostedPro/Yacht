@@ -11,7 +11,7 @@ ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
       <Header user={mockUser} />
-      {/* <AppsTable /> */}
+      <AppsTable />
     </RecoilRoot>
   </React.StrictMode>,
   document.getElementById("root")
