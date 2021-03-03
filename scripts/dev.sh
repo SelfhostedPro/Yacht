@@ -17,13 +17,32 @@ function main() {
   --disable-auth | -d)
     setDisableAuth=true
     export DISABLE_AUTH=true
+    runBackend
+    runFrontend
     ;;
-  *) ;;
+
+  --backend-only | -b)
+    echo "Running backend only..."
+    echo ""
+    runBackend
+    ;;
+
+  --frontend-only | -f)
+    echo "Running frontend only..."
+    echo ""
+    runFrontend
+    ;;
+
+  --help | -h)
+    echo "We're working on it, for now just run the script with no options."
+    ;;
+
+  *)
+    runBackend
+    runFrontend
+    ;;
 
   esac
-
-  runBackend
-  runFrontend
 
   echo ""
   echo "Press [Ctrl+C] to exit..."
