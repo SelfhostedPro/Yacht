@@ -11,6 +11,8 @@ export interface Port {
 export interface App {
   name: string;
   short_id: string;
+  status: string;
+  created: string;
   ports: Port[];
 }
 
