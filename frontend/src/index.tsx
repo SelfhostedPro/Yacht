@@ -4,10 +4,13 @@ import "./index.css";
 import AppsTable from "./components/AppsTable";
 import { RecoilRoot } from 'recoil';
 import reportWebVitals from "./reportWebVitals";
+import Header from "./components/Header";
+import { mockUser } from "./utils";
 
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
+      <Header user={mockUser} />
       <AppsTable />
     </RecoilRoot>
   </React.StrictMode>,

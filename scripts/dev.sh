@@ -116,7 +116,7 @@ function runFrontend() {
     mv ${BASE_DIR}/tmp/frontend.log ${BASE_DIR}/tmp/frontend.log.old
   fi
 
-  npm run serve &>${BASE_DIR}/tmp/frontend.log &
+  npm start &>${BASE_DIR}/tmp/frontend.log &
   echo $! >${BASE_DIR}/tmp/frontend.pid
   echo "    frontend running on PID $(cat ${BASE_DIR}/tmp/frontend.pid)"
   echo ""
