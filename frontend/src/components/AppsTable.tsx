@@ -1,24 +1,6 @@
 import { useEffect } from "react";
-import { atom, useRecoilState } from "recoil";
-
-const appsState = atom({
-  key: "AppsState",
-  default: [] as App[],
-});
-
-interface App {
-  name: string;
-  short_id: string;
-  ports: {};
-}
-
-//  This would be a good interface for a Port, and above `ports: {}` would become `ports: Port[]`
-//  interface Port {
-//    id: number;
-//    Name: string;
-//    HostIp: string;
-//    HostPort: string;
-//  }
+import { useRecoilState } from "recoil";
+import { appsState } from "../atoms";
 
 const AppsTable = () => {
   const [apps, setApps] = useRecoilState(appsState);
@@ -39,17 +21,25 @@ const AppsTable = () => {
   return (
     <div className={"flex flex-col justify-center align-center m-4"}>
       <div>Hello world, we be fetching apps!</div>
-      <div className={"flex flex-row justify-between w-1/4"}>
+      <div className={"flex flex-row justify-between w-1/2"}>
         <div>name</div>
         <div>short_id</div>
-        {/* <div>ports</div> */}
+        <div>ports</div>
       </div>
       {apps.map((app, index) => {
         return (
-          <div className={"flex flex-row justify-between w-1/4"} key={index}>
+          <div className={"flex flex-row justify-between w-1/2"} key={index}>
             <div>{app.name}</div>
             <div>{app.short_id}</div>
-            {/* <div>{app.ports}</div> */}
+            <div className={"flex flex-col"}>
+              {Object.keys(app.ports).map((port) => {
+                return (
+                  <span>
+                    {app.ports[port][0].HostIp + app.ports[port][0].HostPort}
+                  </span>
+                );
+              })}
+            </div>
           </div>
         );
       })}
