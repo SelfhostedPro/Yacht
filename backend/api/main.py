@@ -64,7 +64,7 @@ app.include_router(app_settings.router, prefix="/settings", tags=["settings"])
 async def startup(db: Session = Depends(get_db)):
     # await database.connect()
     # Clear old db migrations
-    delete_alembic = "DROP TABLE IF EXISTS alembic_version;"
+    # delete_alembic = "DROP TABLE IF EXISTS alembic_version;"
     # await database.execute(delete_alembic)
     users_exist = get_users(db=SessionLocal())
     print(

@@ -6,6 +6,7 @@
     mini-variant
     expand-on-hover
     color="secondary"
+    style="transform: translateX(0) !important;" 
   >
     <!-- -->
 
