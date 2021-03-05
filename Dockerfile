@@ -34,8 +34,6 @@ RUN \
  apk add --no-cache \
 	python3 \
 	py3-pip \
-	sqlite \
-	postgresql-dev \
 	mysql-dev \
 	nginx &&\
  gem install sass &&\
