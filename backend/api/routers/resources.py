@@ -8,6 +8,8 @@ from api.auth.auth import auth_check
 
 router = APIRouter()
 ### Images ###
+
+
 @router.get(
     "/images/",
 )

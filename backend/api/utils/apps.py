@@ -25,6 +25,8 @@ settings = Settings()
 # {
 #     '53/tcp': ('0.0.0.0', 53),
 # }
+
+
 def conv_ports2data(data, network, network_mode):
     ports = {}
     for d in data:
@@ -129,6 +131,8 @@ def conv_devices2data(data):
     else:
         devices = None
         return devices
+
+
 # def conv_labels2data(data):
 #     # Set is depracated. Name is the actual value. Label is the name of the field.
 #     # Label is the label of the label field.
@@ -333,11 +337,12 @@ def _check_updates(tag):
                 return False
             else:
                 raise HTTPException(
-                    status_code=err.response.status_code, detail=err.explanation
+                    status_code=err.response.status_code, 
+                    detail=err.explanation
                 )
         try:
             new = dclient.images.get_registry_data(tag)
-        except APIError as err:
+        except APIError:
             return False
         if any(
             new.attrs["Descriptor"]["digest"] in i for i in current.attrs["RepoDigests"]
@@ -359,8 +364,9 @@ def format_bytes(size):
         n += 1
     return str(round(size)) + " " + str(power_labels[n])
 
+
 def conv_cpus2data(cpus):
     if cpus:
-        return cpus*10**9
+        return cpus * 10 ** 9
     else:
         return None

@@ -85,7 +85,7 @@
                       <td>
                         <v-chip
                           v-if="port.hip == '0.0.0.0'"
-                          color="indigo darken-2"
+                          color="primary"
                           label
                           :href="'http://' + host_ip + ':' + port.hport"
                           target="_blank"
@@ -93,7 +93,7 @@
                           >{{ port.hport }}</v-chip
                         ><v-chip
                           v-else
-                          color="indigo darken-2"
+                          color="primary"
                           label
                           :href="'http://' + port.hip + ':' + port.hport"
                           target="_blank"

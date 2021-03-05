@@ -256,7 +256,7 @@
                   v-bind="attrs"
                   class="ma-1"
                   v-else
-                  color="indigo darken-2"
+                  color="primary"
                   label
                   small
                   :href="'http://' + port.hip + ':' + port.hport"
@@ -342,7 +342,7 @@ export default {
       checkUpdate: "apps/checkAppUpdate"
     }),
     handleRowClick(appName) {
-      this.$router.push({ path: `/apps${appName.Name}/info` });
+      this.$router.push({ path: `/apps${appName.Name}` });
     },
     editClick(appName) {
       this.$router.push({ path: `/apps/edit/${appName.Name}` });

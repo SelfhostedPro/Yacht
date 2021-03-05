@@ -1,5 +1,3 @@
-from api.settings import Settings
-from api.db import models
 from os.path import abspath, dirname
 import sys
 import os
@@ -23,10 +21,9 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
-
+from api.db import models
 
 print("--- MODELS ---")
-print(models)
 # Combine metadata from auth and containers/templates
 combined_meta_data = MetaData()
 for declarative_base in [models.Base]:
@@ -62,13 +59,12 @@ def run_migrations_offline():
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        starting_rev=None,
         dialect_opts={"paramstyle": "named"},
     )
 
     with context.begin_transaction():
+        context.execute("DROP TABLE IF EXISTS alembic_version;")
         context.run_migrations()
-        context.execute("DROP TABLE IF EXISTS alembic_version")
 
 
 def run_migrations_online():
@@ -89,8 +85,8 @@ def run_migrations_online():
                           target_metadata=target_metadata)
 
         with context.begin_transaction():
+            context.execute("DROP TABLE IF EXISTS alembic_version;")
             context.run_migrations()
-            context.execute("DROP TABLE IF EXISTS alembic_version")
 
 
 if context.is_offline_mode():

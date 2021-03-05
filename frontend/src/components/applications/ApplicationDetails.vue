@@ -1,7 +1,38 @@
 <template lang="html">
   <v-card color="foreground" class="d-flex mx-auto page">
     <v-container fluid class="component">
-      <Nav class="mb-3" :isLoading="isLoading" />
+      <div>
+        <v-tabs
+          v-model="AppTab"
+          class="mb-3"
+          background-color="tabs"
+          mobile-breakpoint="sm"
+        >
+          <v-tab class="text-left" @click="$router.go(-1)">
+            <v-icon left class="mr-1">mdi-arrow-left-bold-outline</v-icon> Back
+          </v-tab>
+          <v-tab class="text-left">
+            <v-icon left class="mr-1">mdi-information-outline</v-icon>Info
+          </v-tab>
+          <v-tab class="text-left">
+            <v-icon left class="mr-1">mdi-view-list-outline</v-icon>Processes
+          </v-tab>
+          <v-tab class="text-left">
+            <v-icon left class="mr-1">mdi-book-open-outline</v-icon>Logs
+          </v-tab>
+          <v-tab class="text-left">
+            <v-icon left class="mr-1">mdi-gauge</v-icon>Stats
+          </v-tab>
+        </v-tabs>
+        <v-fade-transition>
+          <v-progress-linear
+            indeterminate
+            v-if="isLoading"
+            color="primary"
+            bottom
+          />
+        </v-fade-transition>
+      </div>
       <v-card color="foreground" class="pb-3" tile>
         <v-row>
           <v-col xs="12" sm="12" md="6" class="flex-grow-1 flex-shrink-0">
@@ -239,12 +270,21 @@
           leave-active-class="animated slideOutRight"
           mode="out-in"
         >
-          <router-view
-            :app="app"
-            :processes="processes"
-            :logs="logs"
-            :stats="stats"
-          />
+          <v-tabs-items v-model="AppTab" class="mt-3">
+            <v-tab-item> </v-tab-item>
+            <v-tab-item>
+              <Content :app="app" />
+            </v-tab-item>
+            <v-tab-item>
+              <Processes :app="app" :processes="processes" />
+            </v-tab-item>
+            <v-tab-item>
+              <Logs :app="app" :logs="logs" />
+            </v-tab-item>
+            <v-tab-item>
+              <Stats :app="app" :stats="stats" />
+            </v-tab-item>
+          </v-tabs-items>
         </transition>
       </v-card>
     </v-container>
@@ -252,14 +292,21 @@
 </template>
 
 <script>
-import ApplicationDetailsNav from "./ApplicationDetailsComponents/ApplicationDetailsNav";
+import AppStats from "./ApplicationDetailsComponents/AppStats";
+import AppProcesses from "./ApplicationDetailsComponents/AppProcesses";
+import AppContent from "./ApplicationDetailsComponents/AppContent";
+import AppLogs from "./ApplicationDetailsComponents/AppLogs";
 import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   components: {
-    Nav: ApplicationDetailsNav
+    Content: AppContent,
+    Processes: AppProcesses,
+    Logs: AppLogs,
+    Stats: AppStats
   },
   data() {
     return {
+      AppTab: 1,
       removeDialog: false,
       logs: [],
       stats: {

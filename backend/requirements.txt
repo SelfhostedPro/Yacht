@@ -21,7 +21,7 @@ python-jose==3.2.0
 makefun==1.9.2
 mysqlclient==2.0.3
 passlib==1.7.4
-psycopg2==2.8.6
+psycopg2-binary==2.8.6
 pycparser==2.20
 pydantic==1.7.3
 PyJWT==1.7.1
