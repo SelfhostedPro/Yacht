@@ -102,9 +102,7 @@
                       </v-list-item-icon>
                       <v-list-item-title>Kill</v-list-item-title>
                     </v-list-item>
-                    <v-list-item
-                      @click="AppAction({ Name: app.name, Action: 'remove' })"
-                    >
+                    <v-list-item @click="removeDialog = true">
                       <v-list-item-icon>
                         <v-icon>mdi-delete</v-icon>
                       </v-list-item-icon>
@@ -112,6 +110,38 @@
                     </v-list-item>
                   </v-list>
                 </v-menu>
+                <v-dialog v-if="app" v-model="removeDialog" max-width="290">
+                  <v-card>
+                    <v-card-title
+                      class="headline"
+                      style="word-break: break-all;"
+                    >
+                      Remove {{ app.name }}?
+                    </v-card-title>
+                    <v-card-text>
+                      Are you sure you want to permanently delete the
+                      template?<br />
+                      This action cannot be revoked.
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn text @click="removeDialog = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="error"
+                        @click="
+                          AppAction({ Name: app.name, Action: 'remove' });
+                          removeDialog = false;
+                          postRemove();
+                        "
+                      >
+                        Delete
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
               </v-card-title>
             </v-card>
           </v-col>
@@ -191,7 +221,7 @@
                       v-on="on"
                       color="secondary"
                       class="mx-1 my-1"
-                      @click="AppAction({ Name: app.name, Action: 'remove' })"
+                      @click="removeDialog = true"
                     >
                       <span class="hidden-md-and-down">remove</span>
                       <v-icon>mdi-delete</v-icon>
@@ -230,6 +260,7 @@ export default {
   },
   data() {
     return {
+      removeDialog: false,
       logs: [],
       stats: {
         time: [],
@@ -269,6 +300,9 @@ export default {
       this.closeStats();
       this.readAppLogs(appName);
       this.readAppStats(appName);
+    },
+    postRemove() {
+      this.$router.push({ name: "View Applications" });
     },
     readAppLogs(appName) {
       var proto = "";

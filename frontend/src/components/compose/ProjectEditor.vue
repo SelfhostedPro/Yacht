@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 import axios from "axios";
 export default {
   data() {
@@ -70,6 +70,9 @@ export default {
     editor: require("vue2-ace-editor")
   },
   methods: {
+    ...mapMutations({
+      setErr: "snackbar/setErr"
+    }),
     ...mapActions({
       readProject: "projects/readProject"
     }),
@@ -93,7 +96,7 @@ export default {
           this.$router.push({ path: `/projects/${response.data.name}` });
         })
         .catch(err => {
-          console.log(err);
+          this.setErr(err);
         });
     },
     async populateForm() {
