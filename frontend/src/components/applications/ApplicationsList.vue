@@ -160,7 +160,10 @@
                 </v-list-item>
 
                 <v-list-item
-                  @click="AppAction({ Name: item.name, Action: 'remove' })"
+                  @click="
+                    selectedApp = item;
+                    removeDialog = true;
+                  "
                 >
                   <v-list-item-icon>
                     <v-icon>mdi-delete</v-icon>
@@ -169,6 +172,33 @@
                 </v-list-item>
               </v-list>
             </v-menu>
+            <v-dialog v-if="selectedApp" v-model="removeDialog" max-width="290">
+              <v-card>
+                <v-card-title class="headline" style="word-break: break-all;">
+                  Remove {{ selectedApp.name }}?
+                </v-card-title>
+                <v-card-text>
+                  Are you sure you want to permanently delete the template?<br />
+                  This action cannot be revoked.
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn text @click="removeDialog = false">
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="error"
+                    @click="
+                      AppAction({ Name: selectedApp.name, Action: 'remove' });
+                      removeDialog = false;
+                    "
+                  >
+                    Remove
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
             <span class="nametext ml-1">{{ item.name }}</span>
             <v-tooltip
               right
@@ -263,6 +293,7 @@ export default {
       search: "",
       expanded: [],
       removeDialog: false,
+      selectedApp: null,
       host_ip: location.hostname,
       headers: [],
       headersMap: {

@@ -1,3 +1,8 @@
+from api.settings import Settings
+from api.db import models
+from os.path import abspath, dirname
+import sys
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, MetaData
@@ -16,15 +21,9 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-import os
-import sys
-from os.path import abspath, dirname
 
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
-
-from api.db import models
-from api.settings import Settings
 
 print("--- MODELS ---")
 print(models)
@@ -36,7 +35,8 @@ for declarative_base in [models.Base]:
 
 target_metadata = combined_meta_data
 config.set_main_option(
-    "sqlalchemy.url", os.environ.get("DATABASE_URL", "sqlite:///config/data.sqlite")
+    "sqlalchemy.url", os.environ.get(
+        "DATABASE_URL", "sqlite:///config/data.sqlite")
 )
 
 # other values from the config, defined by the needs of env.py,
@@ -68,6 +68,7 @@ def run_migrations_offline():
 
     with context.begin_transaction():
         context.run_migrations()
+        context.execute("DROP TABLE IF EXISTS alembic_version")
 
 
 def run_migrations_online():
@@ -84,10 +85,12 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(connection=connection,
+                          target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()
+            context.execute("DROP TABLE IF EXISTS alembic_version")
 
 
 if context.is_offline_mode():
