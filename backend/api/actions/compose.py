@@ -273,7 +273,9 @@ def write_compose(compose):
             f.close()
         except TypeError as exc:
             if exc.args[0] == "write() argument must be str, not None":
-                raise HTTPException(status_code=422, detail="Compose file cannot be empty.")
+                raise HTTPException(
+                    status_code=422, detail="Compose file cannot be empty."
+                )
         except Exception as exc:
             raise HTTPException(exc.status_code, exc.detail)
 
