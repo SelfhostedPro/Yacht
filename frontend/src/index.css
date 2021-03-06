@@ -4,7 +4,9 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-html {
+html, body {
+  height: 100%;
+  width: 100%;
   @apply font-yacht antialiased;
 }
 
@@ -25,7 +27,24 @@ html {
 }
 
 .header {
-  @apply flex flex-row justify-between p-4 text-black dark:text-white bg-header-lgt dark:bg-header-drk h-16;
+  @apply sticky top-0 p-4 text-black dark:text-white bg-header-lgt dark:bg-header-drk h-16 w-full min-w-full z-10 leading-none;
+  min-width: 480px !important;
+}
+
+.side-nav {
+  @apply hidden sm:block h-full fixed inset-y-0 left-0;
+  padding-top: 64px;
+}
+
+.bottom-nav {
+  @apply sm:hidden absolute inset-x-0 bottom-0 !important text-black dark:text-white bg-header-lgt dark:bg-header-drk w-full h-16;
+  min-width: 480px;
+}
+
+.app-container {
+  min-width: 100vw !important;
+  min-height: 100vh !important;
+  @apply bg-white dark:bg-black text-black dark:text-white;
 }
 
 .btn {

@@ -5,7 +5,6 @@ export interface Port {
   HostIp: string;
   HostPort: string;
   Label: string;
-
 }
 
 export interface App {

@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   purge: [],
   darkMode: "class", // or 'media' or 'class'
@@ -10,6 +12,10 @@ module.exports = {
         "header-lgt": "#C4C4C4",
         "header-drk": "#424242",
       },
+    },
+    screens: {
+      'xs': '475px',
+      ...defaultTheme.screens,
     },
   },
   variants: {

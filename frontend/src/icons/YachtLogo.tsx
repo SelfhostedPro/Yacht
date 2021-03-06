@@ -1,3 +1,5 @@
+import React from 'react'
+
 const pathD1 =
   "M294.09,161.93c90.66-49,189.17-89.3,292.78-119.83q47.61-14,96.63-25.3C590.48,11.13,424.67,1,419.83.49,349.9-6.85,276.32,70.65,276.32,70.65s-11.6,64.83-19.78,111.94C269.05,175.59,281.41,168.78,294.09,161.93Z";
 const pathD2 =
@@ -11,21 +13,25 @@ const pathD5 =
 const pathD6 =
   "M1108.47,2.33c-1-.07-103.7-6.89-253.26,12.91C718.67,33.32,513.12,78,309.21,188.17c-14.8,8-29.17,15.93-43.91,24.23a8.08,8.08,0,0,0-1.1.64L27.17,370.1a10.31,10.31,0,0,0-4.35,6.27L.26,474.57a10.31,10.31,0,0,0,9.93,12.61l98,1c22.38-34.14,24.27-44.55,24.27-44.55q74.33-2,140.28,1h0c48.61-29.29,88.82-64.54,96.28-92,0,0,61.52,4.92,147.62,28.72,52.5-63.87,54-108.13,54-108.13,119.1,59,205,126.27,267.22,192.7,49-143.34,275.78-444,278.19-447.14l11.52-13.06ZM871.8,133.84c-100.22-8.29-219.87,9-219.87,9l-18.14-15.09c159.57-42.4,276.6-44.13,276.6-44.13Z";
 
-const YachtLogo = () => {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" height={32} width={47} viewBox="0 0 1127.48 762.97">
-      <g id="Layer_2" data-name="Layer 2">
-        <g id="Layer_1-2" data-name="Layer 1">
-          <path className="cls-1" d={pathD1} />
-          <path className="cls-1" d={pathD2} />
-          <path className="cls-2" d={pathD3} />
-          <path className="cls-3" d={pathD4} />
-          <path className="cls-2" d={pathD5} />
-          <path className="cls-1" d={pathD6} />
+const YachtLogo = () => (
+    <svg
+      xmlns={"http://www.w3.org/2000/svg"}
+      height={32}
+      width={47}
+      viewBox={"0 0 1127.48 762.97"}
+      data-testid={"yacht-logo"}
+    >
+      <g id={"Layer_2"} data-name={"Layer 2"}>
+        <g id={"Layer_1-2"} data-name={"Layer 1"}>
+          <path className={"cls-1"} d={pathD1} />
+          <path className={"cls-1"} d={pathD2} />
+          <path className={"cls-2"} d={pathD3} />
+          <path className={"cls-3"} d={pathD4} />
+          <path className={"cls-2"} d={pathD5} />
+          <path className={"cls-1"} d={pathD6} />
         </g>
       </g>
     </svg>
-  );
-};
+);
 
 export default YachtLogo;
