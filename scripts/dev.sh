@@ -6,189 +6,83 @@ set -e
 # Hide control characters in terminal output
 stty -echoctl
 
-function main() {
+function main {
   showBanner "Yacht Dev"
 
-  # run setup
   setup
 
-  # Parse args, if there are any
-  case "${1}" in
-  --disable-auth | -d)
-    setDisableAuth=true
-    export DISABLE_AUTH=true
-    runBackend
-    runFrontend
-    ;;
+  parseArgs ${@}
+  checkOpts
 
-  --backend-only | -b)
-    echo "Running backend only..."
-    echo ""
-    runBackend
-    ;;
-
-  --frontend-only | -f)
-    echo "Running frontend only..."
-    echo ""
-    runFrontend
-    ;;
-
-  --help | -h)
-    echo "We're working on it, for now just run the script with no options."
-    ;;
-
-  *)
-    runBackend
-    runFrontend
-    ;;
-
-  esac
-
-  echo ""
-  echo "Press [Ctrl+C] to exit..."
-
-  while true; do
-    sleep 1
-  done
+  runDev
 }
 
-# Setup a few things before we start.
-function setup() {
-  showBanner "Setup"
+##############################################################################
+# PREPARE SOME THINGS BEFORE RUNNING
+##############################################################################
+function setup {
+  SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
   BASE_DIR="$(dirname $(
     cd "$(dirname "$0")"
     pwd -P
   ))"
 
-  echo "  BASE_DIR = $BASE_DIR"
-  echo ""
-
+  # Make a tmp directory for storing temporary files and logs
   mkdir -p "${BASE_DIR}"/tmp
+
+  # Source additional script files
+  source "$SCRIPT_DIR/functions.sh"
+
+  showBanner "Setup"
+
+  echo "  BASE_DIR = $BASE_DIR"
+  echo "  SCRIPT_DIR = $SCRIPT_DIR"
+  echo ""
 }
 
-# This runs between each step in this file, to show the steps that are happening
-function showBanner() {
-
+##############################################################################
+# PRINT A PRETTY BANNER BETWEEN STEPS
+##############################################################################
+function showBanner {
+  pad=$(printf '%0.1s' " "{1..70})
   startString="  ${1}"
+  endString="$(date +%r)  "
+  padLength=80
 
-  echo -e "\033[32m======================================================\033[0m"
-  echo "${startString}                            ($(date +%r))"
-  echo -e "\033[32m======================================================\033[0m"
+  echo -e "\033[32m================================================================================\033[0m"
+  printf '%s' "$startString"
+  printf '%*.*s' 0 $((padLength - ${#startString} - ${#endString} )) "$pad"
+  printf '%s\n' "$endString"
+  echo -e "\033[32m================================================================================\033[0m"
 }
 
-function runBackend() {
-  showBanner "Backend"
-  pushd "${BASE_DIR}/backend"
-
-  checkBackendDeps
-
-  echo "  Starting the backend..."
-  echo "    Log file -> ${BASE_DIR}/tmp/backend.log"
-  if [[ -f "${BASE_DIR}/tmp/backend.log" ]]; then
-    echo "    Moving old log -> ${BASE_DIR}/tmp/backend.log.old"
-    mv ${BASE_DIR}/tmp/backend.log ${BASE_DIR}/tmp/backend.log.old
-  fi
-
-  uvicorn api.main:app --reload --host 0.0.0.0 &>${BASE_DIR}/tmp/backend.log &
-  echo $! >${BASE_DIR}/tmp/backend.pid
-
-  if [[ $setDisableAuth ]]; then
-    echo "    DISABLE_AUTH: true"
-  fi
-
-  echo "    Backend running on PID $(cat ${BASE_DIR}/tmp/backend.pid)"
-  echo ""
-
-  popd
-}
-
-function runFrontend() {
-  showBanner "Frontend"
-  pushd "${BASE_DIR}"/frontend
-
-  checkFrontendDeps
-
-  echo "  Starting the frontend..."
-  echo "    Log file -> ${BASE_DIR}/tmp/frontend.log"
-  if [[ -f "${BASE_DIR}/tmp/frontend.log" ]]; then
-    echo "    Old log -> ${BASE_DIR}/tmp/frontend.log.old"
-    mv ${BASE_DIR}/tmp/frontend.log ${BASE_DIR}/tmp/frontend.log.old
-  fi
-
-  npm start &>${BASE_DIR}/tmp/frontend.log &
-  echo $! >${BASE_DIR}/tmp/frontend.pid
-  echo "    frontend running on PID $(cat ${BASE_DIR}/tmp/frontend.pid)"
-  echo ""
-
-  popd
-}
-
-function checkBackendDeps() {
-  echo "  Checking backend dependencies..."
-
-  if [[ ! -d "venv" ]]; then
-    echo "    Python virtual environment not found, creating..."
-    python -m venv venv
-  elif [[ -d "venv" && ! $VIRTUAL_ENV ]]; then
-    echo "    Found python virtual environment, loading..."
-    source ./venv/bin/activate
-  fi
-
-  if [[ $VIRTUAL_ENV && ! -f "venv/bin/uvicorn" ]]; then
-    echo ""
-    echo "  Installing dependencies..."
-    echo "    Log file -> ${BASE_DIR}/tmp/pip.log"
-    echo "  pip install -r requirements.txt &>${BASE_DIR}/tmp/pip.log &"
-    echo ""
-  elif [[ $VIRTUAL_ENV && -f "venv/bin/uvicorn" ]]; then
-    echo "    Found /venv/bin/uvicorn, skipping dependency install."
-    echo ""
-  fi
-}
-
-function checkFrontendDeps() {
-  echo "  Checking for dependencies..."
-  if [[ ! -d "./node_modules" ]]; then
-    echo "  Installing dependencies..."
-    echo "  npm install"
-  else
-    echo "  Found node_modules, skipping."
-    echo ""
-  fi
-}
-
-# silence pushd/popd default output
-function pushd() {
-  command pushd "$@" >/dev/null
-}
-
-function popd() {
-  command popd "$@" >/dev/null
-}
-
-# trap here to ensure cleanup
-function cleanup() {
+##############################################################################
+# CLEANUP ON ANY EXIT
+##############################################################################
+function cleanup {
   showBanner "CleanUp"
 
   pushd "${BASE_DIR}"/tmp/
 
-  echo "    Stopping all processes..."
+  if [[ -f 'frontend.pid' || -f 'backend.pid' ]]; then
+    echo "    Stopping all processes..."
 
-  for pidfile in *.pid; do
-    pid=$(cat "$pidfile")
-    echo "      Killing $pid..."
+    for pidfile in *.pid; do
+      pid=$(cat "$pidfile")
+      echo "      Killing $pid..."
 
-    { kill $pid && wait $pid; } 2>/dev/null
-    rm $pidfile
-  done
+      { kill $pid && wait $pid; } 2>/dev/null
+      rm $pidfile
+    done
+  fi
 
   popd
 
-  # show ctrl characters in terminal
+  # restore ctrl characters in terminal
   stty echoctl
 
-  if [[ setDisableAuth ]]; then
+  if [[ "$setDisableAuth" == "true" ]]; then
     unset DISABLE_AUTH
   fi
 }
