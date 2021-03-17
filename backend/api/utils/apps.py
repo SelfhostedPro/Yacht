@@ -369,7 +369,6 @@ def conv_ports2dict(app):
     if hasattr(app, 'ports'):
         ports = []
         for port in app.ports:
-            print(port)
             cport = port
             if app.ports.get(port):
                 hip = app.ports.get(port)[0].get('HostIp')
