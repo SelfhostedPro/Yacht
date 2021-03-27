@@ -6,11 +6,7 @@ interface OwnProps {
 
 const ContentWrapper: FC<OwnProps> = ({ header, children }) => {
   return (
-    <div
-      className={
-        "rounded bg-gray-50 dark:bg-content-drk shadow-md ml-0 sm:ml-2"
-      }
-    >
+    <div className={"content-wrapper"}>
       <div
         className={
           "text-black dark:text-white text-3xl bg-content-header rounded-t p-4"
@@ -18,7 +14,13 @@ const ContentWrapper: FC<OwnProps> = ({ header, children }) => {
       >
         {header}
       </div>
-      <div className={"dark:text-white text-black p-2"}>{children}</div>
+      <div
+        className={
+          "content dark:text-white text-black p-2 overflow-y-auto whitespace-normal"
+        }
+      >
+        {children}
+      </div>
     </div>
   );
 };

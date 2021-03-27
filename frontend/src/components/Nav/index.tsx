@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import ApplicationsIcon from "../../icons/Nav/ApplicationsIcon";
 import DashboardIcon from "../../icons/Nav/DashboardIcon";
@@ -45,6 +45,19 @@ export const bottomNavLinks: navLink[] = [
 const Nav = () => {
   const [isNavExpanded, setIsNavExpanded] = useState(false);
   const [appViewState, setAppViewState] = useRecoilState(viewState);
+
+  useEffect(() => {
+    // currentView is set to a string that resembles a ViewState enum value or ""
+    const currentView = window.location.pathname.substring(1).toUpperCase();
+
+    /*
+     * this sets the current appViewState to match the link you are currently viewing in cases
+     * where you navigated to yacht from somewhere other than the dashboard, but if you open
+     * the Dashboard, currentView is falsy so it uses the default state which is the Dashboard
+     */
+
+    currentView && setAppViewState(currentView);
+  }, [setAppViewState]);
 
   return (
     <div className={"nav"} data-testid={"app-nav"}>

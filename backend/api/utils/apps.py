@@ -64,6 +64,7 @@ def conv_portlabels2data(data):
 
 
 def conv_volumes2data(data):
+    volumes = {}
     db = SessionLocal()
     t_variables = db.query(models.TemplateVariables).all()
 

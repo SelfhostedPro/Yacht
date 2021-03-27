@@ -2,15 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
-html, body {
-  -webkit-tap-highlight-color:transparent;
+html,
+body {
+  -webkit-tap-highlight-color: transparent;
   @apply font-yacht antialiased h-screen w-screen !important;
 }
 
+@media screen and (max-width: 480px) {
+  .content {
+    max-height: calc(100vh - 245px) !important;
+  }
+}
+
+.content {
+  max-height: calc(100vh - 165px);
+}
+
+.content-wrapper {
+  @apply rounded bg-gray-50 dark:bg-content-drk shadow-md ml-0 sm:ml-2;
+}
+
 .mat-ui-shadow {
-  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%),
+    0 1px 10px 0 rgb(0 0 0 / 12%);
 }
 
 .header {
@@ -18,7 +34,7 @@ html, body {
 }
 
 .side-nav {
-  transition: width 0.1s ease-in; 
+  transition: width 0.1s ease-in;
   @apply hidden sm:block h-full fixed inset-y-0 left-0 pt-16;
 }
 
@@ -43,7 +59,7 @@ html, body {
 }
 
 .nav-active {
-  color: #41B883 !important;
+  color: #41b883 !important;
 }
 
 .app-container {
@@ -52,4 +68,8 @@ html, body {
 
 .btn {
   @apply flex flex-row justify-center items-center rounded text-sm text-white uppercase font-semibold tracking-widest p-4 bg-btn-grn h-9;
+}
+
+.content-tabbed-nav {
+  @apply p-2 text-black dark:text-white cursor-pointer bg-transparent hover:bg-gray-300 dark:hover:bg-gray-500 box-border;
 }
