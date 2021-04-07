@@ -1,8 +1,8 @@
 <template>
   <v-app id="yacht">
     <div v-if="isLoggedIn">
-      <Sidebar v-if="$vuetify.breakpoint.mdAndUp"/>
-      <Bottombar v-if="$vuetify.breakpoint.smAndDown"/>
+      <Sidebar v-if="$vuetify.breakpoint.mdAndUp" />
+      <Bottombar v-if="$vuetify.breakpoint.smAndDown" />
       <Appbar />
       <v-main>
         <!-- Provides the application the proper gutter -->
@@ -37,7 +37,7 @@
 import { mapGetters, mapActions } from "vuex";
 import Sidebar from "./components/nav/Sidebar";
 import Appbar from "./components/nav/Appbar";
-import Bottombar from "./components/nav/Bottombar"
+import Bottombar from "./components/nav/Bottombar";
 import LoginForm from "./components/auth/LoginForm";
 import snackbar from "./components/notifications/snackbar";
 export default {

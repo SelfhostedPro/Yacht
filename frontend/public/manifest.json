@@ -1,0 +1,15 @@
+{
+  "name": "Yacht",
+  "short_name": "Yacht",
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#41B883",
+  "background_color": "#000",
+  "icons": [
+    {
+      "src": "img/logo.60ff54d9.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256",
+      "type": "image/svg"
+    }
+  ]
+}

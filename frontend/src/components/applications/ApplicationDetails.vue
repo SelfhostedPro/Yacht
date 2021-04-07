@@ -46,7 +46,7 @@
               <v-card-title>
                 {{ app.name }}
                 <v-spacer />
-                  <v-tooltip bottom>
+                <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       size="x-small"
@@ -117,12 +117,12 @@
                       </v-list-item-icon>
                       <v-list-item-title>Edit</v-list-item-title>
                     </v-list-item>
-                    <v-list-item 
+                    <v-list-item
                       :href="`/api/apps/${app.name}/support`"
                       target="_blank"
                       color="primary"
                       download
-                      >
+                    >
                       <v-list-item-icon>
                         <v-icon>mdi-help-circle-outline</v-icon>
                       </v-list-item-icon>

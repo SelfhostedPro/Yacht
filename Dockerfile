@@ -27,6 +27,7 @@ RUN \
  apk add --no-cache --virtual=build-dependencies \
 	g++ \
 	make \
+	postgresql-dev \
 	python3-dev \
 	libffi-dev \
 	ruby-dev &&\
