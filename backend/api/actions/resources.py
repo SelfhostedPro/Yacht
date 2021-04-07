@@ -176,11 +176,13 @@ def get_networks():
                     raise HTTPException(
                         status_code=exc.response.status_code, detail=exc.explanation
                     )
-        if attrs.get("inUse") == None:
-            attrs.update({"inUse": False})
-        if attrs.get("Labels", {}).get("com.docker.compose.project"):
-            attrs.update({"Project": attrs["Labels"]["com.docker.compose.project"]})
-        network_list.append(attrs)
+        if attrs:
+            if attrs.get("inUse") is None:
+                attrs.update({"inUse": False})
+            if attrs.get("Labels", {}):
+                if attrs.get("Labels", {}).get("com.docker.compose.project"):
+                    attrs.update({"Project": attrs["Labels"]["com.docker.compose.project"]})
+            network_list.append(attrs)
     return network_list
 
 
