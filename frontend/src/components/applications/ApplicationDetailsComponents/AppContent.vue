@@ -227,7 +227,7 @@
         <v-card
           :class="{
             'mx-4 foreground': $vuetify.breakpoint.smAndDown,
-            'ml-4 flex-grow-0 flex-shrink-1 foreground':
+            'mx-4 flex-grow-0 flex-shrink-1 foreground':
               $vuetify.breakpoint.mdAndUp
           }"
         >

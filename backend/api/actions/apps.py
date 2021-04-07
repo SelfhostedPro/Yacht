@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from fastapi.responses import StreamingResponse
 
 from api.db.schemas.apps import DeployLogs, DeployForm, AppLogs, Processes
 from api.utils.apps import (
@@ -17,6 +18,9 @@ from api.utils.apps import (
 )
 from api.utils.templates import conv2dict
 
+import json
+import io
+import zipfile
 import time
 import subprocess
 import docker
@@ -434,3 +438,28 @@ def check_self_update():
             raise HTTPException(status_code=400, detail=exc.args)
 
     return _check_updates(yacht.image.tags[0])
+
+
+def generate_support_bundle(app_name):
+    dclient = docker.from_env()
+    if dclient.containers.get(app_name):
+        app = dclient.containers.get(app_name)
+        stream = io.BytesIO()
+        with zipfile.ZipFile(stream, "w") as zf:
+            # print(compose)
+            # print(compose.get("services"))
+            attrs = app.attrs
+            service_log = app.logs()
+            zf.writestr(f"{app_name}.log", service_log)
+            zf.writestr(f"{app_name}.config", json.dumps(attrs))
+            # It is possible that ".write(...)" has better memory management here.
+        stream.seek(0)
+        return StreamingResponse(
+            stream,
+            media_type="application/x-zip-compressed",
+            headers={
+                "Content-Disposition": f"attachment;filename={app_name}_bundle.zip"
+            },
+        )
+    else:
+        raise HTTPException(404, f"App {app_name} not found.")
