@@ -46,6 +46,24 @@
               <v-card-title>
                 {{ app.name }}
                 <v-spacer />
+                  <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      size="x-small"
+                      color="secondary"
+                      v-bind="attrs"
+                      v-on="on"
+                      :href="`/api/apps/${app.name}/support`"
+                      target="_blank"
+                      download
+                      class="mx-1 my-1 hidden-sm-and-down"
+                    >
+                      <span class="hidden-md-and-down">Help</span>
+                      <v-icon>mdi-help-circle-outline</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Download Support Bundle</span>
+                </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -98,6 +116,17 @@
                         <v-icon>mdi-file-document-edit-outline</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title>Edit</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item 
+                      :href="`/api/apps/${app.name}/support`"
+                      target="_blank"
+                      color="primary"
+                      download
+                      >
+                      <v-list-item-icon>
+                        <v-icon>mdi-help-circle-outline</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Help</v-list-item-title>
                     </v-list-item>
                     <v-divider />
                     <v-list-item

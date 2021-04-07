@@ -53,6 +53,10 @@ def get_container_logs(app_name, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return actions.get_app_logs(app_name=app_name)
 
+@router.get("/{app_name}/support")
+def get_support_bundle(app_name, Authorize: AuthJWT = Depends()):
+    auth_check(Authorize)
+    return actions.generate_support_bundle(app_name)
 
 @router.get("/actions/{app_name}/{action}")
 def container_actions(app_name, action, Authorize: AuthJWT = Depends()):
