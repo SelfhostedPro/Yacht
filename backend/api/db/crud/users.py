@@ -1,10 +1,15 @@
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from api.db.models import users as models
+# from api.db.models.settings import TokenBlacklist
 from api.db.schemas import users as schemas
+from api.settings import Settings
 from fastapi.exceptions import HTTPException
+import secrets
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+settings = Settings()
 
 
 def get_user(db: Session, user_id: int):
@@ -57,3 +62,41 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hash(password):
     return pwd_context.hash(password)
+
+
+# def blacklist_api_key(Authorize, db: Session):
+#     jti = Authorize.get_raw_jwt()['jti']
+#     access = TokenBlacklist(jti, False, 'true')
+
+#     db.add(access)
+
+#     db.commit()
+#     return
+
+
+# def blacklist_login_token(Authorize, db: Session):
+#     jti = Authorize.get_raw_jwt()['jti']
+#     access = TokenBlacklist(jti=jti, expires=settings.ACCESS_TOKEN_EXPIRES, revoked='true')
+#     refresh = TokenBlacklist(jti=jti, expires=settings.REFRESH_TOKEN_EXPIRES, revoked='true')
+
+#     db.add(access)
+#     db.add(refresh)
+
+#     db.commit()
+#     return
+
+
+def get_keys(user, db: Session):
+    keys = db.query(models.APIKEY).filter(models.APIKEY.user == user.id).all()
+    return keys
+
+
+def create_key(user, Authorize, db: Session):
+    api_key = Authorize.create_access_token(subject=secrets.token_urlsafe(10), expires_time=False)
+    _hashed_key = get_password_hash(api_key)
+    db_key = models.APIKEY(user=user.id, is_active=True, hashed_key=_hashed_key)
+    db.add(db_key)
+    db.commit()
+    db.refresh(db_key)
+    db_key.token = api_key
+    return db_key
