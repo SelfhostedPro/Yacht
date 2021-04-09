@@ -77,7 +77,7 @@ def get_api_keys(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     return crud.get_keys(user, db)
 
 
-@router.get("/api/new", response_model=schemas.CreateAPIKEY)
+@router.get("/api/keys/new", response_model=schemas.CreateAPIKEY)
 def create_api_key(
     db: Session = Depends(get_db),
     Authorize: AuthJWT = Depends(),
@@ -91,9 +91,10 @@ def create_api_key(
     return crud.create_key(user, Authorize, db)
 
 
-# @router.post("/me/api/create")
-# def delete_api_key(key, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
-#     print("test")
+@router.get("/api/keys/{key_id}/delete")
+def delete_api_key(key_id, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+    auth_check(Authorize)
+    return crud.blacklist_api_key(key_id, db)
 
 
 @router.get("/me", response_model=schemas.User)

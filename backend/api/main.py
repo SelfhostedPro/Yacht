@@ -1,11 +1,11 @@
 import uvicorn
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-
+from api.db.models.settings import TokenBlacklist
 from api.settings import Settings
 from api.utils.auth import get_db
 from api.db.models.containers import TemplateVariables
@@ -30,6 +30,8 @@ class jwtSettings(BaseModel):
     authjwt_access_token_expires: int = int(settings.ACCESS_TOKEN_EXPIRES)
     authjwt_refresh_token_expires: int = int(settings.REFRESH_TOKEN_EXPIRES)
     authjwt_cookie_samesite: str = settings.SAME_SITE_COOKIES
+    authjwt_denylist_enabled: bool = True
+    authjwt_denylist_token_checks: set = {"access", "refresh"}
 
 
 @AuthJWT.load_config
@@ -37,11 +39,13 @@ def get_config():
     return jwtSettings()
 
 
-# @AuthJWT.token_in_denylist_loader
-# def check_if_token_in_denylist(decrypted_token):
-#     jti = decrypted_token['jti']
-#     entry = SessionLocal().query.filter(TokenBlacklist.token == jti)
-#     return entry and entry == 'true'
+@AuthJWT.token_in_denylist_loader
+def check_if_token_in_denylist(decrypted_token):
+    db = SessionLocal()
+    jti = decrypted_token['jti']
+    entry = db.query(TokenBlacklist).filter(TokenBlacklist.jti == jti).first()
+    if entry:
+        return True
 
 
 @app.exception_handler(AuthJWTException)

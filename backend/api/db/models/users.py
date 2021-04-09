@@ -22,6 +22,7 @@ class User(Base):
 class APIKEY(Base):
     __tablename__ = "apikeys"
     id = Column(Integer, primary_key=True, index=True)
+    jti = Column(String, unique=True, index=True, nullable=False)
     hashed_key = Column(String(length=72), unique=True, index=False, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(
