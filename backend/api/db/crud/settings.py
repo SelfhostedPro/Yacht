@@ -1,8 +1,12 @@
 from sqlalchemy.orm import Session
 
 from api.db.models import containers as models
+from api.db.models.settings import SecretKey
 from datetime import datetime
+from api.settings import Settings
 import json
+
+settings = Settings()
 
 
 def export_settings(db: Session):
@@ -10,6 +14,27 @@ def export_settings(db: Session):
     file_export["templates"] = db.query(models.Template).all()
     file_export["variables"] = db.query(models.TemplateVariables).all()
     return file_export
+
+
+def get_secret_key(db: Session):
+    check = db.query(models.SecretKey).first()
+    if check:
+        return True
+    else:
+        return False
+
+
+def generate_secret_key(db: Session):
+    check = db.query(SecretKey).first()
+    if check is None:
+        key = SecretKey(key=settings.SECRET_KEY)
+        db.add(key)
+        db.commit()
+        print("Secret key generated")
+        return key.key
+    else:
+        print("Secret key exists")
+        return check.key
 
 
 def import_settings(db: Session, upload):

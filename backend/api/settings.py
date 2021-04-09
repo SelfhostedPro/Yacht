@@ -16,8 +16,8 @@ class Settings(BaseSettings):
     SECRET_KEY = os.environ.get("SECRET_KEY", secrets.token_hex(16))
     ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "pass")
     ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@yacht.local")
-    ACCESS_TOKEN_EXPIRES = os.environ.get("ACCESS_TOKEN_EXPIRES", 15)
-    REFRESH_TOKEN_EXPIRES = os.environ.get("REFRESH_TOKEN_EXPIRES", 1)
+    ACCESS_TOKEN_EXPIRES = os.environ.get("ACCESS_TOKEN_EXPIRES", 900)
+    REFRESH_TOKEN_EXPIRES = os.environ.get("REFRESH_TOKEN_EXPIRES", 2592000)
     SAME_SITE_COOKIES = os.environ.get("SAME_SITE_COOKIES", "lax")
     DISABLE_AUTH = os.environ.get("DISABLE_AUTH", False)
     BASE_TEMPLATE_VARIABLES = [

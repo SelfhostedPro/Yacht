@@ -1,10 +1,16 @@
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from api.db.models import users as models
+from api.db.models.settings import TokenBlacklist
 from api.db.schemas import users as schemas
+from api.settings import Settings
 from fastapi.exceptions import HTTPException
+from datetime import datetime
+import secrets
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+settings = Settings()
 
 
 def get_user(db: Session, user_id: int):
@@ -57,3 +63,39 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hash(password):
     return pwd_context.hash(password)
+
+
+def blacklist_api_key(key_id, db: Session):
+    key = db.query(models.APIKEY).filter(models.APIKEY.id == key_id).first()
+    access = TokenBlacklist(jti=key.jti, expires=None, revoked=True)
+    db.add(access)
+    db.delete(key)
+    db.commit()
+    return {"success": "api key " + str(key_id) + " deleted."}
+
+
+def blacklist_login_token(Authorize, db: Session):
+    jti = Authorize.get_raw_jwt()['jti']
+    _exp = Authorize.get_raw_jwt()['exp']
+    exp = datetime.fromtimestamp(_exp)
+    access = TokenBlacklist(jti=jti, expires=exp, revoked=True)
+    db.add(access)
+    db.commit()
+    return
+
+
+def get_keys(user, db: Session):
+    keys = db.query(models.APIKEY).filter(models.APIKEY.user == user.id).all()
+    return keys
+
+
+def create_key(user, Authorize, db: Session):
+    api_key = Authorize.create_access_token(subject=secrets.token_urlsafe(10), expires_time=False)
+    _hashed_key = get_password_hash(api_key)
+    jti = Authorize.get_raw_jwt(api_key)['jti']
+    db_key = models.APIKEY(user=user.id, is_active=True, hashed_key=_hashed_key, jti=jti)
+    db.add(db_key)
+    db.commit()
+    db.refresh(db_key)
+    db_key.token = api_key
+    return db_key

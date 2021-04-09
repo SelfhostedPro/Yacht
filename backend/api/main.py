@@ -1,16 +1,18 @@
 import uvicorn
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-
+from api.db.models.settings import TokenBlacklist
 from api.settings import Settings
 from api.utils.auth import get_db
 from api.db.models.containers import TemplateVariables
+from api.db.models.settings import SecretKey
 from api.db.database import SessionLocal
 from api.db.schemas.users import UserCreate
+from api.db.crud.settings import generate_secret_key
 from api.db.crud.users import create_user, get_users
 from api.routers import apps, app_settings, compose, resources, templates, users
 from api.db.crud.templates import read_template_variables, set_template_variables
@@ -21,16 +23,29 @@ settings = Settings()
 
 
 class jwtSettings(BaseModel):
-    authjwt_secret_key: str = settings.SECRET_KEY
+    authjwt_secret_key: str = generate_secret_key(db=SessionLocal())
     authjwt_token_location: set = {"headers", "cookies"}
     authjwt_cookie_secure: bool = False
     authjwt_cookie_csrf_protect: bool = True
+    authjwt_access_token_expires: int = int(settings.ACCESS_TOKEN_EXPIRES)
+    authjwt_refresh_token_expires: int = int(settings.REFRESH_TOKEN_EXPIRES)
     authjwt_cookie_samesite: str = settings.SAME_SITE_COOKIES
+    authjwt_denylist_enabled: bool = True
+    authjwt_denylist_token_checks: set = {"access", "refresh"}
 
 
 @AuthJWT.load_config
 def get_config():
     return jwtSettings()
+
+
+@AuthJWT.token_in_denylist_loader
+def check_if_token_in_denylist(decrypted_token):
+    db = SessionLocal()
+    jti = decrypted_token['jti']
+    entry = db.query(TokenBlacklist).filter(TokenBlacklist.jti == jti).first()
+    if entry:
+        return True
 
 
 @app.exception_handler(AuthJWTException)
@@ -62,10 +77,7 @@ app.include_router(app_settings.router, prefix="/settings", tags=["settings"])
 
 @app.on_event("startup")
 async def startup(db: Session = Depends(get_db)):
-    # await database.connect()
-    # Clear old db migrations
-    # delete_alembic = "DROP TABLE IF EXISTS alembic_version;"
-    # await database.execute(delete_alembic)
+    generate_secret_key(db=SessionLocal())
     users_exist = get_users(db=SessionLocal())
     print(
         "DISABLE_AUTH = "

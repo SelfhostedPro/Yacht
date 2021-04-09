@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from uuid import UUID
 from typing import Union, Optional
+from datetime import datetime
 
 
 class UserBase(BaseModel):
@@ -18,3 +19,17 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
+
+class APIKEY(BaseModel):
+    id: int
+    is_active: bool
+    user: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class CreateAPIKEY(APIKEY):
+    token: str
