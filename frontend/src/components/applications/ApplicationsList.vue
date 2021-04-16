@@ -15,29 +15,12 @@
           bottom
         />
       </v-fade-transition>
-      <v-card-title>
+      <v-card-title class="primary font-weight-bold">
         Apps
-        <v-menu close-on-click close-on-content-click offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon size="small" v-bind="attrs" v-on="on">
-              <v-icon>mdi-chevron-down</v-icon>
-            </v-btn>
-          </template>
-          <v-list color="foreground" dense>
-            <v-list-item @click="refresh()">
-              <v-list-item-icon><v-icon>mdi-refresh</v-icon></v-list-item-icon>
-              <v-list-item-title>Refresh Apps</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="checkUpdate(apps)">
-              <v-list-item-icon><v-icon>mdi-update</v-icon></v-list-item-icon>
-              <v-list-item-title>Check for updates</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-        <v-btn fab x-small class="ml-2" color="primary" to="/apps/deploy">
+        <v-btn class="ml-2" color="secondary" to="/apps/deploy">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -45,6 +28,17 @@
           single-line
           hide-details
         ></v-text-field>
+      </v-card-title>
+      <v-card-title color="secondary">
+        <v-btn @click="checkUpdate(apps)" color="secondary">
+          Update
+          <v-icon>mdi-update</v-icon>
+        </v-btn>
+        <v-btn class="ml-2" @click="refresh()" color="secondary">
+          Refresh
+          <v-icon>mdi-refresh</v-icon>
+        </v-btn>
+        <v-spacer />
         <v-menu
           :close-on-content-click="false"
           bottom
@@ -54,6 +48,7 @@
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="secondary" v-bind="attrs" v-on="on" class="ml-2">
               Columns
+              <v-icon>mdi-border-all</v-icon>
             </v-btn>
           </template>
           <v-list color="foreground">
@@ -81,7 +76,7 @@
         :items="apps"
         :items-per-page="25"
         :footer-props="{
-          'items-per-page-options': [15, 25, 50, -1]
+          'items-per-page-options': [15, 25, 50, -1],
         }"
         :search="search"
         @click:row="handleRowClick"
@@ -301,37 +296,37 @@ export default {
           text: "Name",
           value: "name",
           sortable: true,
-          align: "start"
+          align: "start",
           // width: "30%",
         },
         project: {
           text: "Project",
           value: "project",
-          sortable: true
+          sortable: true,
         },
         status: {
           text: "Status",
           value: "status",
-          sortable: true
+          sortable: true,
           // width: "10%",
         },
         image: {
           text: "Image",
           value: "image",
-          sortable: true
+          sortable: true,
         },
         ports: {
           text: "Ports",
           value: "ports",
-          sortable: true
+          sortable: true,
         },
         created: {
           text: "Created At",
           value: "created",
-          sortable: true
-        }
+          sortable: true,
+        },
       },
-      selectedHeaders: []
+      selectedHeaders: [],
     };
   },
   methods: {
@@ -339,7 +334,7 @@ export default {
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
       Update: "apps/AppUpdate",
-      checkUpdate: "apps/checkAppUpdate"
+      checkUpdate: "apps/checkAppUpdate",
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}` });
@@ -362,7 +357,7 @@ export default {
     },
     refresh() {
       this.readApps();
-    }
+    },
   },
   computed: {
     ...mapState("apps", [
@@ -370,11 +365,11 @@ export default {
       "isLoading",
       "isLoadingValue",
       "action",
-      "updatable"
+      "updatable",
     ]),
     showHeaders() {
-      return this.headers.filter(s => this.selectedHeaders.includes(s));
-    }
+      return this.headers.filter((s) => this.selectedHeaders.includes(s));
+    },
   },
   created() {
     this.headers = Object.values(this.headersMap);
@@ -382,7 +377,7 @@ export default {
   },
   mounted() {
     this.readApps();
-  }
+  },
 };
 </script>
 

@@ -130,7 +130,9 @@
                     </v-list-item>
                     <v-divider />
                     <v-list-item
-                      @click="AppAction({ Name: app.name, Action: 'start' })"
+                      @click="AppAction({ Name: app.name, Action: 'start' })
+                            readAppLogs(app.name);
+                            readAppStats(app.name);"
                     >
                       <v-list-item-icon>
                         <v-icon>mdi-play</v-icon>
@@ -138,7 +140,9 @@
                       <v-list-item-title>Start</v-list-item-title>
                     </v-list-item>
                     <v-list-item
-                      @click="AppAction({ Name: app.name, Action: 'stop' })"
+                      @click="AppAction({ Name: app.name, Action: 'stop' })
+                              closeLogs()
+                              closeStats();"
                     >
                       <v-list-item-icon>
                         <v-icon>mdi-stop</v-icon>
@@ -155,7 +159,9 @@
                     </v-list-item>
                     <v-divider />
                     <v-list-item
-                      @click="AppAction({ Name: app.name, Action: 'kill' })"
+                      @click="AppAction({ Name: app.name, Action: 'kill' })
+                              closeLogs()
+                              closeStats();"
                     >
                       <v-list-item-icon>
                         <v-icon>mdi-fire</v-icon>
@@ -221,7 +227,9 @@
                       v-on="on"
                       color="secondary"
                       class="mx-1 my-1"
-                      @click="AppAction({ Name: app.name, Action: 'start' })"
+                      @click="AppAction({ Name: app.name, Action: 'start' })
+                            readAppLogs(app.name);
+                            readAppStats(app.name);"
                     >
                       <span class="hidden-md-and-down">start</span>
                       <v-icon>mdi-play</v-icon>
@@ -236,7 +244,9 @@
                       v-on="on"
                       color="secondary"
                       class="mx-1 my-1"
-                      @click="AppAction({ Name: app.name, Action: 'stop' })"
+                      @click="AppAction({ Name: app.name, Action: 'stop' });
+                              closeLogs()
+                              closeStats();"
                     >
                       <span class="hidden-md-and-down">stop</span>
                       <v-icon>mdi-stop</v-icon>
@@ -266,7 +276,9 @@
                       v-on="on"
                       color="secondary"
                       class="mx-1 my-1"
-                      @click="AppAction({ Name: app.name, Action: 'kill' })"
+                      @click="AppAction({ Name: app.name, Action: 'kill' })
+                              closeLogs()
+                              closeStats();"
                     >
                       <span class="hidden-md-and-down">kill</span>
                       <v-icon>mdi-fire</v-icon>
@@ -381,48 +393,14 @@ export default {
       this.$router.push({ name: "View Applications" });
     },
     readAppLogs(appName) {
-      var proto = "";
-      if (location.protocol == "http:") {
-        proto = "ws://";
-      } else {
-        proto = "wss://";
-      }
-      this.connection = new WebSocket(
-        `${proto}${location.hostname}:${location.port}/api/apps/${appName}/livelogs`
-      );
-      this.connection.onopen = () => {
-        this.connection.send(
-          JSON.stringify({ type: "onopen", data: "Connected!" })
-        );
-      };
-
-      this.connection.onmessage = event => {
+      this.logConnection = new EventSource(`/api/apps/${appName}/logs`);
+      this.logConnection.addEventListener("update", (event) => {
         this.logs.push(event.data);
-      };
-    },
-    closeLogs() {
-      this.logs = [];
-      this.connection.send(JSON.stringify({ message: "Closing Websocket" }));
-      this.connection.close(1000, "Leaving page or refreshing");
-      // this.connection.close("Leaving page or refreshing", 1001);
+      })
     },
     readAppStats(appName) {
-      var sproto = "";
-      if (location.protocol == "http:") {
-        sproto = "ws://";
-      } else {
-        sproto = "wss://";
-      }
-
-      this.statConnection = new WebSocket(
-        `${sproto}${location.hostname}:${location.port}/api/apps/${appName}/stats`
-      );
-      this.statConnection.onopen = () => {
-        this.statConnection.send(
-          JSON.stringify({ type: "onopen", data: "Connected!" })
-        );
-      };
-      this.statConnection.onmessage = event => {
+      this.statConnection = new EventSource(`/api/apps/${appName}/stats`);
+      this.statConnection.addEventListener("update", (event) => {
         let statsGroup = JSON.parse(event.data);
         this.stats.time.push(statsGroup.time);
         this.stats.cpu_percent.push(Math.round(statsGroup.cpu_percent));
@@ -434,19 +412,21 @@ export default {
             this.stats[key].shift();
           }
         }
-      };
+      })
     },
-    closeStats() {
-      this.stats.time = [];
-      this.stats.cpu_percent = [];
-      this.stats.mem_percent = [];
-      this.stats.mem_current = [];
-      this.stats.mem_total = [];
-      this.statConnection.send(
-        JSON.stringify({ message: "Closing Websocket" })
-      );
-      this.statConnection.close(1000, "Leaving page or refreshing");
-      // this.statConnection.close(1001, "Leaving page or refreshing");
+    closeLogs(){
+      this.logConnection.close()
+      this.logs = []
+    },
+    closeStats(){
+      this.statConnection.close()
+      this.stats= {
+        time: [],
+        cpu_percent: [],
+        mem_percent: [],
+        mem_current: [],
+        mem_total: []
+      }
     }
   },
   created() {

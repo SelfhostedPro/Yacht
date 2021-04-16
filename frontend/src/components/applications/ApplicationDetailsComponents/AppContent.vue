@@ -45,7 +45,12 @@
           }"
         >
           <v-card-title class="primary"> Networking </v-card-title>
-          <v-tabs background-color="tabs" :show-arrows="$vuetify.breakpoint.smAndDown" show-arrows-on-hover v-model="network_tab">
+          <v-tabs
+            background-color="tabs"
+            :show-arrows="$vuetify.breakpoint.smAndDown"
+            show-arrows-on-hover
+            v-model="network_tab"
+          >
             <v-tab> Ports </v-tab>
             <v-tab> Networks </v-tab>
           </v-tabs>
@@ -203,7 +208,12 @@
               {{ mount.Destination }}
             </v-tab>
           </v-tabs>
-          <v-tabs-items class="foreground" v-model="storage_tab" :show-arrows="$vuetify.breakpoint.smAndDown" show-arrows-on-hover>
+          <v-tabs-items
+            class="foreground"
+            v-model="storage_tab"
+            :show-arrows="$vuetify.breakpoint.smAndDown"
+            show-arrows-on-hover
+          >
             <v-tab-item v-for="(mount, index) in app.Mounts" :key="index">
               <v-simple-table id="storage_table" class="foreground">
                 <template v-slot:default>
