@@ -299,7 +299,7 @@
           leave-active-class="animated slideOutRight"
           mode="out-in"
         >
-          <v-tabs-items v-model="AppTab" class="mt-3">
+          <v-tabs-items v-model="AppTab" touchless class="mt-3">
             <v-tab-item> </v-tab-item>
             <v-tab-item>
               <Content :app="app" />
