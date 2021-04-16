@@ -23,15 +23,15 @@
       <v-card color="foreground" flat>
         <v-card-title>
           Memory Usage {{ stats.mem_percent[stats.mem_percent.length - 1] }}%,
-          {{ formatBytes(stats.mem_current[stats.mem_current.length - 1]) }}/{{
-            formatBytes(stats.mem_total[stats.mem_total.length - 1])
+          {{ stats.mem_current[stats.mem_current.length - 1] }}/{{
+            stats.mem_total[stats.mem_total.length - 1]
           }}
         </v-card-title>
         <v-card-subtitle>
           (0-100%) <br />
           Max: {{ Math.max.apply(Math, stats.mem_percent) }}%,
-          {{ formatBytes(Math.max.apply(Math, stats.mem_current)) }}/{{
-            formatBytes(stats.mem_total[stats.mem_total.length - 1])
+          {{ Math.max.apply(Math, stats.mem_current) }}/{{
+            stats.mem_total[stats.mem_total.length - 1]
           }}
         </v-card-subtitle>
         <PercentLineChart :chartData="fillMem(stats.mem_percent, stats.time)" />
@@ -51,17 +51,6 @@ export default {
     return {};
   },
   methods: {
-    formatBytes(bytes) {
-      if (bytes === 0) return "0 Bytes";
-      const decimals = 2;
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-    },
     fillCPU(stat, time) {
       let datacollection = {
         datasets: [

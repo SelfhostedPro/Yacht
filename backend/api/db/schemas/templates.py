@@ -15,7 +15,7 @@ class TemplateItem(BaseModel):
     image: str
     command: Optional[List[str]]
     notes: Optional[str]
-    categories: Optional[List[str]] = []
+    categories: Optional[List]
     restart_policy: Optional[str]
     ports: Optional[List] = []
     volumes: Optional[List] = []

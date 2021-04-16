@@ -18,7 +18,7 @@ module.exports = {
   },
 
   pwa: {
-    name: 'Yacht',
-    themeColor: '#41B883'
+    name: "Yacht",
+    themeColor: "#41B883"
   }
 };

@@ -15,6 +15,9 @@ from api.utils.apps import (
     conv_volumes2data,
     conv_cpus2data,
     _check_updates,
+    calculate_cpu_percent,
+    calculate_cpu_percent2,
+    format_bytes
 )
 from api.utils.templates import conv2dict
 
@@ -24,6 +27,9 @@ import zipfile
 import time
 import subprocess
 import docker
+import aiodocker
+import asyncio
+
 
 """
 Returns all running apps in a list
@@ -166,7 +172,8 @@ def deploy_app(template: DeployForm):
             conv_image2data(template.image),
             conv_restart2data(template.restart_policy),
             template.command,
-            conv_ports2data(template.ports, template.network, template.network_mode),
+            conv_ports2data(template.ports, template.network,
+                            template.network_mode),
             conv_portlabels2data(template.ports),
             template.network_mode,
             template.network,
@@ -271,11 +278,12 @@ def launch_app(
             mem_limit=mem_limit,
             detach=True,
         )
-    except Exception as e:
+    except docker.errors.APIError as e:
         if e.status_code == 500:
             failed_app = dclient.containers.get(name)
             failed_app.remove()
-        raise e
+        raise HTTPException(status_code=e.status_code,
+                            detail=e.explanation.decode("utf-8"))
 
     print(
         f"""Container started successfully.
@@ -338,7 +346,8 @@ def app_update(app_name):
                 status_code=exc.response.status_code, detail=exc.explanation
             )
 
-    volumes = {"/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
+    volumes = {
+        "/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
     try:
         updater = dclient.containers.run(
             image="containrrr/watchtower:latest",
@@ -371,7 +380,8 @@ def _update_self(background_tasks):
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
     yacht_id = (
-        subprocess.check_output(["bash", "-c", bash_command]).decode("UTF-8").strip()
+        subprocess.check_output(
+            ["bash", "-c", bash_command]).decode("UTF-8").strip()
     )
     try:
         yacht = dclient.containers.get(yacht_id)
@@ -398,7 +408,8 @@ Spins up a watchtower instance with --cleanup and
 
 def update_self_in_background(yacht):
     dclient = docker.from_env()
-    volumes = {"/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
+    volumes = {
+        "/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
     print("**** Updating " + yacht.name + "****")
     dclient.containers.run(
         image="containrrr/watchtower:latest",
@@ -419,7 +430,8 @@ def check_self_update():
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
     yacht_id = (
-        subprocess.check_output(["bash", "-c", bash_command]).decode("UTF-8").strip()
+        subprocess.check_output(
+            ["bash", "-c", bash_command]).decode("UTF-8").strip()
     )
     try:
         yacht = dclient.containers.get(yacht_id)
@@ -463,3 +475,71 @@ def generate_support_bundle(app_name):
         )
     else:
         raise HTTPException(404, f"App {app_name} not found.")
+
+async def log_generator(request, app_name):
+    while True:
+        async with aiodocker.Docker() as docker:
+            container: DockerContainer = await docker.containers.get(app_name)
+            if container._container["State"]["Status"] == "running":
+                logs_generator = container.log(stdout=True, stderr=True, follow=True, tail=200)
+                async for line in logs_generator:
+                    yield {"event": "update", "retry": 3000, "data": line}
+
+            if await request.is_disconnected():
+                break
+
+
+
+
+async def stat_generator(request, app_name):
+    prev_stats = None
+    while True:
+        async with aiodocker.Docker() as adocker:
+            container: DockerContainer = await adocker.containers.get(app_name)
+            if container._container["State"]["Status"] == "running":
+                stats_generator = container.stats(stream=True)
+
+                async for line in stats_generator:
+                    current_stats = await process_app_stats(line, app_name)
+                    if prev_stats != current_stats:
+                        yield { "event": "update", "retry": 30000, "data": json.dumps(current_stats)}
+                        prev_stats = current_stats
+
+            if await request.is_disconnected():
+                break
+
+            # Stats are generated every second by docker
+            # so there's no point in checking more often than that
+            await asyncio.sleep(1)
+
+
+async def process_app_stats(line, app_name):
+    cpu_total = 0.0
+    cpu_system = 0.0
+    cpu_percent = 0.0
+    if line["memory_stats"]:
+        mem_current = line["memory_stats"]["usage"]
+        mem_total = line["memory_stats"]["limit"]
+        mem_percent = (mem_current / mem_total) * 100.0
+    else:
+        mem_current = None
+        mem_total = None
+        mem_percent = None
+
+    try:
+        cpu_percent, cpu_system, cpu_total = await calculate_cpu_percent2(
+            line, cpu_total, cpu_system
+        )
+    except KeyError:
+        print("error while getting new CPU stats: %r, falling back")
+        cpu_percent = await calculate_cpu_percent(line)
+
+    full_stats = {
+        "time": line["read"],
+        "name": app_name,
+        "mem_total": format_bytes(mem_total),
+        "cpu_percent": round(cpu_percent, 0),
+        "mem_current": format_bytes(mem_current),
+        "mem_percent": round(mem_percent, 0),
+    }
+    return full_stats
