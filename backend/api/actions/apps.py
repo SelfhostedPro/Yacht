@@ -537,9 +537,9 @@ async def process_app_stats(line, app_name):
     full_stats = {
         "time": line["read"],
         "name": app_name,
-        "mem_total": format_bytes(mem_total),
-        "cpu_percent": round(cpu_percent, 0),
-        "mem_current": format_bytes(mem_current),
-        "mem_percent": round(mem_percent, 0),
+        "mem_total": mem_total,
+        "cpu_percent": round(cpu_percent, 1),
+        "mem_current": mem_current,
+        "mem_percent": round(mem_percent, 1),
     }
     return full_stats

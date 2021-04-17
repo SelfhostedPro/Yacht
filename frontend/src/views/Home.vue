@@ -14,7 +14,7 @@
           md="3"
           sm="3"
           class="d-flex"
-          style="flex-direction:column"
+          style="flex-direction: column"
         >
           <v-card color="foreground" class="flex-grow-1">
             <v-card-title class="pb-0">
@@ -44,15 +44,16 @@
                   <br />
                   MEM Usage:
                   <v-progress-linear :value="app.mem_percent" color="blue" />
-                  {{ app.mem_percent }}%,
-                  {{ app.mem_current }}
+                  {{ app.mem_percent }}%, {{ app.mem_current }} /
+                  {{ app.mem_total }}
                 </v-card-text>
               </template>
               <span
                 >CPU Usage: {{ app.cpu_percent }}%
                 <br />
-                MEM Usage: {{ app.mem_percent }}%,
-                {{ app.mem_current }}
+                MEM Usage: {{ app.mem_percent }}%, {{ app.mem_current }}/{{
+                  app.mem_total
+                }}
               </span>
             </v-tooltip>
           </v-card>
@@ -75,16 +76,27 @@ export default {
     ...mapActions({
       readApps: "apps/readApps",
     }),
+    formatBytes(bytes, decimals = 2) {
+      if (bytes === 0) return "0 Bytes";
+
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+    },
     readAppStats(appName) {
       if (!(appName in this.statConnection)) {
         this.statConnection[appName] = new EventSource(
-          `/api/apps/${appName}/sse_stats`
+          `/api/apps/${appName}/stats`
         );
         this.statConnection[appName].addEventListener("update", (event) => {
           let statsGroup = JSON.parse(event.data);
           if (!(statsGroup.name in this.stats)) {
             this.stats[statsGroup.name] = {};
-            this.stats[statsGroup.name].name = statsGroup.name
+            this.stats[statsGroup.name].name = statsGroup.name;
           }
           this.stats[statsGroup.name].cpu_percent = Math.round(
             statsGroup.cpu_percent
@@ -92,16 +104,23 @@ export default {
           this.stats[statsGroup.name].mem_percent = Math.round(
             statsGroup.mem_percent
           );
-          this.stats[statsGroup.name].mem_current = statsGroup.mem_current;
-          this.stats[statsGroup.name].mem_total = statsGroup.mem_total;
+          this.stats[statsGroup.name].mem_current = this.formatBytes(
+            statsGroup.mem_current,
+            2
+          );
+          this.stats[statsGroup.name].mem_total = this.formatBytes(
+            statsGroup.mem_total,
+            2
+          );
           this.$forceUpdate();
         });
       }
     },
     refresh() {
-      this.readApps()
-      for (let app in this.apps){
-        this.readAppStats(app.name)
+      this.closeStats();
+      this.readApps();
+      for (var app in this.apps) {
+        this.readAppStats(this.apps[app].name);
       }
     },
     sortByTitle(arr) {
@@ -118,6 +137,12 @@ export default {
     },
     handleAppClick(appName) {
       this.$router.push({ path: `/apps/${appName}/info` });
+    },
+    closeStats() {
+      for (let connection in this.statConnection) {
+        this.statConnection[connection].close();
+      }
+      this.stats = {};
     },
     fillStats(app) {
       let datacollection = {
@@ -141,17 +166,15 @@ export default {
   computed: {
     ...mapState("apps", ["apps"]),
   },
-  async mounted() {
-    await this.readApps();
+  created() {
+    this.readApps()
+    console.log(this.apps)
     for (var app in this.apps) {
-      await this.readAppStats(this.apps[app].name);
-    }
+      this.readAppStats(this.apps[app].name);
+    };
   },
-  async created() {
-    await this.readApps();
-    for (var app in this.apps) {
-      await this.readAppStats(this.apps[app].name);
-    }
+  beforeDestroy() {
+    this.closeStats();
   },
 };
 </script>
