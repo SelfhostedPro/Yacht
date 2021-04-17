@@ -3,14 +3,14 @@
     <v-card color="foreground">
       <v-fade-transition>
         <v-progress-linear
-          indeterminate
-          v-if="isLoading && isLoadingValue == null"
+          v-model="isLoadingValue"
+          v-if="isLoading && isLoadingValue < 100"
           color="primary"
           bottom
         />
         <v-progress-linear
-          v-model="isLoadingValue"
-          v-if="isLoading && isLoadingValue"
+          indeterminate
+          v-if="isLoading"
           color="primary"
           bottom
         />
@@ -25,17 +25,18 @@
           v-model="search"
           append-icon="mdi-magnify"
           label="Search"
-          single-line
           hide-details
+          color="secondary"
+          dense
         ></v-text-field>
       </v-card-title>
       <v-card-title color="secondary">
         <v-btn @click="checkUpdate(apps)" color="secondary">
-          Update
+          <span v-if="$vuetify.breakpoint.mdAndUp">Updates</span>
           <v-icon>mdi-update</v-icon>
         </v-btn>
         <v-btn class="ml-2" @click="refresh()" color="secondary">
-          Refresh
+          <span v-if="$vuetify.breakpoint.mdAndUp">Refresh</span>
           <v-icon>mdi-refresh</v-icon>
         </v-btn>
         <v-spacer />
@@ -47,7 +48,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="secondary" v-bind="attrs" v-on="on" class="ml-2">
-              Columns
+              <span v-if="$vuetify.breakpoint.mdAndUp">Columns</span>
               <v-icon>mdi-border-all</v-icon>
             </v-btn>
           </template>
@@ -173,8 +174,8 @@
                   Remove {{ selectedApp.name }}?
                 </v-card-title>
                 <v-card-text>
-                  Are you sure you want to permanently delete the template?<br />
-                  This action cannot be revoked.
+                  Are you sure you want to permanently remove {{ selectedApp.name }}?<br />
+                  All non peristent data will be removed.
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -297,7 +298,6 @@ export default {
           value: "name",
           sortable: true,
           align: "start",
-          // width: "30%",
         },
         project: {
           text: "Project",
@@ -308,7 +308,6 @@ export default {
           text: "Status",
           value: "status",
           sortable: true,
-          // width: "10%",
         },
         image: {
           text: "Image",
@@ -366,6 +365,7 @@ export default {
       "isLoadingValue",
       "action",
       "updatable",
+      "isLoadingValue"
     ]),
     showHeaders() {
       return this.headers.filter((s) => this.selectedHeaders.includes(s));

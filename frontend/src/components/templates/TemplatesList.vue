@@ -9,7 +9,7 @@
           bottom
         />
       </v-fade-transition>
-      <v-card-title>
+      <v-card-title class="primary font-weight-bold">
         Templates
         <v-btn fab x-small class="ml-2" color="primary" to="/templates/new">
           <v-icon>mdi-plus</v-icon>

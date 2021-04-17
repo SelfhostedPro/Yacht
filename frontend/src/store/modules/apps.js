@@ -31,6 +31,17 @@ const mutations = {
   setLoading(state, loading) {
     state.isLoading = loading;
   },
+  setLoadingItems(state){
+    state.isLoadingValue = 0
+  },
+  setLoadingItemCompleted(state, total){
+    let quotent = 1 / total
+    let increment = quotent * 100
+    state.isLoadingValue += increment
+  },
+  setLoadingComplete(state){
+    state.isLoadingValue == null
+  },
   setAction(state, action) {
     state.action = action;
   },
@@ -64,6 +75,7 @@ const actions = {
   },
   async checkAppUpdate({ commit }, apps) {
     await commit("setLoading", true);
+    await commit("setLoadingItems")
     await commit("setAction", "Checking for updates...");
     await Promise.all(
       apps.map(async _app => {
@@ -72,10 +84,12 @@ const actions = {
           .get(url)
           .then(response => {
             let app = response.data;
+            commit("setLoadingItemCompleted", apps.length)
             commit("setApp", app);
             commit("setLoading", true);
           })
           .catch(err => {
+            console.log(err)
             commit("snackbar/setErr", err, { root: true });
           });
       })
