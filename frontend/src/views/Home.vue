@@ -78,7 +78,7 @@ export default {
     readAppStats(appName) {
       if (!(appName in this.statConnection)) {
         this.statConnection[appName] = new EventSource(
-          `/api/apps/${appName}/sse_stats`
+          `/api/apps/${appName}/stats`
         );
         this.statConnection[appName].addEventListener("update", (event) => {
           let statsGroup = JSON.parse(event.data);
