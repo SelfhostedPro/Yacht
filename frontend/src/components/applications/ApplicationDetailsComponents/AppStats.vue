@@ -1,8 +1,6 @@
 <template>
   <v-card color="foreground" class="mx-4 my-2" raised>
-    <v-card-title class="primary font-weight-bold">
-      Stats
-    </v-card-title>
+    <v-card-title class="primary font-weight-bold"> Stats </v-card-title>
     <v-card-text
       v-if="app.State.Status != 'running'"
       class="secondary text-center px-5 py-5"
@@ -23,15 +21,15 @@
       <v-card color="foreground" flat>
         <v-card-title>
           Memory Usage {{ stats.mem_percent[stats.mem_percent.length - 1] }}%,
-          {{ stats.mem_current[stats.mem_current.length - 1] }}/{{
-            stats.mem_total[stats.mem_total.length - 1]
+          {{ formatBytes(stats.mem_current[stats.mem_current.length - 1]) }}/{{
+            formatBytes(stats.mem_total[stats.mem_total.length - 1])
           }}
         </v-card-title>
         <v-card-subtitle>
           (0-100%) <br />
           Max: {{ Math.max.apply(Math, stats.mem_percent) }}%,
-          {{ Math.max.apply(Math, stats.mem_current) }}/{{
-            stats.mem_total[stats.mem_total.length - 1]
+          {{ formatBytes(Math.max.apply(Math, stats.mem_current), 2) }}/{{
+            formatBytes(stats.mem_total[stats.mem_total.length - 1])
           }}
         </v-card-subtitle>
         <PercentLineChart :chartData="fillMem(stats.mem_percent, stats.time)" />
@@ -44,13 +42,24 @@
 import PercentLineChart from "../../charts/PercentLineChart";
 export default {
   components: {
-    PercentLineChart
+    PercentLineChart,
   },
   props: ["app", "stats"],
   data() {
     return {};
   },
   methods: {
+    formatBytes(bytes, decimals = 2) {
+      if (bytes === 0) return "0 Bytes";
+
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+    },
     fillCPU(stat, time) {
       let datacollection = {
         datasets: [
@@ -61,9 +70,9 @@ export default {
             pointRadius: 0,
             data: time.map((t, i) => {
               return { x: t, y: stat[i] };
-            })
-          }
-        ]
+            }),
+          },
+        ],
       };
       return datacollection;
     },
@@ -77,13 +86,13 @@ export default {
             pointRadius: 0,
             data: time.map((t, i) => {
               return { x: t, y: stat[i] };
-            })
-          }
-        ]
+            }),
+          },
+        ],
       };
       return datacollection;
-    }
-  }
+    },
+  },
 };
 </script>
 
