@@ -21,6 +21,7 @@ from api.utils.apps import (
 )
 from api.utils.templates import conv2dict
 
+import yaml
 import json
 import io
 import zipfile
@@ -463,7 +464,7 @@ def generate_support_bundle(app_name):
             attrs = app.attrs
             service_log = app.logs()
             zf.writestr(f"{app_name}.log", service_log)
-            zf.writestr(f"{app_name}.config", json.dumps(attrs))
+            zf.writestr(f"{app_name}-config.yml", yaml.dump(attrs))
             # It is possible that ".write(...)" has better memory management here.
         stream.seek(0)
         return StreamingResponse(
