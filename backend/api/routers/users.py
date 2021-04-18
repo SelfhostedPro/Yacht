@@ -33,6 +33,7 @@ def login(
     db: Session = Depends(get_db),
     Authorize: AuthJWT = Depends(),
 ):
+    crud.prune_blacklist(db)
     _user = (
         db.query(models.User)
         .filter(models.User.username == user.username.casefold())
@@ -77,18 +78,20 @@ def get_api_keys(db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     return crud.get_keys(user, db)
 
 
-@router.get("/api/keys/new", response_model=schemas.CreateAPIKEY)
+@router.post("/api/keys/new", response_model=schemas.DisplayAPIKEY)
 def create_api_key(
+    key: schemas.GenerateAPIKEY,
     db: Session = Depends(get_db),
     Authorize: AuthJWT = Depends(),
 ):
+    name = key.key_name
     auth_check(Authorize)
     current_user = Authorize.get_jwt_subject()
     if current_user is not None:
         user = crud.get_user_by_name(db=db, username=current_user)
     else:
         raise HTTPException(status_code=401, detail="Not logged in.")
-    return crud.create_key(user, Authorize, db)
+    return crud.create_key(name, user, Authorize, db)
 
 
 @router.get("/api/keys/{key_id}/delete")
@@ -132,6 +135,12 @@ def update_user(
 @router.get("/logout")
 def logout(Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     auth_check(Authorize)
+    crud.blacklist_login_token(Authorize, db)
+    return {"msg": "Logout Successful"}
+
+@router.get("/logout/refresh")
+def logout(Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    Authorize.jwt_refresh_token_required()
     Authorize.unset_jwt_cookies()
     crud.blacklist_login_token(Authorize, db)
     return {"msg": "Logout Successful"}

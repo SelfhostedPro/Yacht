@@ -64,6 +64,11 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
+def prune_blacklist(db: Session):
+    expired_list = []
+    db.query(TokenBlacklist).filter(TokenBlacklist.expires < datetime.utcnow()).delete()
+    db.commit()
+    return
 
 def blacklist_api_key(key_id, db: Session):
     key = db.query(models.APIKEY).filter(models.APIKEY.id == key_id).first()
@@ -89,13 +94,14 @@ def get_keys(user, db: Session):
     return keys
 
 
-def create_key(user, Authorize, db: Session):
+def create_key(key_name, user, Authorize, db: Session):
     api_key = Authorize.create_access_token(subject=secrets.token_urlsafe(10), expires_time=False)
     _hashed_key = get_password_hash(api_key)
     jti = Authorize.get_raw_jwt(api_key)['jti']
-    db_key = models.APIKEY(user=user.id, is_active=True, hashed_key=_hashed_key, jti=jti)
+    db_key = models.APIKEY(key_name=key_name, user=user.id, hashed_key=_hashed_key, jti=jti)
     db.add(db_key)
     db.commit()
     db.refresh(db_key)
     db_key.token = api_key
-    return db_key
+    print(db_key.__dict__)
+    return db_key.__dict__

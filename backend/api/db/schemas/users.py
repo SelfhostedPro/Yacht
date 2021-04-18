@@ -23,6 +23,7 @@ class User(UserBase):
 
 class APIKEY(BaseModel):
     id: int
+    key_name: str
     is_active: bool
     user: int
     created_at: datetime
@@ -30,6 +31,8 @@ class APIKEY(BaseModel):
     class Config:
         orm_mode = True
 
+class GenerateAPIKEY(BaseModel):
+    key_name: str
 
-class CreateAPIKEY(APIKEY):
+class DisplayAPIKEY(APIKEY):
     token: str
