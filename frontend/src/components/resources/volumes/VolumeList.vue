@@ -9,15 +9,13 @@
           bottom
         />
       </v-fade-transition>
-      <v-card-title>
+      <v-card-title class="primary font-weight-bold">
         Volumes
         <v-dialog v-model="createDialog" max-width="290">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              fab
-              x-small
               class="ml-2"
-              color="primary"
+              color="secondary"
               v-bind="attrs"
               v-on="on"
             >

@@ -7,11 +7,7 @@
     <v-card-text>
       This is where you can change settings related to your server.
     </v-card-text>
-    <v-card color="foreground">
-      <v-card-title class="subheading secondary font-weight-bold"
-        >Configuration</v-card-title
-      >
-      <v-card-title class="font-weight-bold"> Import: </v-card-title>
+      <h2 class="font-weight-bold ml-5"> Import: </h2>
       <ValidationObserver ref="obs1" v-slot="{ invalid }">
         <validationProvider
           name="importFile"
@@ -38,11 +34,10 @@
           >Import
         </v-btn>
       </ValidationObserver>
-      <v-card-title class="font-weight-bold mt-5"> Export: </v-card-title>
+      <h2 class="font-weight-bold mt-5 ml-5"> Export: </h2>
       <v-btn class="mx-5 mb-5" color="primary" @click="export_settings()"
         >Export
       </v-btn>
-    </v-card>
   </v-card>
 </template>
 

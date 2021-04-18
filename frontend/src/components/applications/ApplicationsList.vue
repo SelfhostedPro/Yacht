@@ -31,10 +31,6 @@
         ></v-text-field>
       </v-card-title>
       <v-card-title color="secondary">
-        <v-btn @click="checkUpdate(apps)" color="secondary">
-          <span v-if="$vuetify.breakpoint.mdAndUp">Updates</span>
-          <v-icon>mdi-update</v-icon>
-        </v-btn>
         <v-btn class="ml-2" @click="refresh()" color="secondary">
           <span v-if="$vuetify.breakpoint.mdAndUp">Refresh</span>
           <v-icon>mdi-refresh</v-icon>
@@ -235,6 +231,7 @@
                   v-on="on"
                   v-bind="attrs"
                   class="mx-1"
+                  v-show="!port.hip == "::"
                   v-if="port.hip == '0.0.0.0'"
                   color="primary"
                   label
