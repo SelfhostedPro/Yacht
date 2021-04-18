@@ -346,7 +346,7 @@ export default {
       for (var k in data) {
         if (data[k]) {
           o = o.concat(
-            data[k].map(function(x) {
+            data[k].map(function (x) {
               return { cport: k, hip: x.HostIp, hport: x.HostPort };
             })
           );
@@ -354,8 +354,9 @@ export default {
       }
       return o;
     },
-    refresh() {
-      this.readApps();
+    async refresh() {
+      await this.readApps();
+      await this.checkUpdate(this.apps);
     },
   },
   computed: {
@@ -365,7 +366,7 @@ export default {
       "isLoadingValue",
       "action",
       "updatable",
-      "isLoadingValue"
+      "isLoadingValue",
     ]),
     showHeaders() {
       return this.headers.filter((s) => this.selectedHeaders.includes(s));
@@ -375,8 +376,9 @@ export default {
     this.headers = Object.values(this.headersMap);
     this.selectedHeaders = this.headers;
   },
-  mounted() {
-    this.readApps();
+  async mounted() {
+    await this.readApps();
+    await this.checkUpdate(this.apps);
   },
 };
 </script>

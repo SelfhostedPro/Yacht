@@ -55,11 +55,11 @@ const mutations = {
 };
 
 const actions = {
-  readApps({ commit }) {
-    commit("setLoading", true);
-    commit("setAction", "Getting Apps ...");
+  async readApps({ commit }) {
+    await commit("setLoading", true);
+    await commit("setAction", "Getting Apps ...");
     const url = "/api/apps/";
-    axios
+    await axios
       .get(url)
       .then(response => {
         var apps = response.data;
