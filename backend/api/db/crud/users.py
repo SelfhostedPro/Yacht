@@ -103,5 +103,4 @@ def create_key(key_name, user, Authorize, db: Session):
     db.commit()
     db.refresh(db_key)
     db_key.token = api_key
-    print(db_key.__dict__)
     return db_key.__dict__

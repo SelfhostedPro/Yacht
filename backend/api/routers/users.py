@@ -94,7 +94,7 @@ def create_api_key(
     return crud.create_key(name, user, Authorize, db)
 
 
-@router.get("/api/keys/{key_id}/delete")
+@router.get("/api/keys/{key_id}")
 def delete_api_key(key_id, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return crud.blacklist_api_key(key_id, db)
