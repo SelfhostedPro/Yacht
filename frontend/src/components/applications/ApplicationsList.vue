@@ -231,7 +231,7 @@
                   v-on="on"
                   v-bind="attrs"
                   class="mx-1"
-                  v-show="!port.hip == "::"
+                  v-show="!port.hip == '::'"
                   v-if="port.hip == '0.0.0.0'"
                   color="primary"
                   label
