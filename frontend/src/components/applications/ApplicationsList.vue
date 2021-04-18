@@ -30,12 +30,11 @@
           dense
         ></v-text-field>
       </v-card-title>
-      <v-card-title color="secondary">
+      <v-card-title color="secondary" >
         <v-btn class="ml-2" @click="refresh()" color="secondary">
           <span v-if="$vuetify.breakpoint.mdAndUp">Refresh</span>
           <v-icon>mdi-refresh</v-icon>
         </v-btn>
-        <v-spacer />
         <v-menu
           :close-on-content-click="false"
           bottom
