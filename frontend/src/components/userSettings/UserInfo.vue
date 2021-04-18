@@ -9,7 +9,7 @@
       This is where you can change settings related to your user account.
     </v-card-text>
     <h2 class="font-weight-bold ml-5"> API Keys 
-      <v-dialog id="keyModal" v-model="keyDialog" hide-overlay>
+      <v-dialog id="keyModal" v-model="keyDialog" max-width="500">
         <template v-slot:activator="{on,attrs}">
           <v-btn color="primary" v-bind="attrs" v-on="on">
             <v-icon>mdi-plus</v-icon>
