@@ -30,6 +30,7 @@ router = APIRouter()
 @router.get(
     "/variables",
     response_model=List[schemas.TemplateVariables],
+    operation_id="authorize"
 )
 def read_template_variables(
     db: Session = Depends(get_db), Authorize: AuthJWT = Depends()

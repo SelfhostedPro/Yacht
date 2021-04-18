@@ -7,7 +7,7 @@
     <v-card-text>
       This is where you can change settings related to your server.
     </v-card-text>
-      <h2 class="font-weight-bold ml-5"> Import: </h2>
+      <h2 class="font-weight-bold ml-5"> Import </h2>
       <ValidationObserver ref="obs1" v-slot="{ invalid }">
         <validationProvider
           name="importFile"
@@ -34,7 +34,7 @@
           >Import
         </v-btn>
       </ValidationObserver>
-      <h2 class="font-weight-bold mt-5 ml-5"> Export: </h2>
+      <h2 class="font-weight-bold mt-5 ml-5"> Export </h2>
       <v-btn class="mx-5 mb-5" color="primary" @click="export_settings()"
         >Export
       </v-btn>
@@ -52,7 +52,7 @@ export default {
   },
   data() {
     return {
-      importFile: null
+      importFile: null,
     };
   },
   methods: {
@@ -93,6 +93,6 @@ export default {
           this.setErr(err);
         });
     }
-  }
+  },
 };
 </script>
