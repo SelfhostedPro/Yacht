@@ -30,16 +30,11 @@
           dense
         ></v-text-field>
       </v-card-title>
-      <v-card-title color="secondary">
-        <v-btn @click="checkUpdate(apps)" color="secondary">
-          <span v-if="$vuetify.breakpoint.mdAndUp">Updates</span>
-          <v-icon>mdi-update</v-icon>
-        </v-btn>
+      <v-card-title color="secondary" >
         <v-btn class="ml-2" @click="refresh()" color="secondary">
           <span v-if="$vuetify.breakpoint.mdAndUp">Refresh</span>
           <v-icon>mdi-refresh</v-icon>
         </v-btn>
-        <v-spacer />
         <v-menu
           :close-on-content-click="false"
           bottom
@@ -235,6 +230,7 @@
                   v-on="on"
                   v-bind="attrs"
                   class="mx-1"
+                  v-show="!port.hip == '::'"
                   v-if="port.hip == '0.0.0.0'"
                   color="primary"
                   label
@@ -346,7 +342,7 @@ export default {
       for (var k in data) {
         if (data[k]) {
           o = o.concat(
-            data[k].map(function(x) {
+            data[k].map(function (x) {
               return { cport: k, hip: x.HostIp, hport: x.HostPort };
             })
           );
@@ -354,8 +350,9 @@ export default {
       }
       return o;
     },
-    refresh() {
-      this.readApps();
+    async refresh() {
+      await this.readApps();
+      await this.checkUpdate(this.apps);
     },
   },
   computed: {
@@ -365,7 +362,7 @@ export default {
       "isLoadingValue",
       "action",
       "updatable",
-      "isLoadingValue"
+      "isLoadingValue",
     ]),
     showHeaders() {
       return this.headers.filter((s) => this.selectedHeaders.includes(s));
@@ -375,8 +372,9 @@ export default {
     this.headers = Object.values(this.headersMap);
     this.selectedHeaders = this.headers;
   },
-  mounted() {
-    this.readApps();
+  async mounted() {
+    await this.readApps();
+    await this.checkUpdate(this.apps);
   },
 };
 </script>

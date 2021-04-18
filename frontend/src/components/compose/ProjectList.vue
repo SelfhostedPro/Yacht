@@ -9,9 +9,9 @@
           bottom
         />
       </v-fade-transition>
-      <v-card-title>
+      <v-card-title class="primary font-weight-bold">
         Projects
-        <v-btn fab x-small class="ml-2" color="primary" to="/projects/_/edit">
+        <v-btn class="ml-2" color="secondary" to="/projects/_/edit">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
         <v-spacer />

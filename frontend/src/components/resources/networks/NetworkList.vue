@@ -9,13 +9,11 @@
           bottom
         />
       </v-fade-transition>
-      <v-card-title>
+      <v-card-title class="primary font-weight-bold">
         Networks
         <v-btn
-          fab
-          x-small
           class="ml-2"
-          color="primary"
+          color="secondary"
           :to="{ path: `/resources/networks/new` }"
         >
           <v-icon>mdi-plus</v-icon>
