@@ -3,18 +3,21 @@
     <v-card color="foreground">
       <v-fade-transition>
         <v-progress-linear
-          v-model="isLoadingValue"
-          v-if="isLoading && isLoadingValue < 100"
-          color="primary"
-          bottom
-        />
-        <v-progress-linear
           indeterminate
-          v-if="isLoading"
+          v-if="isLoading && isLoadingValue === 0"
           color="primary"
           bottom
         />
       </v-fade-transition>
+      <v-fade-transition>
+        <v-progress-linear
+          v-model="isLoadingValue"
+          v-if="isLoadingValue > 0"
+          color="primary"
+          bottom
+        />
+      </v-fade-transition>
+
       <v-card-title class="primary font-weight-bold">
         Apps
         <v-btn class="ml-2" color="secondary" to="/apps/deploy">
@@ -193,7 +196,7 @@
             <span class="nametext ml-1">{{ item.name }}</span>
             <v-tooltip
               right
-              v-if="item.isUpdatable"
+              v-if="item in updatable"
               color="primary"
               class="mb-2"
             >
@@ -329,7 +332,7 @@ export default {
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
       Update: "apps/AppUpdate",
-      checkUpdate: "apps/checkAppUpdate",
+      checkUpdate: "apps/_checkAppUpdate",
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}` });

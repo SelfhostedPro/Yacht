@@ -45,8 +45,8 @@ const mutations = {
   setAction(state, action) {
     state.action = action;
   },
-  setUpdatable(state, updatable) {
-    state.updatable = updatable;
+  setUpdatable(state, app) {
+    state.updatable.push(app);
   },
   setUpdated(state, updated) {
     let index = state.updatable.indexOf(updated);
@@ -73,31 +73,70 @@ const actions = {
         commit("setAction", "");
       });
   },
-  async checkAppUpdate({ commit }, apps) {
-    await commit("setLoading", true);
+  async _checkAppUpdate({ commit }, apps){
+    await commit("setLoading", true)
     await commit("setLoadingItems")
-    await commit("setAction", "Checking for updates...");
+    await commit("setAction", "Checking for updates...")
     await Promise.all(
-      apps.map(async _app => {
-        let url = `/api/apps/${_app.name}/updates`;
+      apps.map(async _update => {
+        let url = `/api/apps/${_update.name}/updates`;
+        let _updatable_string = sessionStorage.getItem("updatable")
+        if (_updatable_string){
+          var _updatable = JSON.parse(_updatable_string)
+        } else {
+          _updatable = null
+        }
+        if ( _updatable && _update in _updatable){
+          commit("setUpdatable", _update)
+          commit("setLoadingItemCompleted", apps.length)
+        } else {
         await axios
           .get(url)
           .then(response => {
-            let app = response.data;
-            commit("setLoadingItemCompleted", apps.length)
-            commit("setApp", app);
-            commit("setLoading", true);
+            let app = response.data
+            if (app.isUpdatable){
+              commit("setUpdatable", app)
+              commit("setLoadingItemCompleted", apps.length)
+            }
           })
           .catch(err => {
-            console.log(err)
-            commit("snackbar/setErr", err, { root: true });
-          });
-      })
-    ).then(() => {
-      commit("setLoading", false);
-      commit("setAction", "");
-    });
+            commit("snackbar/setErr", err, {root:true})
+          })
+          }
+        })
+    )
+    .then(() => {
+      sessionStorage.setItem("updatable", JSON.stringify(state.updatable))
+      commit("setLoading", false)
+      commit("setAction", "")
+    })
   },
+  // async checkAppUpdate({ commit }, apps) {
+  //   updatable = []
+  //   await commit("setLoading", true);
+  //   await commit("setLoadingItems")
+  //   await commit("setAction", "Checking for updates...");
+  //   await Promise.all(
+  //     apps.map(async _app => {
+  //       let url = `/api/apps/${_app.name}/updates`;
+  //       await axios
+  //         .get(url)
+  //         .then(response => {
+  //           let app = response.data;
+  //           commit("setLoadingItemCompleted", apps.length)
+  //           commit("setApp", app);
+  //           commit("setLoading", true);
+  //         })
+  //         .catch(err => {
+  //           console.log(err)
+  //           commit("snackbar/setErr", err, { root: true });
+  //         });
+  //     })
+  //   ).then(() => {
+  //     commit("setLoading", false);
+  //     commit("setAction", "");
+  //   });
+  // },
   readApp({ commit }, Name) {
     const url = `/api/apps/${Name}`;
     commit("setLoading", true);
