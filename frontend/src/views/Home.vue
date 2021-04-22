@@ -168,7 +168,6 @@ export default {
   },
   async created() {
     await this.readApps()
-    console.log(this.apps)
     for (var app in this.apps) {
       this.readAppStats(this.apps[app].name);
     };

@@ -228,11 +228,12 @@
           <ins v-for="(port, index) in convPorts(item.ports)" :key="index">
             <v-tooltip top transition="scale-transition">
               <template v-slot:activator="{ on, attrs }">
+                {{ port }}
                 <v-chip
                   v-on="on"
                   v-bind="attrs"
                   class="mx-1"
-                  v-show="!port.hip == '::'"
+                  v-show="port.hip != '::'"
                   v-if="port.hip == '0.0.0.0'"
                   color="primary"
                   label
