@@ -36,7 +36,7 @@
 
       <v-card-title color="secondary">
         <v-btn class="ml-2" @click="checkUpdate(apps)" color="secondary">
-          <span v-if="$vuetify.breakpoint.mdAndUp">Refresh</span>
+          <span v-if="$vuetify.breakpoint.mdAndUp">Updates</span>
           <v-icon>mdi-update</v-icon>
         </v-btn>
         <v-btn class="ml-2" @click="refresh()" color="secondary">
