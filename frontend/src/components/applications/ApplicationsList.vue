@@ -33,7 +33,12 @@
           dense
         ></v-text-field>
       </v-card-title>
-      <v-card-title color="secondary" >
+
+      <v-card-title color="secondary">
+        <v-btn class="ml-2" @click="checkUpdate(apps)" color="secondary">
+          <span v-if="$vuetify.breakpoint.mdAndUp">Refresh</span>
+          <v-icon>mdi-update</v-icon>
+        </v-btn>
         <v-btn class="ml-2" @click="refresh()" color="secondary">
           <span v-if="$vuetify.breakpoint.mdAndUp">Refresh</span>
           <v-icon>mdi-refresh</v-icon>
@@ -172,7 +177,8 @@
                   Remove {{ selectedApp.name }}?
                 </v-card-title>
                 <v-card-text>
-                  Are you sure you want to permanently remove {{ selectedApp.name }}?<br />
+                  Are you sure you want to permanently remove
+                  {{ selectedApp.name }}?<br />
                   All non peristent data will be removed.
                 </v-card-text>
                 <v-card-actions>
@@ -332,7 +338,7 @@ export default {
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
       Update: "apps/AppUpdate",
-      checkUpdate: "apps/_checkAppUpdate",
+      checkUpdate: "apps/checkAppUpdate",
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}` });
@@ -345,7 +351,7 @@ export default {
       for (var k in data) {
         if (data[k]) {
           o = o.concat(
-            data[k].map(function (x) {
+            data[k].map(function(x) {
               return { cport: k, hip: x.HostIp, hport: x.HostPort };
             })
           );
@@ -355,7 +361,6 @@ export default {
     },
     async refresh() {
       await this.readApps();
-      await this.checkUpdate(this.apps);
     },
   },
   computed: {
@@ -377,7 +382,6 @@ export default {
   },
   async mounted() {
     await this.readApps();
-    await this.checkUpdate(this.apps);
   },
 };
 </script>
