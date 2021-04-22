@@ -338,7 +338,7 @@ export default {
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
       Update: "apps/AppUpdate",
-      checkUpdate: "apps/_checkAppUpdate",
+      checkUpdate: "apps/checkAppUpdate",
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}` });
