@@ -41,7 +41,6 @@ const actions = {
       .get(url)
       .then(response => {
         const images = response.data;
-        console.log(images);
         commit("setImages", images);
       })
       .catch(err => {
