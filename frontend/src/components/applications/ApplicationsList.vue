@@ -105,6 +105,17 @@
                   </v-list-item-icon>
                   <v-list-item-title>Edit</v-list-item-title>
                 </v-list-item>
+                <v-list-item
+                  v-if="
+                    !item.Config.Image.includes('selfhostedpro/yacht')
+                  "
+                  @click="Update(item.name)"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-update</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>Update</v-list-item-title>
+                </v-list-item>
                 <v-divider />
                 <v-list-item
                   @click="AppAction({ Name: item.name, Action: 'start' })"
@@ -129,24 +140,6 @@
                     <v-icon>mdi-refresh</v-icon>
                   </v-list-item-icon>
                   <v-list-item-title>Restart</v-list-item-title>
-                </v-list-item>
-                <v-divider
-                  v-if="
-                    !item.Config.Image.includes('selfhostedpro/yacht') &&
-                      item.isUpdatable
-                  "
-                />
-                <v-list-item
-                  v-if="
-                    !item.Config.Image.includes('selfhostedpro/yacht') &&
-                      item.isUpdatable
-                  "
-                  @click="Update(item.name)"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-update</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Update</v-list-item-title>
                 </v-list-item>
                 <v-divider />
                 <v-list-item
