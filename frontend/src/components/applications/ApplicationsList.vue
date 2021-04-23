@@ -193,7 +193,7 @@
             <span class="nametext ml-1">{{ item.name }}</span>
             <v-tooltip
               right
-              v-if="item in updatable"
+              v-if="item.isUpdatable"
               color="primary"
               class="mb-2"
             >
