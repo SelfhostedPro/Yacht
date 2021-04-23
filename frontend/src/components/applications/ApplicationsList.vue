@@ -80,7 +80,7 @@
         :items="apps"
         :items-per-page="25"
         :footer-props="{
-          'items-per-page-options': [15, 25, 50, -1],
+          'items-per-page-options': [15, 25, 50, -1]
         }"
         :search="search"
         @click:row="handleRowClick"
@@ -106,9 +106,7 @@
                   <v-list-item-title>Edit</v-list-item-title>
                 </v-list-item>
                 <v-list-item
-                  v-if="
-                    !item.Config.Image.includes('selfhostedpro/yacht')
-                  "
+                  v-if="!item.Config.Image.includes('selfhostedpro/yacht')"
                   @click="Update(item.name)"
                 >
                   <v-list-item-icon>
@@ -225,7 +223,11 @@
           </div>
         </template>
         <template v-slot:item.ports="{ item }">
-          <ins v-for="(port, index) in convPorts(item.ports)" :key="index">
+          <ins
+            v-for="(port, index) in convPorts(item.ports)"
+            :key="index"
+            style="text-decoration: none;"
+          >
             <v-tooltip top transition="scale-transition">
               <template v-slot:activator="{ on, attrs }">
                 <v-chip
@@ -235,6 +237,7 @@
                   v-show="port.hip != '::'"
                   v-if="port.hip == '0.0.0.0'"
                   color="primary"
+                  style="text-decoration: none;"
                   label
                   small
                   :href="'http://' + host_ip + ':' + port.hport"
@@ -251,6 +254,7 @@
                   class="ma-1"
                   v-else
                   color="primary"
+                  style="text-decoration: none;"
                   label
                   small
                   :href="'http://' + port.hip + ':' + port.hport"
@@ -295,35 +299,35 @@ export default {
           text: "Name",
           value: "name",
           sortable: true,
-          align: "start",
+          align: "start"
         },
         project: {
           text: "Project",
           value: "project",
-          sortable: true,
+          sortable: true
         },
         status: {
           text: "Status",
           value: "status",
-          sortable: true,
+          sortable: true
         },
         image: {
           text: "Image",
           value: "image",
-          sortable: true,
+          sortable: true
         },
         ports: {
           text: "Ports",
           value: "ports",
-          sortable: true,
+          sortable: true
         },
         created: {
           text: "Created At",
           value: "created",
-          sortable: true,
-        },
+          sortable: true
+        }
       },
-      selectedHeaders: [],
+      selectedHeaders: []
     };
   },
   methods: {
@@ -331,7 +335,7 @@ export default {
       readApps: "apps/readApps",
       AppAction: "apps/AppAction",
       Update: "apps/AppUpdate",
-      checkUpdate: "apps/checkAppUpdate",
+      checkUpdate: "apps/checkAppUpdate"
     }),
     handleRowClick(appName) {
       this.$router.push({ path: `/apps${appName.Name}` });
@@ -354,7 +358,7 @@ export default {
     },
     async refresh() {
       await this.readApps();
-    },
+    }
   },
   computed: {
     ...mapState("apps", [
@@ -363,11 +367,11 @@ export default {
       "isLoadingValue",
       "action",
       "updatable",
-      "isLoadingValue",
+      "isLoadingValue"
     ]),
     showHeaders() {
-      return this.headers.filter((s) => this.selectedHeaders.includes(s));
-    },
+      return this.headers.filter(s => this.selectedHeaders.includes(s));
+    }
   },
   created() {
     this.headers = Object.values(this.headersMap);
@@ -375,7 +379,7 @@ export default {
   },
   async mounted() {
     await this.readApps();
-  },
+  }
 };
 </script>
 

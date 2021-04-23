@@ -1,9 +1,4 @@
-from sqlalchemy import (
-    Column,
-    String,
-    Boolean,
-    DateTime
-)
+from sqlalchemy import Column, String, Boolean, DateTime
 from api.db.database import Base
 
 

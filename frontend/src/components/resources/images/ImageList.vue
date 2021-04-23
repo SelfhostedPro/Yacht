@@ -13,12 +13,7 @@
         Images
         <v-dialog v-model="pullDialog" max-width="290">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              class="ml-2"
-              color="secondary"
-              v-bind="attrs"
-              v-on="on"
-            >
+            <v-btn class="ml-2" color="secondary" v-bind="attrs" v-on="on">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>

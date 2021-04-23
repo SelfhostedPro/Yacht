@@ -30,7 +30,8 @@ def conv_ports2dict(data: List[str]) -> List[Dict[str, str]]:
             for label, port in port_data.items():
                 if not re.match(REGEXP_PORT_ASSIGN, port, flags=re.IGNORECASE):
                     raise HTTPException(
-                        status_code=500, detail="Malformed port assignment." + str(port_data)
+                        status_code=500,
+                        detail="Malformed port assignment." + str(port_data),
                     )
 
                 hport, cport = None, port

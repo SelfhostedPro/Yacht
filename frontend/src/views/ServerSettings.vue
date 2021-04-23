@@ -5,56 +5,61 @@
       <v-card color="foreground" tile>
         <v-row>
           <v-col class="flex-grow-1 flex-shrink-0">
-  <div>
-    <v-tabs v-model="SettingsTab" background-color="tabs" mobile-breakpoint="sm">
-      <v-tab class="text-left" @click="$router.go(-1)">
-        <v-icon left class="mr-1">mdi-arrow-left-bold-outline</v-icon> Back
-      </v-tab>
-      <v-tab class="text-left">
-        <v-icon left class="mr-1">mdi-information-outline</v-icon>Info
-      </v-tab>
-      <v-tab class="text-left">
-        <v-icon left class="mr-1">mdi-format-color-fill</v-icon>Theme
-      </v-tab>
-      <v-tab class="text-left">
-        <v-icon left class="mr-1">mdi-view-list-outline</v-icon>Template
-        Variables
-      </v-tab>
-      <v-tab class="text-left">
-        <v-icon left class="mr-1">mdi-trash-can-outline</v-icon>
-        Prune
-      </v-tab>
-      <v-tab class="text-left">
-        <v-icon left class="mr-1">mdi-update</v-icon>
-        Update
-      </v-tab>
-    </v-tabs>
+            <div>
+              <v-tabs
+                v-model="SettingsTab"
+                background-color="tabs"
+                mobile-breakpoint="sm"
+              >
+                <v-tab class="text-left" @click="$router.go(-1)">
+                  <v-icon left class="mr-1">mdi-arrow-left-bold-outline</v-icon>
+                  Back
+                </v-tab>
+                <v-tab class="text-left">
+                  <v-icon left class="mr-1">mdi-information-outline</v-icon>Info
+                </v-tab>
+                <v-tab class="text-left">
+                  <v-icon left class="mr-1">mdi-format-color-fill</v-icon>Theme
+                </v-tab>
+                <v-tab class="text-left">
+                  <v-icon left class="mr-1">mdi-view-list-outline</v-icon
+                  >Template Variables
+                </v-tab>
+                <v-tab class="text-left">
+                  <v-icon left class="mr-1">mdi-trash-can-outline</v-icon>
+                  Prune
+                </v-tab>
+                <v-tab class="text-left">
+                  <v-icon left class="mr-1">mdi-update</v-icon>
+                  Update
+                </v-tab>
+              </v-tabs>
               <transition
                 name="slide"
                 enter-active-class="animated fadeIn delay"
                 leave-active-class="animated fadeOut"
                 mode="out-in"
               >
-    <v-tabs-items v-model="SettingsTab" touchless class="mt-3">
-      <v-tab-item> </v-tab-item>
-      <v-tab-item>
-        <Info />
-      </v-tab-item>
-      <v-tab-item>
-        <Theme />
-      </v-tab-item>
-      <v-tab-item>
-        <Variables />
-      </v-tab-item>
-      <v-tab-item>
-        <Prune  />
-      </v-tab-item>
-      <v-tab-item>
-        <Update />
-      </v-tab-item>
-    </v-tabs-items>
-    </transition>
-  </div>
+                <v-tabs-items v-model="SettingsTab" touchless class="mt-3">
+                  <v-tab-item> </v-tab-item>
+                  <v-tab-item>
+                    <Info />
+                  </v-tab-item>
+                  <v-tab-item>
+                    <Theme />
+                  </v-tab-item>
+                  <v-tab-item>
+                    <Variables />
+                  </v-tab-item>
+                  <v-tab-item>
+                    <Prune />
+                  </v-tab-item>
+                  <v-tab-item>
+                    <Update />
+                  </v-tab-item>
+                </v-tabs-items>
+              </transition>
+            </div>
           </v-col>
         </v-row>
         <v-card-text>Version: {{ version }}</v-card-text>
@@ -75,14 +80,14 @@ export default {
     Variables: Variables,
     Theme: Theme,
     Prune: Prune,
-    Update: Update,
+    Update: Update
   },
   data() {
     return {
       SettingsTab: 1,
-      version: process.env.VUE_APP_VERSION || "unreleased",
+      version: process.env.VUE_APP_VERSION || "unreleased"
     };
-  },
+  }
 };
 </script>
 

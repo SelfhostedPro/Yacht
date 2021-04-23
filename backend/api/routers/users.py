@@ -95,7 +95,9 @@ def create_api_key(
 
 
 @router.get("/api/keys/{key_id}")
-def delete_api_key(key_id, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+def delete_api_key(
+    key_id, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()
+):
     auth_check(Authorize)
     return crud.blacklist_api_key(key_id, db)
 
@@ -137,6 +139,7 @@ def logout(Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     auth_check(Authorize)
     crud.blacklist_login_token(Authorize, db)
     return {"msg": "Logout Successful"}
+
 
 @router.get("/logout/refresh")
 def logout(Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):

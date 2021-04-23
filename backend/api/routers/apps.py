@@ -53,6 +53,7 @@ def get_support_bundle(app_name, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return actions.generate_support_bundle(app_name)
 
+
 @router.get("/actions/{app_name}/{action}")
 def container_actions(app_name, action, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
@@ -72,7 +73,7 @@ async def logs(app_name: str, request: Request, Authorize: AuthJWT = Depends()):
     return EventSourceResponse(log_generator)
 
 
-@router.get('/{app_name}/stats')
+@router.get("/{app_name}/stats")
 async def sse_stats(app_name: str, request: Request, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     stat_generator = actions.stat_generator(request, app_name)

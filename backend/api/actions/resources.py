@@ -181,7 +181,9 @@ def get_networks():
                 attrs.update({"inUse": False})
             if attrs.get("Labels", {}):
                 if attrs.get("Labels", {}).get("com.docker.compose.project"):
-                    attrs.update({"Project": attrs["Labels"]["com.docker.compose.project"]})
+                    attrs.update(
+                        {"Project": attrs["Labels"]["com.docker.compose.project"]}
+                    )
             network_list.append(attrs)
     return network_list
 
