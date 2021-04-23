@@ -51,13 +51,13 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm
           push: true
           build-args: |
-            VUE_APP_VERSION=v0.0.6-alpha-${{ steps.current-time.outputs.formattedTime }}
+            VUE_APP_VERSION=v0.0.7-alpha-${{ steps.current-time.outputs.formattedTime }}
           tags: |
             selfhostedpro/yacht
             selfhostedpro/yacht:latest-${{ steps.current-time.outputs.formattedTime }}
-            selfhostedpro/yacht:v0.0.6-alpha-${{ steps.current-time.outputs.formattedTime }}
+            selfhostedpro/yacht:v0.0.7-alpha-${{ steps.current-time.outputs.formattedTime }}
             ghcr.io/selfhostedpro/yacht
             ghcr.io/selfhostedpro/yacht:latest-${{ steps.current-time.outputs.formattedTime }}
-            ghcr.io/selfhostedpro/yacht:v0.0.6-alpha-${{ steps.current-time.outputs.formattedTime }}
+            ghcr.io/selfhostedpro/yacht:v0.0.7-alpha-${{ steps.current-time.outputs.formattedTime }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
