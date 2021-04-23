@@ -17,7 +17,7 @@ from api.utils.apps import (
     _check_updates,
     calculate_cpu_percent,
     calculate_cpu_percent2,
-    format_bytes
+    format_bytes,
 )
 from api.utils.templates import conv2dict
 
@@ -173,8 +173,7 @@ def deploy_app(template: DeployForm):
             conv_image2data(template.image),
             conv_restart2data(template.restart_policy),
             template.command,
-            conv_ports2data(template.ports, template.network,
-                            template.network_mode),
+            conv_ports2data(template.ports, template.network, template.network_mode),
             conv_portlabels2data(template.ports),
             template.network_mode,
             template.network,
@@ -283,8 +282,9 @@ def launch_app(
         if e.status_code == 500:
             failed_app = dclient.containers.get(name)
             failed_app.remove()
-        raise HTTPException(status_code=e.status_code,
-                            detail=e.explanation.decode("utf-8"))
+        raise HTTPException(
+            status_code=e.status_code, detail=e.explanation.decode("utf-8")
+        )
 
     print(
         f"""Container started successfully.
@@ -347,8 +347,7 @@ def app_update(app_name):
                 status_code=exc.response.status_code, detail=exc.explanation
             )
 
-    volumes = {
-        "/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
+    volumes = {"/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
     try:
         updater = dclient.containers.run(
             image="containrrr/watchtower:latest",
@@ -381,8 +380,7 @@ def _update_self(background_tasks):
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
     yacht_id = (
-        subprocess.check_output(
-            ["bash", "-c", bash_command]).decode("UTF-8").strip()
+        subprocess.check_output(["bash", "-c", bash_command]).decode("UTF-8").strip()
     )
     try:
         yacht = dclient.containers.get(yacht_id)
@@ -409,8 +407,7 @@ Spins up a watchtower instance with --cleanup and
 
 def update_self_in_background(yacht):
     dclient = docker.from_env()
-    volumes = {
-        "/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
+    volumes = {"/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"}}
     print("**** Updating " + yacht.name + "****")
     dclient.containers.run(
         image="containrrr/watchtower:latest",
@@ -431,8 +428,7 @@ def check_self_update():
     dclient = docker.from_env()
     bash_command = "head -1 /proc/self/cgroup|cut -d/ -f3"
     yacht_id = (
-        subprocess.check_output(
-            ["bash", "-c", bash_command]).decode("UTF-8").strip()
+        subprocess.check_output(["bash", "-c", bash_command]).decode("UTF-8").strip()
     )
     try:
         yacht = dclient.containers.get(yacht_id)
@@ -477,19 +473,20 @@ def generate_support_bundle(app_name):
     else:
         raise HTTPException(404, f"App {app_name} not found.")
 
+
 async def log_generator(request, app_name):
     while True:
         async with aiodocker.Docker() as docker:
             container: DockerContainer = await docker.containers.get(app_name)
             if container._container["State"]["Status"] == "running":
-                logs_generator = container.log(stdout=True, stderr=True, follow=True, tail=200)
+                logs_generator = container.log(
+                    stdout=True, stderr=True, follow=True, tail=200
+                )
                 async for line in logs_generator:
                     yield {"event": "update", "retry": 3000, "data": line}
 
             if await request.is_disconnected():
                 break
-
-
 
 
 async def stat_generator(request, app_name):
@@ -503,7 +500,11 @@ async def stat_generator(request, app_name):
                 async for line in stats_generator:
                     current_stats = await process_app_stats(line, app_name)
                     if prev_stats != current_stats:
-                        yield { "event": "update", "retry": 30000, "data": json.dumps(current_stats)}
+                        yield {
+                            "event": "update",
+                            "retry": 30000,
+                            "data": json.dumps(current_stats),
+                        }
                         prev_stats = current_stats
 
             if await request.is_disconnected():

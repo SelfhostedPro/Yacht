@@ -42,7 +42,7 @@ def get_config():
 @AuthJWT.token_in_denylist_loader
 def check_if_token_in_denylist(decrypted_token):
     db = SessionLocal()
-    jti = decrypted_token['jti']
+    jti = decrypted_token["jti"]
     entry = db.query(TokenBlacklist).filter(TokenBlacklist.jti == jti).first()
     if entry:
         return True

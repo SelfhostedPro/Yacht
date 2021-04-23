@@ -31,8 +31,10 @@ class APIKEY(BaseModel):
     class Config:
         orm_mode = True
 
+
 class GenerateAPIKEY(BaseModel):
     key_name: str
+
 
 class DisplayAPIKEY(APIKEY):
     token: str

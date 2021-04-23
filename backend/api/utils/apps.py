@@ -337,8 +337,7 @@ def _check_updates(tag):
                 return False
             else:
                 raise HTTPException(
-                    status_code=err.response.status_code, 
-                    detail=err.explanation
+                    status_code=err.response.status_code, detail=err.explanation
                 )
         try:
             new = dclient.images.get_registry_data(tag)

@@ -32,8 +32,7 @@ for declarative_base in [models.Base]:
 
 target_metadata = combined_meta_data
 config.set_main_option(
-    "sqlalchemy.url", os.environ.get(
-        "DATABASE_URL", "sqlite:///config/data.sqlite")
+    "sqlalchemy.url", os.environ.get("DATABASE_URL", "sqlite:///config/data.sqlite")
 )
 
 # other values from the config, defined by the needs of env.py,
@@ -81,8 +80,7 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection,
-                          target_metadata=target_metadata)
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.execute("DROP TABLE IF EXISTS alembic_version;")
