@@ -45,6 +45,7 @@ import ChangePasswordForm from "../components/userSettings/ChangePasswordForm.vu
 import UserInfo from "../components/userSettings/UserInfo.vue";
 
 // Server Settings
+// import ServerSettingsNav from "../components/serverSettings/ServerSettingsNav.vue"
 import ServerSettings from "../views/ServerSettings.vue";
 import ServerInfo from "../components/serverSettings/ServerInfo.vue";
 import ServerVariables from "../components/serverSettings/ServerVariables.vue";

@@ -1,8 +1,6 @@
 <template>
-  <v-card color="foreground" raised>
-    <v-card-title class="primary font-weight-bold">
-      Stats
-    </v-card-title>
+  <v-card color="foreground" class="mx-4 my-2" raised>
+    <v-card-title class="primary font-weight-bold"> Stats </v-card-title>
     <v-card-text
       v-if="app.State.Status != 'running'"
       class="secondary text-center px-5 py-5"
@@ -30,7 +28,7 @@
         <v-card-subtitle>
           (0-100%) <br />
           Max: {{ Math.max.apply(Math, stats.mem_percent) }}%,
-          {{ formatBytes(Math.max.apply(Math, stats.mem_current)) }}/{{
+          {{ formatBytes(Math.max.apply(Math, stats.mem_current), 2) }}/{{
             formatBytes(stats.mem_total[stats.mem_total.length - 1])
           }}
         </v-card-subtitle>
@@ -51,9 +49,9 @@ export default {
     return {};
   },
   methods: {
-    formatBytes(bytes) {
+    formatBytes(bytes, decimals = 2) {
       if (bytes === 0) return "0 Bytes";
-      const decimals = 2;
+
       const k = 1024;
       const dm = decimals < 0 ? 0 : decimals;
       const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];

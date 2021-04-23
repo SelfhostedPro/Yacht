@@ -56,9 +56,24 @@ const actions = {
       axios
         .get(url, {}, { withCredentials: true })
         .then(resp => {
-          commit(AUTH_CLEAR, resp);
-          localStorage.removeItem("username");
-          router.push({ path: "/" });
+          let rurl = "/api/auth/logout/refresh";
+          axios
+            .get(
+              rurl,
+              {},
+              {
+                xsrfCookieName: "csrf_refresh_token",
+                xsrfHeaderName: "X-CSRF-TOKEN",
+                withCredentials: true
+              }
+            )
+            .then(resp => {
+              commit(AUTH_CLEAR, resp);
+              localStorage.removeItem("username");
+              router.push({ path: "/" });
+              resolve(resp);
+            });
+
           resolve(resp);
         })
         .catch(error => {

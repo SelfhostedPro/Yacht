@@ -12,3 +12,6 @@ s6-setuidgid abc \
 #Execute db migration
 s6-setuidgid abc \
     alembic upgrade head
+#Delete Alembic Versions Folder
+# s6-setuidgid abc \
+#     rm -rf /alembic/versions

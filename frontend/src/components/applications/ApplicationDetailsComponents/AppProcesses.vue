@@ -1,5 +1,5 @@
 <template>
-  <v-card color="foreground" raised>
+  <v-card color="foreground" class="mx-4 mt-2" raised>
     <v-card-title class="primary font-weight-bold">
       Processes
     </v-card-title>

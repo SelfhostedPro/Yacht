@@ -31,6 +31,17 @@ const mutations = {
   setLoading(state, loading) {
     state.isLoading = loading;
   },
+  setLoadingItems(state) {
+    state.isLoadingValue = 0;
+  },
+  setLoadingItemCompleted(state, total) {
+    let quotent = 1 / total;
+    let increment = quotent * 100;
+    state.isLoadingValue += increment;
+  },
+  setLoadingComplete(state) {
+    state.isLoadingValue == null;
+  },
   setAction(state, action) {
     state.action = action;
   },
@@ -44,11 +55,11 @@ const mutations = {
 };
 
 const actions = {
-  readApps({ commit }) {
-    commit("setLoading", true);
-    commit("setAction", "Getting Apps ...");
+  async readApps({ commit }) {
+    await commit("setLoading", true);
+    await commit("setAction", "Getting Apps ...");
     const url = "/api/apps/";
-    axios
+    await axios
       .get(url)
       .then(response => {
         var apps = response.data;
@@ -62,8 +73,35 @@ const actions = {
         commit("setAction", "");
       });
   },
+  // async _checkAppUpdate({ commit }, apps) {
+  //   await commit("setLoading", true);
+  //   await commit("setLoadingItems");
+  //   await commit("setAction", "Checking for updates...");
+  //   await Promise.all(
+  //     apps.map(async (_update) => {
+  //       let url = `/api/apps/${_update.name}/updates`;
+  //       await axios
+  //         .get(url)
+  //         .then((response) => {
+  //           let app = response.data;
+  //           if (app.isUpdatable) {
+  //             commit("setUpdatable", app);
+  //             commit("setLoadingItemCompleted", apps.length);
+  //           }
+  //         })
+  //         .catch((err) => {
+  //           commit("snackbar/setErr", err, { root: true });
+  //         })
+  //         .finally(() => {
+  //           commit("setLoading", false);
+  //           commit("setAction", "");
+  //         });
+  //     })
+  //   );
+  // },
   async checkAppUpdate({ commit }, apps) {
     await commit("setLoading", true);
+    await commit("setLoadingItems");
     await commit("setAction", "Checking for updates...");
     await Promise.all(
       apps.map(async _app => {
@@ -72,10 +110,12 @@ const actions = {
           .get(url)
           .then(response => {
             let app = response.data;
+            commit("setLoadingItemCompleted", apps.length);
             commit("setApp", app);
             commit("setLoading", true);
           })
           .catch(err => {
+            console.log(err);
             commit("snackbar/setErr", err, { root: true });
           });
       })

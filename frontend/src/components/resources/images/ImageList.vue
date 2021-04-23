@@ -9,18 +9,11 @@
           bottom
         />
       </v-fade-transition>
-      <v-card-title>
+      <v-card-title class="primary font-weight-bold">
         Images
         <v-dialog v-model="pullDialog" max-width="290">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              fab
-              x-small
-              class="ml-2"
-              color="primary"
-              v-bind="attrs"
-              v-on="on"
-            >
+            <v-btn class="ml-2" color="secondary" v-bind="attrs" v-on="on">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -245,7 +238,7 @@ export default {
         let _digest = item.RepoDigests[0].split("@")[0];
         return _digest;
       } else {
-        let _shortid = item.Id.split(":")[1].substring(0,10)
+        let _shortid = item.Id.split(":")[1].substring(0, 10);
         return _shortid;
       }
     }

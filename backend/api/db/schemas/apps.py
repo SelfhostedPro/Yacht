@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from pydantic import BaseModel
 
 
@@ -41,6 +41,7 @@ class DeployForm(BaseModel):
     image: str
     restart_policy: str
     notes: Optional[str]
+    command: Optional[List[str]]
     ports: Optional[List[PortsSchema]]
     volumes: Optional[List[VolumesSchema]]
     env: Optional[List[EnvSchema]]
@@ -50,6 +51,8 @@ class DeployForm(BaseModel):
     cap_add: Optional[List[str]]
     network_mode: Optional[str]
     network: Optional[str]
+    cpus: Optional[int]
+    mem_limit: Optional[str]
     edit: Optional[bool]
     id: Optional[str]
 

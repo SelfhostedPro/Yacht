@@ -1,3 +1,6 @@
+from os.path import abspath, dirname
+import sys
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, MetaData
@@ -16,18 +19,11 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-import os
-import sys
-from os.path import abspath, dirname
 
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
-
-
 from api.db import models
-from api.settings import Settings
 
 print("--- MODELS ---")
-print(models)
 # Combine metadata from auth and containers/templates
 combined_meta_data = MetaData()
 for declarative_base in [models.Base]:
@@ -66,6 +62,7 @@ def run_migrations_offline():
     )
 
     with context.begin_transaction():
+        context.execute("DROP TABLE IF EXISTS alembic_version;")
         context.run_migrations()
 
 
@@ -86,6 +83,7 @@ def run_migrations_online():
         context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
+            context.execute("DROP TABLE IF EXISTS alembic_version;")
             context.run_migrations()
 
 

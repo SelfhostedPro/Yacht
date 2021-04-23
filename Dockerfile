@@ -27,6 +27,7 @@ RUN \
  apk add --no-cache --virtual=build-dependencies \
 	g++ \
 	make \
+	postgresql-dev \
 	python3-dev \
 	libffi-dev \
 	ruby-dev &&\
@@ -34,7 +35,8 @@ RUN \
  apk add --no-cache \
 	python3 \
 	py3-pip \
-	postgresql-dev \
+	mysql-dev \
+        postgresql-dev \
 	mysql-dev \
 	nginx &&\
  gem install sass &&\

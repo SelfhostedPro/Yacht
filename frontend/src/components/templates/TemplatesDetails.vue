@@ -163,6 +163,29 @@
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
+              <v-divider v-if="selectedApp.command" />
+              <v-list-item v-if="selectedApp.command">
+                <v-list-item-content>
+                  <v-list-item-title
+                    class="px-5 text-centered font-weight-bold"
+                  >
+                    Command
+                  </v-list-item-title>
+                </v-list-item-content>
+                <v-list-item-content>
+                  <v-list-item-title v-if="Array.isArray(selectedApp.command)">
+                    <p
+                      v-for="(item, index) in selectedApp.command"
+                      :key="index"
+                    >
+                      {{ item }}
+                    </p>
+                  </v-list-item-title>
+                  <v-list-item-title v-else>
+                    {{ selectedApp.command }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </v-list>
           </v-card>
           <v-card v-if="selectedApp.ports" tile>

@@ -1,131 +1,127 @@
 <template>
-  <v-card color="foreground" raised>
-    <v-container fluid class="templateDetailsContainer component">
-      <v-card-title class="primary font-weight-bold">
-        Stats <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
-      </v-card-title>
-      <v-card-text class="secondary text-center px-5 py-5">
-        <v-row dense class="mt-3">
-          <v-col
-            v-for="app in sortByTitle(stats)"
-            :key="app.name"
-            cols="12"
-            xl="2"
-            lg="2"
-            md="3"
-            sm="3"
-            class="d-flex"
-            style="flex-direction:column"
-          >
-            <v-card color="foreground" class="flex-grow-1">
-              <v-card-title class="pb-0">
-                <v-tooltip top transition="scale-transition">
-                  <template v-slot:activator="{ on, attrs }">
-                    <span
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="handleAppClick(app.name)"
-                      class="AppTitle"
-                      >{{ app.name }}</span
-                    >
-                  </template>
-                  <span>{{ app.name }}</span>
-                </v-tooltip>
-              </v-card-title>
-              <v-tooltip bottom transition="scale-transition">
+  <v-card color="foreground">
+    <v-card-title class="primary font-weight-bold">
+      Dashboard <v-icon v-on:click="refresh()">mdi-refresh</v-icon>
+    </v-card-title>
+    <v-card-text class="secondary text-center px-5 py-5">
+      <v-row dense class="mt-3">
+        <v-col
+          v-for="app in sortByTitle(stats)"
+          :key="app.name"
+          cols="12"
+          xl="2"
+          lg="2"
+          md="3"
+          sm="3"
+          class="d-flex"
+          style="flex-direction: column"
+        >
+          <v-card color="foreground" class="flex-grow-1">
+            <v-card-title class="pb-0">
+              <v-tooltip top transition="scale-transition">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-card-text
+                  <span
                     v-bind="attrs"
                     v-on="on"
-                    class="text-left pt-0 AppTitle"
+                    @click="handleAppClick(app.name)"
+                    class="AppTitle"
+                    >{{ app.name }}</span
                   >
-                    CPU Usage:
-                    <v-progress-linear :value="app.cpu_percent" color="primary"/>
-                    {{ app.cpu_percent }}%
-                    <br />
-                    MEM Usage:
-                    <v-progress-linear :value="app.mem_percent" color="blue"/>
-                    {{ app.mem_percent }}%,
-                    {{
-                      app.mem_current
-                    }}
-                  </v-card-text>
                 </template>
-                <span
-                  >CPU Usage: {{ app.cpu_percent }}%
-                  <br />
-                  MEM Usage: {{ app.mem_percent }}%,
-                  {{ app.mem_current }}
-                </span>
+                <span>{{ app.name }}</span>
               </v-tooltip>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-container>
+            </v-card-title>
+            <v-tooltip bottom transition="scale-transition">
+              <template v-slot:activator="{ on, attrs }">
+                <v-card-text
+                  v-bind="attrs"
+                  v-on="on"
+                  class="text-left pt-0 AppTitle"
+                >
+                  CPU Usage:
+                  <v-progress-linear :value="app.cpu_percent" color="primary" />
+                  {{ app.cpu_percent }}%
+                  <br />
+                  MEM Usage:
+                  <v-progress-linear :value="app.mem_percent" color="blue" />
+                  {{ app.mem_percent }}%, {{ app.mem_current }} /
+                  {{ app.mem_total }}
+                </v-card-text>
+              </template>
+              <span
+                >CPU Usage: {{ app.cpu_percent }}%
+                <br />
+                MEM Usage: {{ app.mem_percent }}%, {{ app.mem_current }}/{{
+                  app.mem_total
+                }}
+              </span>
+            </v-tooltip>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-card-text>
   </v-card>
 </template>
 
 <script>
-import axios from "axios";
+import { mapActions, mapState } from "vuex";
 export default {
   data() {
     return {
-      stats: {}
+      stats: {},
+      statConnection: {}
     };
   },
   methods: {
-    readAppStats() {
-      let url = "/api/auth/me";
-      axios.get(url, { withCredentials: true }).catch(err => {
-        localStorage.removeItem("username");
-        window.location.reload();
-        console.log(err);
-      });
-      var proto = "";
-      if (location.protocol == "http:") {
-        proto = "ws://";
-      } else {
-        proto = "wss://";
-      }
-      this.statConnection = new WebSocket(
-        `${proto}${location.hostname}:${location.port}/api/apps/stats`
-      );
-      this.statConnection.onopen = () => {
-        this.statConnection.send(
-          JSON.stringify({ type: "onopen", data: "Connected!" })
+    ...mapActions({
+      readApps: "apps/readApps"
+    }),
+    formatBytes(bytes, decimals = 2) {
+      if (bytes === 0) return "0 Bytes";
+
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+    },
+    readAppStats(appName) {
+      if (!(appName in this.statConnection)) {
+        this.statConnection[appName] = new EventSource(
+          `/api/apps/${appName}/stats`
         );
-      };
-      this.statConnection.onmessage = event => {
-        let statsGroup = JSON.parse(event.data);
-        if (this.stats[statsGroup.name] == null) {
-          this.initStats(statsGroup);
-        }
-        this.stats[statsGroup.name].name = statsGroup.name;
-        this.stats[statsGroup.name].cpu_percent = statsGroup.cpu_percent;
-        this.stats[statsGroup.name].mem_percent = statsGroup.mem_percent;
-        this.stats[statsGroup.name].mem_current = statsGroup.mem_current;
-        // for (let key in this.stats[statsGroup.name]) {
-        //   if (
-        //     this.stats[statsGroup.name][key].length > 3 &&
-        //     Array.isArray(this.stats[statsGroup.name][key])
-        //   ) {
-        //     this.stats[statsGroup.name][key].shift();
-        //   }
-        // }
-        this.$forceUpdate();
-      };
+        this.statConnection[appName].addEventListener("update", event => {
+          let statsGroup = JSON.parse(event.data);
+          if (!(statsGroup.name in this.stats)) {
+            this.stats[statsGroup.name] = {};
+            this.stats[statsGroup.name].name = statsGroup.name;
+          }
+          this.stats[statsGroup.name].cpu_percent = Math.round(
+            statsGroup.cpu_percent
+          );
+          this.stats[statsGroup.name].mem_percent = Math.round(
+            statsGroup.mem_percent
+          );
+          this.stats[statsGroup.name].mem_current = this.formatBytes(
+            statsGroup.mem_current,
+            2
+          );
+          this.stats[statsGroup.name].mem_total = this.formatBytes(
+            statsGroup.mem_total,
+            2
+          );
+          this.$forceUpdate();
+        });
+      }
     },
     refresh() {
       this.closeStats();
-      this.readAppStats();
-    },
-    initStats(statsGroup) {
-      this.stats[statsGroup.name] = {};
-      this.stats[statsGroup.name].name = "";
-      this.stats[statsGroup.name].cpu_percent = '';
-      this.stats[statsGroup.name].mem_percent = '';
-      this.stats[statsGroup.name].mem_current = '';
+      this.readApps();
+      for (var app in this.apps) {
+        this.readAppStats(this.apps[app].name);
+      }
     },
     sortByTitle(arr) {
       let sorted = Object.keys(arr)
@@ -143,11 +139,10 @@ export default {
       this.$router.push({ path: `/apps/${appName}/info` });
     },
     closeStats() {
+      for (let connection in this.statConnection) {
+        this.statConnection[connection].close();
+      }
       this.stats = {};
-      this.statConnection.send(
-        JSON.stringify({ message: "Closing Websocket" })
-      );
-      this.statConnection.close(1000, "Leaving page or refreshing");
     },
     fillStats(app) {
       let datacollection = {
@@ -168,8 +163,14 @@ export default {
       return datacollection;
     }
   },
-  async mounted() {
-    this.readAppStats();
+  computed: {
+    ...mapState("apps", ["apps"])
+  },
+  async created() {
+    await this.readApps();
+    for (var app in this.apps) {
+      this.readAppStats(this.apps[app].name);
+    }
   },
   beforeDestroy() {
     this.closeStats();

@@ -25,6 +25,8 @@ settings = Settings()
 # {
 #     '53/tcp': ('0.0.0.0', 53),
 # }
+
+
 def conv_ports2data(data, network, network_mode):
     ports = {}
     for d in data:
@@ -131,12 +133,59 @@ def conv_devices2data(data):
         return devices
 
 
+# def conv_labels2data(data):
+#     # Set is depracated. Name is the actual value. Label is the name of the field.
+#     # Label is the label of the label field.
+#     if not data:
+#         labels = {}
+#         return labels
+#     db = SessionLocal()
+#     t_variables = db.query(models.TemplateVariables).all()
+
+#     for i, variable in enumerate(data):
+#         for t_var in t_variables:
+#             if variable.label:
+#                 if t_var.variable in variable.label:
+#                     new_var = data[i].label.replace(t_var.variable, t_var.replacement)
+#                     variable.label = new_var
+#                     continue
+#             if variable.value:
+#                 if t_var.variable in variable.value:
+#                     new_var = data[i].value.replace(t_var.variable, t_var.replacement)
+#                     variable.value = new_var
+#                     continue
+#         else:
+#             if variable.value.startswith("!"):
+#                 raise HTTPException(
+#                     400, "Unset template variable used: " + variable.value
+#                 )
+#             if variable.label.startswith("!"):
+#                 raise HTTPException(
+#                     400, "Unset template variable used: " + variable.label
+#                 )
+#     delim = "="
+#     return {delim.join((d.label, d.value)) for d in data if d.value}
+
+
 def conv_labels2data(data):
-    if data:
-        return dict((d.label, d.value) for d in data)
-    else:
-        labels = {}
-        return labels
+    # grab template variables
+    db = SessionLocal()
+    t_variables = db.query(models.TemplateVariables).all()
+
+    # if we have nothing return an empty dictionary
+    if not data:
+        return {}
+
+    # iterate over template variables and labels and replace templated fields
+    for label in data:
+        for t_var in t_variables:
+            if t_var.variable in label.label:
+                label.label = label.label.replace(t_var.variable, t_var.replacement)
+            if t_var.variable in label.value:
+                label.value = label.value.replace(t_var.variable, t_var.replacement)
+
+    # generate dictionary from de-templated local data
+    return dict((d.label, d.value) for d in data)
 
 
 def conv_caps2data(data):
@@ -190,11 +239,12 @@ async def calculate_cpu_percent2(d, previous_cpu, previous_system):
     cpu_delta = cpu_total - previous_cpu
     cpu_system = float(d["cpu_stats"]["system_cpu_usage"])
     system_delta = cpu_system - previous_system
-    online_cpus = d["cpu_stats"].get(
-        "online_cpus", len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
-    )
+    # online_cpus = d["cpu_stats"].get(
+    #     "online_cpus", len(d["cpu_stats"]["cpu_usage"]["percpu_usage"])
+    # )
     if system_delta > 0.0:
-        cpu_percent = (cpu_delta / system_delta) * online_cpus * 100.0
+        # cpu_percent = (cpu_delta / system_delta) * online_cpus * 100.0
+        cpu_percent = (cpu_delta / system_delta) * 100.0
     return cpu_percent, cpu_system, cpu_total
 
 
@@ -291,7 +341,7 @@ def _check_updates(tag):
                 )
         try:
             new = dclient.images.get_registry_data(tag)
-        except APIError as err:
+        except APIError:
             return False
         if any(
             new.attrs["Descriptor"]["digest"] in i for i in current.attrs["RepoDigests"]
@@ -312,3 +362,10 @@ def format_bytes(size):
         size /= power
         n += 1
     return str(round(size)) + " " + str(power_labels[n])
+
+
+def conv_cpus2data(cpus):
+    if cpus:
+        return cpus * 10 ** 9
+    else:
+        return None

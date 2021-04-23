@@ -1,6 +1,7 @@
 module.exports = {
-  publicPath: "",
+  publicPath: "./",
   transpileDependencies: ["vuetify"],
+
   devServer: {
     proxy: {
       "/api": {
@@ -14,5 +15,10 @@ module.exports = {
         logLevel: "debug"
       }
     }
+  },
+
+  pwa: {
+    name: "Yacht",
+    themeColor: "#41B883"
   }
 };

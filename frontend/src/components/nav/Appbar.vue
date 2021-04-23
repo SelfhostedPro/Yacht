@@ -2,9 +2,10 @@
   <v-app-bar app clipped-left color="secondary">
     <img :src="themeLogo()" class="main-logo" />
     <v-toolbar-title class="ml-2">Yacht</v-toolbar-title>
-    <v-toolbar-title class="mx-auto font-weight-bold">
+    <v-toolbar-title class="mx-auto font-weight-bold hidden-sm-and-down">
       {{ $route.name }}
     </v-toolbar-title>
+    <v-spacer class="hidden-md-and-up" />
     <v-menu bottom offset-y v-if="!authDisabled">
       <template v-slot:activator="{ on, attrs }">
         <v-btn color="primary" v-bind="attrs" v-on="on" class="pr-2">

@@ -4,47 +4,45 @@
       <v-fade-transition>
         <v-progress-linear
           indeterminate
-          v-if="isLoading && isLoadingValue == null"
-          color="primary"
-          bottom
-        />
-        <v-progress-linear
-          v-model="isLoadingValue"
-          v-if="isLoading && isLoadingValue"
+          v-if="isLoading && isLoadingValue === 0"
           color="primary"
           bottom
         />
       </v-fade-transition>
-      <v-card-title>
+      <v-fade-transition>
+        <v-progress-linear
+          v-model="isLoadingValue"
+          v-if="isLoadingValue > 0"
+          color="primary"
+          bottom
+        />
+      </v-fade-transition>
+
+      <v-card-title class="primary font-weight-bold">
         Apps
-        <v-menu close-on-click close-on-content-click offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon size="small" v-bind="attrs" v-on="on">
-              <v-icon>mdi-chevron-down</v-icon>
-            </v-btn>
-          </template>
-          <v-list color="foreground" dense>
-            <v-list-item @click="refresh()">
-              <v-list-item-icon><v-icon>mdi-refresh</v-icon></v-list-item-icon>
-              <v-list-item-title>Refresh Apps</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="checkUpdate(apps)">
-              <v-list-item-icon><v-icon>mdi-update</v-icon></v-list-item-icon>
-              <v-list-item-title>Check for updates</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-        <v-btn fab x-small class="ml-2" color="primary" to="/apps/deploy">
+        <v-btn class="ml-2" color="secondary" to="/apps/deploy">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
           label="Search"
-          single-line
           hide-details
+          color="secondary"
+          dense
         ></v-text-field>
+      </v-card-title>
+
+      <v-card-title color="secondary">
+        <v-btn class="ml-2" @click="checkUpdate(apps)" color="secondary">
+          <span v-if="$vuetify.breakpoint.mdAndUp">Updates</span>
+          <v-icon>mdi-update</v-icon>
+        </v-btn>
+        <v-btn class="ml-2" @click="refresh()" color="secondary">
+          <span v-if="$vuetify.breakpoint.mdAndUp">Refresh</span>
+          <v-icon>mdi-refresh</v-icon>
+        </v-btn>
         <v-menu
           :close-on-content-click="false"
           bottom
@@ -53,7 +51,8 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="secondary" v-bind="attrs" v-on="on" class="ml-2">
-              Columns
+              <span v-if="$vuetify.breakpoint.mdAndUp">Columns</span>
+              <v-icon>mdi-border-all</v-icon>
             </v-btn>
           </template>
           <v-list color="foreground">
@@ -106,6 +105,15 @@
                   </v-list-item-icon>
                   <v-list-item-title>Edit</v-list-item-title>
                 </v-list-item>
+                <v-list-item
+                  v-if="!item.Config.Image.includes('selfhostedpro/yacht')"
+                  @click="Update(item.name)"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-update</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>Update</v-list-item-title>
+                </v-list-item>
                 <v-divider />
                 <v-list-item
                   @click="AppAction({ Name: item.name, Action: 'start' })"
@@ -131,24 +139,6 @@
                   </v-list-item-icon>
                   <v-list-item-title>Restart</v-list-item-title>
                 </v-list-item>
-                <v-divider
-                  v-if="
-                    !item.Config.Image.includes('selfhostedpro/yacht') &&
-                      item.isUpdatable
-                  "
-                />
-                <v-list-item
-                  v-if="
-                    !item.Config.Image.includes('selfhostedpro/yacht') &&
-                      item.isUpdatable
-                  "
-                  @click="Update(item.name)"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-update</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>Update</v-list-item-title>
-                </v-list-item>
                 <v-divider />
                 <v-list-item
                   @click="AppAction({ Name: item.name, Action: 'kill' })"
@@ -160,7 +150,10 @@
                 </v-list-item>
 
                 <v-list-item
-                  @click="AppAction({ Name: item.name, Action: 'remove' })"
+                  @click="
+                    selectedApp = item;
+                    removeDialog = true;
+                  "
                 >
                   <v-list-item-icon>
                     <v-icon>mdi-delete</v-icon>
@@ -169,10 +162,38 @@
                 </v-list-item>
               </v-list>
             </v-menu>
+            <v-dialog v-if="selectedApp" v-model="removeDialog" max-width="290">
+              <v-card>
+                <v-card-title class="headline" style="word-break: break-all;">
+                  Remove {{ selectedApp.name }}?
+                </v-card-title>
+                <v-card-text>
+                  Are you sure you want to permanently remove
+                  {{ selectedApp.name }}?<br />
+                  All non peristent data will be removed.
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn text @click="removeDialog = false">
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="error"
+                    @click="
+                      AppAction({ Name: selectedApp.name, Action: 'remove' });
+                      removeDialog = false;
+                    "
+                  >
+                    Remove
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
             <span class="nametext ml-1">{{ item.name }}</span>
             <v-tooltip
               right
-              v-if="item.isUpdatable"
+              v-if="item in updatable"
               color="primary"
               class="mb-2"
             >
@@ -202,15 +223,21 @@
           </div>
         </template>
         <template v-slot:item.ports="{ item }">
-          <ins v-for="(port, index) in convPorts(item.ports)" :key="index">
+          <ins
+            v-for="(port, index) in convPorts(item.ports)"
+            :key="index"
+            style="text-decoration: none;"
+          >
             <v-tooltip top transition="scale-transition">
               <template v-slot:activator="{ on, attrs }">
                 <v-chip
                   v-on="on"
                   v-bind="attrs"
                   class="mx-1"
+                  v-show="port.hip != '::'"
                   v-if="port.hip == '0.0.0.0'"
                   color="primary"
+                  style="text-decoration: none;"
                   label
                   small
                   :href="'http://' + host_ip + ':' + port.hport"
@@ -226,7 +253,8 @@
                   v-bind="attrs"
                   class="ma-1"
                   v-else
-                  color="indigo darken-2"
+                  color="primary"
+                  style="text-decoration: none;"
                   label
                   small
                   :href="'http://' + port.hip + ':' + port.hport"
@@ -263,6 +291,7 @@ export default {
       search: "",
       expanded: [],
       removeDialog: false,
+      selectedApp: null,
       host_ip: location.hostname,
       headers: [],
       headersMap: {
@@ -271,7 +300,6 @@ export default {
           value: "name",
           sortable: true,
           align: "start"
-          // width: "30%",
         },
         project: {
           text: "Project",
@@ -282,7 +310,6 @@ export default {
           text: "Status",
           value: "status",
           sortable: true
-          // width: "10%",
         },
         image: {
           text: "Image",
@@ -311,7 +338,7 @@ export default {
       checkUpdate: "apps/checkAppUpdate"
     }),
     handleRowClick(appName) {
-      this.$router.push({ path: `/apps${appName.Name}/info` });
+      this.$router.push({ path: `/apps${appName.Name}` });
     },
     editClick(appName) {
       this.$router.push({ path: `/apps/edit/${appName.Name}` });
@@ -329,8 +356,8 @@ export default {
       }
       return o;
     },
-    refresh() {
-      this.readApps();
+    async refresh() {
+      await this.readApps();
     }
   },
   computed: {
@@ -339,7 +366,8 @@ export default {
       "isLoading",
       "isLoadingValue",
       "action",
-      "updatable"
+      "updatable",
+      "isLoadingValue"
     ]),
     showHeaders() {
       return this.headers.filter(s => this.selectedHeaders.includes(s));
@@ -349,8 +377,8 @@ export default {
     this.headers = Object.values(this.headersMap);
     this.selectedHeaders = this.headers;
   },
-  mounted() {
-    this.readApps();
+  async mounted() {
+    await this.readApps();
   }
 };
 </script>

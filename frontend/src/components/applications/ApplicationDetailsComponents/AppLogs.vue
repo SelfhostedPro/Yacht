@@ -1,9 +1,9 @@
 <template>
-  <v-card color="foreground" raised>
+  <v-card color="foreground" class="mx-4 mt-2" raised>
     <v-card-title class="primary font-weight-bold"> Logs</v-card-title>
     <v-card-text
       v-if="app.State.Status != 'running'"
-      class="secondary text-center px-5 py-5"
+      class="foreground text-center px-5 py-5"
     >
       Start the app to view logs
     </v-card-text>
@@ -18,9 +18,9 @@
       id="logcontainer"
     >
       <template v-slot="{ item }">
-        <li id="logtext">
+        <p id="logtext">
           {{ item }}
-        </li>
+        </p>
       </template>
     </v-virtual-scroll>
   </v-card>

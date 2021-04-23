@@ -101,7 +101,7 @@ export default {
   },
   mounted() {
     this.authCheck();
-  },
+  }
   // created() {
   //   this.authCheck();
   // // }

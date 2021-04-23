@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-card color="foreground">
-      <v-card-title>
+      <v-card-title class="primary font-weight-bold">
         Theme Settings
       </v-card-title>
       <v-card-text>
-        <h2>Colors:</h2>
+        <h2 class="mt-2">Colors:</h2>
         <br />
         <v-btn-toggle v-model="color_toggle">
           <v-btn
@@ -63,7 +63,7 @@
 export default {
   data() {
     return {
-      color_toggle: 0
+      color_toggle: null
     };
   },
   computed: {

@@ -194,8 +194,9 @@ def get_compose_projects():
             if loaded_compose.get("networks"):
                 for network in loaded_compose.get("networks"):
                     networks.append(network)
-            for service in loaded_compose.get("services"):
-                services[service] = loaded_compose["services"][service]
+            if loaded_compose.get("services"):
+                for service in loaded_compose.get("services"):
+                    services[service] = loaded_compose["services"][service]
             _project = {
                 "name": project,
                 "path": file,
@@ -234,8 +235,9 @@ def get_compose(name):
             if loaded_compose.get("networks"):
                 for network in loaded_compose.get("networks"):
                     networks.append(network)
-            for service in loaded_compose.get("services"):
-                services[service] = loaded_compose["services"][service]
+            if loaded_compose.get("services"):
+                for service in loaded_compose.get("services"):
+                    services[service] = loaded_compose["services"][service]
             _content = open(file)
             content = _content.read()
             compose_object = {
@@ -269,6 +271,11 @@ def write_compose(compose):
         try:
             f.write(compose.content)
             f.close()
+        except TypeError as exc:
+            if exc.args[0] == "write() argument must be str, not None":
+                raise HTTPException(
+                    status_code=422, detail="Compose file cannot be empty."
+                )
         except Exception as exc:
             raise HTTPException(exc.status_code, exc.detail)
 
