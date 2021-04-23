@@ -69,12 +69,12 @@ export default {
   data() {
     return {
       stats: {},
-      statConnection: {},
+      statConnection: {}
     };
   },
   methods: {
     ...mapActions({
-      readApps: "apps/readApps",
+      readApps: "apps/readApps"
     }),
     formatBytes(bytes, decimals = 2) {
       if (bytes === 0) return "0 Bytes";
@@ -92,7 +92,7 @@ export default {
         this.statConnection[appName] = new EventSource(
           `/api/apps/${appName}/stats`
         );
-        this.statConnection[appName].addEventListener("update", (event) => {
+        this.statConnection[appName].addEventListener("update", event => {
           let statsGroup = JSON.parse(event.data);
           if (!(statsGroup.name in this.stats)) {
             this.stats[statsGroup.name] = {};
@@ -129,7 +129,7 @@ export default {
         .reduce(
           (acc, key) => ({
             ...acc,
-            [key]: arr[key],
+            [key]: arr[key]
           }),
           {}
         );
@@ -151,30 +151,30 @@ export default {
           {
             label: "CPU Usage",
             backgroundColor: "#41b883",
-            data: app.cpu_percent,
+            data: app.cpu_percent
           },
           {
             label: "Mem Usage",
             backgroundColor: "#008bcf",
-            data: app.mem_percent,
-          },
-        ],
+            data: app.mem_percent
+          }
+        ]
       };
       return datacollection;
-    },
+    }
   },
   computed: {
-    ...mapState("apps", ["apps"]),
+    ...mapState("apps", ["apps"])
   },
   async created() {
-    await this.readApps()
+    await this.readApps();
     for (var app in this.apps) {
       this.readAppStats(this.apps[app].name);
-    };
+    }
   },
   beforeDestroy() {
     this.closeStats();
-  },
+  }
 };
 </script>
 

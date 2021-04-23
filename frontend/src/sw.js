@@ -1,3 +1,4 @@
+/* eslint-disable */
 if (!self.define) {
   const e = e => {
       "require" !== e && (e += ".js");

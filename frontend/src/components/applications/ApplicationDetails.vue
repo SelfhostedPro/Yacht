@@ -130,9 +130,11 @@
                     </v-list-item>
                     <v-divider />
                     <v-list-item
-                      @click="AppAction({ Name: app.name, Action: 'start' })
-                            readAppLogs(app.name);
-                            readAppStats(app.name);"
+                      @click="
+                        AppAction({ Name: app.name, Action: 'start' });
+                        readAppLogs(app.name);
+                        readAppStats(app.name);
+                      "
                     >
                       <v-list-item-icon>
                         <v-icon>mdi-play</v-icon>
@@ -140,9 +142,11 @@
                       <v-list-item-title>Start</v-list-item-title>
                     </v-list-item>
                     <v-list-item
-                      @click="AppAction({ Name: app.name, Action: 'stop' })
-                              closeLogs()
-                              closeStats();"
+                      @click="
+                        AppAction({ Name: app.name, Action: 'stop' });
+                        closeLogs();
+                        closeStats();
+                      "
                     >
                       <v-list-item-icon>
                         <v-icon>mdi-stop</v-icon>
@@ -159,9 +163,11 @@
                     </v-list-item>
                     <v-divider />
                     <v-list-item
-                      @click="AppAction({ Name: app.name, Action: 'kill' })
-                              closeLogs()
-                              closeStats();"
+                      @click="
+                        AppAction({ Name: app.name, Action: 'kill' });
+                        closeLogs();
+                        closeStats();
+                      "
                     >
                       <v-list-item-icon>
                         <v-icon>mdi-fire</v-icon>
@@ -227,9 +233,11 @@
                       v-on="on"
                       color="secondary"
                       class="mx-1 my-1"
-                      @click="AppAction({ Name: app.name, Action: 'start' })
-                            readAppLogs(app.name);
-                            readAppStats(app.name);"
+                      @click="
+                        AppAction({ Name: app.name, Action: 'start' });
+                        readAppLogs(app.name);
+                        readAppStats(app.name);
+                      "
                     >
                       <span class="hidden-md-and-down">start</span>
                       <v-icon>mdi-play</v-icon>
@@ -244,9 +252,11 @@
                       v-on="on"
                       color="secondary"
                       class="mx-1 my-1"
-                      @click="AppAction({ Name: app.name, Action: 'stop' });
-                              closeLogs()
-                              closeStats();"
+                      @click="
+                        AppAction({ Name: app.name, Action: 'stop' });
+                        closeLogs();
+                        closeStats();
+                      "
                     >
                       <span class="hidden-md-and-down">stop</span>
                       <v-icon>mdi-stop</v-icon>
@@ -276,9 +286,11 @@
                       v-on="on"
                       color="secondary"
                       class="mx-1 my-1"
-                      @click="AppAction({ Name: app.name, Action: 'kill' })
-                              closeLogs()
-                              closeStats();"
+                      @click="
+                        AppAction({ Name: app.name, Action: 'kill' });
+                        closeLogs();
+                        closeStats();
+                      "
                     >
                       <span class="hidden-md-and-down">kill</span>
                       <v-icon>mdi-fire</v-icon>
@@ -394,13 +406,13 @@ export default {
     },
     readAppLogs(appName) {
       this.logConnection = new EventSource(`/api/apps/${appName}/logs`);
-      this.logConnection.addEventListener("update", (event) => {
+      this.logConnection.addEventListener("update", event => {
         this.logs.push(event.data);
-      })
+      });
     },
     readAppStats(appName) {
       this.statConnection = new EventSource(`/api/apps/${appName}/stats`);
-      this.statConnection.addEventListener("update", (event) => {
+      this.statConnection.addEventListener("update", event => {
         let statsGroup = JSON.parse(event.data);
         this.stats.time.push(statsGroup.time);
         this.stats.cpu_percent.push(Math.round(statsGroup.cpu_percent));
@@ -412,21 +424,21 @@ export default {
             this.stats[key].shift();
           }
         }
-      })
+      });
     },
-    closeLogs(){
-      this.logConnection.close()
-      this.logs = []
+    closeLogs() {
+      this.logConnection.close();
+      this.logs = [];
     },
-    closeStats(){
-      this.statConnection.close()
-      this.stats= {
+    closeStats() {
+      this.statConnection.close();
+      this.stats = {
         time: [],
         cpu_percent: [],
         mem_percent: [],
         mem_current: [],
         mem_total: []
-      }
+      };
     }
   },
   created() {
