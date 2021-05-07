@@ -33,6 +33,10 @@ Check out the getting started guide if this is the first time you've used Yacht:
 
 [![DigitalOcean](https://raw.githubusercontent.com/SelfhostedPro/Yacht/master/readme_media/do-btn-blue.svg)](https://marketplace.digitalocean.com/apps/yacht?refcode=b68dee19dbf6)
 
+**We can also be found on Linode**
+
+[<img src="https://www.linode.com/wp-content/uploads/2021/01/Linode-Logo-Black.svg" width="200" >](https://www.linode.com/marketplace/apps/selfhostedpro/yacht/)
+
 ## Features So Far:
 * Vuetify UI Framework
 * Basic Container Management
