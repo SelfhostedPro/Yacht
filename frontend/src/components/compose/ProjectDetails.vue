@@ -292,7 +292,7 @@
                 <v-list-item v-if="project.services[service].env_file">
                   <v-list-item-content> Env File </v-list-item-content>
                   <v-list-item-content>
-                    {{ project.services[service].env_file.join(", ") }}
+                    {{ project.services[service].env_file }}
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item v-if="project.services[service].depends_on">
