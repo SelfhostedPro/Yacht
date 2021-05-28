@@ -285,7 +285,7 @@ def launch_app(
             failed_app = dclient.containers.get(name)
             failed_app.remove()
         raise HTTPException(
-            status_code=e.status_code, detail=e.explanation.decode("utf-8")
+            status_code=e.status_code, detail=e.explanation
         )
 
     print(
