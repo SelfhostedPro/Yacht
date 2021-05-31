@@ -87,12 +87,11 @@ export default {
 
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
     },
-    readAppStats(appName) {
-      if (!(appName in this.statConnection)) {
-        this.statConnection[appName] = new EventSource(
-          `/api/apps/${appName}/stats`
+    readAppStats() {
+        this.statConnection = new EventSource(
+          `/api/apps/stats`
         );
-        this.statConnection[appName].addEventListener("update", event => {
+        this.statConnection.addEventListener("update", event => {
           let statsGroup = JSON.parse(event.data);
           if (!(statsGroup.name in this.stats)) {
             this.stats[statsGroup.name] = {};
@@ -114,7 +113,6 @@ export default {
           );
           this.$forceUpdate();
         });
-      }
     },
     refresh() {
       this.closeStats();
@@ -139,9 +137,7 @@ export default {
       this.$router.push({ path: `/apps/${appName}/info` });
     },
     closeStats() {
-      for (let connection in this.statConnection) {
-        this.statConnection[connection].close();
-      }
+      this.statConnection.close();
       this.stats = {};
     },
     fillStats(app) {

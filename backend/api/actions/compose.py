@@ -228,7 +228,10 @@ def get_compose(name):
             volumes = []
             services = {}
             compose = open(file)
-            loaded_compose = yaml.load(compose, Loader=yaml.SafeLoader)
+            try:
+                loaded_compose = yaml.load(compose, Loader=yaml.SafeLoader)
+            except yaml.scanner.ScannerError as exc:
+                raise HTTPException(422, f"{exc.problem_mark.line}:{exc.problem_mark.column} - {exc.problem}")
             if loaded_compose.get("volumes"):
                 for volume in loaded_compose.get("volumes"):
                     volumes.append(volume)

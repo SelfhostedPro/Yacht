@@ -35,6 +35,11 @@ def update_container(app_name, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return actions.app_update(app_name)
 
+@router.get("/stats")
+async def all_sse_stats(request: Request, Authorize: AuthJWT = Depends()):
+    auth_check(Authorize)
+    stat_generator = actions.all_stat_generator(request)
+    return EventSourceResponse(stat_generator)
 
 @router.get("/{app_name}")
 def get_container_details(app_name, Authorize: AuthJWT = Depends()):
@@ -64,7 +69,6 @@ def container_actions(app_name, action, Authorize: AuthJWT = Depends()):
 def deploy_app(template: schemas.DeployForm, Authorize: AuthJWT = Depends()):
     auth_check(Authorize)
     return actions.deploy_app(template=template)
-
 
 @router.get("/{app_name}/logs")
 async def logs(app_name: str, request: Request, Authorize: AuthJWT = Depends()):

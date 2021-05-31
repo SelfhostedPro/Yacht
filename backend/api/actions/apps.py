@@ -1,3 +1,4 @@
+from os import stat
 from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
 
@@ -30,6 +31,7 @@ import subprocess
 import docker
 import aiodocker
 import asyncio
+import aiostream
 
 
 """
@@ -283,7 +285,7 @@ def launch_app(
             failed_app = dclient.containers.get(name)
             failed_app.remove()
         raise HTTPException(
-            status_code=e.status_code, detail=e.explanation.decode("utf-8")
+            status_code=e.status_code, detail=e.explanation
         )
 
     print(
@@ -513,6 +515,18 @@ async def stat_generator(request, app_name):
             # Stats are generated every second by docker
             # so there's no point in checking more often than that
             await asyncio.sleep(1)
+
+async def all_stat_generator(request):
+    async with aiodocker.Docker() as docker:
+        containers = []
+        _containers = await docker.containers.list()
+        for _app in _containers:
+            if _app._container["State"] == "running":
+                containers.append(_app)
+        loops = [stat_generator(request, app._container["Names"][0][1:]) for app in containers]
+        async with aiostream.stream.merge(*loops).stream() as merged:
+                    async for event in merged:
+                        yield event
 
 
 async def process_app_stats(line, app_name):
