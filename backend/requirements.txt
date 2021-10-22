@@ -39,5 +39,5 @@ urllib3==1.25.10
 uvicorn==0.11.8
 uvloop==0.14.0
 websocket-client==0.57.0
-websockets==8.1
+websockets==9.1
 wheel==0.36.2
