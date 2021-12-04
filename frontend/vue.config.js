@@ -16,13 +16,4 @@ module.exports = {
       }
     }
   },
-
-  pwa: {
-    name: "Yacht",
-    themeColor: "#41B883",
-    workboxOptions: {
-      skipWaiting: true,
-      clientsClaim: true,
-    }
-  }
 };
