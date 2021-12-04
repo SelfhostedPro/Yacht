@@ -23,7 +23,7 @@
       @click="checkUpdate()"
       :disabled="checkedUpdate"
       >
-      Check for update.
+      Check For Updates
     </v-btn>
     <v-btn
       class="mx-5 mb-5"
