@@ -36,6 +36,8 @@ RUN \
 	python3 \
 	py3-pip \
 	mysql-dev \
+        postgresql-dev \
+	mysql-dev \
 	nginx &&\
  gem install sass &&\
  echo "**** Installing Python Modules ****" && \
