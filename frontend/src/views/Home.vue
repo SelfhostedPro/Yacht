@@ -89,7 +89,7 @@ export default {
     },
     readAppStats() {
       this.statConnection = new EventSource(`/api/apps/stats`);
-      this.statConnection.addEventListener("update", (event) => {
+      this.statConnection.addEventListener("update", event => {
         let statsGroup = JSON.parse(event.data);
         if (!(statsGroup.name in this.stats)) {
           this.stats[statsGroup.name] = {};
