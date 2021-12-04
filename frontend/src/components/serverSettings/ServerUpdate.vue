@@ -69,6 +69,9 @@ export default {
       })
         .then(response => {
           this.isLoading = false;
+          if (response.data == false){
+            this.setErr("No update found.")
+          }
           this.updatable = response.data;
         })
         .catch(err => {

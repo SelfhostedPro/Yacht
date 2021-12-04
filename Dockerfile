@@ -11,7 +11,7 @@ COPY ./frontend/ .
 RUN npm run build
 
 # Setup Container and install Flask
-FROM lsiobase/alpine:3.12 as deploy-stage
+FROM lsiobase/alpine:3.14 as deploy-stage
 # MAINTANER Your Name "info@selfhosted.pro"
 
 # Set Variables

@@ -52,8 +52,6 @@ function createAxiosResponseInterceptor() {
   );
 }
 
-// Vue.component('apexchart', VueApexCharts)
-
 // Call interceptor
 createAxiosResponseInterceptor();
 Vue.use(VueUtils);
