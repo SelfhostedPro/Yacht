@@ -79,25 +79,17 @@ app.include_router(app_settings.router, prefix="/settings", tags=["settings"])
 async def startup(db: Session = Depends(get_db)):
     generate_secret_key(db=SessionLocal())
     users_exist = get_users(db=SessionLocal())
-    print(
-        "DISABLE_AUTH = "
-        + str(settings.DISABLE_AUTH)
-        + " ("
-        + str(type(settings.DISABLE_AUTH))
-        + ")"
-    )
     if users_exist:
-        print("Users Exist")
+        pass
     else:
         print("No Users. Creating the default user.")
-        # This is where I'm having trouble
         user = UserCreate(
             username=settings.ADMIN_EMAIL, password=settings.ADMIN_PASSWORD
         )
         create_user(db=SessionLocal(), user=user)
     template_variables_exist = read_template_variables(SessionLocal())
     if template_variables_exist:
-        print("Template Variables Exist")
+        pass
     else:
         print("No Variables yet!")
         t_vars = settings.BASE_TEMPLATE_VARIABLES

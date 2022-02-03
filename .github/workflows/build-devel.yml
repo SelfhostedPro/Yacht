@@ -58,4 +58,9 @@ jobs:
             ghcr.io/selfhostedpro/yacht:devel
             ghcr.io/selfhostedpro/yacht:devel-${{ steps.current-time.outputs.formattedTime }}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+      -
+        name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache

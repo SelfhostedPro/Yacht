@@ -11,7 +11,7 @@ COPY ./frontend/ .
 RUN npm run build
 
 # Setup Container and install Flask
-FROM lsiobase/alpine:3.12 as deploy-stage
+FROM lsiobase/alpine:3.15 as deploy-stage
 # MAINTANER Your Name "info@selfhosted.pro"
 
 # Set Variables
@@ -23,30 +23,29 @@ COPY ./backend/requirements.txt .
 
 # Install Dependancies
 RUN \
- echo "**** install build packages ****" && \
- apk add --no-cache --virtual=build-dependencies \
+	echo "**** install build packages ****" && \
+	apk add --no-cache --virtual=build-dependencies \
 	g++ \
 	make \
-	postgresql-dev \
 	python3-dev \
 	libffi-dev \
+	mysql-dev \
+	postgresql-dev \
 	ruby-dev &&\
- echo "**** install packages ****" && \
- apk add --no-cache \
+	echo "**** install packages ****" && \
+	apk add --no-cache \
 	python3 \
 	py3-pip \
-	mysql-dev \
-        postgresql-dev \
-	mysql-dev \
 	nginx &&\
- gem install sass &&\
- echo "**** Installing Python Modules ****" && \
- pip3 install wheel &&\
- pip3 install -r requirements.txt &&\
- echo "**** Cleaning Up ****" &&\
- apk del --purge \
+	pip3 install --upgrade pip &&\
+	gem install sass &&\
+	echo "**** Installing Python Modules ****" && \
+	pip3 install wheel &&\
+	pip3 install -r requirements.txt &&\
+	echo "**** Cleaning Up ****" &&\
+	apk del --purge \
 	build-dependencies && \
- rm -rf \
+	rm -rf \
 	/root/.cache \
 	/tmp/*
 
