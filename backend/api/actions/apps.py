@@ -498,13 +498,14 @@ async def stat_generator(request, app_name):
             container: DockerContainer = await adocker.containers.get(app_name)
             if container._container["State"]["Status"] == "running":
                 stats_generator = container.stats(stream=True)
+                prev_stats = None
 
                 async for line in stats_generator:
                     current_stats = await process_app_stats(line, app_name)
                     if prev_stats != current_stats:
                         yield {
                             "event": "update",
-                            "retry": 30000,
+                            "retry": 3000,
                             "data": json.dumps(current_stats),
                         }
                         prev_stats = current_stats
