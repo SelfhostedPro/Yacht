@@ -47,5 +47,5 @@ typing-extensions==3.10.0.2
 urllib3==1.26.6
 uvicorn[standard]==0.15.0
 websocket-client==0.59.0
-websockets==9.1
+websockets==10.0
 yarl==1.6.3
