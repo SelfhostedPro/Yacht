@@ -87,6 +87,6 @@ If you’re running under WSL2 inside Windows, because of the difference in how 
 ```
 $ sudo usermod -aG docker $USER
 ```
-Additional information about this can be found in the [Post-installation steps for Linux](Post-installation steps for Linux)
+Additional information about this can be found in the [Post-installation steps for Linux](https://docs.docker.com/engine/install/linux-postinstall/)
 ## License
 [MIT License](LICENSE.md)
