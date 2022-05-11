@@ -82,5 +82,11 @@ You can utilize the following environment variables in Yacht. None of them are m
 | DISABLE_AUTH  | This disables authentication on the backend of Yacht. It's not recommended unless you're using something like Authelia to manage authentication.  |
 | DATABASE_URL | If you want to have Yacht use a database like SQL instead of the built in sqlite on you can put that info here in the following format: `postgresql://user:password@postgresserver/db` |
 | COMPOSE_DIR | This is the path inside the container which contains your folders that have docker compose projects. (*compose tag only*)|
+## Notes for installing Docker and Yacht on WSL2 platform under Windows
+If you’re running under WSL2 inside Windows, because of the difference in how permissions are handled. Your essentially inside of a Linux machine accessing a Windows file system. You will need to run after installation before adding the Yacht container:
+```
+$ sudo usermod -aG docker $USER
+```
+Additional information about this can be found in the [Post-installation steps for Linux](https://docs.docker.com/engine/install/linux-postinstall/)
 ## License
 [MIT License](LICENSE.md)
