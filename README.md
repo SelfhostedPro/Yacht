@@ -12,6 +12,8 @@
 ## Yacht
 Yacht is a container management UI with a focus on templates and 1-click deployments.
 
+**I'm currently rewriting the backend in Typescript as an attempt to have a language that more people would contribute to. You can follow development of that [here](https://github.com/SelfhostedPro/yacht-api).**
+
 *If the built in update button isn't working for you try the following command:*
 ```
 docker run --rm -d -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower:latest --cleanup --run-once <container-name>
