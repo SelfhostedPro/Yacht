@@ -3,7 +3,7 @@ aiosqlite==0.15.0
 aiostream==0.4.3
 alembic==1.4.3
 bcrypt==3.1.7
-certifi==2020.6.20
+certifi==2023.7.22
 cffi==1.14.1
 chardet==3.0.4
 click==7.1.2
