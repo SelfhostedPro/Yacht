@@ -36,7 +36,7 @@ starlette==0.13.6
 sse-starlette==0.6.2
 typing-extensions==3.7.4.2
 urllib3==1.25.10
-uvicorn==0.11.8
+uvicorn==0.12.3
 uvloop==0.14.0
 websocket-client==0.57.0
 websockets==8.1
