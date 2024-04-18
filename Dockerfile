@@ -9,7 +9,7 @@ WORKDIR /app
 # Install dependencies into a temp directory
 # This will cache them and speed up future builds
 FROM base AS install
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml ./
 RUN apk add --no-cache --force-overwrite --virtual=build-dependencies python3-dev sqlite-dev make g++ && \
     pnpm install --frozen-lockfile && \
     apk del build-dependencies
