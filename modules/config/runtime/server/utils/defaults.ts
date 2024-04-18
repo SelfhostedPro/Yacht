@@ -1,0 +1,11 @@
+import type { YachtConfig } from "../../../types";
+
+export const defaultYachtConfig: YachtConfig = {
+    servers: [{ name: 'local', options: { socketPath: process.env.DOCKER_HOST ?? '/var/run/docker.sock' } }],
+    auth: true,
+    theme: {
+        type: 'dark'
+    },
+    plugins: [],
+    sessionTimeout: 60 * 60 * 24,
+}
