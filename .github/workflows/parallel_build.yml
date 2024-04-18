@@ -77,10 +77,11 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           push: true
           outputs: type=image,name=${{ env.REGISTRY }}/${{ env.REPO_LC }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=registry,ref=${{ env.REPO_LC }}:buildcache
-          cache-to: type=registry,ref=${{ env.REPO_LC }}:buildcache,mode=max
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
+          # cache-from: type=registry,ref=${{ env.REPO_LC }}:buildcache
+          # cache-to: type=registry,ref=${{ env.REPO_LC }}:buildcache,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
 
       - name: Export digest
         run: |
