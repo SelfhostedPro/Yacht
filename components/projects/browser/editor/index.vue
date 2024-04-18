@@ -29,7 +29,7 @@ const language = ref<string>("plaintext");
 const projectsStore = useProjectsStore();
 const { activeFile, currentPath } = storeToRefs(projectsStore);
 const editableFile = ref<FileInfo>();
-
+defineEmits(["toParent"])
 const extensionMap: { [key: string]: string } = {
   ".yaml": "yaml",
   ".yml": "yaml",

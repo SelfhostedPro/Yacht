@@ -17,7 +17,6 @@ export const newFile = async (path: string, name: string) => {
     await createFile(file)
     return `${file} created.`
 }
-
 export const cloneGitRepo = async (path: string, url: string) => {
     console.log('cloning git repo: ', path, url)
     // Add trailing slash if it doesn't exist
