@@ -27,6 +27,8 @@ RUN pnpm run build
 # Start fresh from the base to reduce the final image size
 FROM ghcr.io/linuxserver/baseimage-alpine:3.19 as deploy
 
+RUN mkdir -p /data
+
 LABEL build_version="Yacht version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="SelfhostedPro"
 
