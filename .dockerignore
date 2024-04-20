@@ -43,9 +43,11 @@ helm-charts
 .idea
 coverage*
 default_template.json
+
 node_modules
 .git
 .gitignore
+.github
 *.md
 dist
 .nuxt
