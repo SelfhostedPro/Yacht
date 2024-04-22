@@ -1,6 +1,7 @@
 import type { YachtConfig } from "../../../types";
 
 export const defaultYachtConfig: YachtConfig = {
+    name: 'Yacht',
     servers: [{ name: 'local', options: { socketPath: process.env.DOCKER_HOST ?? '/var/run/docker.sock' } }],
     auth: true,
     theme: {

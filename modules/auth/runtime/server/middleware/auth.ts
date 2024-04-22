@@ -16,8 +16,8 @@ const publicRoutes = [
 export default defineEventHandler(async (event) => {
     const lucia = useLucia()
     // Check to see if auth is enabled
-    const { auth, theme } = await useConfig()
-    event.context.details = { auth, theme }
+    const { auth, theme, name } = await useConfig()
+    event.context.details = { auth, theme, name }
     if (event.context.details.auth === false) return
 
     if (event.method !== "GET") {
@@ -62,7 +62,7 @@ export default defineEventHandler(async (event) => {
 
 declare module "h3" {
     interface H3EventContext {
-        details: Pick<YachtConfig, 'auth' | 'theme'>
+        details: Pick<YachtConfig, 'auth' | 'theme' | 'name'>
         user: User | null;
         session: Session | null;
     }

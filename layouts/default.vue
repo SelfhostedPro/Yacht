@@ -38,21 +38,6 @@
       >
         notify
       </v-btn>
-      <!-- <v-btn
-          variant="elevated"
-          color="surface"
-          @click.stop="
-            $toast.custom(RawProgress, {
-              duration: Number.POSITIVE_INFINITY,
-              unstyled: true,
-              componentProps: {
-                ...testProgressProps,
-              },
-            })
-          "
-        >
-          progress
-        </v-btn> -->
     </template>
     <slot />
     <SonnerClient />

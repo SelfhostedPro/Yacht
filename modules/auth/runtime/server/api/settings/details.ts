@@ -4,6 +4,7 @@ export default eventHandler(async (event) => {
     return {
         auth: event.context.details.auth,
         theme: event.context.details.theme,
+        name: event.context.details.name,
         wizard: !existingUsers
     }
 })

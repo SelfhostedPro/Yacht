@@ -9,6 +9,7 @@ interface DetailsReturn {
   auth: boolean;
   wizard: boolean;
   theme: ThemeSettings;
+  name: string;
 }
 export const useSettingsStore = defineStore({
   id: 'settingsStore',
@@ -21,7 +22,7 @@ export const useSettingsStore = defineStore({
     async stopLoading(name: string) { this.loading = this.loading.filter((item) => item !== name) },
     async fetchDetails() {
       this.startLoading('details')
-      const { data, error } = await useAsyncData('setting_details', () => $fetch<{ auth: boolean, theme: any, wizard: boolean }>('/api/settings/details'))
+      const { data, error } = await useAsyncData('setting_details', () => $fetch<{ auth: boolean, theme: any, wizard: boolean, name: string }>('/api/settings/details'))
       data.value ? this.details = data.value : null
       this.stopLoading('details')
       return { error, data }

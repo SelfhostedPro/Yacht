@@ -5,6 +5,7 @@ import { TemplateVariablesSchema } from './templates'
 import { SecretsSchema } from './secrets'
 
 export const YachtConfigSchema = z.object({
+    name: z.string().optional(),
     servers: z.array(ServerSettingsSchema),
     templateVariables: z.array(TemplateVariablesSchema).optional(),
     theme: ThemeSettingsSchema,

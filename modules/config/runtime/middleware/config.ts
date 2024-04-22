@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (process.client) return
     const clientConfig = useClientConfig()
     try {
-        const data = await useRequestFetch()<{ auth: boolean, wizard: boolean, theme: any }>("/api/settings/details");
+        const data = await useRequestFetch()<{ auth: boolean, wizard: boolean, theme: any, name: string }>("/api/settings/details");
         if (data) {
             clientConfig.value = data;
         }

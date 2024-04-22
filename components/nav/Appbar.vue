@@ -3,8 +3,9 @@
     class="app-bar"
     height="60"
     elevation="8"
-    scroll-behavior="collapse hide"
+    scroll-behavior="hide"
     scroll-threshold="1"
+    color="primary"
   >
     <template #prepend>
       <v-app-bar-nav-icon
@@ -13,6 +14,7 @@
         variant="text"
         @click.stop="drawer = !drawer"
       />
+      <v-app-bar-title>{{ clientConfig?.name || 'Yacht' }}</v-app-bar-title>
     </template>
     <template #append>
       <slot name="append" />
@@ -72,6 +74,8 @@
 <script lang="ts" setup>
 import { useDisplay } from "vuetify";
 import { useUser } from "~/modules/auth/runtime/composables/user";
+import { useClientConfig } from "~/modules/config/runtime/composables/client-config";
+const clientConfig = useClientConfig()
 const user = useUser();
 defineProps(["links"]);
 const drawer = ref(false);
@@ -84,8 +88,8 @@ const logout = async () => {
 </script>
 
 <style>
-.app-bar {
+/* .app-bar {
   color: rgba(var(--v-theme-primary), 0.9) !important;
   background-color: rgba(var(--v-theme-primary), 0.9) !important;
-}
+} */
 </style>

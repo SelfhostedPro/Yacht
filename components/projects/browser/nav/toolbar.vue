@@ -14,6 +14,9 @@
 const activeButtons = ref<string[]>([]);
 const projectsStore = useProjectsStore();
 const { filter, showHidden } = storeToRefs(projectsStore);
+
+defineEmits(["toParent"]);
+
 </script>
 
 <style></style>

@@ -56,7 +56,7 @@ export const addTemplate = async ({ url, name: _name, title: _title }: addYachtT
         const title: string = _title !== undefined ? _title : 'title' in _template && _template.title !== undefined ? _template.title : _name ? _name : 'unknown'
         const templateType = getTemplateType(_template)
         const template = await typeTemplate(_template, { name: _name, title, url, type: templateType })
-        await fs.outputJSON(`${configPaths}/${_name}.json`, template)
+        await fs.outputJSON(`${configPaths.templates}/${_name}.json`, template)
         return template
     } else {
         createError(new Error('Template already exists.'))

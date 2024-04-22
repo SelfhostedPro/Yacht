@@ -20,14 +20,14 @@ export interface Link {
           <slot name="sidebar-logo" />
         </template>
       </lazy-nav-sidebar>
-      <!-- <lazy-nav-appbar :links="links">
+      <lazy-nav-appbar :links="links">
         <template #logo>
           <slot name="appbar-logo" />
         </template>
         <template #append>
           <slot name="appbar-append" />
         </template>
-      </lazy-nav-appbar> -->
+      </lazy-nav-appbar>
     </slot>
     <v-main>
       <v-container fluid>

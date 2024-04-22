@@ -18,13 +18,14 @@
     <v-progress-linear v-if="loading.includes('tree')" indeterminate />
     <v-list v-model:opened="openedTree" density="compact">
       <projects-browser-nav-tree
-        v-if="dirTree"
+        v-if="dirTree && dirTree.length > 0"
         path=""
         :items="dirTree"
         :setActive="(item) => projectsStore.setActiveFile(item.path)"
         :load-children="getChildren"
         :handleRightClick="handleRightClick"
       />
+      <v-card-text class="text-center" v-else>No files found in data directory.</v-card-text>
     </v-list>
     <v-menu
       v-model:model-value="menu.open"
