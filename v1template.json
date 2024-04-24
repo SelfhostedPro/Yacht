@@ -4,7 +4,7 @@
     "title": "Yacht Nuxt",
     "name": "yacht-nuxt",
     "description": "yacht alpha",
-    "logo": "https://github.com/SelfhostedPro/yacht-nuxt/blob/main/public/icons/yacht/mini.svg",
+    "logo": "https://raw.githubusercontent.com/SelfhostedPro/yacht-nuxt/main/public/icons/yacht/mini.svg",
     "image": "ghcr.io/selfhostedpro/yacht-nuxt:main",
     "note": "Yacht app template",
     "categories": [
@@ -23,6 +23,10 @@
       {
         "container": "/data",
         "bind": "!config/yacht_nuxt/data"
+      },
+      {
+        "container": "/var/run/docker.sock",
+        "bind": "/var/run/docker.sock"
       }
     ]
   }
