@@ -21,12 +21,8 @@ interface Database {
 }
 
 
-export const useRawDB = () => {
-    // Get DB Path
-    // const { configPath } = useRuntimeConfig()
+const init = (dbPath: string) => {
     let exists: boolean = true
-    const configPath = configPaths.auth
-    const dbPath = `${configPath}/db.sqlite`
     if (!existsSync(dirname(dbPath))) {
         mkdirSync(dirname(dbPath), { recursive: true })
         exists = false;
@@ -35,33 +31,33 @@ export const useRawDB = () => {
     const rawDB = new sqlite(dbPath);
     // Ensure DB is using WAL mode
     rawDB.exec("PRAGMA journal_mode = WAL;");
+
     // Make sure DB exists
     if (!exists) {
-        const db = new Kysely<Database>({
-            dialect: new SqliteDialect({
-                database: useRawDB()
-            })
-        })
-        db.schema
-            .createTable('user')
-            .addColumn('id', 'text', (col) => col.primaryKey())
-            .addColumn('username', 'text', (col) => col.notNull().unique())
-            .addColumn('role', 'text', (col) => col.notNull().defaultTo('user').check(sql`role in ('admin', 'user')`))
-            .addColumn('hashedPassword', 'text', (col) => col.notNull())
-            .ifNotExists()
-            .execute().then(() => {
-                db.schema
-                    .createTable('session')
-                    .addColumn('id', 'text', (col) => col.notNull())
-                    .addColumn('user_id', 'text', (col) => col.notNull().references('user.id'))
-                    .addColumn('expires_at', 'integer', (col) => col.notNull())
-                    .ifNotExists()
-                    .execute().then(() => {
-                        return
-                    })
-            })
+        rawDB.exec(`CREATE TABLE IF NOT EXISTS user (
+            id TEXT NOT NULL PRIMARY KEY,
+            username TEXT NOT NULL UNIQUE,
+            role TEXT CHECK(role in ('admin', 'user')) NOT NULL DEFAULT 'user',
+            passwordHash TEXT NOT NULL
+        )`);
+        rawDB.exec(`CREATE TABLE IF NOT EXISTS session (
+        id TEXT NOT NULL PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        expires_at INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES user(id)
+        )`);
 
     }
+    return rawDB
+}
+
+export const useRawDB = () => {
+    // Get DB Path
+    // const { configPath } = useRuntimeConfig()
+    const configPath = configPaths.auth
+    const dbPath = `${configPath}/db.sqlite`
+    const rawDB = init(dbPath)
+
     return rawDB
 }
 
@@ -80,7 +76,7 @@ export const useDBAdapter = () => {
     });
 }
 
-export const initDB = async () => {
+export const oldInitDB = async () => {
     const db = useDB()
 
     // Create db tables if they don't exist already
@@ -93,13 +89,6 @@ export const initDB = async () => {
         .ifNotExists()
         .execute()
 
-    // rawDB.exec(`CREATE TABLE IF NOT EXISTS user (
-    //     id TEXT NOT NULL PRIMARY KEY,
-    //     username TEXT NOT NULL UNIQUE,
-    //     role TEXT CHECK(role in ('admin', 'user')) NOT NULL DEFAULT 'user',
-    //     passwordHash TEXT NOT NULL
-    // )`);
-
     await db.schema
         .createTable('session')
         .addColumn('id', 'text', (col) => col.notNull())
@@ -107,13 +96,6 @@ export const initDB = async () => {
         .addColumn('expires_at', 'integer', (col) => col.notNull())
         .ifNotExists()
         .execute()
-
-    // rawDB.exec(`CREATE TABLE IF NOT EXISTS session (
-    //     id TEXT NOT NULL PRIMARY KEY,
-    //     user_id TEXT NOT NULL,
-    //     expires_at INTEGER NOT NULL,
-    //     FOREIGN KEY (user_id) REFERENCES user(id)
-    // )`);
 }
 
 
