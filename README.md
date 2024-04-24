@@ -22,6 +22,12 @@ docker run -d \
     ghcr.io/selfhostedpro/yacht-nuxt:main
 ```
 
+to pull a newer image run the following:
+
+```bash
+docker image pull ghcr.io/selfhostedpro/yacht-nuxt:main
+```
+
 you can remove yacht with the following command:
 
 ```bash
