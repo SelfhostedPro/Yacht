@@ -11,7 +11,7 @@ const publicRoutes = [
     "/api/auth/logout",
     "/api/auth/wizard",
     "/api/settings/details",
-    "/_nuxt/builds/meta/*"
+    "/_nuxt/*"
 ]
 
 export default defineEventHandler(async (event) => {
