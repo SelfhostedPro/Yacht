@@ -34,18 +34,23 @@ const init = (dbPath: string) => {
 
     // Make sure DB exists
     if (!exists) {
+        console.log('Creating user table.')
         rawDB.exec(`CREATE TABLE IF NOT EXISTS user (
             id TEXT NOT NULL PRIMARY KEY,
             username TEXT NOT NULL UNIQUE,
             role TEXT CHECK(role in ('admin', 'user')) NOT NULL DEFAULT 'user',
             passwordHash TEXT NOT NULL
         )`);
+        console.log('User table created')
+
+        console.log('Creating Session Table')
         rawDB.exec(`CREATE TABLE IF NOT EXISTS session (
         id TEXT NOT NULL PRIMARY KEY,
         user_id TEXT NOT NULL,
         expires_at INTEGER NOT NULL,
         FOREIGN KEY (user_id) REFERENCES user(id)
         )`);
+        console.log('Session table created')
 
     }
     return rawDB
@@ -70,7 +75,8 @@ export const useDB = () => {
 }
 
 export const useDBAdapter = () => {
-    return new BetterSqlite3Adapter(useRawDB(), {
+    const db = useRawDB()
+    return new BetterSqlite3Adapter(db, {
         user: 'user',
         session: 'session'
     });
