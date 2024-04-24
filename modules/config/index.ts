@@ -14,7 +14,6 @@ export default defineNuxtModule({
     meta: { name: 'config' },
     async setup(options, nuxt) {
         const resolver = createResolver(import.meta.url)
-
         await installModule(logging, null, nuxt)
         await installModule(core, null, nuxt)
 
@@ -63,7 +62,7 @@ export default defineNuxtModule({
         })
         addImportsDir(resolver.resolve('runtime/server/utils'))
         addImportsDir(resolver.resolve('types'))
-        addServerPlugin(resolver.resolve('plugin/server.ts'))
+        addServerPlugin(resolver.resolve('plugin/01-server-config.ts'))
     }
 })
 

@@ -8,6 +8,6 @@ export default defineNuxtModule({
         const resolver = createResolver(import.meta.url)
         addImportsDir(resolver.resolve('types'))
         addServerImportsDir(resolver.resolve('runtime/server/utils'))
-        addServerPlugin(resolver.resolve('plugin/server.ts'))
+        // addServerPlugin(resolver.resolve('plugin/02-server-db.ts'))
     }
 })

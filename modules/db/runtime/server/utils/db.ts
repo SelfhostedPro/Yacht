@@ -24,13 +24,44 @@ interface Database {
 export const useRawDB = () => {
     // Get DB Path
     // const { configPath } = useRuntimeConfig()
+    let exists: boolean = true
     const configPath = configPaths.auth
     const dbPath = `${configPath}/db.sqlite`
-    if (!existsSync(dirname(dbPath))) mkdirSync(dirname(dbPath), { recursive: true })
+    if (!existsSync(dirname(dbPath))) {
+        mkdirSync(dirname(dbPath), { recursive: true })
+        exists = false;
+        Logger.info(`Database not found. Creating new one.`)
+    }
     const rawDB = new sqlite(dbPath);
     // Ensure DB is using WAL mode
     rawDB.exec("PRAGMA journal_mode = WAL;");
     // Make sure DB exists
+    if (!exists) {
+        const db = new Kysely<Database>({
+            dialect: new SqliteDialect({
+                database: useRawDB()
+            })
+        })
+        db.schema
+            .createTable('user')
+            .addColumn('id', 'text', (col) => col.primaryKey())
+            .addColumn('username', 'text', (col) => col.notNull().unique())
+            .addColumn('role', 'text', (col) => col.notNull().defaultTo('user').check(sql`role in ('admin', 'user')`))
+            .addColumn('hashedPassword', 'text', (col) => col.notNull())
+            .ifNotExists()
+            .execute().then(() => {
+                db.schema
+                    .createTable('session')
+                    .addColumn('id', 'text', (col) => col.notNull())
+                    .addColumn('user_id', 'text', (col) => col.notNull().references('user.id'))
+                    .addColumn('expires_at', 'integer', (col) => col.notNull())
+                    .ifNotExists()
+                    .execute().then(() => {
+                        return
+                    })
+            })
+
+    }
     return rawDB
 }
 
