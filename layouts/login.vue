@@ -3,6 +3,6 @@
     <v-main>
       <slot />
     </v-main>
-    <Sonner />
+    <!-- <Sonner /> -->
   </v-app>
 </template>
