@@ -65,38 +65,26 @@ export const getContainerStats = async (close: () => void, send: (callback: (id:
 export const getContainerLogs = async (server: string, id: string, close: () => void, send: (callback: (id: number) => any) => void) => {
     const _server = await useServers().then((servers: ServerDict) => servers[server])
     if (!_server) throw createError(new Error(`Server ${server} not found!`))
-    const logStream = new StreamPassThrough()
-
-    // Placeholder string to assemble chunks of data
-    logStream.on('data', async (chunk) => {
-        send(() => chunk.toString('utf8'))
-        console.log(chunk.toString('utf8'))
-    });
-
     const container = _server.getContainer(id)
     const running = await container.inspect().then((container) => container.State.Running)
-
-    container.logs(
-        {
-            follow: true,
-            stdout: true,
+    if (running) {
+        // Placeholder string to assemble chunks of data
+        const logStream = new StreamPassThrough()
+        logStream.on('data', (chunk) => {
+            send(() => chunk.toString('utf8'))
+            // sseHooks.callHook("sse:containerLogs", chunk.toString('utf8'));
+        });
+        // Start streaming logs
+        container.logs({
+            follow: true, stdout: true,
             stderr: true,
             timestamps: false,
-        },
-        (error, stream) => {
+        }, (err, stream) => {
             container.modem.demuxStream(stream, logStream, logStream);
-            if (stream) {
-                stream.on('end', () => {
-                    logStream.end('!stop!')
-                    close()
-                })
-            } else {
-                console.log('error getting stream', error)
-            }
-        }
-    )
-
-    // else {
-    //     console.log('container not running')
-    // }
+            stream?.on('end', function () {
+                logStream.end('!stop!');
+                close()
+            });
+        })
+    }
 }
