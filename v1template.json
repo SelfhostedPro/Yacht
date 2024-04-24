@@ -1,0 +1,29 @@
+[
+  {
+    "type": 1,
+    "title": "Yacht Nuxt",
+    "name": "yacht-nuxt",
+    "description": "yacht alpha",
+    "logo": "https://github.com/SelfhostedPro/yacht-nuxt/blob/main/public/icons/yacht/mini.svg",
+    "image": "ghcr.io/selfhostedpro/yacht-nuxt:main",
+    "note": "Yacht app template",
+    "categories": [
+      "System Tools"
+    ],
+    "platform": "linux",
+    "restart_policy": "unless-stopped",
+    "ports": [
+      "3020:3000/tcp"
+    ],
+    "volumes": [
+      {
+        "container": "/config",
+        "bind": "!config/yacht_nuxt/config"
+      },
+      {
+        "container": "/data",
+        "bind": "!config/yacht_nuxt/data"
+      }
+    ]
+  }
+]

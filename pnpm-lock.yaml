@@ -98,6 +98,9 @@ dependencies:
   oslo:
     specifier: ^1.2.0
     version: 1.2.0
+  pinia:
+    specifier: ^2.1.7
+    version: 2.1.7(typescript@5.4.5)(vue@3.4.23)
   simple-git:
     specifier: ^3.24.0
     version: 3.24.0
@@ -157,6 +160,9 @@ devDependencies:
   '@vueuse/nuxt':
     specifier: ^10.9.0
     version: 10.9.0(nuxt@3.11.2)(rollup@4.14.3)(vue@3.4.23)
+  nuxi:
+    specifier: ^3.11.1
+    version: 3.11.1
   rollup:
     specifier: ^4.14.3
     version: 4.14.3
@@ -6253,7 +6259,6 @@ packages:
       typescript: 5.4.5
       vue: 3.4.23(typescript@5.4.5)
       vue-demi: 0.14.7(vue@3.4.23)
-    dev: true
 
   /pkg-dir@5.0.0:
     resolution: {integrity: sha512-NPE8TDbzl/3YQYY7CSS228s3g2ollTFnc+Qi3tqmqJp9Vg2ovUpixcJEo2HJScN2Ez+kEaal6y70c0ehqJBJeA==}

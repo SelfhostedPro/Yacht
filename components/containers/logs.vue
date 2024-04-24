@@ -79,7 +79,7 @@ const getLogs = async () => {
 };
 
 onMounted(async () => {
-  getLogs();
+  await getLogs();
 });
 
 onBeforeUnmount(() => {

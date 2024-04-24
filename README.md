@@ -4,7 +4,7 @@ For alpha testing, you can start yacht with the following command:
 
 ```bash
 docker run -d \
-    --name ayacht \ #or whatever name you want
+    --name ayacht \
     -p 3000:3000 \
     -v /var/run/docker.sock:/var/run/docker.sock \
     ghcr.io/selfhostedpro/yacht-nuxt:main

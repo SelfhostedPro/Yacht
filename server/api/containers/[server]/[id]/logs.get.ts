@@ -4,6 +4,6 @@ export default defineEventHandler(async (event) => {
   if (!server || !containerId) throw createError('Server or container not specified')
 
   const { close, send } = useSSE(event, "sse:containerLogs")
-  getContainerLogs(server, containerId, close, send)
+  await getContainerLogs(server, containerId, close, send)
   event.node.req.on("close", () => close())
 })

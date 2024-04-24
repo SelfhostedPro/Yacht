@@ -3,27 +3,26 @@
     <v-toolbar>
       <!-- avatar title and status -->
       <template #prepend>
-        <v-toolbar-title
-          :class="`align-center ${smAndDown ? 'd-flex flex-column' : ''}`"
-        >
-          <v-avatar
-            :image="
-              container.info.icon ||
-              'https://cdn.vuetifyjs.com/images/cards/halcyon.png'
-            "
-          />
-          <v-tooltip :text="container.status" location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-avatar
-                class="ml-1"
-                v-bind="props"
-                :color="container.status == 'running' ? 'primary' : 'red'"
-                size="6"
-              ></v-avatar>
-            </template>
-          </v-tooltip>
-          {{ " " + container.name }}
-        </v-toolbar-title>
+        <containers-actions
+          variant="text"
+          :container="container"
+          :server="server"
+        />
+        <v-spacer v-if="!smAndDown" />
+        <lazy-containers-logs
+          @close="logsOpen = false"
+          v-if="logsOpen"
+          v-model="logsOpen"
+          :server="server"
+          :name="container.name"
+        />
+        <lazy-containers-terminal
+          @close="terminalOpen = false"
+          v-if="terminalOpen"
+          v-model="terminalOpen"
+          :server="server"
+          :name="container.name"
+        />
       </template>
       <template #append>
         <v-btn-group variant="text" v-if="!smAndDown">
@@ -66,29 +65,30 @@
           </v-menu>
         </v-btn>
       </template>
-      <template #extension>
-        <containers-actions
-          variant="text"
-          :container="container"
-          :server="server"
-        />
-        <v-spacer v-if="!smAndDown" />
-      </template>
     </v-toolbar>
-    <lazy-containers-logs
-      @close="logsOpen = false"
-      v-if="logsOpen"
-      v-model="logsOpen"
-      :server="server"
-      :name="container.name"
-    />
-    <lazy-containers-terminal
-      @close="terminalOpen = false"
-      v-if="terminalOpen"
-      v-model="terminalOpen"
-      :server="server"
-      :name="container.name"
-    />
+    <v-card-title>
+      <v-toolbar-title
+        :class="`align-center ${smAndDown ? 'd-flex flex-column' : ''}`"
+      >
+        <v-avatar
+          :image="
+            container.info.icon ||
+            'https://cdn.vuetifyjs.com/images/cards/halcyon.png'
+          "
+        />
+        <v-tooltip :text="container.status" location="bottom">
+          <template v-slot:activator="{ props }">
+            <v-avatar
+              class="ml-1"
+              v-bind="props"
+              :color="container.status == 'running' ? 'primary' : 'red'"
+              size="6"
+            ></v-avatar>
+          </template>
+        </v-tooltip>
+        {{ " " + container.name }}
+      </v-toolbar-title>
+    </v-card-title>
   </v-card>
 </template>
 
