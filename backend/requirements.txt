@@ -42,3 +42,4 @@ websocket-client==0.57.0
 websockets==8.1
 wheel==0.38.0
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
+aiohttp>=3.9.4 # not directly required, pinned by Snyk to avoid a vulnerability
