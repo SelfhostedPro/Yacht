@@ -1,60 +1,64 @@
-# Build Vue
-FROM node:14.5.0-alpine as build-stage
+# Build Vue.js frontend
+FROM node:20-alpine as build-stage
 
 ARG VUE_APP_VERSION
 ENV VUE_APP_VERSION=${VUE_APP_VERSION}
 
 WORKDIR /app
 COPY ./frontend/package*.json ./
-RUN npm install
-COPY ./frontend/ .
-RUN npm run build
+RUN npm install --verbose
+COPY ./frontend/ ./
+RUN npm run build --verbose
 
-# Setup Container and install Flask
-FROM lsiobase/alpine:3.12 as deploy-stage
-# MAINTANER Your Name "info@selfhosted.pro"
+# Setup Container and install Flask backend
+FROM python:3.11-alpine as deploy-stage
 
-# Set Variables
+# Set environment variables
 ENV PYTHONIOENCODING=UTF-8
 ENV THEME=Default
 
 WORKDIR /api
-COPY ./backend/requirements.txt .
+COPY ./backend/requirements.txt ./
 
-# Install Dependancies
-RUN \
- echo "**** install build packages ****" && \
- apk add --no-cache --virtual=build-dependencies \
-	g++ \
-	make \
-	postgresql-dev \
-	python3-dev \
-	libffi-dev \
-	ruby-dev &&\
- echo "**** install packages ****" && \
- apk add --no-cache \
-	python3 \
-	py3-pip \
-	mysql-dev \
-        postgresql-dev \
-	mysql-dev \
-	nginx &&\
- gem install sass &&\
- echo "**** Installing Python Modules ****" && \
- pip3 install wheel &&\
- pip3 install -r requirements.txt &&\
-# Delay cleaning up until all tasks are done
-RUN apk del --purge build-dependencies && \
-	rm -rf /root/.cache /tmp/*
+# Install build dependencies and system libraries
+RUN apk add --no-cache \
+    build-base \
+    gcc \
+    g++ \
+    make \
+    libffi-dev \
+    openssl-dev \
+    musl-dev \
+    postgresql-dev \
+    mysql-dev \
+    jpeg-dev \
+    zlib-dev \
+    yaml-dev \
+    python3-dev \
+    ruby-dev \
+    nginx \
+    curl
 
-COPY ./backend/api ./
-COPY ./backend/alembic /alembic
-COPY root ./backend/alembic.ini /
+# Install Docker Compose 2.x as a standalone binary
+RUN curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose
 
-# Vue
-COPY --from=build-stage /app/dist /app
-COPY nginx.conf /etc/nginx/
+# Upgrade pip, setuptools, and wheel
+RUN pip3 install --upgrade pip setuptools wheel
 
-# Expose
-VOLUME /config
-EXPOSE 8000
+# Install Python packages from requirements.txt
+RUN pip3 install -r requirements.txt --no-cache-dir --verbose
+
+# Install SASS via gem
+RUN gem install sass --verbose
+
+# Clean up build dependencies
+RUN apk del --purge build-base && \
+    rm -rf /root/.cache /tmp/*
+
+# Copy the backend code
+COPY ./backend/ ./
+
+# Expose ports and define the command to run the application
+EXPOSE 5000
+CMD ["python3", "app.py"]
