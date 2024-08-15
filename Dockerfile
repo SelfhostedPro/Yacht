@@ -43,12 +43,9 @@ RUN \
  echo "**** Installing Python Modules ****" && \
  pip3 install wheel &&\
  pip3 install -r requirements.txt &&\
- echo "**** Cleaning Up ****" &&\
- apk del --purge \
-	build-dependencies && \
- rm -rf \
-	/root/.cache \
-	/tmp/*
+# Delay cleaning up until all tasks are done
+RUN apk del --purge build-dependencies && \
+	rm -rf /root/.cache /tmp/*
 
 COPY ./backend/api ./
 COPY ./backend/alembic /alembic
