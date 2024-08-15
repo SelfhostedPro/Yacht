@@ -30,13 +30,21 @@ RUN apk add --no-cache --virtual=build-dependencies \
     libffi-dev \
     ruby-dev
 
-# Install main packages
+# Install necessary system libraries for Python packages
 RUN apk add --no-cache \
     python3 \
     py3-pip \
     mysql-dev \
     postgresql-dev \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    openssl-dev \
     nginx
+
+# Install Python modules
+RUN pip3 install --upgrade pip setuptools wheel
+RUN pip3 install -r requirements.txt --verbose
 
 # Install SASS via gem
 RUN gem install sass --verbose
@@ -57,3 +65,4 @@ COPY ./backend/ ./
 # Expose ports and define the command to run the application
 EXPOSE 5000
 CMD ["python3", "app.py"]
+
