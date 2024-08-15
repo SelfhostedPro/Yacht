@@ -47,4 +47,4 @@ uvloop==0.17.0
 websocket-client==1.6.4
 websockets==11.0.2
 wheel==0.41.0
-setuptools==68.0.0
+setuptools==70.0.0
