@@ -36,7 +36,8 @@ RUN apk add --no-cache \
     yaml-dev \
     python3-dev \
     ruby-dev \
-    nginx
+    nginx \
+    curl
 
 # Install Docker Compose 2.x as a standalone binary
 RUN curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
