@@ -28,7 +28,7 @@ RUN apk add --no-cache --virtual=build-dependencies \
     python3-dev \
     ruby-dev
 
-# Install necessary system libraries for PyYAML and other Python packages
+# Install necessary system libraries for Python packages
 RUN apk add --no-cache \
     python3 \
     py3-pip \
@@ -44,15 +44,22 @@ RUN apk add --no-cache \
     make \
     jpeg-dev \
     zlib-dev \
-    yaml-dev  # Adding this for PyYAML
+    yaml-dev
 
 # Upgrade pip, setuptools, and wheel
 RUN pip3 install --upgrade pip setuptools wheel
-RUN pip3 install --use-pep517 aiostream==0.4.3 --no-cache-dir --verbose
-RUN pip3 install --use-pep517 -r requirements.txt --no-cache-dir --verbose
 
-# Install PyYAML with binary wheels only
-RUN pip3 install PyYAML --only-binary :all:
+# Install Cython explicitly to avoid issues with PyYAML
+RUN pip3 install Cython
+
+# Install PyYAML using binary wheel to avoid building from source
+RUN pip3 install --only-binary :all: PyYAML
+
+# Install aiostream separately to troubleshoot installation issues
+RUN pip3 install --use-pep517 aiostream==0.4.3 --no-cache-dir --verbose
+
+# Install all remaining Python modules from requirements.txt
+RUN pip3 install --use-pep517 -r requirements.txt --no-cache-dir --verbose
 
 # Install SASS via gem
 RUN gem install sass --verbose
