@@ -49,10 +49,6 @@ RUN pip3 install -r requirements.txt --verbose
 # Install SASS via gem
 RUN gem install sass --verbose
 
-# Install Python modules
-RUN pip3 install wheel --verbose
-RUN pip3 install -r requirements.txt --verbose
-
 # Clean up build dependencies
 RUN apk del --purge build-dependencies && \
     rm -rf /root/.cache /tmp/*
