@@ -48,12 +48,11 @@ RUN apk add --no-cache \
 
 # Upgrade pip, setuptools, and wheel
 RUN pip3 install --upgrade pip setuptools wheel
+RUN pip3 install --use-pep517 aiostream==0.4.3 --no-cache-dir --verbose
+RUN pip3 install --use-pep517 -r requirements.txt --no-cache-dir --verbose
 
 # Install PyYAML with binary wheels only
 RUN pip3 install PyYAML --only-binary :all:
-
-# Install all Python modules from requirements.txt
-RUN pip3 install -r requirements.txt --no-cache-dir --verbose
 
 # Install SASS via gem
 RUN gem install sass --verbose
