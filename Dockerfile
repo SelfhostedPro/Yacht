@@ -11,9 +11,7 @@ COPY ./frontend/ ./
 RUN npm run build --verbose
 
 # Setup Container and install Flask backend
-FROM lsiobase/alpine:3.12 as deploy-stage
-
-# MAINTAINER Your Name "info@selfhosted.pro"
+FROM python:3.8-alpine as deploy-stage
 
 # Set environment variables
 ENV PYTHONIOENCODING=UTF-8
@@ -22,32 +20,30 @@ ENV THEME=Default
 WORKDIR /api
 COPY ./backend/requirements.txt ./
 
-# Install build and system dependencies
-RUN apk add --no-cache --virtual=build-dependencies \
+# Install build dependencies and system libraries
+RUN apk add --no-cache \
+    build-base \
+    gcc \
     g++ \
     make \
-    python3-dev \
-    ruby-dev && \
-    apk add --no-cache \
-    python3 \
-    py3-pip \
-    mysql-dev \
-    postgresql-dev \
     libffi-dev \
     openssl-dev \
-    nginx \
+    musl-dev \
+    postgresql-dev \
+    mysql-dev \
     jpeg-dev \
     zlib-dev \
-    yaml-dev
+    yaml-dev \
+    nginx
 
 # Upgrade pip, setuptools, and wheel
 RUN pip3 install --upgrade pip setuptools wheel
 
 # Install Cython explicitly to avoid issues with PyYAML
-RUN pip3 install Cython
+RUN pip3 install Cython --verbose
 
-# Install PyYAML using binary wheel to avoid building from source
-RUN pip3 install --only-binary :all: PyYAML
+# Install PyYAML separately with a specific version if necessary
+RUN pip3 install PyYAML==5.3.1 --no-cache-dir --verbose
 
 # Install aiostream separately to troubleshoot installation issues
 RUN pip3 install --use-pep517 aiostream==0.4.3 --no-cache-dir --verbose
@@ -56,10 +52,10 @@ RUN pip3 install --use-pep517 aiostream==0.4.3 --no-cache-dir --verbose
 RUN pip3 install --use-pep517 -r requirements.txt --no-cache-dir --verbose
 
 # Install SASS via gem
-RUN gem install sass --verbose
+RUN apk add --no-cache ruby-dev && gem install sass --verbose
 
 # Clean up build dependencies
-RUN apk del --purge build-dependencies && \
+RUN apk del --purge build-base && \
     rm -rf /root/.cache /tmp/*
 
 # Copy the backend code
