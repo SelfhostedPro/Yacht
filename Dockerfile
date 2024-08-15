@@ -12,6 +12,7 @@ RUN npm run build --verbose
 
 # Setup Container and install Flask backend
 FROM lsiobase/alpine:3.12 as deploy-stage
+
 # MAINTAINER Your Name "info@selfhosted.pro"
 
 # Set environment variables
