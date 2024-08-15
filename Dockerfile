@@ -25,9 +25,7 @@ COPY ./backend/requirements.txt ./
 RUN apk add --no-cache --virtual=build-dependencies \
     g++ \
     make \
-    postgresql-dev \
     python3-dev \
-    libffi-dev \
     ruby-dev
 
 # Install necessary system libraries for Python packages
@@ -42,8 +40,10 @@ RUN apk add --no-cache \
     openssl-dev \
     nginx
 
-# Install Python modules
+# Upgrade pip, setuptools, and wheel
 RUN pip3 install --upgrade pip setuptools wheel
+
+# Install Python modules from requirements.txt
 RUN pip3 install -r requirements.txt --verbose
 
 # Install SASS via gem
