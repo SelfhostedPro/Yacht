@@ -21,27 +21,20 @@ ENV THEME=Default
 WORKDIR /api
 COPY ./backend/requirements.txt ./
 
-# Install build dependencies
+# Install build and system dependencies
 RUN apk add --no-cache --virtual=build-dependencies \
     g++ \
     make \
     python3-dev \
-    ruby-dev
-
-# Install necessary system libraries for Python packages
-RUN apk add --no-cache \
+    ruby-dev && \
+    apk add --no-cache \
     python3 \
     py3-pip \
     mysql-dev \
     postgresql-dev \
-    gcc \
-    musl-dev \
     libffi-dev \
     openssl-dev \
     nginx \
-    python3-dev \
-    g++ \
-    make \
     jpeg-dev \
     zlib-dev \
     yaml-dev
@@ -71,9 +64,6 @@ RUN apk del --purge build-dependencies && \
 # Copy the backend code
 COPY ./backend/ ./
 
-# Add any additional necessary setup commands here
-
 # Expose ports and define the command to run the application
 EXPOSE 5000
 CMD ["python3", "app.py"]
-
