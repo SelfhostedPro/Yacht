@@ -29,7 +29,7 @@ pycparser==2.21
 pydantic==2.0.2
 # PyJWT==2.7.0
 PyJWT==1.7.1
-python-multipart==0.0.6
+python-multipart==0.0.18
 PyYAML==6.0.1
 requests==2.31.0
 six==1.16.0
