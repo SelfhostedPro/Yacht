@@ -23,7 +23,7 @@
     "vue-chat-scroll": "^1.4.0",
     "vue-router": "^3.5.1",
     "vue2-ace-editor": "0.0.15",
-    "vuetify": "^2.5.1",
+    "vuetify": "^3.0.0",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
